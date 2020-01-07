@@ -18,8 +18,8 @@
           "help": {
             "online": "http://www.amebaiot.com/"
           },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba-1.0.0-build20200107.tar.gz",
-          "archiveFileName": "ameba-1.0.0-build20200107.tar.gz",
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-1.0.0-build20200107.tar.gz",
+          "archiveFileName": "ameba_d-1.0.0-build20200107.tar.gz",
           "checksum": "SHA-256:6a2a4f3f3cafe20d86bd20ecbb3bb67c527c95c6b1ccd08e129e67c5c8b7adce",
           "size": "44822030",
           "boards": [
@@ -30,7 +30,7 @@
           "toolsDependencies": [
             {
               "packager": "realtek",
-              "name": "amebad_asdk_toolchain",
+              "name": "ameba_d_asdk_toolchain",
               "version": "1.0.0"
             },
             {
@@ -44,7 +44,7 @@
 
       "tools": [
 		{
-          "name": "amebad_asdk_toolchain",
+          "name": "ameba_d_asdk_toolchain",
           "version":"1.0.0",
           "systems": [
             {
