@@ -20,8 +20,8 @@
           },
           "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-1.0.0.tar.gz",
           "archiveFileName": "ameba_d-1.0.0.tar.gz",
-          "checksum": "SHA-256:6a2a4f3f3cafe20d86bd20ecbb3bb67c527c95c6b1ccd08e129e67c5c8b7adce",
-          "size": "44822030",
+          "checksum": "SHA-256:995c208c178ba7df3a19c43e1d41689c1f29db8f6c2b60f2f63c793851b6c1ca",
+          "size": "44819711",
           "boards": [
             {"name": "Ameba RTL8721D"},
             {"name": "Ameba RTL8722DM"},

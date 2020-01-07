@@ -17,7 +17,7 @@ ameba.project=realtek_amebaD_va0_example
 # Ameba compile variables
 # ----------------------
 
-compiler.path={runtime.tools.amebad_asdk_toolchain.path}/bin/
+compiler.path={runtime.tools.ameba_d_asdk_toolchain.path}/bin/
 compiler.c.cmd=arm-none-eabi-gcc
 
 compiler.c.flags=-ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -g -gdwarf-3 -nostartfiles -nodefaultlibs -nostdlib -O2 -D__FPU_PRESENT -gdwarf-3 -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wstrict-prototypes -Wundef -Wno-write-strings -Wno-maybe-uninitialized --save-temps -c -MMD -Wextra
@@ -88,7 +88,7 @@ recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compil
 
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" "-L{runtime.tools.amebad_asdk_toolchain.path}/lib/" "-L{build.variant.path}/linker_scripts/gcc" "-T{build.variant.path}/{build.ldscript}" {compiler.c.elf.flags} "-Wl,-Map={build.path}/application.map" {compiler.c.elf.extra_flags} -o "{build.path}/application.axf" {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive {compiler.ameba.ar.list} "{runtime.tools.ameba_d_tools.path}/bsp/image/cmse_implib.lib" -lm -lstdc++
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" "-L{runtime.tools.ameba_d_asdk_toolchain.path}/lib/" "-L{build.variant.path}/linker_scripts/gcc" "-T{build.variant.path}/{build.ldscript}" {compiler.c.elf.flags} "-Wl,-Map={build.path}/application.map" {compiler.c.elf.extra_flags} -o "{build.path}/application.axf" {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive {compiler.ameba.ar.list} "{runtime.tools.ameba_d_tools.path}/bsp/image/cmse_implib.lib" -lm -lstdc++
 
 ## Create nm map
 recipe.nm.pattern=cp "{build.path}/{build.project_name}.axf" "{build.path}/application.axf"
