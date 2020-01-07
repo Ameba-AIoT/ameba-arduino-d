@@ -1,0 +1,75 @@
+{
+  "packages": [
+    {
+      "name": "realtek",
+      "maintainer": "Realtek",
+      "websiteURL": "http://www.amebaiot.com/",
+      "email": "ameba.arduino@gmail.com",
+      "help": {
+        "online": "http://www.amebaiot.com/"
+      },
+
+      "platforms": [
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33)",
+          "architecture": "AmebaD",
+          "version": "1.0.0",
+          "category": "Contributed",
+          "help": {
+            "online": "http://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba-1.0.0.tar.gz",
+          "archiveFileName": "ameba-1.0.0.tar.gz",
+          "checksum": "SHA-256:6a2a4f3f3cafe20d86bd20ecbb3bb67c527c95c6b1ccd08e129e67c5c8b7adce",
+          "size": "44822030",
+          "boards": [
+            {"name": "Ameba RTL8721D"},
+            {"name": "Ameba RTL8722DM"},
+            {"name": "Ameba RTL8722CSM"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "amebad_asdk_toolchain",
+              "version": "1.0.0"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.0"
+            }
+          ]
+        }
+      ],
+
+      "tools": [
+		{
+          "name": "amebad_asdk_toolchain",
+          "version":"1.0.0",
+          "systems": [
+            {
+              "host":"i686-mingw32",
+              "archiveFileName":"ameba_d_toolchain_windows-1.0.0.tar.gz",
+              "url":"https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_toolchain_windows-1.0.0.tar.gz",
+              "checksum":"SHA-256:7b00206df30ebb4e963203c7d55702b6264f288bdc99fefe076ebfc63c1aad3b",
+              "size":"136532164"
+            }
+          ]
+        },
+        {
+          "name": "ameba_d_tools",
+          "version": "1.0.0",
+          "systems": [
+            {
+              "host": "i686-mingw32",
+              "archiveFileName": "ameba_d_tools_windows-1.0.0.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_windows-1.0.0.tar.gz",
+              "checksum": "SHA-256:e161d0174b1ea14de8176433c2e3dc2df094ec2ece25b2d68f15415e9f6325af",
+              "size": "1372682"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
