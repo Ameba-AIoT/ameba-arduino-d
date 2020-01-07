@@ -1,16 +1,12 @@
 How to add realtek ameba core files:
 
-You can reference below link to get start:
-
-  http://www.amebaiot.com/ameba-arduino-getting-started/
+You can reference below link to get start: http://www.amebaiot.com/ameba-arduino-getting-started/
 
 Or you can follow steps to setup.
 
 1. Arduino IDE 1.6.5 support third party hardware by providing hardware configuration.
 You need add Ameba's configuration in "File" -> "Preferences".
-And fill below URL in "Additional Boards Manager URLs:"
-
-  https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/package_realtek.com_amebad_index.json
+And fill below URL in "Additional Boards Manager URLs:" https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/package_realtek.com_amebad_index.json
 
 We also suggest to enable "Show verbose output" options on "compilation" and "upload" in Preference.
 
