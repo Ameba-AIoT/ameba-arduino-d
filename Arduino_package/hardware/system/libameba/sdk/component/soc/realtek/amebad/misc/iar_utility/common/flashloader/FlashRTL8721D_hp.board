@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flash_board>
+    <pass>
+        <loader>$PROJ_DIR$\..\..\..\component\soc\realtek\amebad\misc\iar_utility\common\flashloader\FlashRTL8721D_hp.flash</loader>
+        <range>CODE 0x8000000 0x8001FFF</range>
+        <abs_offset>0x0</abs_offset>
+    </pass>
+    <pass>
+        <loader>$PROJ_DIR$\..\..\..\component\soc\realtek\amebad\misc\iar_utility\common\flashloader\FlashRTL8721D_hp.flash</loader>
+        <range>CODE 0x8004000 0x8005FFF</range>
+        <abs_offset>0x4000</abs_offset>
+    </pass>
+    <pass>
+        <loader>$PROJ_DIR$\..\..\..\component\soc\realtek\amebad\misc\iar_utility\common\flashloader\FlashRTL8721D_hp.flash</loader>
+        <range>CODE 0x8006000 0xfffffff</range>
+        <abs_offset>0x6000</abs_offset>
+    </pass>
+</flash_board>

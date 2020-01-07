@@ -1,0 +1,18 @@
+
+ameba_rtl8721d.name=Ameba RTL8721D
+ameba_rtl8721d.vid.0=0x2341
+ameba_rtl8721d.pid.0=0x003d
+ameba_rtl8721d.upload.tool=ameba_d_tools
+ameba_rtl8721d.upload.protocol=mbed_dap
+ameba_rtl8721d.upload.maximum_size=2097152
+ameba_rtl8721d.upload.use_1200bps_touch=false
+ameba_rtl8721d.upload.wait_for_upload_port=false
+ameba_rtl8721d.upload.native_usb=false
+ameba_rtl8721d.build.mcu=cortex-m33
+ameba_rtl8721d.build.f_cpu=200000000L
+ameba_rtl8721d.build.usb_product="Ameba RTL8721D"
+ameba_rtl8721d.build.board=AMEBA
+ameba_rtl8721d.build.core=arduino
+ameba_rtl8721d.build.extra_flags=-mthumb -DBOARD_RTL8721D {build.usb_flags}
+ameba_rtl8721d.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
+ameba_rtl8721d.build.variant=rtl8721d

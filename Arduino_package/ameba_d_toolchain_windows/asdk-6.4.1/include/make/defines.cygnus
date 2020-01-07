@@ -1,0 +1,100 @@
+#  $Id: defines.cygnus,v 1.23 2001/04/23 00:29:46 franklin Exp $
+
+CC		=mips-lsi-elf-gcc
+CPP		=$(CC) -E
+ASCPP		=$(CC) -E
+AS		=$(CC)
+LD		=$(CC)
+ARCHIVE		=mips-lsi-elf-ar
+AR		=mips-lsi-elf-ar crs
+RANLIB		=mips-lsi-elf-ranlib
+OBJCOPY		=mips-lsi-elf-objcopy
+OBJHEX		=lxobjHex-cygnus
+OBJDUMP		=mips-lsi-elf-objdump -m mips
+NM		=mips-lsi-elf-nm
+
+TOOLDEFINE	=-DCYGNUS_TOOL
+TOOLCFLAGS	=$(TOOLDEFINE) -msoft-float
+PMONCFLAGS	=$(TOOLCFLAGS) -G 0
+DHRYCFLAGS	=
+
+TOOLLDFLAGS	=$(TOOLCFLAGS) -e start -EB -N -Ttext $(TEXT) -n -nostartfiles
+DHRYLDFLAGS	=$(TOOLLDFLAGS) -Tbss $(BSS)
+PMONLDFLAGS	=$(TOOLCFLAGS) -n -nostartfiles
+
+TOOLLIBS	= -lm -lc
+
+TOOLINCLUDE	=
+
+OBJHEXFLAGS	=
+OBJHEXREDIRECT	=
+
+OPT0		= -g -O0
+OPT1		= -g -O1
+OPT2		= -g -O2
+OPT3		= -O3
+
+OPT		= $(OPT2)
+LIBOPT		= $(OPT2)
+DHRYOPT		= $(OPT3)
+
+TOOLASCPPFLAGS	=-DCYGNUS_TOOL -DLANGUAGE_ASSEMBLY -x assembler-with-cpp
+
+TOOLASFLAGS	= -c $(ASCPPFLAGS) $(XTRAASFLAGS)
+
+CRT		= c.o
+
+TOOLCLEAN	=
+
+
+lx4080_PROCESSOR_NUMBER	=4080
+lx4180_PROCESSOR_NUMBER	=4180
+lx4189_PROCESSOR_NUMBER	=4189
+lx4280_PROCESSOR_NUMBER	=4280
+lx5180_PROCESSOR_NUMBER	=5180
+lx5280_PROCESSOR_NUMBER	=5280
+lx8000_PROCESSOR_NUMBER	=8080
+PROCESSOR_NUMBER	= $($(PROCESSOR)_PROCESSOR_NUMBER)
+
+.SUFFIXES :
+.SUFFIXES : .s .S .c .o .out .i .bin .nm .img .sr .sre .text .scr .pad .dump
+
+.c.o:
+	$(CC) -c $(CFLAGS) -o $@ $<
+.s.o:
+	$(ASCPP) $(ASCPPFLAGS) -o $*.i $<
+	$(AS) $(ASFLAGS) -o $@ $*.i
+	$(RM) $*.i
+.S.o:
+	$(ASCPP) $(ASCPPFLAGS) -o $*.i $<
+	$(AS) $(ASFLAGS) -o $@ $*.i
+	$(RM) $*.i
+.o.out:
+	$(LD) $(LDFLAGS) -o $@ $(CRT) $*.o $(LIBS)
+.s.i:
+	$(ASCPP) $(ASCPPFLAGS) -o $@ $<
+.S.i:
+	$(ASCPP) $(ASCPPFLAGS) -o $@ $<
+
+
+.out.img:
+	$(OBJCOPY) -O binary $< $@
+.out.sr:
+	$(OBJHEX) $(OBJHEXFLAGS) $< $(OBJHEXREDIRECT) $@
+.out.text:
+	$(OBJDUMP) -h -S -l --show-raw-insn $< > $@
+.out.nm:
+	$(NM) -B -n $< > $@
+.img.sre:
+	srec -v -o0x$(TEXT) $< $@
+.img.pad:
+	imgpad $< $@
+.img.bin:
+	img2bin $< $@
+.sre.dump:
+	$(OBJDUMP) -EB -s -b srec -D --show-raw-insn $< > $@
+.sr.img:
+	$(OBJCOPY) -I srec -O binary $< $@
+.scr.bin:
+	img2bin $< $@
+	echo 00000000000000000000000000000000 >> $@

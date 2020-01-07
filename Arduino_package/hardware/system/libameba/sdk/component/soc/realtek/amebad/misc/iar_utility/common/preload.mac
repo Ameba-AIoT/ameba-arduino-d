@@ -1,0 +1,34 @@
+__setup_system()
+{
+	__var tmp;
+
+	__hwReset(1);
+}
+
+execUserPreload()
+{
+        __message "User execUserPreload....";
+        __setup_system();
+}
+
+execUserSetup()
+{
+	//__var tmp;
+        //__message "User Setup....";
+        // if use normal reset, please unmark those 2 lines
+        //execUserPreload();
+        //__setup_system();
+        //__message "User __loadImage....";
+        //__loadImage("$TARGET_PATH$ ", 0, 0);
+
+}
+
+execUserReset()
+{
+                __var tmp;
+                __message "User Reset....";
+                tmp = __readMemory32(0x480003F8, "Memory")|((1<<25));     
+                __writeMemory32(tmp, 0x480003F8, "Memory");
+}
+
+

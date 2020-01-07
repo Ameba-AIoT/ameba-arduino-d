@@ -1,0 +1,118 @@
+#  $Id: defines.ghs-mips16,v 1.36 2001/12/13 15:09:47 pascal Exp $
+
+CC		=ccmipe -cpu=$(MACPROCESSOR) -mips16
+CPP		=lxgcc -E -mips16
+ASCPP		=lxgcc -E -mips16
+AS		=asmips -$(MACPROCESSOR)
+LD		=ccmipe -cpu=$(MACPROCESSOR) -mips16
+ARCHIVE		=ax
+AR		=ax cr
+RANLIB		=granlib
+OBJCOPY		=lxobjcopy
+OBJHEX		=lxobjHexElf
+OBJDUMP		=lxobjdump  -m mips:$(PROCESSOR_NUMBER)
+NM		=lxnm
+
+TOOLDEFINE	=-DGHS_TOOL 
+TOOLCFLAGS	=$(TOOLDEFINE) -DMIPSEB -fsoft -D"__SIZE_TYPE__=unsigned int" 
+PMONCFLAGS	=$(TOOLCFLAGS)
+DHRYCFLAGS	=-DDISABLEPRINT -DDISABLE_MALLOC
+
+GHSLINKSCRIPT	=@ghslink.ld
+MAKELINKSCRIPT	=$(RM) ghslink.ld; mkghslnk -T $(TEXT) > ghslink.ld
+TOOLLDFLAGS	=$(TOOLCFLAGS) -nostdlib ${GHSLINKSCRIPT}
+DHRYLDFLAGS	=$(TOOLLDFLAGS)
+PMONLDFLAGS	=$(TOOLLDFLAGS)
+
+TOOLLIBS	=$(PRE_TOOLLIBS) -L$(GHSDIR)/mips_16 -L$(GHSDIR)/mips_sf -lansi -lind
+POSTTOOLLIBS	=-larch -lsys
+
+TOOLINCLUDE	=
+
+OBJHEXFLAGS	=
+OBJHEXREDIRECT	=
+
+OPT0		=
+OPT1		= -O -OL
+OPT2		= -O -OL -OI
+OPT3		= -O -OL -OI -OLB -sda=all
+
+DEBUG0		=
+DEBUG1		= -dwarf -g
+DEBUG2		= -dwarf -g -nodbo -ga
+
+OPT		= $(OPT2) $(DEBUG1)
+LIBOPT		= $(OPT1) $(DEBUG0)
+DHRYOPT		= -Onostrcpy $(OPT3) $(DEBUG0)
+
+TOOLASCPPFLAGS	=-DGHS_TOOL -DMIPSEB -DLANGUAGE_ASSEMBLY -x assembler-with-cpp
+
+TOOLASFLAGS	=-mipscompat -elf -b1 $(XTRAASFLAGS)
+
+CRT		= c.o
+
+TOOLCLEAN	= *.map *.dbg *.inf *.sym *.dbo *.dla *.dnm
+
+
+lx4080_PROCESSOR_NUMBER	=4080
+lx4180_PROCESSOR_NUMBER	=4180
+lx4189_PROCESSOR_NUMBER	=4189
+lx4280_PROCESSOR_NUMBER	=4280
+lx5180_PROCESSOR_NUMBER	=5180
+lx5280_PROCESSOR_NUMBER	=5280
+lx8000_PROCESSOR_NUMBER	=8080
+PROCESSOR_NUMBER	= $($(PROCESSOR)_PROCESSOR_NUMBER)
+
+lx4080_PRE_TOOLLIBS	=-L$(GHSDIR)/mips_nomdu16
+lx4180_PRE_TOOLLIBS	=-L$(GHSDIR)/mips_nomdu16
+lx4189_PRE_TOOLLIBS	=-L$(GHSDIR)/mips_nomdu16
+lx4280_PRE_TOOLLIBS	=-L$(GHSDIR)/mips_nomdu16
+lx8000_PRE_TOOLLIBS	=-L$(GHSDIR)/mips_nomdu16
+PRE_TOOLLIBS	= $($(MACPROCESSOR)_PRE_TOOLLIBS)
+
+.SUFFIXES :
+.SUFFIXES : .s .S .c .o .out .i .bin .nm .img .sr .sre .text .scr .pad .dump
+
+.c.o:
+	$(CC) -c $(CFLAGS) -o $@ $<
+.s.o:
+	$(ASCPP) $(ASCPPFLAGS) -o $*.i $<
+	$(AS) $(ASFLAGS) -o $@ $*.i
+	$(RM) $*.i
+.S.o:
+	$(ASCPP) $(ASCPPFLAGS) -o $*.i $<
+	$(AS) $(ASFLAGS) -o $@ $*.i
+	$(RM) $*.i
+.o.out:
+	mkghslnk -T$(TEXT) > $*.ld
+	$(LD) $(LDFLAGS) @$*.ld -o $@ $(CRT) $*.o $(LIBS)
+.s.i:
+	$(ASCPP) $(ASCPPFLAGS) -o $@ $<
+.S.i:
+	$(ASCPP) $(ASCPPFLAGS) -o $@ $<
+
+.mip.o:
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+
+.out.img:
+	$(OBJCOPY) -O binary $< $@
+.out.sr:
+	$(OBJHEX) $(OBJHEXFLAGS) $< $(OBJHEXREDIRECT) $@
+.out.text:
+	gdump -load -map -N -ytext -cooked $< > $@
+.out.nm:
+	$(NM) -B -n $< > $@
+.img.sre:
+	srec -v -o0x$(TEXT) $< $@
+.img.pad:
+	imgpad $< $@
+.img.bin:
+	img2bin $< $@
+.sre.dump:
+	$(OBJDUMP) -EB -s -b srec -D --show-raw-insn $< > $@
+.sr.img:
+	$(OBJCOPY) -I srec -O binary $< $@
+.scr.bin:
+	img2bin $< $@
+	echo 00000000000000000000000000000000 >> $@

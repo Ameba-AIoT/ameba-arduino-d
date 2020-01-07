@@ -1,0 +1,58 @@
+#!/bin/sh
+
+    lflag=
+    lopt=
+    aflag=
+    aopt=
+
+    config="rsdk-elf"
+
+    CMDNAME=`basename $0`
+    USAGE="Usage: $CMDNAME [-a <adrs>] <file>"
+
+    cleanUp() {
+	rm -f $config-objHex.$$.1 $config-objHex.$$.2 $config-objHex.$$.3
+	exit $1
+    }
+
+    trap 'cleanUp 1' 1 2 3 15
+
+    while getopts a:l name
+    do
+	 case $name in
+	 l)      lflag=1
+		 ;;
+	 a)      aflag=1
+		 aval="$OPTARG"
+		 ;;
+	 --)     shift
+		 break
+		 ;;
+	 -*)     echo "$USAGE" 1>&2
+		 exit 1
+		 ;;
+	 *)      break
+		 ;;
+	 esac
+    done
+
+    if [ ! -z "$lflag" ]; then
+	 lopt="-l"
+    fi
+
+    if [ ! -z "$aflag" ]; then
+	 aopt="-o$aval"
+    fi
+
+    if [ $OPTIND != 1 ]; then
+	shift `expr $OPTIND - 1`
+    fi
+
+    $config-objcopy -R .data -R .reginfo -R .sbss -R .bss -R .mdebug -O binary $1 $config-objHex.$$.1
+    $config-objcopy -R .text -R .reginfo -R .rodata -R .rodata1 -R .mdebug -O binary $1 $config-objHex.$$.2
+    catimg $config-objHex.$$.1 $config-objHex.$$.2 $config-objHex.$$.3
+    $config-objcopy -I binary -O srec $config-objHex.$$.3 $2
+
+    ls -l $config-objHex.$$.1 $config-objHex.$$.2 $config-objHex.$$.3
+
+    cleanUp 0
