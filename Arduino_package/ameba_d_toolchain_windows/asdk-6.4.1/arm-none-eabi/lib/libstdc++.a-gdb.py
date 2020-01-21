@@ -19,8 +19,8 @@ import gdb
 import os
 import os.path
 
-pythondir = '/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib/share/gcc-6.4.1/python'
-libdir = '/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib/arm-none-eabi/lib'
+pythondir = '/home/jenkins/sdlc/workspace/dk-builders_pipeline_asdk-6-SBZBDZG3ZZI3IBXEAKWJTDEDPAZDHI5HXNUU4V4YCPTOZ2MSL7MA/builder-jenkins/asdk-6.4.1-3026/release/asdk-6.4.1/mingw32/newlib/share/gcc-6.4.1/python'
+libdir = '/home/jenkins/sdlc/workspace/dk-builders_pipeline_asdk-6-SBZBDZG3ZZI3IBXEAKWJTDEDPAZDHI5HXNUU4V4YCPTOZ2MSL7MA/builder-jenkins/asdk-6.4.1-3026/release/asdk-6.4.1/mingw32/newlib/arm-none-eabi/lib'
 
 # This file might be loaded when there is no current objfile.  This
 # can happen if the user loads it manually.  In this case we don't

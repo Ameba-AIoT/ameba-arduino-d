@@ -18,7 +18,7 @@
 /* #undef _WANT_IO_C99_FORMATS */
 
 /* long long type support in IO functions like printf/scanf enabled */
-/* #undef _WANT_IO_LONG_LONG */
+#define _WANT_IO_LONG_LONG 1
 
 /* Register application finalization function using atexit. */
 /* #undef _WANT_REGISTER_FINI */

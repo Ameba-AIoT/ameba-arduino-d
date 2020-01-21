@@ -53,7 +53,7 @@ if [ x$1 != x ] ; then
   prefix=$1
   shift
 else
-  prefix=/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib
+  prefix=/home/jenkins/sdlc/workspace/dk-builders_pipeline_asdk-6-SBZBDZG3ZZI3IBXEAKWJTDEDPAZDHI5HXNUU4V4YCPTOZ2MSL7MA/builder-jenkins/asdk-6.4.1-3026/release/asdk-6.4.1/mingw32/newlib
 fi
 
 # Allow for alternate isysroot in which to find headers

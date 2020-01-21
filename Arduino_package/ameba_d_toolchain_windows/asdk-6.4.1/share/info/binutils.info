@@ -1,4 +1,4 @@
-This is binutils.info, produced by makeinfo version 6.1 from
+This is binutils.info, produced by makeinfo version 6.5 from
 binutils.texi.
 
 Copyright (C) 1991-2016 Free Software Foundation, Inc.
@@ -43,7 +43,7 @@ Introduction
 ************
 
 This brief manual contains documentation for the GNU binary utilities
-(Realtek ASDK-6.4.1 Build 2703) version 2.27.90:
+(Realtek ASDK-6.4.1 Build 3026) version 2.27.90:
 
    This document is distributed under the terms of the GNU Free
 Documentation License version 1.3.  A copy of the license is included in

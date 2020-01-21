@@ -1,6 +1,6 @@
-This is ld.info, produced by makeinfo version 6.1 from ld.texinfo.
+This is ld.info, produced by makeinfo version 6.5 from ld.texinfo.
 
-This file documents the GNU linker LD (Realtek ASDK-6.4.1 Build 2703)
+This file documents the GNU linker LD (Realtek ASDK-6.4.1 Build 3026)
 version 2.27.90.
 
    Copyright (C) 1991-2016 Free Software Foundation, Inc.
@@ -22,7 +22,7 @@ File: ld.info,  Node: Top,  Next: Overview,  Up: (dir)
 LD
 **
 
-This file documents the GNU linker ld (Realtek ASDK-6.4.1 Build 2703)
+This file documents the GNU linker ld (Realtek ASDK-6.4.1 Build 3026)
 version 2.27.90.
 
    This document is distributed under the terms of the GNU Free
@@ -4509,7 +4509,7 @@ few examples.
      	 extern "C++" {
      		 ns::*;
      		 "f(int, double)";
-	      };
+     	 };
      } VERS_1.2;
 
    This example version script defines three version nodes.  The first
