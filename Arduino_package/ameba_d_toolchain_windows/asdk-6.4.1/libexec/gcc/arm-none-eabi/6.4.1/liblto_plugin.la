@@ -5,7 +5,7 @@
 # It is necessary for linking the library.
 
 # The name that we can dlopen(3).
-dlname='cyglto_plugin-0.dll'
+dlname='liblto_plugin-0.dll'
 
 # Names of this library.
 library_names='liblto_plugin.dll.a'
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/tmp/builder-RTRD3108+jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/cygwin/newlib/libexec/gcc/arm-none-eabi/6.4.1'
+libdir='/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib/libexec/gcc/arm-none-eabi/6.4.1'

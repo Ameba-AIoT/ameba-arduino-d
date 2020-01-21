@@ -19,8 +19,8 @@ import gdb
 import os
 import os.path
 
-pythondir = '/tmp/builder-RTRD3108+jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/cygwin/newlib/share/gcc-6.4.1/python'
-libdir = '/tmp/builder-RTRD3108+jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/cygwin/newlib/arm-none-eabi/lib/v8-m.main/softfp/fpv5-sp-d16'
+pythondir = '/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib/share/gcc-6.4.1/python'
+libdir = '/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib/arm-none-eabi/lib/v8-m.main/softfp/fpv5-sp-d16'
 
 # This file might be loaded when there is no current objfile.  This
 # can happen if the user loads it manually.  In this case we don't

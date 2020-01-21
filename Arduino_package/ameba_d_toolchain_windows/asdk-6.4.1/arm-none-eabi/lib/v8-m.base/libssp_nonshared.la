@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/tmp/builder-RTRD3108+jenkins/asdk-6.4.1-2778/release/asdk-6.4.1/cygwin/newlib/arm-none-eabi/lib/v8-m.base'
+libdir='/tmp/builder-jenkins/asdk-6.4.1-2703/release/asdk-6.4.1/mingw32/newlib/arm-none-eabi/lib/v8-m.base'

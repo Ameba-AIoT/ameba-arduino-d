@@ -18,10 +18,10 @@
           "help": {
             "online": "http://www.amebaiot.com/"
           },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-1.0.0-build20200107.tar.gz",
-          "archiveFileName": "ameba_d-1.0.0-build20200107.tar.gz",
-          "checksum": "SHA-256:995c208c178ba7df3a19c43e1d41689c1f29db8f6c2b60f2f63c793851b6c1ca",
-          "size": "44819711",
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-1.0.0-build20200107v2.tar.gz",
+          "archiveFileName": "ameba_d-1.0.0-build20200107v2.tar.gz",
+          "checksum": "SHA-256:8bb23669d66513121767cba6096c9b7caf819e7b6bcd199ab811207917432625",
+          "size": "44820632",
           "boards": [
             {"name": "Ameba RTL8721D"},
             {"name": "Ameba RTL8722DM"},
@@ -49,10 +49,10 @@
           "systems": [
             {
               "host":"i686-mingw32",
-              "archiveFileName":"ameba_d_toolchain_windows-1.0.0.tar.gz",
-              "url":"https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_toolchain_windows-1.0.0.tar.gz",
-              "checksum":"SHA-256:7b00206df30ebb4e963203c7d55702b6264f288bdc99fefe076ebfc63c1aad3b",
-              "size":"136532164"
+              "archiveFileName":"ameba_d_toolchain_windows-1.0.0v2.tar.gz",
+              "url":"https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_toolchain_windows-1.0.0v2.tar.gz",
+              "checksum":"SHA-256:4c1079e3a8b0ff570e428e0f74c1c291263f0e80709dd17e1ffaf7ca7a575029",
+              "size":"130531123"
             }
           ]
         },
