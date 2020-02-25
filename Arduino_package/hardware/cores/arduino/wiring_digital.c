@@ -115,7 +115,6 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
             break;
 
         case OUTPUT_OPENDRAIN:
-// zzw
             //gpio_dir((gpio_t *)pGpio_t, PIN_OUTPUT);
             //gpio_mode((gpio_t *)pGpio_t, OpenDrain);
             break;
@@ -207,8 +206,6 @@ void digitalChangeDir(uint32_t ulPin, uint8_t direction)
 }
 
 /**************************** Extend API by RTK ***********************************/
-// zzw
-#if 0
 uint32_t digitalPinToPort(uint32_t ulPin)
 {
     uint32_t pin_name;
@@ -216,11 +213,12 @@ uint32_t digitalPinToPort(uint32_t ulPin)
     //if (ulPin < 0 || ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC))
     if (ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC))
     {
-        return 0xFFFFFFFF;
+        //return 0xFFFFFFFF;
+        return NULL;
     }
 
-    pin_name = HAL_GPIO_GetPinName(g_APinDescription[ulPin].pinname);
-    return HAL_GPIO_GET_PORT_BY_NAME(pin_name);
+    pin_name = g_APinDescription[ulPin].pinname;
+    return PORT_NUM(pin_name);
 }
 
 uint32_t digitalPinToBitMask(uint32_t ulPin)
@@ -230,26 +228,24 @@ uint32_t digitalPinToBitMask(uint32_t ulPin)
     //if (ulPin < 0 || ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC))
     if (ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC))
     {
-        return 0xFFFFFFFF;
+        //return 0xFFFFFFFF;
+        return NULL;
     }
 
-    pin_name = HAL_GPIO_GetPinName(g_APinDescription[ulPin].pinname);
+    pin_name = (g_APinDescription[ulPin].pinname);
 
-    return 1 << (HAL_GPIO_GET_PIN_BY_NAME(pin_name));
+    return (1 << PIN_NUM(pin_name));
 }
-#endif
 
 uint32_t digitalSetIrqHandler(uint32_t ulPin, void (*handler)(uint32_t id, uint32_t event)) {
     gpio_irq_handler_list[ulPin] = (void *) handler;
 
-    // zzw 
     return 0;
 }
 
 uint32_t digitalClearIrqHandler(uint32_t ulPin) {
     gpio_irq_handler_list[ulPin] = NULL;
 
-    // zzw 
     return 0;
 }
 

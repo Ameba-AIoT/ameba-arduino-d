@@ -59,7 +59,7 @@ compiler.ameba.c.include= "-I." "-I{ameba.sdkpath}/project/{ameba.project}/inc" 
 compiler.arduino.c.include="-I{build.core.path}"
 compiler.ameba.c.flags= -DARDUINO_SDK -DCONFIG_PLATFORM_8721D -DCONFIG_USE_MBEDTLS_ROM_ALG -DCONFIG_FUNCION_O0_OPTIMIZE -DDM_ODM_SUPPORT_TYPE=32 {compiler.arduino.c.include}
 
-# Ameba archieve list
+# Ameba archive list
 # -------------------
 compiler.ameba.ar.list= "{build.variant.path}/lib_cmsis_dsp.a" "{build.variant.path}/lib_dct.a" "{build.variant.path}/lib_httpc.a" "{build.variant.path}/lib_httpd.a" "{build.variant.path}/lib_m4a_self.a" "{build.variant.path}/lib_mdns.a" "{build.variant.path}/lib_tftp.a" "{build.variant.path}/lib_usbd.a" "{build.variant.path}/lib_websocket.a" "{build.variant.path}/lib_wlan.a" "{build.variant.path}/lib_wps.a" "{build.variant.path}/lib_arduino.a"
 
@@ -88,7 +88,7 @@ recipe.ar.pattern="{compiler.path}{compiler.ar.cmd}" {compiler.ar.flags} {compil
 
 
 ## Combine gc-sections, archives, and objects
-recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" "-L{runtime.tools.ameba_d_asdk_toolchain.path}/lib/" "-L{build.variant.path}/linker_scripts/gcc" "-T{build.variant.path}/{build.ldscript}" {compiler.c.elf.flags} "-Wl,-Map={build.path}/application.map" {compiler.c.elf.extra_flags} -o "{build.path}/application.axf" {object_files} -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive {compiler.ameba.ar.list} "{runtime.tools.ameba_d_tools.path}/bsp/image/cmse_implib.lib" -lm -lstdc++
+recipe.c.combine.pattern="{compiler.path}{compiler.c.elf.cmd}" "-L{runtime.tools.ameba_d_asdk_toolchain.path}/lib/" "-L{build.variant.path}/linker_scripts/gcc" "-T{build.variant.path}/{build.ldscript}" {compiler.c.elf.flags} "-Wl,-Map={build.path}/application.map" {compiler.c.elf.extra_flags} -o "{build.path}/application.axf" -Wl,--start-group {object_files} -Wl,--end-group -Wl,--start-group -Wl,--whole-archive "{build.path}/{archive_file}" -Wl,--no-whole-archive {compiler.ameba.ar.list} -Wl,--end-group "{runtime.tools.ameba_d_tools.path}/bsp/image/cmse_implib.lib" -lm -lstdc++
 
 ## Create nm map
 recipe.nm.pattern=cp "{build.path}/{build.project_name}.axf" "{build.path}/application.axf"

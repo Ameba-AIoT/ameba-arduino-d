@@ -23,7 +23,7 @@
 #include <string.h>
 #include "UARTClassOne.h"
 
-#define SERAIL_ONE_UART_MODIFIABLE_BAUD_RATE 0
+#define SERIAL_ONE_UART_MODIFIABLE_BAUD_RATE 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -106,7 +106,7 @@ void UARTClassOne::begin(const uint32_t dwBaudRate)
 
     uint32_t UART_BaudRate = dwBaudRate;
 
-#if SERAIL_ONE_UART_MODIFIABLE_BAUD_RATE
+#if SERIAL_ONE_UART_MODIFIABLE_BAUD_RATE
     /* log uart initialize in 115200 baud rate.
      * If we change baud rate here, Serail Monitor would not detect this change and show nothing on screen.
      */

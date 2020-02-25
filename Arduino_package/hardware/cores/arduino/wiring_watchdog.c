@@ -6,7 +6,9 @@ extern "C" {
 
 #include "wdt_api.h"
 
-extern uint32_t ConfigDebugErr;
+//extern u32 ConfigDebugErr;
+extern u32 ConfigDebug[LEVEL_NUMs];
+
 
 void wdt_reset(void) {
     watchdog_refresh();
@@ -15,8 +17,8 @@ void wdt_reset(void) {
 void wdt_enable(uint32_t timeout_ms) {
     uint32_t backup_ConfigDebugErr;
 
-    backup_ConfigDebugErr = ConfigDebugErr;
-    ConfigDebugErr = 0x00000000;
+    backup_ConfigDebugErr = ConfigDebug[0];
+    ConfigDebug[0] = 0x00000000;
 
     if (timeout_ms > 8000) {
         timeout_ms = 8000;
@@ -24,7 +26,7 @@ void wdt_enable(uint32_t timeout_ms) {
     watchdog_init(timeout_ms);
     watchdog_start();
 
-    ConfigDebugErr = backup_ConfigDebugErr;
+    ConfigDebug[0] = backup_ConfigDebugErr;
 }
 
 void wdt_disable(void) {

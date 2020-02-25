@@ -1020,25 +1020,25 @@ typedef struct {
   * @brief General purpose input and output. (GPIO)
   */
 typedef struct {
-	GPIO_Port_TypeDef PORT[4];			/*!< GPIO IP have 4 ports, 						Address offset: 0x00-0x2C */
+	GPIO_Port_TypeDef PORT[4];			/*!< GPIO IP have 4 ports, 									Address offset: 0x00-0x2C */
 
-	__IO uint32_t INT_EN;				/*!< GPIO interrupt enable register, 			Address offset: 0x30 */
-	__IO uint32_t INT_MASK;				/*!< GPIO interrupt mask register, 				Address offset: 0x34 */
-	__IO uint32_t INT_TYPE;				/*!< GPIO interrupt type(level/edge) register, 	Address offset: 0x38 */
+	__IO uint32_t INT_EN;				/*!< GPIO interrupt enable register, 						Address offset: 0x30 */
+	__IO uint32_t INT_MASK;				/*!< GPIO interrupt mask register, 							Address offset: 0x34 */
+	__IO uint32_t INT_TYPE;				/*!< GPIO interrupt type(level/edge) register, 				Address offset: 0x38 */
 	__IO uint32_t INT_POLARITY;			/*!< GPIO interrupt polarity(Active low/high) register, 	Address offset: 0x3C */
-	__IO uint32_t INT_STATUS;			/*!< GPIO interrupt status register, 			Address offset: 0x40 */
-	__IO uint32_t INT_RAWSTATUS;		/*!< GPIO interrupt status without mask register, 	Address offset: 0x44 */
-	__IO uint32_t DEBOUNCE;				/*!< GPIO interrupt signal debounce register, 	Address offset: 0x48 */
-	__IO uint32_t PORTA_EOI;			/*!< GPIO clear interrupt register, 			Address offset: 0x4C */
+	__IO uint32_t INT_STATUS;			/*!< GPIO interrupt status register, 						Address offset: 0x40 */
+	__IO uint32_t INT_RAWSTATUS;		/*!< GPIO interrupt status without mask register, 			Address offset: 0x44 */
+	__IO uint32_t DEBOUNCE;				/*!< GPIO interrupt signal debounce register, 				Address offset: 0x48 */
+	__IO uint32_t PORTA_EOI;			/*!< GPIO clear interrupt register, 						Address offset: 0x4C */
 
-	__IO uint32_t EXT_PORT[4];			/*!< GPIO IN read or OUT read back register, 	Address offset: 0x50-0x5C */
+	__IO uint32_t EXT_PORT[4];			/*!< GPIO IN read or OUT read back register, 				Address offset: 0x50-0x5C */
 
-	__IO uint32_t LSSYNC;				/*!< GPIO level-sensitive synchronization enable register, 		Address offset: 0x60 */
-	__IO uint32_t IDCODE;				/*!< GPIO ID code register, 					Address offset: 0x64 */
-	__IO uint32_t INT_BOTHEDGE;		/*!< GPIO Both Edge Interrupt,					Address offset: 0x68 */
-	__IO uint32_t VERIDCODE;			/*!< GPIO component Version register, 			Address offset: 0x6C */
-	__IO uint32_t CONFIG2;				/*!< GPIO configuration Register 2, 			Address offset: 0x70 */
-	__IO uint32_t CONFIG1;				/*!< GPIO configuration Register 1, 			Address offset: 0x74 */
+	__IO uint32_t LSSYNC;				/*!< GPIO level-sensitive synchronization enable register, 	Address offset: 0x60 */
+	__IO uint32_t IDCODE;				/*!< GPIO ID code register, 								Address offset: 0x64 */
+	__IO uint32_t INT_BOTHEDGE;		/*!< GPIO Both Edge Interrupt,									Address offset: 0x68 */
+	__IO uint32_t VERIDCODE;			/*!< GPIO component Version register, 						Address offset: 0x6C */
+	__IO uint32_t CONFIG2;				/*!< GPIO configuration Register 2, 						Address offset: 0x70 */
+	__IO uint32_t CONFIG1;				/*!< GPIO configuration Register 1, 						Address offset: 0x74 */
 } GPIO_TypeDef;
 
 /** @} */
