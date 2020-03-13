@@ -13,7 +13,7 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33)",
           "architecture": "AmebaD",
-          "version": "ameba_d-1.0.1-build20200313",
+          "version": "1.0.1-build20200313",
           "category": "Contributed",
           "help": {
             "online": "http://www.amebaiot.com/"
@@ -43,7 +43,7 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33)",
           "architecture": "AmebaD",
-          "version": "1.0.0-build20200225-patch1",
+          "version": "1.0.0-build20200225",
           "category": "Contributed",
           "help": {
             "online": "http://www.amebaiot.com/"
