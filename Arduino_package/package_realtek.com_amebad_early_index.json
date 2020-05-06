@@ -3,29 +3,57 @@
     {
       "name": "realtek",
       "maintainer": "Realtek",
-      "websiteURL": "http://www.amebaiot.com/",
+      "websiteURL": "https://www.amebaiot.com/",
       "email": "ameba.arduino@gmail.com",
       "help": {
-        "online": "http://www.amebaiot.com/"
+        "online": "https://www.amebaiot.com/"
       },
 
       "platforms": [
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "architecture": "AmebaD",
+          "version": "3.0.1-build20200506.tar.gz",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.1-build20200506.tar.gz",
+          "archiveFileName": "ameba_d-3.0.1-build20200506.tar.gz",
+          "checksum": "SHA-256:60d96336d7a33bb8a594534a13e9b3e33fce8ffa170e868fb1fa06be78313523",
+          "size": "48547151",
+          "boards": [
+            {"name": "RTL8722DM"},
+            {"name": "RTL8722CSM"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.1"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.0-build20200415",
           "category": "Contributed",
           "help": {
-            "online": "http://www.amebaiot.com/"
+            "online": "https://www.amebaiot.com/"
           },
           "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.0-build20200415.tar.gz",
           "archiveFileName": "ameba_d-3.0.0-build20200415.tar.gz",
           "checksum": "SHA-256:3dd26182b5363acd4706cb8ee91559ae7f463fe5b18da06a22ce37d11463f6d5",
           "size": "48544449",
           "boards": [
-            {"name": "Ameba RTL8721D"},
-            {"name": "Ameba RTL8722DM"},
-            {"name": "Ameba RTL8722CSM"}
+            {"name": "RTL8722DM"},
+            {"name": "RTL8722CSM"}
           ],
           "toolsDependencies": [
             {
