@@ -13,15 +13,15 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
           "architecture": "AmebaD",
-          "version": "3.0.1-build20200506.tar.gz",
+          "version": "3.0.1-build20200506",
           "category": "Contributed",
           "help": {
             "online": "https://www.amebaiot.com/"
           },
           "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.1-build20200506.tar.gz",
           "archiveFileName": "ameba_d-3.0.1-build20200506.tar.gz",
-          "checksum": "SHA-256:60d96336d7a33bb8a594534a13e9b3e33fce8ffa170e868fb1fa06be78313523",
-          "size": "48547151",
+          "checksum": "SHA-256:af05e1078d494c350a98aaa3a6f13640579f992b7b539d0d5d96fc6052a083c7",
+          "size": "48497899",
           "boards": [
             {"name": "RTL8722DM"},
             {"name": "RTL8722CSM"}
