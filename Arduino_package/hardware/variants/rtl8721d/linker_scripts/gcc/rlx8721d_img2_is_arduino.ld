@@ -29,7 +29,7 @@ MEMORY
 	KM0_IMG2 (rx) : 			ORIGIN = 0x0C000000+0x20, LENGTH = 0x02000000-0x20	/* KM0_IMG2: 32MB, 32 Bytes resvd for header, virtual address */
 	KM4_IMG2 (rx) : 			ORIGIN = 0x0E000000+0x20, LENGTH = 0x02000000-0x20	/* KM4_IMG2 OTA1: 32MB, 32 Bytes resvd for header,  virtual address */
 	BTRACE (rx) :				ORIGIN = 0x00800000, LENGTH = 0x00C00000 -0x00800000	/* Bluetooth Trace */
-	
+
 	/* KM0 RAM*/
 	KM0_SRAM (rwx) : 			ORIGIN = 0x00080000, LENGTH = 0x00090000 - 0x00080000	/* KM0 SRAM: 64k */
 	RETENTION_RAM (rwx) : 		ORIGIN = 0x000C0000, LENGTH = 0x000C0400 - 0x000C0000	/* KM0 Retention SRAM: 1k */
@@ -63,7 +63,7 @@ SECTIONS
 		. = ALIGN(16);
 	} > BD_RAM_NS
 
-	.ram_image2.data :
+	.ram_image2.data : 
 	{
 		__data_start__ = .;
 		*(.data*)
@@ -89,8 +89,9 @@ SECTIONS
 		__ram_nocache_end__ = .;
 	} > BD_RAM_NS
 
-	.ram_heap.data :
+	.ram_heap.data : 
 	{
+		. = ALIGN (32);
 		*(.bfsram.data*)
 		end = .;
 		*(.heap.stdlib*)
@@ -195,21 +196,25 @@ SECTIONS
 		__psram_image2_text_end__ = .;
 	} > PSRAM_NS
 
-	.psram_image2.data :
+	.psram_image2.data : 
 	{
+		. = ALIGN (32);
 		*(.psram.data*)
+		. = ALIGN (32);
 		*(.psram.rodata*)
 	} > PSRAM_NS
 
 	.psram_image2.bss :
 	{
+		. = ALIGN (32);
 		__psram_bss_start__ = .;
 		*(.psram.bss*)
 		__psram_bss_end__ = .;
 	} > PSRAM_NS
 
-	.psram_heap.data :
+	.psram_heap.data : 
 	{
+		. = ALIGN (32);
 		*(.psram.heap*)
 	} > PSRAM_NS
 }

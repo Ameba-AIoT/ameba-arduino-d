@@ -579,6 +579,29 @@ typedef unsigned long rtw_event_indicate_t;
 }
 #endif
 
+/**
+  * @brief  The enumeration is coex state indicated from wlan driver.
+  */
+enum {
+	COEX_STATE_BT_OFF = 0,
+	COEX_STATE_BT_ON = 0x01,
+	COEX_STATE_BLE_SCAN =0x02,
+	COEX_STATE_BT_MAX
+};
+typedef unsigned char rtw_coex_state_bt_t;
+
+enum {
+	COEX_STATE_WIFI_OFF = 0,
+	COEX_STATE_WIFI_STA_UNCONNECTED = 0x01,
+	COEX_STATE_WIFI_STA_SCAN = 0x02,
+	COEX_STATE_WIFI_STA_CONNECTING = 0x03,
+	COEX_STATE_WIFI_STA_CONNECTED=0x04,
+	COEX_STATE_WIFI_AP_IDLE=0x05,
+	COEX_STATE_WIFI_OTHER_MODE=0x06,
+	COEX_STATE_WIFI_MAX
+};
+typedef unsigned char rtw_coex_state_wifi_t;
+
 /*\@}*/
 
 #endif /* _WIFI_CONSTANTS_H */

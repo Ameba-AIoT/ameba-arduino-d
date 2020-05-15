@@ -1,0 +1,163 @@
+diff -ru sdk_20150303/component/soc/realtek/8711b/cmsis/device/TOOLCHAIN_GCC_ARM/rlx8711B-symbol-rom_v02.ld sdk_20150209/component/soc/realtek/8711b/cmsis/device/TOOLCHAIN_GCC_ARM/rlx8711B-symbol-rom_v02.ld
+--- sdk_20150303/component/soc/realtek/8711b/cmsis/device/TOOLCHAIN_GCC_ARM/rlx8711B-symbol-rom_v02.ld	2015-03-03 16:44:33.492769100 +0800
++++ sdk_20150209/component/soc/realtek/8711b/cmsis/device/TOOLCHAIN_GCC_ARM/rlx8711B-symbol-rom_v02.ld	2015-03-03 11:59:49.961404200 +0800
+@@ -10,6 +10,7 @@
+   TCM (rwx) : ORIGIN = 0x1FFF0000, LENGTH = 65536
+   BD_RAM (rwx)  : ORIGIN = 0x10000bc8, LENGTH = 455735
+   SDRAM_RAM (rwx)  : ORIGIN = 0x30000000, LENGTH = 2M
++  SPI_FLASH (rx)  : ORIGIN = 0x98080000, LENGTH = 65536
+ }
+ 
+ 
+@@ -109,6 +110,14 @@
+     
+   } > SDRAM_RAM
+ 
++  .spi_flash.text : 
++  {
++    __flash_text_start__ = .;
++    *(.spiflash.text*)
++    __flash_text_end__ = .;
++    
++  } > SPI_FLASH
++
+  .heap :
+  {
+ 	__end__ = .;
+diff -ru sdk_20150303/component/soc/realtek/8711b/fwlib/ram_lib/startup.c sdk_20150209/component/soc/realtek/8711b/fwlib/ram_lib/startup.c
+--- sdk_20150303/component/soc/realtek/8711b/fwlib/ram_lib/startup.c	2015-03-03 16:44:38.992663500 +0800
++++ sdk_20150209/component/soc/realtek/8711b/fwlib/ram_lib/startup.c	2015-03-03 15:50:18.477141600 +0800
+@@ -966,7 +966,7 @@
+                        (VOID*)xPortSysTickHandler);
+ #endif
+ #endif
+-    SpicDisableRtl8195A();  // turn off SPIC for power saving
++    //SpicDisableRtl8195A();  // turn off SPIC for power saving
+ 
+     _AppStart();
+ 
+diff -ru sdk_20150303/component/soc/realtek/8711b/fwlib/test/mem/Makefile sdk_20150209/component/soc/realtek/8711b/fwlib/test/mem/Makefile
+--- sdk_20150303/component/soc/realtek/8711b/fwlib/test/mem/Makefile	2015-03-03 16:44:50.867435500 +0800
++++ sdk_20150209/component/soc/realtek/8711b/fwlib/test/mem/Makefile	2015-03-03 16:20:00.880418800 +0800
+@@ -9,7 +9,7 @@
+ #*****************************************************************************#
+ #                               Object FILE LIST                              #
+ #*****************************************************************************#
+-OBJS = sram_access_test.o
++OBJS = sram_access_test.o flash_runcode_test.o
+ 
+ #*****************************************************************************#
+ #                        RULES TO GENERATE TARGETS                            #
+diff -ru sdk_20150303/component/soc/realtek/8711b/fwlib/test/mem/sram_access_test.c sdk_20150209/component/soc/realtek/8711b/fwlib/test/mem/sram_access_test.c
+--- sdk_20150303/component/soc/realtek/8711b/fwlib/test/mem/sram_access_test.c	2015-03-03 16:44:55.757966600 +0800
++++ sdk_20150209/component/soc/realtek/8711b/fwlib/test/mem/sram_access_test.c	2015-03-03 16:19:12.146979500 +0800
+@@ -12,6 +12,11 @@
+ #include "hal_platform.h"
+ #include "hal_api.h"
+ 
++extern void
++RtlFlashRunCodeApp(
++	VOID
++);
++
+ typedef enum _SRAM_ACCESS_TYEP_{
+     ONE_BYTE_ACCESS,
+     TWO_BYTE_ACCESS,
+@@ -44,6 +49,10 @@
+ 
+ 	DBG_8195A("SdrTestApp: Loop = 0x%08x \n",Loop);
+ 
++	if (Cmd[0] = 1) {
++		RtlFlashRunCodeApp();
++	}
++
+ 	//Set Sram type  
+ 	//if (SramType < MAX_SRAM_TYPE) {
+ 	//	HAL_PERI_ON_WRITE32(0x4, 
+只在 sdk_20150303/component/soc/realtek/8711b/misc/gnu_utility/flash_download/image 存在：.rtl_gdb_flash_write.txt.swp
+diff -ru sdk_20150303/component/soc/realtek/8711b/misc/gnu_utility/flash_download/image/rtl_gdb_flash_write.txt sdk_20150209/component/soc/realtek/8711b/misc/gnu_utility/flash_download/image/rtl_gdb_flash_write.txt
+--- sdk_20150303/component/soc/realtek/8711b/misc/gnu_utility/flash_download/image/rtl_gdb_flash_write.txt	2015-03-03 16:45:00.679747100 +0800
++++ sdk_20150209/component/soc/realtek/8711b/misc/gnu_utility/flash_download/image/rtl_gdb_flash_write.txt	2015-03-03 15:45:33.060746700 +0800
+@@ -161,6 +161,57 @@
+ restore ./image/rtl8195a/ram_all.bin binary ($FLASHDATSRC-$FILESTARTADDR) $FILESTARTADDR $FILEENDADDR
+ c
+ 
++#Download Flash RunCode Start
++set $FlashFileSize = 0x80
++printf "FlashFileSize: %x\n",$FlashFileSize
++
++set $LoopNum2 = ($FlashFileSize / $FLASHDATBUFSIZE)
++printf "LoopNum2 = %x\n", $LoopNum2
++set $TailSize = ($FlashFileSize % $FLASHDATBUFSIZE)
++printf "TailSize = %x\n", $TailSize
++
++printf "global variables\n"
++
++set $FLASHDATSRC = 0x0
++set $FILESTARTADDR = 0X0
++set $FILEENDADDR = $FILESTARTADDR + $FLASHDATBUFSIZE
++
++#printf "...\n"
++set $FLASHDATSRC = FlashDatSrc
++printf "FlashDatSrc:%x\n", $FLASHDATSRC
++                     
++printf  "FlashBlockWriteSize "
++set FlashBlockWriteSize = $FLASHDATBUFSIZE
++#p /x FlashBlockWriteSize
++printf "FlashBlockWriteSize:%x\n", FlashBlockWriteSize
++
++printf  "FlashAddrForWrite" 
++set FlashAddrForWrite = 0x80000
++
++
++
++printf  "Flash write start...\n"
++set $LoopCnt2 = 0
++while  ($LoopCnt2 < $LoopNum2)
++	p /x FlashAddrForWrite
++    restore ./image/rtl8195a/ram_3.bin binary ($FLASHDATSRC-$FILESTARTADDR) $FILESTARTADDR $FILEENDADDR
++    c
++    
++    printf "FILEENDADDR"
++    p /x $FILEENDADDR
++    set FlashBlockWriteSize = $FLASHDATBUFSIZE
++    set FlashAddrForWrite = $FILEENDADDR
++    set $FILESTARTADDR = $FILEENDADDR
++    set $FILEENDADDR = $FILESTARTADDR + $FLASHDATBUFSIZE   
++    
++    set $LoopCnt2 = $LoopCnt2 + 0x01
++end
++
++set $FILEENDADDR = $FILESTARTADDR + $TailSize
++restore ./image/rtl8195a/ram_3.bin binary ($FLASHDATSRC-$FILESTARTADDR) $FILESTARTADDR $FILEENDADDR
++c
++#Download Flash RunCode End
++
+ #Set complete flas
+ set FlashWriteComplete = 0x1
+ 
+@@ -176,6 +227,9 @@
+ printf "end addr of dumping"
+ p /x $dumpendaddr 
+ dump binary memory  dump.bin $dumpstartaddr $dumpendaddr
++#Flash RunCode DumpStart
++dump binary memory  dump_flash.bin 0x98080000 0x9808002C
++#Flash RunCode DumpEnd
+ 
+ 
+ delete
+只在 sdk_20150303/project/realtek_amebaz_va0_gcc_verification/asdk 存在：.Makefile.swp
+只在 sdk_20150303/project/realtek_amebaz_va0_gcc_verification/asdk/image/rtl8195a 存在：.target.asm.swp
+diff -ru sdk_20150303/project/realtek_amebaz_va0_gcc_verification/asdk/Makefile sdk_20150209/project/realtek_amebaz_va0_gcc_verification/asdk/Makefile
+--- sdk_20150303/project/realtek_amebaz_va0_gcc_verification/asdk/Makefile	2015-03-03 16:45:05.117161900 +0800
++++ sdk_20150209/project/realtek_amebaz_va0_gcc_verification/asdk/Makefile	2015-03-03 12:00:01.586181000 +0800
+@@ -237,6 +237,9 @@
+ 	$(FROMELF) -j .image2.start.table -j .ram_image2.text -j .ram.data \
+ 	-Obinary $(IMAGE_TARGET_FOLDER)/target_pure.axf $(IMAGE_TARGET_FOLDER)/ram_2.bin
+ 
++	$(FROMELF) -j .spi_flash.text \
++	-Obinary $(IMAGE_TARGET_FOLDER)/target_pure.axf $(IMAGE_TARGET_FOLDER)/ram_3.bin
++
+ 	@echo "========== Image Info =========="
+ 	$(CC_SIZE) -A $(IMAGE_TARGET_FOLDER)/target.axf
+ 	$(CC_SIZE) -t $(IMAGE_TARGET_FOLDER)/target.axf

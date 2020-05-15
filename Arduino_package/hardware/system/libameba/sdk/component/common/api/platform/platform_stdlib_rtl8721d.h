@@ -95,6 +95,7 @@
 
 extern void *pvPortMalloc( size_t xWantedSize );
 extern void vPortFree( void *pv );
+extern void *pvPortReAlloc( void *pv,  size_t xWantedSize );
 #define malloc                  pvPortMalloc
 #define free                    vPortFree
 #define realloc			pvPortReAlloc

@@ -232,14 +232,14 @@
 #define PSK_SUPPORT_TKIP	1
 #endif
 
-//#define CONFIG_PMKSA_CACHING
+#define CONFIG_PMKSA_CACHING
 
 /* For WPA3 */
-//#define CONFIG_IEEE80211W
-//#define CONFIG_SAE_SUPPORT
+#define CONFIG_IEEE80211W
+#define CONFIG_SAE_SUPPORT
 #ifdef CONFIG_SAE_SUPPORT
 #define CONFIG_SAE_DH_SUPPORT 1
-//#define ALL_DH_GROUPS
+#define ALL_DH_GROUPS
 #endif
 
 
@@ -276,9 +276,9 @@
 
 
 /****************** For EAP auth configurations *******************/
-#define CONFIG_TLS	0
-#define CONFIG_PEAP	0
-#define CONFIG_TTLS	0
+#define CONFIG_TLS	1
+#define CONFIG_PEAP	1
+#define CONFIG_TTLS	1
 
 // DO NOT change the below config of EAP
 #ifdef PRE_CONFIG_EAP

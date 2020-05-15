@@ -85,9 +85,15 @@ del tmp.txt
 %tooldir%\pick %ram2_start% %ram2_end% %km0_dir%\ram_2.r.bin %km0_dir%\ram_2.bin raw
 del %km0_dir%\ram_2.r.bin
 
+:: dword aligned
+%tooldir%\pad %km0_dir%\ram_2.bin 4
+%tooldir%\pad %km0_dir%\xip_image2.bin 4
+set /a ram2_end_align=(((%ram2_end% - 1)/4) + 1)*4
+set /a xip_image2_end_align=(((%xip_image2_end% - 1)/4) + 1)*4
+
 :: add header
-%tooldir%\pick %ram2_start% %ram2_end% %km0_dir%\ram_2.bin %km0_dir%\ram_2.p.bin
-%tooldir%\pick %xip_image2_start% %xip_image2_end% %km0_dir%\xip_image2.bin %km0_dir%\xip_image2.p.bin
+%tooldir%\pick %ram2_start% %ram2_end_align% %km0_dir%\ram_2.bin %km0_dir%\ram_2.p.bin
+%tooldir%\pick %xip_image2_start% %xip_image2_end_align% %km0_dir%\xip_image2.bin %km0_dir%\xip_image2.p.bin
 
 :: aggregate image2_all.bin
 copy /b %km0_dir%\xip_image2.p.bin+%km0_dir%\ram_2.p.bin %km0_dir%\km0_image2_all.bin

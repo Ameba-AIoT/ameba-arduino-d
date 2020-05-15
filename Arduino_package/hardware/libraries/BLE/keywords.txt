@@ -1,0 +1,68 @@
+#######################################
+# Syntax Coloring Map BLE
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+BLE					KEYWORD1
+BLEUUID				KEYWORD1
+BLEDevice			KEYWORD1
+BLEAdvert			KEYWORD1
+BLEScan				KEYWORD1
+iBeacon				KEYWORD1
+altBeacon			KEYWORD1
+BLEBatteryService	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+init				KEYWORD2
+deinit				KEYWORD2
+connected			KEYWORD2
+setDeviceName		KEYWORD2
+setDeviceAppearance	KEYWORD2
+configAdvert		KEYWORD2
+configScan			KEYWORD2
+configConnection	KEYWORD2
+setScanCallback		KEYWORD2
+beginPeripheral		KEYWORD2
+beginCentral		KEYWORD2
+end					KEYWORD2
+configServer		KEYWORD2
+configClient		KEYWORD2
+addService			KEYWORD2
+setReadCallback		KEYWORD2
+setNotificationCallback	KEYWORD2
+notifyEnabled		KEYWORD2
+setLevel			KEYWORD2
+sendNotification	KEYWORD2
+updateAdvertParams	KEYWORD2
+startAdv			KEYWORD2
+stopAdv				KEYWORD2
+setAdvType			KEYWORD2
+setMinInterval		KEYWORD2
+setMaxInterval		KEYWORD2
+setAdvData			KEYWORD2
+setScanRspData		KEYWORD2
+startScan			KEYWORD2
+stopScan			KEYWORD2
+setScanMode			KEYWORD2
+setScanInterval		KEYWORD2
+setScanWindow		KEYWORD2
+setScanDuplicateFilter	KEYWORD2
+scanInProgress		KEYWORD2
+printScanInfo		KEYWORD2
+parseScanInfo		KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+GAP_SCAN_MODE_ACTIVE				LITERAL1
+GAP_SCAN_MODE_PASSIVE				LITERAL1
+GAP_SCAN_FILTER_DUPLICATE_ENABLE	LITERAL1
+GAP_SCAN_FILTER_DUPLICATE_DISABLE	LITERAL1
+GAP_GATT_APPEARANCE_UNKNOWN			LITERAL1
+GAP_ADTYPE_ADV_NONCONN_IND			LITERAL1
+GAP_ADTYPE_ADV_IND					LITERAL1

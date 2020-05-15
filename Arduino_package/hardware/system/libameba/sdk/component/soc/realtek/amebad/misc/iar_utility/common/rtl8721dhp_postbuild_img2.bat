@@ -89,10 +89,18 @@ del %km4_dir%\ram_2.r.bin
 %tooldir%\pick %psram2_start% %psram2_end% %km4_dir%\psram_2.r.bin %km4_dir%\psram_2.bin raw
 del %km4_dir%\psram_2.r.bin
 
+:: dword aligned
+%tooldir%\pad %km4_dir%\ram_2.bin 4
+%tooldir%\pad %km4_dir%\xip_image2.bin 4
+%tooldir%\pad %km4_dir%\psram_2.bin 4
+set /a ram2_end_align=(((%ram2_end% - 1)/4) + 1)*4
+set /a xip_image2_end_align=(((%xip_image2_end% - 1)/4) + 1)*4
+set /a psram2_end_align=(((%psram2_end% - 1)/4) + 1)*4
+
 :: add header
-%tooldir%\pick %ram2_start% %ram2_end% %km4_dir%\ram_2.bin %km4_dir%\ram_2.p.bin
-%tooldir%\pick %xip_image2_start% %xip_image2_end% %km4_dir%\xip_image2.bin %km4_dir%\xip_image2.p.bin
-%tooldir%\pick %psram2_start% %psram2_end% %km4_dir%\psram_2.bin %km4_dir%\psram_2.p.bin
+%tooldir%\pick %ram2_start% %ram2_end_align% %km4_dir%\ram_2.bin %km4_dir%\ram_2.p.bin
+%tooldir%\pick %xip_image2_start% %xip_image2_end_align% %km4_dir%\xip_image2.bin %km4_dir%\xip_image2.p.bin
+%tooldir%\pick %psram2_start% %psram2_end_align% %km4_dir%\psram_2.bin %km4_dir%\psram_2.p.bin
 
 :: aggregate image2_all.bin
 copy /b %km4_dir%\xip_image2.p.bin+%km4_dir%\ram_2.p.bin+%km4_dir%\psram_2.p.bin %km4_dir%\km4_image2_all.bin

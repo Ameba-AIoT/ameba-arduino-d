@@ -672,6 +672,20 @@ int wifi_scan(rtw_scan_type_t                    scan_type,
 int wifi_scan_networks(rtw_scan_result_handler_t results_handler, void* user_data);
 
 /**
+ * @brief  Initiate a scan to search for 802.11 networks, a higher level API based on wifi_scan
+ *			to simplify the scan operation. This API separate full scan channel to partial scan
+ *			each channel for concurrent mode. MCC means Multi-channel concurrent.
+ * @param[in]  results_handler: The callback function which will receive and process the result data.
+ * @param[in]  user_data: User specified data that will be passed directly to the callback function.
+ * @return  RTW_SUCCESS or RTW_ERROR
+ * @note  Callback must not use blocking functions, since it is called from the context of the RTW thread.
+ *			The callback, user_data variables will be referenced after the function returns.
+ *			Those variables must remain valid until the scan is completed.
+ *			The usage of this api can reference ATWS in atcmd_wifi.c.
+ */
+int wifi_scan_networks_mcc(rtw_scan_result_handler_t results_handler, void* user_data);
+
+/**
  * @brief  Initiate a scan to search for 802.11 networks with specified SSID.
  * @param[in]  results_handler: The callback function which will receive and process the result data.
  * @param[in]  user_data: User specified data that will be passed directly to the callback function.

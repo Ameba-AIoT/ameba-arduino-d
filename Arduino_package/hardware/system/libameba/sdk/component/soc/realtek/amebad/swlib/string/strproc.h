@@ -64,10 +64,12 @@ extern _LONG_CALL_ u8 _2char2hex(u8 hch, u8 lch);
  * Fast implementation of tolower() for internal usage. Do not use in your
  * code.
  */
+#ifndef _tolower
 static inline char _tolower(const char c)
 {
     return (c | 0x20);
 }
+#endif
 
 /* Fast check for octal digit */
 static inline int isodigit(const char c)

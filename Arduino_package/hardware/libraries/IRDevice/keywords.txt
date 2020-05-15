@@ -1,0 +1,29 @@
+#######################################
+# Syntax Coloring Map for GPIO
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+IRDevice	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	 KEYWORD2
+end		 KEYWORD2
+getFreq	 KEYWORD2
+send	 KEYWORD2
+recv	 KEYWORD2
+beginNEC KEYWORD2
+sendNEC	 KEYWORD2
+recvNEC	 KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+IR_MODE_TX	LITERAL1
+IR_MODE_RX	LITERAL1

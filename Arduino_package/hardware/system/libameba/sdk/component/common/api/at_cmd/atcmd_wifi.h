@@ -121,6 +121,11 @@ typedef enum {
 #if !defined(UART_SETTING_BACKUP_SECTOR)
 #define UART_SETTING_BACKUP_SECTOR		(0x8000)
 #endif
+
+#if defined(CONFIG_PLATFORM_8721D)
+#define UART_SETTING_BACKUP_SECTOR		(0x2000)
+#endif
+
 #define UART_CONF_DATA_OFFSET			(0)
 #define UART_CONF_DATA_SIZE				((((sizeof(UART_LOG_CONF)-1)>>2) + 1)<<2)
 

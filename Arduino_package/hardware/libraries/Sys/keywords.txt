@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map For PowerManagement
+#######################################
+
+#######################################
+# Library (KEYWORD1)
+#######################################
+
+PowerManagement	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setPllReserved	KEYWORD2
+sleep	KEYWORD2
+active	KEYWORD2
+deepsleep	KEYWORD2
+safeLock	KEYWORD2
+softReset	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

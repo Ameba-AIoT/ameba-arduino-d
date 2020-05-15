@@ -556,6 +556,7 @@ _LONG_CALL_ int CRYPTO_CipherDecryptAD(HAL_CRYPTO_ADAPTER *pIE, IN const u8* mes
 /* Other Definitions --------------------------------------------------------*/
 #define FIFOCNT_TIMEOUT		0x100000
 extern HAL_CRYPTO_ADAPTER crypto_engine;
+extern struct _driver_call_os_func_map driver_call_os_func_map;
 
 __STATIC_INLINE
 int rtl_cryptoEngine_init(void)

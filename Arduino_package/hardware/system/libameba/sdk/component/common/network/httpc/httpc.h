@@ -60,6 +60,7 @@ struct http_response {
   * @brief  The structure is the context used for connection.
   */
 struct httpc_conn {
+	int ignore_content_len;
 	int sock;                        /*!< Client socket descriptor for connection */
 	struct http_response response;   /*!< Context for HTTP response */
 	void *tls;                       /*!< Context for TLS connection */
@@ -121,6 +122,13 @@ int httpc_conn_setup_user_password(struct httpc_conn *conn, char *user, char *pa
  * @return    None
  */
 void httpc_setup_debug(uint8_t debug);
+
+/**
+ * @brief     This function is used to enable ignoring content_len eqauls 0.
+ * @param[in] conn: pointer to connection context. 
+ * @return    None
+ */
+void httpc_enable_ignore_content_len(struct httpc_conn *conn);
 
 /**
  * @brief     This function is used to free memory allocated by httpc API, such as httpc_response_get_header_field().

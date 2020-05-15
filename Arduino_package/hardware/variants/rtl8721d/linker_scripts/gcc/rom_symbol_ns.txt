@@ -674,7 +674,4 @@ SECTIONS
     mbedtls_eckey_info = 0x101ceb08;
     mbedtls_rsa_info = 0x101ceb38;
     __rom_bss_end_s__ = 0x200f9000;
-    pvPortMalloc = 0x100065c0;
-    pvPortReAlloc = 0x10006770;
-    vPortFree = 0x10006678;
 }

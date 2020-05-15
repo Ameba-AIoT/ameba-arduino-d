@@ -54,7 +54,7 @@
   *		- dword0[2]: BOR2 HW temp bit
   *		- dword0[3]: this is SW set bit before reboot, for uart download
   *		- dword0[4]: this is SW set bit before reboot, for uart download debug
-  *		- dword0[5]: this is SW set bit before reboot, for rtc init indication
+  *		- dword0[5]: this is SW set bit before reboot, for rtc init indication, not used now
   *		- dword0[6]: BOR2 HW temp bit
   *		- dword0[7]: 1: enable bor2 detection;  0: disable
   *
@@ -133,13 +133,10 @@ _LONG_CALL_ u32 BOOT_Reason(void);
  * @defgroup BKUP_REG_WDORD0 REG_LP_BOOT_REASON0
  * @{
  *****************************************************************************/
-#define BIT_RTC_BACKUP						((u32)0x00FF0000)	/*!< used to backup rtc year before reset */
-#define BIT_RTC_BACKUP_SHIFT					16	/*!< used to backup rtc year before reset */
-
 #define BIT_CAPTOUCH_ENABLE				BIT(15)	/*!<  KM4 captouch init controlled by this bit*/
 #define BIT_KEY_ENABLE						BIT(14)	/*!<  KM4 key init controlled by this bit*/
 #define BIT_KM4_WAKE_DELAY				BIT(13)	/*!<  km4 wakeup should be delayed if wakeup happend when km4 suspend */
-#define BIT_RTC_RESTORE						BIT(12)	/*!<  this is SW set bit after rtc init */
+//#define BIT_RTC_RESTORE						BIT(12)	/*!<  this is SW set bit after rtc init, not used now */
 #define BIT_WIFI_ENABLE						BIT(11)	/*!<  KM0 WIFIFW INIT & KM4 WIFI Driver INIT Controlled by this bit */
 #define BIT_UARTBURN_DEBUG				BIT(10)	/*!<  this is SW set bit before reboot, for uart download debug */
 #define BIT_UARTBURN_BOOT					BIT(9)	/*!<  this is SW set bit before reboot, for uart download */

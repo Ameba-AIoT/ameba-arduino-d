@@ -1035,7 +1035,7 @@ typedef struct {
 
 	__IO uint32_t LSSYNC;				/*!< GPIO level-sensitive synchronization enable register, 	Address offset: 0x60 */
 	__IO uint32_t IDCODE;				/*!< GPIO ID code register, 								Address offset: 0x64 */
-	__IO uint32_t INT_BOTHEDGE;		/*!< GPIO Both Edge Interrupt,									Address offset: 0x68 */
+	__IO uint32_t INT_BOTHEDGE;			/*!< GPIO Both Edge Interrupt, 								Address offset: 0x68 */
 	__IO uint32_t VERIDCODE;			/*!< GPIO component Version register, 						Address offset: 0x6C */
 	__IO uint32_t CONFIG2;				/*!< GPIO configuration Register 2, 						Address offset: 0x70 */
 	__IO uint32_t CONFIG1;				/*!< GPIO configuration Register 1, 						Address offset: 0x74 */
@@ -1490,7 +1490,9 @@ typedef struct {
 	uint8_t FLASH_rd_dummy_cyle1;
 	uint8_t FLASH_rd_dummy_cyle2;
 
-	uint8_t RRAM_USER_RSVD[124];			/*usr can alloc from this RSVD space*/
+	uint32_t RTC_YEAR;	
+
+	uint8_t RRAM_USER_RSVD[120];			/*usr can alloc from this RSVD space*/
 
 	
 } RRAM_TypeDef;
@@ -1587,9 +1589,10 @@ typedef struct {
 #define SDIOH_BASE			((SDIOH_TypeDef			*) (SDIOH_REG_BASE))
 
 #define RRAM_BASE			((RRAM_TypeDef			*) (RETENTION_RAM_BASE + RETENTION_RAM_SYS_OFFSET))
-#endif
 
+#endif
 #else
+
 #define UART0_DEV			((UART_TypeDef			*) UART0_REG_BASE)		/*KM4 uart0 */
 #define UART1_DEV			((UART_TypeDef			*) UART1_REG_BASE)		/*KM4 uart1_bt */
 #define UART2_DEV			((UART_TypeDef			*) UART2_REG_BASE)		/*KM0 log uart */

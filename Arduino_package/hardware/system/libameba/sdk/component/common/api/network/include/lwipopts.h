@@ -90,6 +90,7 @@ a lot of data that needs to be copied, this should be set high. */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
 #if WIFI_LOGO_CERTIFICATION_CONFIG
     #define PBUF_POOL_SIZE          30 //for ping 10k test
+    #define IP_REASS_MAXAGE		1
 #elif defined(CONFIG_HIGH_TP_TEST) && CONFIG_HIGH_TP_TEST
     #define PBUF_POOL_SIZE          60
 #else
@@ -104,7 +105,7 @@ a lot of data that needs to be copied, this should be set high. */
 #endif
 
 /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
-#define PBUF_POOL_BUFSIZE       500
+#define PBUF_POOL_BUFSIZE       508
 
 
 /* ---------- TCP options ---------- */
@@ -279,6 +280,14 @@ extern unsigned int sys_now(void);
 #define TCP_WND (4*TCP_MSS)
 #endif
 
+#ifdef ARDUINO_SDK
+//#undef MEMP_NUM_NETBUF
+//#define MEMP_NUM_NETBUF                 8
+
+//#undef MEMP_NUM_NETCONN
+//#define MEMP_NUM_NETCONN                16
+#endif // end of #ifdef ARDUINO_SDK
+
 /* ---------- Statistics options ---------- */
 #define LWIP_STATS 0
 #define LWIP_PROVIDE_ERRNO 1
@@ -397,7 +406,30 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #undef  MEMP_NUM_SYS_TIMEOUT
 #define MEMP_NUM_SYS_TIMEOUT            13
 #endif
-     
+
+/*CONFIG_LIBCOAP_ON is defined to 1 in the lib_coap project options preprocessor defined symbol
+ *CONFIG_EXAMPLE_COAP_SERVER and CONFIG_EXAMPLE_COAP_CLIENT is defined in platform_opts.h
+ */
+#if CONFIG_EXAMPLE_COAP_SERVER || CONFIG_EXAMPLE_COAP_CLIENT || (defined(CONFIG_LIBCOAP_ON) && (CONFIG_LIBCOAP_ON))
+#define LWIP_TIMEVAL_PRIVATE            1
+#undef SO_REUSE
+#define SO_REUSE                        1
+#undef MEMP_NUM_NETCONN
+#define MEMP_NUM_NETCONN                20   
+#define MEMP_USE_CUSTOM_POOLS           1
+#undef LWIP_IPV6
+#define LWIP_IPV6                       1
+#define ERRNO                           1
+
+#if defined(LWIP_IPV6) && (LWIP_IPV6==1)
+#undef MEMP_NUM_SYS_TIMEOUT
+#define MEMP_NUM_SYS_TIMEOUT            20
+#ifndef xchar
+#define xchar(i)                ((i) < 10 ? '0' + (i) : 'A' + (i) - 10)               
+#endif
+#endif
+#endif 
+
 #include "lwip/init.h"                  //for version control
 
 #endif /* LWIP_HDR_LWIPOPTS_H */

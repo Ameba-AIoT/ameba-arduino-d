@@ -21,7 +21,6 @@ int DiagVSprintf(char *buf, const char *fmt, const int *dp);
 //arduino
 #define _DbgDump  DiagPrintf
 
-
 /** @addtogroup Ameba_Platform
   * @{
   */

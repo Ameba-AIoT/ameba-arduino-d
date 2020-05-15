@@ -9,7 +9,7 @@ extern "C" {
 
 extern size_t xPortGetFreeHeapSize(void);
 
-uint32_t os_thread_create(void(* task)(const void *argument), void *argument, int priority, uint32_t stack_size) {
+uint32_t os_thread_create_arduino(void(* task)(const void *argument), void *argument, int priority, uint32_t stack_size) {
 
     osThreadDef_t thread_def;
 
@@ -21,35 +21,35 @@ uint32_t os_thread_create(void(* task)(const void *argument), void *argument, in
     return (uint32_t)osThreadCreate(&thread_def, argument);
 }
 
-uint32_t os_thread_get_id(void) {
+uint32_t os_thread_get_id_arduino(void) {
     return (uint32_t)(osThreadGetId());
 }
 
-uint32_t os_thread_terminate(uint32_t thread_id) {
+uint32_t os_thread_terminate_arduino(uint32_t thread_id) {
     return (uint32_t)(osThreadTerminate((osThreadId)thread_id));
 }
 
-uint32_t os_thread_yield(void) {
+uint32_t os_thread_yield_arduino(void) {
     return (uint32_t)osThreadYield();
 }
 
-uint32_t os_thread_set_priority(uint32_t thread_id, int priority) {
+uint32_t os_thread_set_priority_arduino(uint32_t thread_id, int priority) {
     return (uint32_t)osThreadSetPriority((osThreadId)thread_id, (osPriority)priority);
 }
 
-int os_thread_get_priority(uint32_t thread_id) {
+int os_thread_get_priority_arduino(uint32_t thread_id) {
     return (int)osThreadGetPriority((osThreadId)thread_id);
 }
 
-int32_t os_signal_set(uint32_t thread_id, int32_t signals) {
+int32_t os_signal_set_arduino(uint32_t thread_id, int32_t signals) {
     return osSignalSet((osThreadId)thread_id, signals);
 }
 
-int32_t os_signal_clear(uint32_t thread_id, int32_t signals) {
+int32_t os_signal_clear_arduino(uint32_t thread_id, int32_t signals) {
     return osSignalClear((osThreadId)thread_id, signals);
 }
 
-os_event_t os_signal_wait(int32_t signals, uint32_t millisec) {
+os_event_t os_signal_wait_arduino(int32_t signals, uint32_t millisec) {
 
     osEvent evt;
     os_event_t ret;
@@ -64,7 +64,7 @@ os_event_t os_signal_wait(int32_t signals, uint32_t millisec) {
 
 typedef void (*os_ptimer) (void const *argument);
 
-uint32_t os_timer_create(void(* callback)(void const *argument), uint8_t isPeriodic, void *argument) {
+uint32_t os_timer_create_arduino(void(* callback)(void const *argument), uint8_t isPeriodic, void *argument) {
 
     osTimerDef_t *pTimerDef;
 
@@ -75,15 +75,15 @@ uint32_t os_timer_create(void(* callback)(void const *argument), uint8_t isPerio
     return (uint32_t)(osTimerCreate(pTimerDef, (isPeriodic ? osTimerPeriodic : osTimerOnce), argument));
 }
 
-uint32_t os_timer_start (uint32_t timer_id, uint32_t millisec) {
+uint32_t os_timer_start_arduino(uint32_t timer_id, uint32_t millisec) {
     return osTimerStart((osTimerId)timer_id, millisec);
 }
 
-uint32_t os_timer_stop (uint32_t timer_id) {
+uint32_t os_timer_stop_arduino(uint32_t timer_id) {
     return osTimerStop((osTimerId)timer_id);
 }
 
-uint32_t os_timer_delete(uint32_t timer_id) {
+uint32_t os_timer_delete_arduino(uint32_t timer_id) {
 
     osTimerDef_t *pTimerDef;
 
@@ -94,11 +94,11 @@ uint32_t os_timer_delete(uint32_t timer_id) {
     return (uint32_t)(osTimerDelete((osTimerId)timer_id));
 }
 
-uint32_t os_semaphore_create(int32_t count) {
+uint32_t os_semaphore_create_arduino(int32_t count) {
     return (uint32_t)osSemaphoreCreate(NULL, count);
 }
 
-int32_t os_semaphore_wait(uint32_t semaphore_id, uint32_t millisec) {
+int32_t os_semaphore_wait_arduino(uint32_t semaphore_id, uint32_t millisec) {
     if (osSemaphoreWait((osSemaphoreId)semaphore_id, millisec) == 0) {
         return 1;
     } else {
@@ -106,15 +106,15 @@ int32_t os_semaphore_wait(uint32_t semaphore_id, uint32_t millisec) {
     }
 }
 
-uint32_t os_semaphore_release(uint32_t semaphore_id) {
+uint32_t os_semaphore_release_arduino(uint32_t semaphore_id) {
     return (uint32_t)osSemaphoreRelease((osSemaphoreId)semaphore_id);
 }
 
-uint32_t os_semaphore_delete(uint32_t semaphore_id) {
+uint32_t os_semaphore_delete_arduino(uint32_t semaphore_id) {
     return (uint32_t)osSemaphoreDelete((osSemaphoreId)semaphore_id);
 }
 
-size_t os_get_free_heap_size(void) {
+size_t os_get_free_heap_size_arduino(void) {
     return xPortGetFreeHeapSize();
 }
 

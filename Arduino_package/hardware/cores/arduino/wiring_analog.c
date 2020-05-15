@@ -247,7 +247,7 @@ void _tone_timer_handler(void const *argument)
 
     noTone(arg->ulPin);
 
-    os_timer_delete(arg->timer_id);
+    os_timer_delete_arduino(arg->timer_id);
 
     free((tone_argument *)arg);
 }
@@ -285,8 +285,8 @@ void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration)
         tone_argument *arg = (tone_argument *)(malloc(sizeof(tone_argument)));
 
         arg->ulPin = ulPin;
-        arg->timer_id = os_timer_create(_tone_timer_handler, 0, arg);
-        os_timer_start(arg->timer_id, duration);
+        arg->timer_id = os_timer_create_arduino(_tone_timer_handler, 0, arg);
+        os_timer_start_arduino(arg->timer_id, duration);
     }
     delay(5);
 }

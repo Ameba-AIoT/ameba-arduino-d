@@ -108,7 +108,7 @@ typedef struct {
  * @ingroup thread_management
  * @brief Create a thread and add it to Active Threads and set it to state READY.
  *
- * @param[in] task Function pointer which is the thread body. It should not run into the end of function unless os_thread_terminate is invoked
+ * @param[in] task Function pointer which is the thread body. It should not run into the end of function unless os_thread_terminate_arduino is invoked
  * @param[in] argument the data pointer which brings to task
  * @param[in] priority The underlying os is FreeRTOS. It executes tasks with highest priority which are not in idle state.\n
  *     If there are more than 2 tasks to be executed, then they share the time slice.
@@ -116,15 +116,15 @@ typedef struct {
  *     The local variables and call stacks would occupy this heap. Please make sure the the stack_size is big enough to avoid curroption
  * @return The thread id which is used in thread operation and signaling.
  */
-extern uint32_t os_thread_create(void (*task)(const void *argument), void *argument, int priority, uint32_t stack_size);
+extern uint32_t os_thread_create_arduino(void (*task)(const void *argument), void *argument, int priority, uint32_t stack_size);
 
 /**
  * @ingroup thread_management
  * @brief Return the thread ID of the current running thread.
  *
- * @return Current thread id which calls os_thread_get_id
+ * @return Current thread id which calls os_thread_get_id_arduino
  */
-extern uint32_t os_thread_get_id(void);
+extern uint32_t os_thread_get_id_arduino(void);
 
 /**
  * @ingroup thread_management
@@ -135,19 +135,19 @@ extern uint32_t os_thread_get_id(void);
  * @param[in] thread_id Terminate the thread with specific thread_id
  * @return os_status code
  */
-extern uint32_t os_thread_terminate(uint32_t thread_id);
+extern uint32_t os_thread_terminate_arduino(uint32_t thread_id);
 
 /**
  * @ingroup thread_management
  * @brief Pass control to next thread that is in state \b READY.
  *
  * By default the minimal execution unit is 1 millisecond. In a scenario that if a thread with smaller want to handout execution right to a thread with 
- * higher priority immediately without waiting for the ending of current 1 millisecond, then invoke os_thread_yield can transfer exection right to 
+ * higher priority immediately without waiting for the ending of current 1 millisecond, then invoke os_thread_yield_arduino can transfer exection right to 
  * OS's idle task and check which is the next execution thread.
  *
  * @return os_status code
  */
-extern uint32_t os_thread_yield(void);
+extern uint32_t os_thread_yield_arduino(void);
 
 /**
  * @ingroup thread_management
@@ -157,7 +157,7 @@ extern uint32_t os_thread_yield(void);
  * @param[in] priority The updated priority
  * @return os_status code
  */
-extern uint32_t os_thread_set_priority(uint32_t thread_id, int priority);
+extern uint32_t os_thread_set_priority_arduino(uint32_t thread_id, int priority);
 
 /**
  * @ingroup thread_management
@@ -166,7 +166,7 @@ extern uint32_t os_thread_set_priority(uint32_t thread_id, int priority);
  * @param[in] thread_id The target thread with the thread id to be searched
  * @return os_priority
  */
-extern int os_thread_get_priority(uint32_t thread_id);
+extern int os_thread_get_priority_arduino(uint32_t thread_id);
 
 /** 
  * @defgroup signal_management signal_management
@@ -181,7 +181,7 @@ extern int os_thread_get_priority(uint32_t thread_id);
  * @param[in] signals the signals to be send
  * @return os_status code
  */
-extern int32_t os_signal_set(uint32_t thread_id, int32_t signals);
+extern int32_t os_signal_set_arduino(uint32_t thread_id, int32_t signals);
 
 /**
  * @ingroup signal_management
@@ -191,7 +191,7 @@ extern int32_t os_signal_set(uint32_t thread_id, int32_t signals);
  * @param[in] signals The signals to be clear
  * @return os_status code
  */
-extern int32_t os_signal_clear(uint32_t thread_id, int32_t signals);
+extern int32_t os_signal_clear_arduino(uint32_t thread_id, int32_t signals);
 
 /**
  * @ingroup signal_management
@@ -201,7 +201,7 @@ extern int32_t os_signal_clear(uint32_t thread_id, int32_t signals);
  * @param[in] millisec the timeout value if no signal comes in. Fill in 0xFFFFFFFF for infinite wait.
  * @return os_status code
  */
-extern os_event_t os_signal_wait(int32_t signals, uint32_t millisec);
+extern os_event_t os_signal_wait_arduino(int32_t signals, uint32_t millisec);
 
 /**
  * @defgroup timer_management timer_management
@@ -229,35 +229,35 @@ extern os_event_t os_signal_wait(int32_t signals, uint32_t millisec);
  * @param[in] argument The argument that is bring into callback function
  * @return timer id
  */
-extern uint32_t os_timer_create(void (*callback)(void const *argument), uint8_t isPeriodic, void *argument);
+extern uint32_t os_timer_create_arduino(void (*callback)(void const *argument), uint8_t isPeriodic, void *argument);
 
 /**
  * @ingroup timer_management
  * @brief Start or restart a timer.
  *
- * @param[in] timer_id The timer id obtained from by os_timer_create
+ * @param[in] timer_id The timer id obtained from by os_timer_create_arduino
  * @param[in] millisec The delays after timer starts
  * @return os_status code
  */
-extern uint32_t os_timer_start (uint32_t timer_id, uint32_t millisec);
+extern uint32_t os_timer_start_arduino(uint32_t timer_id, uint32_t millisec);
 
 /**
  * @ingroup timer_management
  * @brief Stop the timer.
  *
- * @param[in] timer_id The timer id obtained from by os_timer_create
+ * @param[in] timer_id The timer id obtained from by os_timer_create_arduino
  * @return os_status code
  */
-extern uint32_t os_timer_stop (uint32_t timer_id);
+extern uint32_t os_timer_stop_arduino(uint32_t timer_id);
 
 /**
  * @ingroup timer_management
- * @brief Delete a timer that was created by os_timer_create
+ * @brief Delete a timer that was created by os_timer_create_arduino
  *
- * @param[in] timer_id The timer id obtained from by os_timer_create
+ * @param[in] timer_id The timer id obtained from by os_timer_create_arduino
  * @return os_status code
  */
-extern uint32_t os_timer_delete(uint32_t timer_id);
+extern uint32_t os_timer_delete_arduino(uint32_t timer_id);
 
 /**
  * @defgroup semaphore_management semaphore_management
@@ -271,35 +271,35 @@ extern uint32_t os_timer_delete(uint32_t timer_id);
  * @param[in] count The number of available resources
  * @return semaphore ID
  */
-extern uint32_t os_semaphore_create(int32_t count);
+extern uint32_t os_semaphore_create_arduino(int32_t count);
 
 /**
  * @ingroup semaphore_management
  * @brief Wait until a Semaphore token becomes available
  *
- * @param[in] semaphore_id semaphore id obtained from os_semaphore_create
+ * @param[in] semaphore_id semaphore id obtained from os_semaphore_create_arduino
  * @param[in] millisec timeout value
  * @return os_status code
  */
-extern int32_t os_semaphore_wait(uint32_t semaphore_id, uint32_t millisec);
+extern int32_t os_semaphore_wait_arduino(uint32_t semaphore_id, uint32_t millisec);
 
 /**
  * @ingroup semaphore_management
  * @brief Release a Semaphore token
  *
- * @param[in] semaphore_id semaphore id obtained from os_semaphore_create
+ * @param[in] semaphore_id semaphore id obtained from os_semaphore_create_arduino
  * @return os_status code
  */
-extern uint32_t os_semaphore_release(uint32_t semaphore_id);
+extern uint32_t os_semaphore_release_arduino(uint32_t semaphore_id);
 
 /**
  * @ingroup semaphore_management
- * @brief Delete a Semaphore that was created by os_semaphore_create.
+ * @brief Delete a Semaphore that was created by os_semaphore_create_arduino
  *
- * @param[in] semaphore_id semaphore id obtained from os_semaphore_create
+ * @param[in] semaphore_id semaphore id obtained from os_semaphore_create_arduino
  * @return os_status code
  */
-extern uint32_t os_semaphore_delete(uint32_t semaphore_id);
+extern uint32_t os_semaphore_delete_arduino(uint32_t semaphore_id);
 
 /**
  * @defgroup os_dep_api os_dep_api
@@ -312,7 +312,7 @@ extern uint32_t os_semaphore_delete(uint32_t semaphore_id);
  *
  * @return current free heap size
  */
-extern size_t os_get_free_heap_size(void);
+extern size_t os_get_free_heap_size_arduino(void);
 
 #ifdef __cplusplus
 }

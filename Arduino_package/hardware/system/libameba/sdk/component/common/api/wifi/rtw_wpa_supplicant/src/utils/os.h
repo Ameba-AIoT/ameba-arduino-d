@@ -583,7 +583,12 @@ static inline void * os_realloc_array(void *ptr, size_t nmemb, size_t size)
 {
 	if (size && nmemb > (~(size_t) 0) / size)
 		return NULL;
-	return os_realloc(ptr, nmemb * size, nmemb * size);
+	if(ptr == NULL){
+		return os_malloc(nmemb * size);
+	}
+	else{
+		return os_realloc(ptr, nmemb * size, nmemb * size);
+	}
 }
 
 void *os_xqueue_create(unsigned long uxQueueLength, unsigned long uxItemSize) ;

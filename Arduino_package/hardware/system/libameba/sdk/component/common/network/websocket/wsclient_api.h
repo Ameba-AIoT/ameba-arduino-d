@@ -22,10 +22,11 @@ int ws_set_fun_ops(wsclient_context *wsclient);
 **					port:websocket server's port, if not given, default 80 for "ws", 443 for "wss"
 **					origin: the address or url of your self
 **					buf_len: the length of tx/rx/received buffer. It determine the maximum bytes of data send and receive.
+**					max_queue_size: max size of queue to buffer messages which are going to send to webserver.
 ** Return         : Created: websocket client context structure
 **					Failed:  NULL
 **************************************************************************************************/
-wsclient_context *create_wsclient(char *url, int port,char *path, char* origin, int buf_len);
+wsclient_context *create_wsclient(char *url, int port,char *path, char* origin, int buf_len, int max_queue_size);
 
 /*************************************************************************************************
 ** Function Name  : ws_connect_url
@@ -48,34 +49,37 @@ void ws_setsockopt_keepalive(uint32_t keepalive_idle, uint32_t keepalive_interva
 
 /*************************************************************************************************
 ** Function Name  : ws_send
-** Description    : Create the sending string data and copy to tx_buf
+** Description    : Create the sending string data and copy to queue
 ** Input          : message: the string that send to server(cannot exceeding the MAX_DATA_LEN
 **					message_len: the length of the string
 **					use_mask: 0/1; 1 means using mask for bynary
 **					wsclient: the websocket client context
-** Return         : None
+** Return         : 0:send message to queue successfully
+					-1:fail to send message to queue
 **************************************************************************************************/
-void ws_send(char* message, int message_len, int use_mask, wsclient_context *wsclient);
+int ws_send(char* message, int message_len, int use_mask, wsclient_context *wsclient);
 
 /*************************************************************************************************
 ** Function Name  : ws_sendBinary
-** Description    : Create the sending binary data and copy to tx_buf
+** Description    : Create the sending binary data and copy to queue
 ** Input          : message: the binary that send to server(cannot exceeding the MAX_DATA_LEN
 **					message_len: the length of the binary
 **					use_mask: 0/1; 1 means using mask for bynary
 **					wsclient: the websocket client context
-** Return         : None
+** Return         : 0:send message to queue successfully
+					-1:fail to send message to queue
 **************************************************************************************************/
-void ws_sendBinary(uint8_t* message, int message_len, int use_mask, wsclient_context *wsclient);
+int ws_sendBinary(uint8_t* message, int message_len, int use_mask, wsclient_context *wsclient);
 
 /*************************************************************************************************
 ** Function Name  : ws_sendPing
 ** Description    : Sending Ping to websocket server
 ** Input          : use_mask: 0/1; 1 means using mask for bynary
 **					wsclient: the websocket client context
-** Return         : None
+** Return         : 0:send message to queue successfully
+					-1:fail to send message to queue
 **************************************************************************************************/
-void ws_sendPing(int use_mask, wsclient_context *wsclient);
+int ws_sendPing(int use_mask, wsclient_context *wsclient);
 
 /*************************************************************************************************
 ** Function Name  : ws_poll

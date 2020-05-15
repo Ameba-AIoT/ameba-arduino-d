@@ -186,14 +186,8 @@ typedef struct
 	u32 km0_dslp_force_reinit;	/* km0 reinit all when wake from DLPS */
 } WIFICFG_TypeDef;
 
-typedef struct
-{
-	u32 ble_scan_duty; /*the duty for ble when wifi at connected state and bt at scan state at the same time.*/
-} COEXCFG_TypeDef;
-
 extern PSCFG_TypeDef ps_config;
 extern WIFICFG_TypeDef wifi_config;
-extern COEXCFG_TypeDef coex_config;
 
 void SOCPS_SetWakeEventAON(u32 Option, u32 NewStatus);
 void SOCPS_SleepCG_RAM(VOID);

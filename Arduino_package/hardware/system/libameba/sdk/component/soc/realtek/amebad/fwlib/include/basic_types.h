@@ -68,8 +68,10 @@ typedef unsigned int	        uint;
 typedef	signed int		        sint;
 
 #ifdef __ICCARM__
+#if (__VER__ < 8040000)
 typedef signed long long        __int64_t;
 typedef unsigned long long      __uint64_t;
+#endif
 #endif
 
 #define s8                      int8_t
@@ -547,5 +549,10 @@ typedef struct _DSLP_RETENTION_FUNC_TABLE_ {
 	VOID (*DSLPPatchFun0) (VOID);
 	u32	PatchLen;
 }DSLP_RETENTION_FUNC_TABLE, *PDSLP_RETENTION_FUNC_TABLE;
+
+struct _driver_call_os_func_map {
+	void (*driver_enter_critical)(void);
+	void (*driver_exit_critical)(void);
+};
 
 #endif// __BASIC_TYPES_H__
