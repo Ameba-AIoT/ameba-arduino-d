@@ -1,0 +1,1 @@
+The OneWire library is forked from works at "http://www.pjrc.com/teensy/td_libs_OneWire.html". The source codes under folder "OneWire" inherit the license from any license claim of "http://www.pjrc.com/teensy/td_libs_OneWire.html".
