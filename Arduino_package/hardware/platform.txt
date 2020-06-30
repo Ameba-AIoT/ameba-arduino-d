@@ -24,6 +24,7 @@ compiler.c.cmd=arm-none-eabi-gcc
 compiler.c.flags=-ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -g -gdwarf-3 -nostartfiles -nodefaultlibs -nostdlib -O2 -D__FPU_PRESENT -gdwarf-3 -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wstrict-prototypes -Wundef -Wno-write-strings -Wno-maybe-uninitialized -c -MMD -Wextra
 
 compiler.c.elf.cmd=arm-none-eabi-gcc
+### -Wl,--warn-section-align
 compiler.c.elf.flags=-O2 -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -nostartfiles -specs nosys.specs -Wl,--gc-sections
 
 compiler.S.flags=-c -g -x assembler-with-cpp
@@ -105,16 +106,19 @@ recipe.strip.pattern="{compiler.path}{compiler.strip.cmd}" "{build.path}/{build.
 recipe.objcopy.hex.cmd=postbuild_img2_arduino_windows.exe
 recipe.objcopy.hex.cmd.windows=postbuild_img2_arduino_windows.exe
 recipe.objcopy.hex.cmd.linux=postbuild_img2_arduino_linux
+recipe.objcopy.hex.cmd.macosx=postbuild_img2_arduino_macos
 
 recipe.objcopy.hex.imagepath={build.path}\application.axf
 recipe.objcopy.hex.imagepath.windows="{build.path}\application.axf"
 recipe.objcopy.hex.imagepath.linux="{build.path}/application.axf"
+recipe.objcopy.hex.imagepath.macosx="{build.path}/application.axf"
 
 recipe.objcopy.hex.pattern="{runtime.tools.ameba_d_tools.path}/{recipe.objcopy.hex.cmd}" "{runtime.tools.ameba_d_tools.path}" "{recipe.objcopy.hex.imagepath}" "{compiler.path}" "{build.variant.path}/{build.sym_bklist}"
 
 ## Compute size
 recipe.size.pattern.windows="{runtime.tools.ameba_d_tools.path}/amebasize.exe" "{runtime.tools.ameba_d_tools.path}"
 recipe.size.pattern.linux="{runtime.tools.ameba_d_tools.path}/amebasize" "{runtime.tools.ameba_d_tools.path}"
+recipe.size.pattern.macosx="{runtime.tools.ameba_d_tools.path}/amebasize" "{runtime.tools.ameba_d_tools.path}"
 
 recipe.size.regex=^(?:bootloader_km0|bootloader_km4|image2)\s+([0-9]+).*
 
@@ -124,13 +128,12 @@ recipe.size.regex=^(?:bootloader_km0|bootloader_km4|image2)\s+([0-9]+).*
 tools.ameba_d_tools.upload.params.verbose=
 tools.ameba_d_tools.upload.params.quiet=
 
-#tools.ameba_d_tools.upload.pattern="{runtime.tools.ameba_d_tools.path}/upload_dap.sh" {upload.verbose}
-
+##tools.ameba_d_tools.upload.pattern="{runtime.tools.ameba_d_tools.path}/upload_dap.sh" {upload.verbose}
+##tools.ameba_d_tools.upload.pattern.windows="{runtime.tools.ameba_d_tools.path}/ameba_d_arduino_image_tool_windows.exe" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
 
 tools.ameba_d_tools.upload.pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_image_tool_windows.exe" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
-
-#tools.ameba_d_tools.upload.pattern.windows="{runtime.tools.ameba_d_tools.path}/ameba_d_arduino_image_tool_windows.exe" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
-
+tools.ameba_d_tools.upload.pattern.linux="{runtime.tools.ameba_d_tools.path}/upload_image_tool_linux" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
+tools.ameba_d_tools.upload.pattern.macosx="{runtime.tools.ameba_d_tools.path}/upload_image_tool_macos" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
 
 #tools.ameba_d_tools.upload.network_pattern="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
 #tools.ameba_d_tools.upload.network_pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"

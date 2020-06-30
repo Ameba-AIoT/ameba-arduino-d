@@ -1,6 +1,8 @@
 /*
 
-Compile command:
+Compile:
+
+windows:
 mingw32-g++.exe -o postbuild_img2_arduino_windows.exe tools\windows\src\postbuild_img2_arduino_windows.cpp -static
 
 */
