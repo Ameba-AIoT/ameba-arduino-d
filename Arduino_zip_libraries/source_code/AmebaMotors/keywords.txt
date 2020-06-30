@@ -1,0 +1,33 @@
+#######################################
+# Syntax Coloring Map for Motors
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Car2wd	KEYWORD1	Car2wd
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+end	KEYWORD2
+setAction	KEYWORD2
+stop	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+CAR_MIN_SPEED	LITERAL1
+CAR_STOP	LITERAL1
+CAR_FORWARD	LITERAL1
+CAR_BACKWARD	LITERAL1
+CAR_ROTATE_RIGHT	LITERAL1
+CAR_ROTATE_LEFT	LITERAL1
+CAR_FORWARD_RIGHT	LITERAL1
+CAR_FORWARD_LEFT	LITERAL1
+CAR_BACKWARD_RIGHT	LITERAL1
+CAR_BACKWARD_LEFT	LITERAL1
