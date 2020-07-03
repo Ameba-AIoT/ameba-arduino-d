@@ -23,34 +23,31 @@ i686-w64-mingw32-g++.exe -o upload_image_tool_windows.exe upload_image_tool_wind
 using namespace std;
 
 int main(int argc, char *argv[]) {
+    string cmd;
+    stringstream cmdss;
 
-	string cmd;
-	stringstream cmdss;
+    chdir(argv[1]);
 
-	chdir(argv[1]);
+    cmd = "copy tools\\windows\\image_tool\\imgtool_flashloader_amebad.bin .\\";
+    cout << cmd << endl;
+    system(cmd.c_str());
 
-	cmd = "copy tools\\windows\\image_tool\\imgtool_flashloader_amebad.bin .\\";
-	cout << cmd << endl;
-	system(cmd.c_str());
+    cmd = "Please enter the upload mode (wait 5s)";
+    cout << cmd << endl;
+    for (int i = 5; i > 0; i--) {
+        Sleep(1000);
+        cmd = to_string(i);
+        cout << "    0" << cmd << endl;
+    }
 
-	cmd = "Please enter the upload mode (wait 5s)";
-	cout << cmd << endl;
-	for (int i = 5; i > 0; i--)
-	{
-		Sleep(1000);
-		cmd = to_string(i);
-		cout << "    0" << cmd << endl;
-	}
+    cmdss.clear();
+    cmdss << ".\\tools\\windows\\image_tool\\amebad_image_tool.exe " << argv[2];
+    getline(cmdss, cmd);
+    //cout << cmd << endl;
+    system(cmd.c_str());
 
-	cmdss.clear();
-	cmdss << ".\\tools\\windows\\image_tool\\amebad_image_tool.exe " << argv[2];
-	getline(cmdss, cmd);
-	//cout << cmd << endl;
-	system(cmd.c_str());
+    cmd = "    Upload Image done. ";
+    cout << cmd << endl;
 
-	printf("\r\n");
-	cmd = "    Upload Image done. ";
-	cout << cmd << endl;
-
-	return 0;
+    return 0;
 }

@@ -17,8 +17,7 @@ mingw32-g++.exe -o postbuild_img2_arduino_windows.exe tools\windows\src\postbuil
 
 using namespace std;
 
-void replaceAll( string& source, const string& from, const string& to )
-{
+void replaceAll( string& source, const string& from, const string& to ) {
     string newString;
     newString.reserve(source.length()); //avoids a few memory allocations
 
@@ -38,7 +37,6 @@ void replaceAll( string& source, const string& from, const string& to )
 }
 
 int main(int argc, char *argv[]) {
-
     int ret = 0;
     stringstream cmdss;
     string cmd, line, msg;
@@ -211,7 +209,6 @@ int main(int argc, char *argv[]) {
         cout << cmd << endl;
         system(cmd.c_str());
     }
-
 
     // 6. fulfill header
     // 6.1 remove bss sections

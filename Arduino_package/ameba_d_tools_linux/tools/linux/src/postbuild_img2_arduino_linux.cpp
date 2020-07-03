@@ -18,7 +18,6 @@ g++ -o postbuild_img2_arduino_linux tools/linux/src/postbuild_img2_arduino_linux
 using namespace std;
 
 int main(int argc, char *argv[]) {
-
     int ret = 0;
     stringstream cmdss;
     string cmd, line, msg;
@@ -183,7 +182,6 @@ int main(int argc, char *argv[]) {
         cout << cmd << endl;
         system(cmd.c_str());
     }
-
 
     // 6. fulfill header
     // 6.1 remove bss sections
