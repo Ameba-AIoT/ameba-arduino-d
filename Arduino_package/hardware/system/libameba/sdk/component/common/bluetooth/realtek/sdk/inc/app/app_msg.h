@@ -72,6 +72,8 @@ typedef enum
     EVENT_CMD_FROM_8852B = 0xa1,  /**< message from 8852B to user application */
 
     EVENT_USER_HTTP_SERVER = 0xa2,  /**< message from user http server */
+
+    EVENT_USER_API_REQ = 0xa3,  /**< message from user user api */
 } T_EVENT_TYPE;
 
 /** @brief get event code group definition */
@@ -98,6 +100,8 @@ typedef enum
     IO_MSG_TYPE_MESH_STATUS,    /**< subtype to be defined */
     IO_MSG_TYPE_KEYBOARD_BUTTON, /**< subtype to be defined */
     IO_MSG_TYPE_ANCS,            /**< ANCS message*/
+    IO_MSG_TYPE_AT_CMD,     /**< AT cmd message*/
+    IO_MSG_TYPE_ADV,
 } T_IO_MSG_TYPE;
 
 /**  @brief IO subtype definitions for @ref IO_MSG_TYPE_KEYSCAN type */

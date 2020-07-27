@@ -37,6 +37,29 @@ enum {
 	COEX_EVENT_WIFI_MAX
 };
 
+/**
+  * @brief  The enumeration is coex state indicated from wlan driver.
+  */
+enum {
+	COEX_STATE_BT_OFF = 0,
+	COEX_STATE_BT_ON = 0x01,
+	COEX_STATE_BLE_SCAN =0x02,
+	COEX_STATE_BT_MAX
+};
+typedef unsigned char rtw_coex_state_bt_t;
+
+enum {
+	COEX_STATE_WIFI_OFF = 0,
+	COEX_STATE_WIFI_STA_UNCONNECTED = 0x01,
+	COEX_STATE_WIFI_STA_SCAN = 0x02,
+	COEX_STATE_WIFI_STA_CONNECTING = 0x03,
+	COEX_STATE_WIFI_STA_CONNECTED=0x04,
+	COEX_STATE_WIFI_AP_IDLE=0x05,
+	COEX_STATE_WIFI_OTHER_MODE=0x06,
+	COEX_STATE_WIFI_MAX
+};
+typedef unsigned char rtw_coex_state_wifi_t;
+
 struct mailbox_info {
 	u8	id;
 	u8	*data;
@@ -64,9 +87,12 @@ struct coex_t{
 	u8 wifi_last_state;
 	u8 bt_state;
 	u16 state;
+	/*for sw pta to protect bt connecting*/
+	u8 conn_interval_updating;
 	_mutex coex_run_lock;
 	struct wifi_tdma_scan_t wifi_tdma_scan;
 	struct coex_hal_fun_t* hal_fun;
+	_timer bt_info_timer;
 	
 };
 

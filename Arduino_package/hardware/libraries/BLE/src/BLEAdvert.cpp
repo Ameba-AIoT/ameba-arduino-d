@@ -42,37 +42,31 @@ void BLEAdvert::setMaxInterval(uint16_t maxInt_ms) {
     }
 }
 
-void BLEAdvert::setAdvData() {
-    // Call with no arguments to set to default advert data
-    _pAdvData = _advDataDefault;
-    _pAdvDataSize = sizeof(_advDataDefault);
+void BLEAdvert::setAdvData(BLEAdvertData adData) {
+    memcpy(_advData, adData._data, adData._dataSize);
+    _advDataSize = adData._dataSize;
 }
 
-void BLEAdvert::setScanRspData() {
-    // Call with no arguments to set to default scan response data
-    _pScanRspData = _scanRspDataDefault;
-    _pScanRspDataSize = sizeof(_scanRspDataDefault);
+void BLEAdvert::setScanRspData(BLEAdvertData adData) {
+    memcpy(_scanRspData, adData._data, adData._dataSize);
+    _scanRspDataSize = adData._dataSize;
 }
 
 void BLEAdvert::setAdvData(uint8_t* pdata, uint8_t size) {
     if (size <= 31) {
-        _pAdvData = pdata;
-        _pAdvDataSize = size;
+        memcpy(_advData, pdata, size);
+        _advDataSize = size;
     }
 }
 
 void BLEAdvert::setScanRspData(uint8_t* pdata, uint8_t size) {
     if (size <= 31) {
-        _pScanRspData = pdata;
-        _pScanRspDataSize = size;
+        memcpy(_scanRspData, pdata, size);
+        _scanRspDataSize = size;
     }
 }
 
 void BLEAdvert::updateAdvertParams() {
-    if ((_pAdvData == nullptr) || (_pScanRspData == nullptr)) {
-        printf("Please set Advertisement Data and Scan Response Data first\r\n");
-        return;
-    }
     le_adv_set_param(GAP_PARAM_ADV_EVENT_TYPE, sizeof(_advEvtType), &(_advEvtType));
     le_adv_set_param(GAP_PARAM_ADV_DIRECT_ADDR_TYPE, sizeof(_advDirectType), &(_advDirectType));
     le_adv_set_param(GAP_PARAM_ADV_DIRECT_ADDR, sizeof(_advDirectAddr), (_advDirectAddr));
@@ -80,8 +74,8 @@ void BLEAdvert::updateAdvertParams() {
     le_adv_set_param(GAP_PARAM_ADV_FILTER_POLICY, sizeof(_advFilterPolicy), &(_advFilterPolicy));
     le_adv_set_param(GAP_PARAM_ADV_INTERVAL_MIN, sizeof(_advIntMin), &(_advIntMin));
     le_adv_set_param(GAP_PARAM_ADV_INTERVAL_MAX, sizeof(_advIntMax), &(_advIntMax));
-    le_adv_set_param(GAP_PARAM_ADV_DATA, _pAdvDataSize, _pAdvData);
-    le_adv_set_param(GAP_PARAM_SCAN_RSP_DATA, _pScanRspDataSize, _pScanRspData);
+    le_adv_set_param(GAP_PARAM_ADV_DATA, _advDataSize, _advData);
+    le_adv_set_param(GAP_PARAM_SCAN_RSP_DATA, _scanRspDataSize, _scanRspData);
 
     le_set_gap_param(GAP_PARAM_SLAVE_INIT_GATT_MTU_REQ, sizeof(_slaveInitMtuReq), &_slaveInitMtuReq);
 }

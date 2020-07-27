@@ -100,8 +100,12 @@
 #endif
 
 /* For SSL/TLS */
+// zzw arduino
 #define CONFIG_USE_POLARSSL     1
 #define CONFIG_USE_MBEDTLS      0
+//#define CONFIG_USE_POLARSSL     0
+//#define CONFIG_USE_MBEDTLS      1
+
 #if ((CONFIG_USE_POLARSSL == 0) && (CONFIG_USE_MBEDTLS == 0)) || ((CONFIG_USE_POLARSSL == 1) && (CONFIG_USE_MBEDTLS == 1))
 #undef CONFIG_USE_POLARSSL
 #define CONFIG_USE_POLARSSL 1
@@ -129,7 +133,12 @@
 
 #define CONFIG_JOINLINK    0
 
+/*For MIMO pkt decode*/
+#define CONFIG_UNSUPPORT_PLCPHDR_RPT	0
+
 #define CONFIG_EXAMPLE_CM_BACKTRACE 0
+
+#define LOW_POWER_WIFI_CONNECT	0
 
 #endif //end of #if CONFIG_WLAN
 /*******************************************************************************/
@@ -597,6 +606,22 @@ in lwip_opt.h for support uart adapter*/
 #endif
 #endif
 
+#if defined(CONFIG_USBH_UVC)
+#define CONFIG_VIDEO_APPLICATION        1
+#define CONFIG_EXAMPLE_USBH_UVC         1
+#if CONFIG_EXAMPLE_USBH_UVC
+#define CONFIG_FATFS_EN                 0
+#if CONFIG_FATFS_EN
+// fatfs version
+#define FATFS_R_10C
+// fatfs disk interface
+#define FATFS_DISK_USB                  0
+#define FATFS_DISK_SD                   1
+#define FATFS_DISK_FLASH 	            0
+#endif
+#endif
+#endif
+
 #if defined(CONFIG_USBH_VENDOR)
 #define CONFIG_EXAMPLE_USBH_VENDOR      1
 #endif
@@ -610,7 +635,15 @@ in lwip_opt.h for support uart adapter*/
 #define CONFIG_FAST_DHCP 0
 #endif
 
+/* For wlan repeater example */
+#define CONFIG_EXAMPLE_WLAN_REPEATER    0
+#if CONFIG_EXAMPLE_WLAN_REPEATER
+#define CONFIG_BRIDGE                   1
+#else
+#define CONFIG_BRIDGE                   0
+#endif
 
+// zzw arduino
 /******************  For Arduino SDK customize config   *******************/
 #ifdef ARDUINO_SDK
 

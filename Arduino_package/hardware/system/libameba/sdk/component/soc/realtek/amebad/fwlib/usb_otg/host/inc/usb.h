@@ -1873,6 +1873,8 @@ extern int usb_get_descriptor(struct usb_device *dev, unsigned char type,
 extern int usb_get_device_descriptor(struct usb_device *dev, unsigned int size);
 extern int usb_clear_halt(struct usb_device *dev, int pipe);
 
+extern struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev, unsigned ifnum);
+
 extern _sema  CtrlUrbCompSema;  /* Semaphore for for Control URB Complete waiting */    
 extern _sema  UrbKillSema;  /* Semaphore for for URB Kill waiting */
 

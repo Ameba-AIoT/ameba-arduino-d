@@ -2,7 +2,17 @@
 #define _BLE_BEACON_H_
 
 #include "BLEUUID.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "gap_le_types.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 
 class iBeacon {
     public:

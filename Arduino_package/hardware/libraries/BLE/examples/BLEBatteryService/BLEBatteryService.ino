@@ -1,8 +1,12 @@
 
 #include "BLEDevice.h"
 #include "BLEBatteryService.h"
+#include "BLEAdvert.h"
+#include "BLEUUID.h"
 
 BLEBatteryService battery;
+BLEAdvertData advdata;
+BLEAdvertData scandata;
 uint8_t battlevel = 0;
 
 void readCB () {
@@ -21,10 +25,13 @@ void notifCB (uint8_t state) {
 void setup() {
     Serial.begin(115200);
 
+    advdata.addFlags(GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED);
+    advdata.addCompleteName("AMEBA_BLE_DEV");
+    scandata.addCompleteServices(BLEUUID("180F"));
+
     BLE.init();
-    BLE.configAdvert()->setAdvType(GAP_ADTYPE_ADV_IND);
-    BLE.configAdvert()->setAdvData();
-    BLE.configAdvert()->setScanRspData();
+    BLE.configAdvert()->setAdvData(advdata);
+    BLE.configAdvert()->setScanRspData(scandata);
 
     BLE.configServer(1);
     battery.setReadCallback(readCB);

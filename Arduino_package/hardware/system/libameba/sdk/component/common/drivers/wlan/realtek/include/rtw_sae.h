@@ -151,7 +151,7 @@ struct sae_data{
 
 extern int sae_debug_level;
 
-#define SAE_DEBUG_ENABLE
+//#define SAE_DEBUG_ENABLE
 #define _SAE_MSG_INFO_	2
 #define _SAE_MSG_ERR_	1
 

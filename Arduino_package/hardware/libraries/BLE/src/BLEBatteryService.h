@@ -13,6 +13,7 @@ extern "C" {
 }
 #endif
 
+//Battery service should be advertised with UUID 0x180F
 class BLEBatteryService {
     public:
         BLEBatteryService();

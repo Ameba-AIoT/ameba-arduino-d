@@ -1,8 +1,8 @@
 #ifndef EASYWSCLIENT_H
 #define EASYWSCLIENT_H
 #include <platform/platform_stdlib.h>
-#include "FreeRTOS.h"
-#include "queue.h"
+#include "osdep_service.h"
+
 
 #define WSCLIENT_TLS_POLARSSL       0    /*!< Use PolarSSL for TLS when WSCLIENT */
 #define WSCLIENT_TLS_MBEDTLS        1    /*!< Use mbedTLS for TLS when WSCLIENT */
@@ -87,8 +87,8 @@ typedef struct _wsclient_context{
 	void *tls;
 	int maxQueueSize;
 	int queueItemNum;
-	xQueueHandle ready_send_buf; //tx message ready to send
-	xQueueHandle recycle_send_buf; //usable buf to load tx message
+	_xqueue ready_send_buf; //tx message ready to send
+	_xqueue recycle_send_buf; //usable buf to load tx message
 	uint8_t *txbuf;
 	struct rsv_bits_field txRsvBits;
 	uint8_t *rxbuf;

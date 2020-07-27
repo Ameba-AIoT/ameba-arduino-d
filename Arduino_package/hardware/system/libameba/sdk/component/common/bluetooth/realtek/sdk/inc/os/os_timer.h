@@ -222,7 +222,8 @@ bool os_timer_create(void **pp_handle, const char *p_timer_name, uint32_t timer_
  *
  * \ingroup  Timer
  */
-bool os_timer_start(void **pp_handle);
+#define os_timer_start os_timer_enable
+bool os_timer_enable(void **pp_handle);
 
 /**
  * os_timer.h
@@ -344,7 +345,8 @@ bool os_timer_restart(void **pp_handle, uint32_t interval_ms);
  *
  * \ingroup  Timer
  */
-bool os_timer_stop(void **pp_handle);
+#define os_timer_stop os_timer_disable
+bool os_timer_disable(void **pp_handle);
 
 /**
  * os_timer.h

@@ -135,6 +135,17 @@ int32_t dct_close_module(dct_handle_t *dct_handle);
 int32_t dct_set_variable(dct_handle_t *dct_handle, char *variable_name, char *variable_value);
 
 /**
+ * @brief      Write variable name and value in opened module.
+ * @param[in]  dct_handle : dct handler
+ * @param[in]  variable_name : variable name which you want to store in module
+ * @param[in]  variable_value : variable value which you want to store in module
+ * @param[in]  variable_value_length : variable value length which you want to store in module
+ * @return     0  : SUCCESS
+ * @return     <0 : ERROR
+ */
+int32_t dct_set_variable_new(dct_handle_t *dct_handle, char *variable_name, char *variable_value, uint16_t variable_value_length);
+
+/**
  * @brief      read value of variable name in opened module.
  * @param[in]  dct_handle : dct handler
  * @param[in]  variable_name : variable name which you want to get from module
@@ -146,6 +157,17 @@ int32_t dct_set_variable(dct_handle_t *dct_handle, char *variable_name, char *va
 int32_t dct_get_variable(dct_handle_t *dct_handle, char *variable_name, char *buffer, uint16_t buffer_size);
 
 /**
+ * @brief         read value of variable name in opened module.
+ * @param[in]     dct_handle : dct handler
+ * @param[in]     variable_name : variable name which you want to get from module
+ * @param[out]    buffer : read variable value
+ * @param[in-out] buffer_size : in: the buffer size, out: the real length of variable value
+ * @return        0  : SUCCESS
+ * @return        <0 : ERROR
+ */
+int32_t dct_get_variable_new(dct_handle_t *dct_handle, char *variable_name, char *buffer, uint16_t *buffer_size);
+
+/**
  * @brief      delete variable name and value in opened module.
  * @param[in]  dct_handle : dct handler
  * @param[in]  variable_name : variable name which you want to delete in module
@@ -153,6 +175,15 @@ int32_t dct_get_variable(dct_handle_t *dct_handle, char *variable_name, char *bu
  * @return     <0 : ERROR
  */
 int32_t dct_delete_variable(dct_handle_t *dct_handle, char *variable_name);
+
+/**
+ * @brief      delete variable name and value in opened module.
+ * @param[in]  dct_handle : dct handler
+ * @param[in]  variable_name : variable name which you want to delete in module
+ * @return     0  : SUCCESS
+ * @return     <0 : ERROR
+ */
+int32_t dct_delete_variable_new(dct_handle_t *dct_handle, char *variable_name);
 
 /**
  * @brief      Remaining variable amount in opened module.

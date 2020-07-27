@@ -1,7 +1,8 @@
 #ifndef _BLE_SCAN_H_
 #define _BLE_SCAN_H_
 
-#include <Arduino.h>
+#include "BLEAddr.h"
+#include "BLEUUID.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,7 +18,7 @@ extern "C" {
 class BLEScan {
     public:
         void updateScanParams();
-        void startScan(uint32_t scanDuration_ms);   // Scan will automatically stop after scanDuration_ms
+        void startScan(uint32_t scanDuration_ms);       // Scan for scanDuration_ms and stop
         void startScan();
         void stopScan();
 
@@ -26,8 +27,7 @@ class BLEScan {
         void setScanWindow(uint16_t scanWindow_ms);
         void setScanDuplicateFilter(bool dupeFilter);
         bool scanInProgress();
-        void printScanInfo(T_LE_CB_DATA *p_data);
-        void parseScanInfo(T_LE_SCAN_INFO * scan_info);
+        void printScanInfo(T_LE_CB_DATA *p_data);                       // Print out scan found device
 
     private:
         BLEScan();

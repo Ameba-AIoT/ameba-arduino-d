@@ -56,12 +56,12 @@ T_APP_RESULT BLEDevice::gapCallbackDefault(uint8_t cb_type, void *p_cb_data) {
             break;
         }
         case GAP_MSG_LE_PHY_UPDATE_INFO: {
-            if(BTDEBUG) printf("GAP_MSG_LE_PHY_UPDATE_INFO:conn_id %d, cause 0x%x, rx_phy %d, tx_phy %d\r\n", p_data->p_le_phy_update_info->conn_id, p_data->p_le_phy_update_info->cause, p_data->p_le_phy_update_info->rx_phy, p_data->p_le_phy_update_info->tx_phy);
+            if (BTDEBUG) printf("GAP_MSG_LE_PHY_UPDATE_INFO:conn_id %d, cause 0x%x, rx_phy %d, tx_phy %d\r\n", p_data->p_le_phy_update_info->conn_id, p_data->p_le_phy_update_info->cause, p_data->p_le_phy_update_info->rx_phy, p_data->p_le_phy_update_info->tx_phy);
             break;
         }        
         case GAP_MSG_LE_REMOTE_FEATS_INFO: {
             uint8_t  remote_feats[8];
-            //if(BTDEBUG) printf("GAP_MSG_LE_REMOTE_FEATS_INFO: conn id %d, cause 0x%x, remote_feats %b", p_data->p_le_remote_feats_info->conn_id, p_data->p_le_remote_feats_info->cause, TRACE_BINARY(8, p_data->p_le_remote_feats_info->remote_feats));
+            //if (BTDEBUG) printf("GAP_MSG_LE_REMOTE_FEATS_INFO: conn id %d, cause 0x%x, remote_feats %b", p_data->p_le_remote_feats_info->conn_id, p_data->p_le_remote_feats_info->cause, TRACE_BINARY(8, p_data->p_le_remote_feats_info->remote_feats));
             if (p_data->p_le_remote_feats_info->cause == GAP_SUCCESS) {
                 memcpy(remote_feats, p_data->p_le_remote_feats_info->remote_feats, 8);
                 if (remote_feats[LE_SUPPORT_FEATURES_MASK_ARRAY_INDEX1] & LE_SUPPORT_FEATURES_LE_2M_MASK_BIT) {
@@ -80,7 +80,8 @@ T_APP_RESULT BLEDevice::gapCallbackDefault(uint8_t cb_type, void *p_cb_data) {
                             (p_data->p_le_scan_info->bd_addr)[4],
                             (p_data->p_le_scan_info->bd_addr)[3],
                             (p_data->p_le_scan_info->bd_addr)[2],
-                            (p_data->p_le_scan_info->bd_addr)[1],(p_data->p_le_scan_info->bd_addr)[0],
+                            (p_data->p_le_scan_info->bd_addr)[1],
+                            (p_data->p_le_scan_info->bd_addr)[0],
                             p_data->p_le_scan_info->remote_addr_type,
                             p_data->p_le_scan_info->rssi,
                             p_data->p_le_scan_info->data_len);
@@ -108,6 +109,7 @@ void BLEDevice::ioMsgHandlerDefault(T_IO_MSG io_msg) {
             break;
         }
         default: // possible to add a callback here for user message handling
+            if (BTDEBUG) printf("ioMsgHandlerDefault: unhandled\r\n");
             break;
     }
 }
@@ -117,7 +119,7 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
     uint8_t conn_id;
     memcpy(&gap_msg, &p_gap_msg->u.param, sizeof(p_gap_msg->u.param));
 
-    //printf("gapMsgHandlerDefault: subtype %d\r\n", p_gap_msg->subtype);
+    if (BTDEBUG) printf("gapMsgHandlerDefault: subtype %d\r\n", p_gap_msg->subtype);
     switch (p_gap_msg->subtype) {
         case GAP_MSG_LE_DEV_STATE_CHANGE: {
             if (_bleState == 1) {
@@ -135,12 +137,12 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
             }
             break;
         }
-        case GAP_MSG_LE_CONN_MTU_INFO: {
-            connMtuInfoEvtHandlerDefault(gap_msg.msg_data.gap_conn_mtu_info.conn_id, gap_msg.msg_data.gap_conn_mtu_info.mtu_size);
-            break;
-        }
         case GAP_MSG_LE_CONN_PARAM_UPDATE: {
             connParamUpdateEvtHandlerDefault(gap_msg.msg_data.gap_conn_param_update.conn_id, gap_msg.msg_data.gap_conn_param_update.status, gap_msg.msg_data.gap_conn_param_update.cause);
+            break;
+        }
+        case GAP_MSG_LE_CONN_MTU_INFO: {
+            connMtuInfoEvtHandlerDefault(gap_msg.msg_data.gap_conn_mtu_info.conn_id, gap_msg.msg_data.gap_conn_mtu_info.mtu_size);
             break;
         }
         case GAP_MSG_LE_AUTHEN_STATE_CHANGE: {
@@ -150,45 +152,45 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
     // cases below relate to bonding requests from devices
     // defaults are set up to accept all bonding requests from all methods
     // add in user functions here to deal with bonding verification
-        case GAP_MSG_LE_BOND_JUST_WORK: {
-            conn_id = gap_msg.msg_data.gap_bond_just_work_conf.conn_id;
-            le_bond_just_work_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
-            printf("GAP_MSG_LE_BOND_JUST_WORK\r\n");
-            break;
-        }
         case GAP_MSG_LE_BOND_PASSKEY_DISPLAY: {
             uint32_t display_value = 0;
             conn_id = gap_msg.msg_data.gap_bond_passkey_display.conn_id;
             le_bond_get_display_key(conn_id, &display_value);
             le_bond_passkey_display_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
-            printf("GAP_MSG_LE_BOND_PASSKEY_DISPLAY:passkey %ld\r\n", display_value);
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_DISPLAY:passkey %ld\r\n", display_value);
+            break;
+        }
+        case GAP_MSG_LE_BOND_PASSKEY_INPUT: {
+            uint32_t passkey = 888888;
+            conn_id = gap_msg.msg_data.gap_bond_passkey_input.conn_id;
+            le_bond_passkey_input_confirm(conn_id, passkey, GAP_CFM_CAUSE_ACCEPT);
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_INPUT: conn_id %d\r\n", conn_id);
+            break;
+        }
+        case GAP_MSG_LE_BOND_OOB_INPUT: {
+            uint8_t oob_data[GAP_OOB_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+            conn_id = gap_msg.msg_data.gap_bond_oob_input.conn_id;
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_OOB_INPUT\r\n");
+            le_bond_set_param(GAP_PARAM_BOND_OOB_DATA, GAP_OOB_LEN, oob_data);
+            le_bond_oob_input_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
             break;
         }
         case GAP_MSG_LE_BOND_USER_CONFIRMATION: {
             uint32_t display_value = 0;
             conn_id = gap_msg.msg_data.gap_bond_user_conf.conn_id;
             le_bond_get_display_key(conn_id, &display_value);
-            printf("GAP_MSG_LE_BOND_USER_CONFIRMATION: passkey %ld\r\n", display_value);
-            //le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_USER_CONFIRMATION: passkey %ld\r\n", display_value);
+            le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
             break;
         }
-        case GAP_MSG_LE_BOND_PASSKEY_INPUT: {
-            //uint32_t passkey = 888888;
-            conn_id = gap_msg.msg_data.gap_bond_passkey_input.conn_id;
-            //le_bond_passkey_input_confirm(conn_id, passkey, GAP_CFM_CAUSE_ACCEPT);
-            printf("GAP_MSG_LE_BOND_PASSKEY_INPUT: conn_id %d\r\n", conn_id);
-            break;
-        }
-        case GAP_MSG_LE_BOND_OOB_INPUT: {
-            uint8_t oob_data[GAP_OOB_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            conn_id = gap_msg.msg_data.gap_bond_oob_input.conn_id;
-            printf("GAP_MSG_LE_BOND_OOB_INPUT\r\n");
-            le_bond_set_param(GAP_PARAM_BOND_OOB_DATA, GAP_OOB_LEN, oob_data);
-            le_bond_oob_input_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
+        case GAP_MSG_LE_BOND_JUST_WORK: {
+            conn_id = gap_msg.msg_data.gap_bond_just_work_conf.conn_id;
+            le_bond_just_work_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_JUST_WORK\r\n");
             break;
         }
         default:
-            printf("gapMsgHandlerDefault: unknown subtype %d\r\n", p_gap_msg->subtype);
+            if (BTDEBUG) printf("gapMsgHandlerDefault: unknown subtype %d\r\n", p_gap_msg->subtype);
             break;
     }
 }
@@ -199,6 +201,9 @@ void BLEDevice::devStateEvtHandlerPeriphDefault(T_GAP_DEV_STATE new_state, uint1
         if (new_state.gap_init_state == GAP_INIT_STATE_STACK_READY) {
             if (BTDEBUG) printf("GAP stack ready\n\r");
             // BLE stack is ready
+            uint8_t bt_addr[6];
+            gap_get_param(GAP_PARAM_BD_ADDR, bt_addr);
+            printf("[BLE Device] Local BT addr: %2x:%2x:%2x:%2x:%2x:%2x\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
             le_adv_start();
         }
     }
@@ -206,12 +211,12 @@ void BLEDevice::devStateEvtHandlerPeriphDefault(T_GAP_DEV_STATE new_state, uint1
     if (_gapDevState.gap_adv_state != new_state.gap_adv_state) {
         if (new_state.gap_adv_state == GAP_ADV_STATE_IDLE) {
             if (new_state.gap_adv_sub_state == GAP_ADV_TO_IDLE_CAUSE_CONN) {
-                printf("GAP adv stoped: because connection created\n\r");
+                printf("[BLE Device] GAP adv stopped: because connection created\n\r");
             } else {
-                printf("GAP adv stopped\n\r"); 
+                printf("[BLE Device] GAP adv stopped\n\r"); 
             }
         } else if (new_state.gap_adv_state == GAP_ADV_STATE_ADVERTISING) {
-            printf("GAP adv start\n\r");
+            printf("[BLE Device] GAP adv start\n\r");
         }
     }
     _gapDevState = new_state;
@@ -225,16 +230,16 @@ void BLEDevice::devStateEvtHandlerCentralDefault(T_GAP_DEV_STATE new_state, uint
             // BLE stack is ready
             uint8_t bt_addr[6];
             gap_get_param(GAP_PARAM_BD_ADDR, bt_addr);
-            printf("local bd addr: 0x%2x:%2x:%2x:%2x:%2x:%2x\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
+            printf("[BLE Device] Local BT addr: %2x:%2x:%2x:%2x:%2x:%2x\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
         }
     }
 
     if (_gapDevState.gap_scan_state != new_state.gap_scan_state) {
         if (new_state.gap_scan_state == GAP_SCAN_STATE_IDLE) {
-            printf("GAP scan stop\r\n");
+            printf("[BLE Device] GAP scan stop\r\n");
         }
         else if (new_state.gap_scan_state == GAP_SCAN_STATE_SCANNING) {
-            printf("GAP scan start\r\n");
+            printf("[BLE Device] GAP scan start\r\n");
         }
     }
     _gapDevState = new_state;
@@ -245,7 +250,7 @@ void BLEDevice::connStateEvtHandlerPeriphDefault(uint8_t conn_id, T_GAP_CONN_STA
     switch (new_state) {
         case GAP_CONN_STATE_DISCONNECTED: {
             if ((disc_cause != (HCI_ERR | HCI_ERR_REMOTE_USER_TERMINATE)) && (disc_cause != (HCI_ERR | HCI_ERR_LOCAL_HOST_TERMINATE))) {
-                printf("connStateEvtHandlerDefault: connection lost cause 0x%x\r\n", disc_cause);
+                if (BTDEBUG) printf("connStateEvtHandlerPeriphDefault: connection lost cause 0x%x\r\n", disc_cause);
             }
             printf("[BLE Device] BT Disconnected, start ADV\n\r");
             le_adv_start();
@@ -276,21 +281,21 @@ void BLEDevice::connStateEvtHandlerCentralDefault(uint8_t conn_id, T_GAP_CONN_ST
     if (conn_id >= BLE_CENTRAL_APP_MAX_LINKS) {
         return;
     }
-    if (BTDEBUG) printf("ble_central_app_handle_conn_state_evt: conn_id %d, conn_state(%d -> %d), disc_cause 0x%x", conn_id, _bleCentralAppLinkTable[conn_id].conn_state, new_state, disc_cause);
+    if (BTDEBUG) printf("connStateEvtHandlerCentralDefault: conn_id %d, conn_state(%d -> %d), disc_cause 0x%x\r\n", conn_id, _bleCentralAppLinkTable[conn_id].conn_state, new_state, disc_cause);
 
     _bleCentralAppLinkTable[conn_id].conn_state = new_state;
     switch (new_state) {
         case GAP_CONN_STATE_DISCONNECTED: {
             if ((disc_cause != (HCI_ERR | HCI_ERR_REMOTE_USER_TERMINATE)) && (disc_cause != (HCI_ERR | HCI_ERR_LOCAL_HOST_TERMINATE))) {
-                printf("ble_central_app_handle_conn_state_evt: connection lost, conn_id %d, cause 0x%x", conn_id, disc_cause);
+                if (BTDEBUG) printf("connStateEvtHandlerCentralDefault: connection lost, conn_id %d, cause 0x%x\r\n", conn_id, disc_cause);
             }
-            printf("Disconnect conn_id %d\r\n", conn_id);
+            printf("[BLE Device] Disconnected conn_id %d\r\n", conn_id);
             memset(&_bleCentralAppLinkTable[conn_id], 0, sizeof(T_APP_LINK));
             break;
         }
         case GAP_CONN_STATE_CONNECTED:{
             le_get_conn_addr(conn_id, _bleCentralAppLinkTable[conn_id].bd_addr, (uint8_t *)&_bleCentralAppLinkTable[conn_id].bd_type);
-            printf("Connected success conn_id %d\r\n", conn_id);
+            printf("[BLE Device] Connected conn_id %d\r\n", conn_id);
             if (BTDEBUG) {
                 uint8_t tx_phy;
                 uint8_t rx_phy;
@@ -300,9 +305,10 @@ void BLEDevice::connStateEvtHandlerCentralDefault(uint8_t conn_id, T_GAP_CONN_ST
             }
             break;
         }
-    default:
-        break;
+        default:
+            break;
     }
+    _gapConnState = new_state;
 }
 
 void BLEDevice::connMtuInfoEvtHandlerDefault(uint8_t conn_id, uint16_t mtu_size) {
@@ -327,7 +333,7 @@ void BLEDevice::connParamUpdateEvtHandlerDefault(uint8_t conn_id, uint8_t status
             break;
         }
         case GAP_CONN_PARAM_UPDATE_STATUS_PENDING: {
-            if (BTDEBUG) printf("\n\rconnParamUpdateEvtHandlerDefault update pending: conn_id %d\r\n", conn_id);
+            if (BTDEBUG) printf("connParamUpdateEvtHandlerDefault update pending: conn_id %d\r\n", conn_id);
             break;
         }
         default:
@@ -339,19 +345,19 @@ void BLEDevice::authenStateEvtHandlerDefault(uint8_t conn_id, uint8_t new_state,
     //printf("authenStateEvtHandlerDefault:conn_id %d, cause 0x%x\r\n", conn_id, cause);
     switch (new_state) {
         case GAP_AUTHEN_STATE_STARTED: {
-            printf("authenStateEvtHandlerDefault: GAP_AUTHEN_STATE_STARTED\r\n");
+            if (BTDEBUG) printf("authenStateEvtHandlerDefault: GAP_AUTHEN_STATE_STARTED\r\n");
             break;
         }
         case GAP_AUTHEN_STATE_COMPLETE: {
             if (cause == GAP_SUCCESS) {
-                printf("authenStateEvtHandlerDefault: Pair success conn id :%d\r\n", conn_id);
+                if (BTDEBUG) printf("authenStateEvtHandlerDefault: Pair success conn id :%d\r\n", conn_id);
             } else {
-                printf("authenStateEvtHandlerDefault: Pair failed: cause 0x%x\r\n", cause);
+                if (BTDEBUG) printf("authenStateEvtHandlerDefault: Pair failed: cause 0x%x\r\n", cause);
             }
             break;
         }
         default:
-            printf("authenStateEvtHandlerDefault: unknown newstate %d\r\n", new_state);
+            if (BTDEBUG) printf("authenStateEvtHandlerDefault: unknown newstate %d\r\n", new_state);
             break;
     }
 }

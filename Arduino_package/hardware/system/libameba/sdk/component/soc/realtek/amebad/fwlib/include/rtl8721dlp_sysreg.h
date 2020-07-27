@@ -219,7 +219,7 @@
 #define BIT_AON_PMC_DSLP_ERCK						BIT(9) /* [9]	R/W	0		"1: Enable 100K clock for AON register access when PMC enter deep-sleep mode 0: Disable" */
 #define BIT_AON_PMC_DSLP_LDHM						BIT(8) /* [8]	R/W	0		"1: Eanble AON LDO enter into sleep mode when  PMC enter deep-sleep mode0: Disable" */
 #define BIT_AON_PMC_EN_SNOZ2NORM					BIT(2) /* [2]	R/W	1		"1: PMC exit Snooze state immediately after receive wakeup event0: Upon receiving wakeup event, PMC switch to Deepsleep from Snooze firstly, then PMC will exit from Deepsleep State to Normal" */
-#define BIT_AON_PMC_DIRECT_PDN					BIT(1) /* [1]	R/W	0		1: Direct HW power-down,  0: SW power-down */
+#define BIT_AON_PMC_DIRECT_PDN					BIT(1) /* [1]	R/W	0		1: SW power-down,  0: Direct HW power-down */
 #define BIT_AON_PMC_SUPPORT_PDN					BIT(0) /* [0]	R/W	1		1: Aon pmc support power-down;  0: not supported, */
 
 /* REG_AON_WAKE_OPT_MSK				0x0058  */

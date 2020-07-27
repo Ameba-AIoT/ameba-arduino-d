@@ -67,6 +67,9 @@ struct pwmout_s {
 struct i2c_s {
 	uint32_t i2c_idx;
 	I2C_TypeDef * I2Cx;
+
+	uint32_t usi_i2c_idx;
+	USI_TypeDef * USI_I2Cx;
 };
 
 struct flash_s {

@@ -23,6 +23,28 @@
 #define SIDEBANDWoWLAN      BIT2
 
 /*--------------------Define Struct---------------------------------------*/
+#if CONFIG_DRV_AUTO_CONFIG
+typedef struct _DRV_AUTO_CONFIG_8721D_{
+
+    u8 wlanimr0_bk;
+    u8 wlanimr1_bk;
+    u8 wlanimr2_bk;
+    u8 wlanimr3_bk;
+    u8 wlanimr20_bk;
+    u8 wlanimr21_bk;
+    u8 wlanimr22_bk;
+    u8 wlanimr23_bk;
+    u8 ftimr0_bk;
+    u8 ftimr1_bk;
+    u8 ftimr2_bk;
+    u8 ftimr3_bk;
+    u8 report_enable:1;
+    u8 len_thres_low_en:1;
+    u8 rsvd:6;
+    u16 len_thres_low;
+
+}DRV_AUTO_CONFIG_8721D,*PDRV_AUTO_CONFIG_8721D;
+#endif
 
 //3 1.) Xdata Section
 typedef struct _mib_info_ {
@@ -332,6 +354,10 @@ typedef struct _mib_info_ {
         RF_DLPS_Parm2   RfDlpsParm2;
     }RfDlpsParmUnion;
     u32                    RF_18;
+
+#if CONFIG_DRV_AUTO_CONFIG
+	DRV_AUTO_CONFIG_8721D	   DRVAutoconf;
+#endif
 
 }mib_info, *Pmib_info;
 

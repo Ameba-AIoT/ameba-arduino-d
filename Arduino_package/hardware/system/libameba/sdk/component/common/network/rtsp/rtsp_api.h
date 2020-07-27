@@ -7,7 +7,7 @@
 #if defined(CONFIG_PLATFORM_8195A)
 #include "mmf_dbg.h"
 #endif
-#if defined(CONFIG_PLATFORM_8195BHP)
+#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8721D)
 #include "mmf2_dbg.h"
 #endif
 #include "rtsp/rtp_api.h"

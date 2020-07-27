@@ -269,7 +269,11 @@
   #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
     #define CONFIG_RUNTIME_PORT_SWITCH
   #endif
-  #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
+  #ifdef CONFIG_BRIDGE
+    #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_BRIDGE) + (CONFIG_WLAN) + 1)
+  #else
+    #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
+  #endif
 #else
   #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN))
 #endif

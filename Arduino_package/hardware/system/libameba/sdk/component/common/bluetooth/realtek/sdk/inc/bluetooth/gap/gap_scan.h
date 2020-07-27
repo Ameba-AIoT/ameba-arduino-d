@@ -255,6 +255,47 @@ T_GAP_CAUSE le_scan_start(void);
   * \endcode
   */
 T_GAP_CAUSE le_scan_stop(void);
+
+#if F_BT_LE_GAP_SCAN_FILTER_SUPPORT
+/**
+  * @brief   Set scan information filter.
+  *
+  *          NOTE: This function can be called before @ref gap_start_bt_stack is invoked.
+  *
+  * @param[in]  enable   Wether to open the scan info comparison function.
+  * @param[in]  offset   The start offset of the scan info to compare.
+  * @param[in]  len      Length of data to compare
+  * @param[in]  p_filter Point the data to compare with the scan info.
+  * @return bool.
+  * @retval  TRUE  Operation success.
+  * @retval  FALSE Operation Failure.
+  *
+  * <b>Example usage</b>
+  * \code{.c}
+    static T_USER_CMD_PARSE_RESULT cmd_scanf(T_USER_CMD_PARSED_VALUE *p_parse_value)
+    {
+        uint8_t type = p_parse_value->dw_param[0];
+        uint8_t offset = 0;
+        uint8_t len = 0;
+        uint8_t filter_data[31];
+        if(type == 0)
+        {
+            le_scan_info_filter(false, offset, len, filter_data);
+        }
+        else
+        {
+            offset = 5;
+            len = 2;
+            filter_data[0] = LO_WORD(GATT_UUID_SIMPLE_PROFILE),
+            filter_data[1] = HI_WORD(GATT_UUID_SIMPLE_PROFILE);
+            le_scan_info_filter(true, offset, len, filter_data);
+        }
+        return RESULT_SUCESS;
+    }
+  * \endcode
+  */
+bool le_scan_info_filter(bool enable, uint8_t offset, uint8_t len, uint8_t *p_filter);
+#endif
 /** @} */ /* End of group Observer_Exported_Functions */
 /** @} */ /* End of group Observer_Role */
 #endif

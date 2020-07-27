@@ -1,4 +1,3 @@
-
 #include "BLEDevice.h"
 
 #ifdef __cplusplus
@@ -41,6 +40,7 @@ BLEDevice BLE;
 BLEAdvert* BLEDevice::_pBLEAdvert = nullptr;
 BLEScan* BLEDevice::_pBLEScan = nullptr;
 void (*BLEDevice::_pScanCB)(T_LE_CB_DATA*) = nullptr;
+BLEConnect* BLEDevice::_pBLEConn = nullptr;
 uint8_t BLEDevice::_bleState = 0;
 void *BLEDevice::_appTaskHandle = NULL;   //!< main task handle
 void *BLEDevice::_evtQueueHandle = NULL;  //!< Event queue handle
@@ -61,14 +61,14 @@ void BLEDevice::init() {
     }
     while (!(wifi_is_up(RTW_STA_INTERFACE) || wifi_is_up(RTW_AP_INTERFACE))) {
         vTaskDelay(1000 / portTICK_RATE_MS);
-        printf("wifi not up\r\n");
+        printf("WiFi not up\r\n");
     }
 
     le_get_gap_param(GAP_PARAM_DEV_STATE , &new_state);
     if (new_state.gap_init_state == GAP_INIT_STATE_STACK_READY) {
-        printf("[BLE Peripheral]BT Stack already on\n\r");
+        printf("BT Stack already on\r\n");
     } else {
-        bt_trace_init();
+        //bt_trace_init();
         bte_init();
     }
 }
@@ -78,21 +78,25 @@ void BLEDevice::deinit() {
     T_GAP_DEV_STATE new_state;
     le_get_gap_param(GAP_PARAM_DEV_STATE , &new_state);
     if (new_state.gap_init_state != GAP_INIT_STATE_STACK_READY) {
-        printf("BT Stack is not running\n\r");
+        printf("BT Stack is not running\r\n");
     } else {
         BLEDevice::end();
         bte_deinit();
-        bt_trace_uninit();
+        //bt_trace_uninit();
         memset(&_gapDevState, 0, sizeof(T_GAP_DEV_STATE));
-        printf("BT Stack deinitalized\n\r");
+        printf("BT Stack deinitalized\r\n");
     }
 }
 
-bool BLEDevice::connected() {
-    if (_gapConnState == GAP_CONN_STATE_CONNECTED) {
-        return true;
-    } else if (_gapConnState == GAP_CONN_STATE_DISCONNECTED) {
-        return false;
+// Peripheral should use connId = 0
+bool BLEDevice::connected(uint8_t connId) {
+    T_GAP_CONN_INFO connInfo;
+    if (configConnection()->getConnInfo(connId, &connInfo)) {
+        if (connInfo.conn_state == GAP_CONN_STATE_CONNECTED) {
+            return true;
+        } else {
+            return false;
+        }
     }
     return false;
 }
@@ -104,7 +108,7 @@ bool BLEDevice::connected() {
 void BLEDevice::setDeviceName(String devName) {
     // Set the Device Name in GAP, which will be visible after a connection is established
     if (devName.length() > GAP_DEVICE_NAME_LEN) {
-        printf("Device name too long, maximum of %d chars", (GAP_DEVICE_NAME_LEN-1));
+        printf("Device name too long, maximum of %d chars\r\n", (GAP_DEVICE_NAME_LEN-1));
     }
     strcpy(_deviceName, devName.c_str());
 }
@@ -130,6 +134,13 @@ BLEScan* BLEDevice::configScan() {
     return (_pBLEScan);
 }
 
+BLEConnect* BLEDevice::configConnection() {
+    if(_pBLEConn == nullptr) {
+        _pBLEConn = new BLEConnect();
+    }
+    return (_pBLEConn);
+}
+
 void BLEDevice::setScanCallback(void (*scanCB)(T_LE_CB_DATA*)) {
     _pScanCB = scanCB;
 }
@@ -139,7 +150,7 @@ void BLEDevice::setScanCallback(void (*scanCB)(T_LE_CB_DATA*)) {
 void BLEDevice::beginCentral(uint8_t connCount) {
     T_GAP_DEV_STATE new_state;
     if (_bleState != 0) {
-        printf("BLE already running, unable to start central");
+        printf("BLE already running, unable to start central\r\n");
         return;
     } else {
         _bleState = 2;
@@ -179,10 +190,10 @@ void BLEDevice::beginCentral(uint8_t connCount) {
 
     // start BLE main task to handle IO and GAP msg
     os_task_create(&_appTaskHandle, "BLE_Central_Task", BLEMainTask, 0, 256*6, 1);
-    if (BTDEBUG) printf("task create\r\n");
+    if (BTDEBUG) printf("Task create\r\n");
 
     bt_coex_init();
-    if (BTDEBUG) printf("coex init\r\n");
+    if (BTDEBUG) printf("Coex init\r\n");
 
     /*Wait BT init complete*/
     do {
@@ -192,7 +203,7 @@ void BLEDevice::beginCentral(uint8_t connCount) {
 
     /*Start BT WIFI coexistence*/
     wifi_btcoex_set_bt_on();
-    if (BTDEBUG) printf("coex on\r\n");
+    if (BTDEBUG) printf("Coex on\r\n");
 
 }
 
@@ -201,7 +212,7 @@ void BLEDevice::beginCentral(uint8_t connCount) {
 void BLEDevice::beginPeripheral() {
     T_GAP_DEV_STATE new_state;
     if (_bleState != 0) {
-        printf("BLE already running, unable to start peripheral");
+        printf("BLE already running, unable to start peripheral\r\n");
         return;
     } else {
         _bleState = 1;
@@ -231,10 +242,10 @@ void BLEDevice::beginPeripheral() {
 
     // start BLE main task to handle IO and GAP msg
     os_task_create(&_appTaskHandle, "BLE_Peripheral_Task", BLEMainTask, 0, 256*4, 1);
-    if (BTDEBUG) printf("task create\r\n");
+    if (BTDEBUG) printf("Task create\r\n");
 
     bt_coex_init();
-    if (BTDEBUG) printf("coex init\r\n");
+    if (BTDEBUG) printf("Coex init\r\n");
 
     // Wait BT init complete
     do {
@@ -244,14 +255,14 @@ void BLEDevice::beginPeripheral() {
 
     // Start BT WIFI coexistence
     wifi_btcoex_set_bt_on();
-    if (BTDEBUG) printf("coex on\r\n");
+    if (BTDEBUG) printf("Coex on\r\n");
 }
 
 // stops the BLE stack operating as a peripheral or central device
 void BLEDevice::end() {
     T_GAP_DEV_STATE new_state;
     if (_bleState == 0) {
-        printf("BLE not running, nothing to end");
+        printf("BLE not running, nothing to end\r\n");
         return;
     } else {
         _bleState = 0;
@@ -312,6 +323,12 @@ void BLEDevice::configClient(uint8_t clientCount) {
     }
 }
 
+void BLEDevice::getLocalAddr(uint8_t (&addr)[GAP_BD_ADDR_LEN]) {
+    uint8_t  btaddr[GAP_BD_ADDR_LEN] = {0};
+    gap_get_param(GAP_PARAM_BD_ADDR, btaddr);
+    memcpy(addr, btaddr, sizeof(btaddr));
+}
+
 void BLEDevice::setupGAPBondManager() {
     // Setup the GAP Bond Manager
     gap_set_param(GAP_PARAM_BOND_PAIRING_MODE, sizeof(_authPairMode), &_authPairMode);
@@ -331,7 +348,7 @@ void BLEDevice::BLEMainTask(void *p_param) {
     os_msg_queue_create(&_evtQueueHandle, 0x40, sizeof(uint8_t));
 
     gap_start_bt_stack(_evtQueueHandle, _ioQueueHandle, 0x20);
-    if (BTDEBUG) printf("bt stack start\r\n");
+    if (BTDEBUG) printf("BT stack start\r\n");
 
     while (true) {
         if (os_msg_recv(_evtQueueHandle, &event, 0xFFFFFFFF) == true) {

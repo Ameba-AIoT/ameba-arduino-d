@@ -683,6 +683,12 @@ struct mlme_ext_priv
 	u8 bChDeauthDisabled;
 	u8 bConcurrentFlushingSTA;
 #endif
+
+#if defined(LOW_POWER_WIFI_CONNECT) && LOW_POWER_WIFI_CONNECT
+	u16 psk_sleeptime;
+	u16 eap_sleeptime;
+	u8  eap_sleep_flag;
+#endif
 };
 
 #define CAC_TIME_MS (60*1000)

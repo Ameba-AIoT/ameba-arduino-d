@@ -730,6 +730,8 @@ int rtw_push_to_xqueue( _xqueue* queue, void* message, u32 timeout_ms );
  */
 int rtw_pop_from_xqueue( _xqueue* queue, void* message, u32 timeout_ms );
 
+int rtw_peek_from_xqueue( _xqueue* queue, void* message, u32 timeout_ms );
+
 /**
  * @brief  Delete a queue - freeing all the memory allocated for storing of messages placed on the queue.
  * @param[in] queue: The handle to the queue to be deleted.
@@ -1348,6 +1350,7 @@ struct osdep_service_ops {
 	int (*rtw_init_xqueue)( _xqueue* queue, const char* name, u32 message_size, u32 number_of_messages );
 	int (*rtw_push_to_xqueue)( _xqueue* queue, void* message, u32 timeout_ms );
 	int (*rtw_pop_from_xqueue)( _xqueue* queue, void* message, u32 timeout_ms );
+	int (*rtw_peek_from_xqueue)( _xqueue* queue, void* message, u32 timeout_ms );
 	int (*rtw_deinit_xqueue)( _xqueue* queue );
 	u32	(*rtw_get_current_time)(void);
 	u32 (*rtw_systime_to_ms)(u32 systime);

@@ -17,7 +17,7 @@
   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// Modified by Realtek
+// Modified by Realtek for use with Ameba development boards with the Arduino IDE
 
 #ifndef _BLE_UUID_H_
 #define _BLE_UUID_H_
@@ -27,19 +27,21 @@
 #define BLE_UUID_MAX_LENGTH 16
 
 class BLEUUID {
-    public:
-        BLEUUID(const char * str);
-
-        const char* str() const;
-        const uint8_t* data() const;
-        uint8_t length() const;
-
-        //static const char* uuidToString(const uint8_t* data, uint8_t length);
+    public: 
+        BLEUUID();
+        BLEUUID(const char * str);      // Build a BLEUUID object from an UUID string. Use of hyphens (-) to seperate UUID sections in the string is acceptable.
+        BLEUUID(uint8_t* data, uint8_t length);
+        const char* str();
+        const uint8_t* data();
+        const uint8_t* dataNative();
+        uint8_t length();
+        bool operator ==(const BLEUUID &uuid);
 
     private:
-        const char* _str;
-        uint8_t     _data[BLE_UUID_MAX_LENGTH];
-        uint8_t     _length;
+        char _str[BLE_UUID_MAX_LENGTH * 2 + 5] = {0};
+        uint8_t _data[BLE_UUID_MAX_LENGTH] = {0};           // stores the UUID MSB in position 0, useful for printing as characters/strings
+        uint8_t _dataNative[BLE_UUID_MAX_LENGTH] = {0};     // stores the UUID LSB in position 0
+        uint8_t _length = 0;    // number of bytes(characters) of UUID
 };
 
 #endif

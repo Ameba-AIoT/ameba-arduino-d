@@ -50,6 +50,9 @@ enum h2c_cmd{
 	H2C_INACTIVE_PS_ = 0x27, //Inactive_PS
 	H2C_FWLPS_IN_IPS_ = 0x28,
 	
+#if defined(LOW_POWER_WIFI_CONNECT) && LOW_POWER_WIFI_CONNECT
+	H2C_NULL1_PARAM = 0x3F,
+#endif
 	//Dynamic Mechanism Class: 010
 	H2C_MACID_CFG = 0x40,
 	H2C_TXBF = 0x41,	
@@ -301,6 +304,7 @@ enum h2c_cmd_8721D{
 
 	H2C_8721D_RESET_TSF = 0xC0,
 	H2C_8721D_BCN_IGNORE_EDCCA = 0xC2,
+	H2C_8711B_UNSUPPORT_PLCPHDR_RPT = 0xCC,
 	
 	H2C_8721D_MAXID,
 };

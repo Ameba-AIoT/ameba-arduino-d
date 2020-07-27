@@ -204,6 +204,10 @@ extern unsigned int sys_now(void);
 #define TCP_KEEPCNT_DEFAULT			10U
 #endif
 
+#if CONFIG_BRIDGE
+#define LWIP_NUM_NETIF_CLIENT_DATA            1
+#endif
+
 #if (defined(CONFIG_EXAMPLE_UART_ATCMD) && (CONFIG_EXAMPLE_UART_ATCMD)) \
     || (defined(CONFIG_EXAMPLE_SPI_ATCMD) && (CONFIG_EXAMPLE_SPI_ATCMD))
 #undef  LWIP_SO_SNDTIMEO        
@@ -280,6 +284,7 @@ extern unsigned int sys_now(void);
 #define TCP_WND (4*TCP_MSS)
 #endif
 
+// zzw arduino
 #ifdef ARDUINO_SDK
 //#undef MEMP_NUM_NETBUF
 //#define MEMP_NUM_NETBUF                 8

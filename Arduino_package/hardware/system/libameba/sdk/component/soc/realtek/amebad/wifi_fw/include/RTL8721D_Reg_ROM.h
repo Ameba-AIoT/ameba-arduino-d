@@ -571,6 +571,7 @@
 #define REG_BT_STATISTICS_OTH_CTRL  0x0778
 #define REG_BT_ISR_CTRL             0x0783
 #define REG_BT_ISR_STA              0x078F
+#define REG_PLCP_HDR                0x0740
 
 #define REG_WL2LTECOEX_Indirect_Access_CTRL	0x7C0
 #define REG_WL2LTECOEX_Indirect_Access_WRITE_DATA	0x7C4

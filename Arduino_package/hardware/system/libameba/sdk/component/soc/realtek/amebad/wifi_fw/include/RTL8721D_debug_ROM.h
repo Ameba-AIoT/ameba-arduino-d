@@ -239,6 +239,7 @@
 #define RTime_Fail_DMAIdle      0x42
 #define RTime_Fail_DMAPause     0x43
 #define NLO_SSID_Match          0x55  //brian_zhang,20170815
+#define BroadDHCP_Match          0x56  //brian_zhang,20190604
 #define AP_Offload_WakeUp       0x66    //alan,2013_11_28
 #define CLK_32K_UNLOCK          0xFD
 #define CLK_32K_LOCK            0xFE

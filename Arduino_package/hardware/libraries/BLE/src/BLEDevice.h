@@ -1,8 +1,8 @@
 #ifndef _BLE_DEVICE_H_
 #define _BLE_DEVICE_H_
 
-#include <Arduino.h>
 #include "BLEAdvert.h"
+#include "BLEConnect.h"
 #include "BLEScan.h"
 
 #ifdef __cplusplus
@@ -13,7 +13,8 @@ extern "C" {
 #include "app_msg.h"
 #include "profile_server.h"
 #include "profile_client.h"
-#include "ble_scatternet_link_mgr.h"
+#include "app_flags.h"
+#include "link_mgr.h"
 
 #ifdef __cplusplus
 }
@@ -31,17 +32,20 @@ class BLEDevice {
         BLEDevice();
         void init();
         void deinit();
-        bool connected();
+        //bool connected();
+        bool connected(uint8_t connId);
         void setDeviceName(String devName);
         void setDeviceAppearance(uint16_t devAppearance);
         BLEAdvert* configAdvert();
         BLEScan* configScan();
+        BLEConnect* configConnection();
         void setScanCallback(void (*scanCB)(T_LE_CB_DATA*));
         void beginCentral(uint8_t connCount);
         void beginPeripheral();
         void end();
         void configServer(uint8_t serviceCount);
         void configClient(uint8_t clientCount);
+        void getLocalAddr(uint8_t (&addr)[GAP_BD_ADDR_LEN]);        // Local address is only avaliable after peripheral or central mode is started
 
     private:
         static void BLEMainTask(void *p_param);
@@ -69,7 +73,8 @@ class BLEDevice {
         static BLEAdvert* _pBLEAdvert;  // Pointer to advertisement object (peripheral mode)
         static BLEScan* _pBLEScan;      // Pointer to scan object (central mode)
         static void (*_pScanCB)(T_LE_CB_DATA*); // Pointer to callback function for processing scan data
-        //static BLEConnect* _pBLEConn;   // Pointer to connect object (central mode)
+        static BLEConnect* _pBLEConn;   // Pointer to connect object (central mode)
+        
         static uint8_t _bleState;  // 0 = not running, 1 = peripheral, 2 = central
 
         // task and queue handles

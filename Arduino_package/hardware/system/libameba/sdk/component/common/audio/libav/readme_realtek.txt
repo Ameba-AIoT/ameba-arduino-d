@@ -1,0 +1,2 @@
+1. minimum configurations to build libav(git clone git://git.libav.org/libav.git) to decoder .m4a audio file
+./configure --disable-demuxers --enable-demuxer=mov --disable-decoders --enable-decoder=aac --disable-muxers --enable-muxer=wav --disable-parsers --enable-parser=aac --disable-encoders --enable-encoder=pcm_s16le --disable-protocols --enable-protocol=file --disable-hwaccels --disable-bsfs --disable-devices --disable-filters --disable-doc --disable-pod2man --disable-texi2html --disable-network --disable-asm --enable-small --disable-pthreads --enable-hardcoded-tables

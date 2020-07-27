@@ -37,6 +37,9 @@ if %RDP_ENABLE% equ 1 (
 	rename %target_dir%\km0_km4_image2_tmp.bin km0_km4_image2.bin
 )
 
+copy %target_dir%\km0_km4_image2.bin %km0_dir%\
+copy %target_dir%\km0_km4_image2.bin %km4_dir%\
+
 if exist %target_dir%\km0_km4_image2_tmp.bin (
 	del %target_dir%\km0_km4_image2_tmp.bin
 )

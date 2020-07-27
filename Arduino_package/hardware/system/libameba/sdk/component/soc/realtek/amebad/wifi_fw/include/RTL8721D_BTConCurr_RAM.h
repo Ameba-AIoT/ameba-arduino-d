@@ -3,7 +3,7 @@
 
 #ifndef __ASSEMBLY__
 
-#define BTC_LEAPY_AP_LIMIT 3
+#define BTC_LEAPY_AP_LIMIT 1
 
 extern void 
 InitBTMailbox_8721D_RAM(

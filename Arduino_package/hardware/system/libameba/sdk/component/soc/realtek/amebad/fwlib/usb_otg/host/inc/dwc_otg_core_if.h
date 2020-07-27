@@ -173,7 +173,7 @@ extern _LONG_CALL_ int32_t dwc_otg_get_param_dev_perio_tx_fifo_size(dwc_otg_core
 extern _LONG_CALL_ int dwc_otg_set_param_host_rx_fifo_size(dwc_otg_core_if_t * core_if,
 					       int32_t val);
 extern _LONG_CALL_ int32_t dwc_otg_get_param_host_rx_fifo_size(dwc_otg_core_if_t * core_if);
-#define dwc_param_host_rx_fifo_size_default 1024
+#define dwc_param_host_rx_fifo_size_default 512
 
 /** Number of 4-byte words in the non-periodic Tx FIFO in host mode
  * when Dynamic FIFO sizing is enabled in the core.
@@ -218,7 +218,7 @@ extern _LONG_CALL_ int32_t dwc_otg_get_param_max_packet_count(dwc_otg_core_if_t 
 extern _LONG_CALL_ int dwc_otg_set_param_host_channels(dwc_otg_core_if_t * core_if,
 					   int32_t val);
 extern _LONG_CALL_ int32_t dwc_otg_get_param_host_channels(dwc_otg_core_if_t * core_if);
-#define dwc_param_host_channels_default 12
+#define dwc_param_host_channels_default 7
 
 /** The number of endpoints in addition to EP0 available for device
  * mode operations.
@@ -229,7 +229,7 @@ extern _LONG_CALL_ int32_t dwc_otg_get_param_host_channels(dwc_otg_core_if_t * c
 extern _LONG_CALL_ int dwc_otg_set_param_dev_endpoints(dwc_otg_core_if_t * core_if,
 					   int32_t val);
 extern _LONG_CALL_ int32_t dwc_otg_get_param_dev_endpoints(dwc_otg_core_if_t * core_if);
-#define dwc_param_dev_endpoints_default 6
+#define dwc_param_dev_endpoints_default 5
 
 extern _LONG_CALL_ int dwc_otg_set_param_ts_dline(dwc_otg_core_if_t * core_if, int32_t val);
 extern _LONG_CALL_ int32_t dwc_otg_get_param_ts_dline(dwc_otg_core_if_t * core_if);

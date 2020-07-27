@@ -1111,6 +1111,11 @@ extern u32 rtw_get_tsf(u32 Port);
 WL_BAND_TYPE wifi_get_band_type(void);
 
 
+#if defined(LOW_POWER_WIFI_CONNECT) && LOW_POWER_WIFI_CONNECT
+int wifi_set_psk_eap_interval(uint16_t psk_interval, uint16_t eap_interval);
+int wifi_set_null1_param(uint8_t check_period, uint8_t limit, uint8_t interval);
+#endif
+
 #ifdef __cplusplus
   }
 #endif

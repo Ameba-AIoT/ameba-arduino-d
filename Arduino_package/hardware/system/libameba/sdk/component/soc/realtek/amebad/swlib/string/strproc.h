@@ -16,17 +16,17 @@
 #include "basic_types.h"
 
 #ifndef isprint
-#define in_range(c, lo, up)     ((u8)c >= lo && (u8)c <= up)
-#define isprint(c)              in_range(c, 0x20, 0x7f)
-#define isdigit(c)              in_range(c, '0', '9')
-#define isxdigit(c)             (isdigit(c) || in_range(c, 'a', 'f') || in_range(c, 'A', 'F'))
+#define in_range(c, lo, up)  ((u8)c >= lo && (u8)c <= up)
+#define isprint(c)           in_range(c, 0x20, 0x7f)
+#define isdigit(c)           in_range(c, '0', '9')
+#define isxdigit(c)          (isdigit(c) || in_range(c, 'a', 'f') || in_range(c, 'A', 'F'))
 //#define islower(c)           in_range(c, 'a', 'z')
-#define isspace(c)              (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == ',')
+#define isspace(c)           (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == ',')
 
-#define isupper(c)              (((c)>='A')&&((c)<='Z'))
-#define islower(c)              (((c)>='a')&&((c)<='z'))
-#define isalpha(c)              (isupper(c) || islower(c))
-#endif
+#define isupper(c)	(((c)>='A')&&((c)<='Z'))
+#define islower(c)	(((c)>='a')&&((c)<='z'))
+#define isalpha(c)	(isupper(c) || islower(c))	
+#endif  
 
 
 extern _LONG_CALL_ int _vsscanf(const char *buf, const char *fmt, va_list args);
@@ -67,14 +67,18 @@ extern _LONG_CALL_ u8 _2char2hex(u8 hch, u8 lch);
 #ifndef _tolower
 static inline char _tolower(const char c)
 {
+//zzw arduino
     return (c | 0x20);
+//    return c | 0x20;
 }
 #endif
 
 /* Fast check for octal digit */
 static inline int isodigit(const char c)
 {
+//zzw arduino
     return (c >= '0' && c <= '7');
+//    return c >= '0' && c <= '7';
 }
 
 #endif

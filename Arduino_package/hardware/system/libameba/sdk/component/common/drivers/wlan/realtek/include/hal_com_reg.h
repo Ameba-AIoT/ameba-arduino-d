@@ -415,6 +415,7 @@
 #define REG_TIMER0						0x0584
 #define REG_TIMER1						0x0588
 #define REG_TBTT_HOLD_PREDICT_P1		0x05B2
+#define REG_PTA_PRE_TRX_CTRL			0x5B8	//rtl8721d
 #define REG_ACMHWCTRL					0x05C0
 #define REG_NOA_DESC_SEL				0x05CF
 #define REG_NOA_DESC_DURATION		0x05E0
@@ -1527,6 +1528,9 @@ Current IOREG MAP
 #define	RETRY_LIMIT_SHORT_SHIFT			8
 #define	RETRY_LIMIT_LONG_SHIFT			0
 
+//2 QUEUE_CTRL
+#define	PTA_WL_TX_EN	BIT(4)
+
 //-----------------------------------------------------
 //
 //	0x0500h ~ 0x05FFh	EDCA Configuration
@@ -1578,6 +1582,8 @@ Current IOREG MAP
 #define NOA_DESC_SEL_0			0
 #define NOA_DESC_SEL_1			BIT(4)
 
+//2REG_PTA_PRE_TRX_CTRL(0x5B8)
+#define PTA_RXBCN_DIR	BIT(29)
 //-----------------------------------------------------
 //
 //	0x0600h ~ 0x07FFh	WMAC Configuration

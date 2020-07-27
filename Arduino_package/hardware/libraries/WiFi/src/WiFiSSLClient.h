@@ -6,7 +6,7 @@
 #include "IPAddress.h"
 #include "ssl_drv.h"
 
-struct ssl_context;
+struct mbedtls_ssl_context;
 class WiFiSSLClient : public Client {
 
     public:

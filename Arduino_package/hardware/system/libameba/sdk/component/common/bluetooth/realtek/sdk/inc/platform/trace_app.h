@@ -139,7 +139,7 @@ bool bt_trace_init(void);
  *
  * \ingroup
  */
-bool bt_trace_uninit(void);
+bool bt_trace_deinit(void);
 
 #ifdef __cplusplus
 }

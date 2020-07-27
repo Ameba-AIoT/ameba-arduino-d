@@ -22,22 +22,22 @@ extern uint8_t ws_server_debug;
 #define ws_server_log(...) \
 	do { \
 		if(ws_server_debug) { \
-			taskENTER_CRITICAL(); \
+			rtw_enter_critical(NULL, NULL); \
 			printf("\n\r[WS_SERVER] "); \
 			printf(__VA_ARGS__); \
 			printf("\n\r"); \
-			taskEXIT_CRITICAL(); \
+			rtw_exit_critical(NULL, NULL); \
 		} \
 	} while(0)
 
 #define ws_server_log_verbose(...) \
 	do { \
 		if(ws_server_debug == WS_SERVER_DEBUG_VERBOSE) { \
-			taskENTER_CRITICAL(); \
+			rtw_enter_critical(NULL, NULL); \
 			printf("\n\r[WS_SERVER] "); \
 			printf(__VA_ARGS__); \
 			printf("\n\r"); \
-			taskEXIT_CRITICAL(); \
+			rtw_exit_critical(NULL, NULL); \
 		} \
 	} while(0)
 

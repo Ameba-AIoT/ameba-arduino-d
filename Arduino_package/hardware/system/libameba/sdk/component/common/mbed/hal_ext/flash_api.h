@@ -110,13 +110,6 @@ void flash_write_protect(flash_t *obj, uint32_t protect);
 int flash_get_status(flash_t * obj);
 
 /**
-* @brief  Read Status register 2 to check flash status
-* @param  obj: Specifies the parameter of flash object.
-* @retval status: the value of status register.
-*/
-int flash_get_status2(flash_t *obj);
-
-/**
   * @brief  Set Status register to enable desired operation
   * @param  obj: Specifies the parameter of flash object.
   * @param  data: Specifies which bit users like to set.

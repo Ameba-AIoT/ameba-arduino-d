@@ -7,7 +7,6 @@ extern "C" {
 
 #include "FreeRTOS.h"
 #include "mpu_wrappers.h"
-
 #include "gap.h"
 #include "gap_adv.h"
 #include "gap_bond_le.h"
@@ -43,6 +42,7 @@ void BLEScan::startScan(uint32_t scanDuration_ms) {
     startScan();
     vTaskDelay(scanDuration_ms / portTICK_RATE_MS);
     stopScan();
+    vTaskDelay(100 / portTICK_RATE_MS);
 }
 
 void BLEScan::startScan() {
@@ -61,7 +61,6 @@ void BLEScan::startScan() {
 
 void BLEScan::stopScan() {
     if (_scanProcessing) {
-        printf("Stop scan\n\r");
         le_scan_stop();
         _scanProcessing = 0;
     } else {
@@ -111,69 +110,65 @@ bool BLEScan::scanInProgress() {
 void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
     char adv_type[20];
     char remote_addr_type[10];
+    T_LE_SCAN_INFO *scan_info = p_data->p_le_scan_info;
 
     sprintf(adv_type,
             "%s",
-            (p_data->p_le_scan_info->adv_type ==GAP_ADV_EVT_TYPE_UNDIRECTED)? "CON_UNDIRECT":
-            (p_data->p_le_scan_info->adv_type ==GAP_ADV_EVT_TYPE_DIRECTED)? "CON_DIRECT":
-            (p_data->p_le_scan_info->adv_type ==GAP_ADV_EVT_TYPE_SCANNABLE)? "SCAN_UNDIRECT":
-            (p_data->p_le_scan_info->adv_type ==GAP_ADV_EVT_TYPE_NON_CONNECTABLE)? "NON_CONNECTABLE":
-            (p_data->p_le_scan_info->adv_type ==GAP_ADV_EVT_TYPE_SCAN_RSP)? "SCAN_RSP":"unknown");
+            (scan_info->adv_type ==GAP_ADV_EVT_TYPE_UNDIRECTED)? "CON_UNDIRECT":
+            (scan_info->adv_type ==GAP_ADV_EVT_TYPE_DIRECTED)? "CON_DIRECT":
+            (scan_info->adv_type ==GAP_ADV_EVT_TYPE_SCANNABLE)? "SCAN_UNDIRECT":
+            (scan_info->adv_type ==GAP_ADV_EVT_TYPE_NON_CONNECTABLE)? "NON_CONNECTABLE":
+            (scan_info->adv_type ==GAP_ADV_EVT_TYPE_SCAN_RSP)? "SCAN_RSP":"unknown");
 
     sprintf(remote_addr_type,
             "%s",
-            (p_data->p_le_scan_info->remote_addr_type == GAP_REMOTE_ADDR_LE_PUBLIC)? "public":
-            (p_data->p_le_scan_info->remote_addr_type == GAP_REMOTE_ADDR_LE_RANDOM)? "random":"unknown");
+            (scan_info->remote_addr_type == GAP_REMOTE_ADDR_LE_PUBLIC)? "public":
+            (scan_info->remote_addr_type == GAP_REMOTE_ADDR_LE_RANDOM)? "random":"unknown");
 
     printf("ADVType\t\t\t| AddrType\t| BT_Addr\t\t| rssi\n\r");
     printf("%s\t\t| %s\t| %02x:%02x:%02x:%02x:%02x:%02x\t| %d\n\r",
             adv_type,
             remote_addr_type,
-            (p_data->p_le_scan_info->bd_addr)[5],
-            (p_data->p_le_scan_info->bd_addr)[4],
-            (p_data->p_le_scan_info->bd_addr)[3],
-            (p_data->p_le_scan_info->bd_addr)[2],
-            (p_data->p_le_scan_info->bd_addr)[1],
-            (p_data->p_le_scan_info->bd_addr)[0],
-            p_data->p_le_scan_info->rssi);
+            (scan_info->bd_addr)[5],
+            (scan_info->bd_addr)[4],
+            (scan_info->bd_addr)[3],
+            (scan_info->bd_addr)[2],
+            (scan_info->bd_addr)[1],
+            (scan_info->bd_addr)[0],
+            scan_info->rssi);
 
-    parseScanInfo(p_data->p_le_scan_info);
-}
-
-void BLEScan::parseScanInfo(T_LE_SCAN_INFO *scan_info) {
     uint8_t buffer[32];
     uint8_t pos = 0;
 
     while (pos < scan_info->data_len) {
-        /* Length of the AD structure. */
+        // Length of the AD structure.
         uint8_t length = scan_info->data[pos++];
         uint8_t type;
 
         if ((length > 0x01) && ((pos + length) <= 31)) {
-            /* Copy the AD Data to buffer. */
+            // Copy the AD Data to buffer.
             memcpy(buffer, scan_info->data + pos + 1, length - 1);
-            /* AD Type, one octet. */
+            // AD Type, one octet.
             type = scan_info->data[pos];
 
             if (BTDEBUG) {
-                printf("ble_central_app_parse_scan_info: AD Structure Info: AD type 0x%x, AD Data Length %d\r\n", type, (length - 1));
+                printf("printScanInfo: AD Structure Info: AD type 0x%x, AD Data Length %d\r\n", type, (length - 1));
             }
 
             switch (type) {
                 case GAP_ADTYPE_FLAGS: {
-                    /* (flags & 0x01) -- LE Limited Discoverable Mode */
-                    /* (flags & 0x02) -- LE General Discoverable Mode */
-                    /* (flags & 0x04) -- BR/EDR Not Supported */
-                    /* (flags & 0x08) -- Simultaneous LE and BR/EDR to Same Device Capable (Controller) */
-                    /* (flags & 0x10) -- Simultaneous LE and BR/EDR to Same Device Capable (Host) */
+                    // (0x01) -- LE Limited Discoverable Mode
+                    // (0x02) -- LE General Discoverable Mode
+                    // (0x04) -- BR/EDR Not Supported
+                    // (0x08) -- Simultaneous LE and BR/EDR to Same Device Capable (Controller)
+                    // (0x10) -- Simultaneous LE and BR/EDR to Same Device Capable (Host)
                     uint8_t flags = scan_info->data[(pos + 1)];
                     printf("GAP_ADTYPE_FLAGS: 0x%x\n\r", flags);
                     break;
                 }
 
                 case GAP_ADTYPE_16BIT_MORE:
-                case GAP_ADTYPE_16BIT_COMPLETE:
-                case GAP_ADTYPE_SERVICES_LIST_16BIT: {
+                case GAP_ADTYPE_16BIT_COMPLETE: {
                     uint16_t *p_uuid = (uint16_t *)(buffer);
                     uint8_t i = length - 1;
 
@@ -199,8 +194,7 @@ void BLEScan::parseScanInfo(T_LE_SCAN_INFO *scan_info) {
                 }
 
                 case GAP_ADTYPE_128BIT_MORE:
-                case GAP_ADTYPE_128BIT_COMPLETE:
-                case GAP_ADTYPE_SERVICES_LIST_128BIT: {
+                case GAP_ADTYPE_128BIT_COMPLETE: {
                     uint32_t *p_uuid = (uint32_t *)(buffer);
                     printf("GAP_ADTYPE_128BIT_XXX: 0x%8x%8x%8x%8x\n\r", (unsigned int)p_uuid[3], (unsigned int)p_uuid[2], (unsigned int)p_uuid[1], (unsigned int)p_uuid[0]);
                     break;

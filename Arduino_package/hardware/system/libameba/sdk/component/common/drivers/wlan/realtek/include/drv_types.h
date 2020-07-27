@@ -1272,6 +1272,11 @@ struct _ADAPTER{
 	IFACE_ID1 is equals to VIRTUAL_ADAPTER*/
 	//u8 iface_id;
 #endif
+
+#if defined(LOW_POWER_WIFI_CONNECT) && LOW_POWER_WIFI_CONNECT
+	u8 disconnect_check_period;
+#endif
+
 };
 
 #define dvobj_to_macidctl(dvobj) (&(dvobj->macid_ctl))

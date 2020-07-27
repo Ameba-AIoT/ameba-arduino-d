@@ -65,7 +65,7 @@ int WiFiSSLClient::available() {
             return 1;
         } else {
             err = ssldrv.getLastErrno(&sslclient);
-            if (err != EAGAIN) {
+            if ((err > 0) && (err != EAGAIN)) {
                 _is_connected = false;
             }
         }
@@ -89,7 +89,7 @@ int WiFiSSLClient::read() {
         return b[0];
     } else {
         err = ssldrv.getLastErrno(&sslclient);
-        if (err != EAGAIN) {
+        if ((err > 0) && (err != EAGAIN)) {
             _is_connected = false;
         }
     }
@@ -104,7 +104,7 @@ int WiFiSSLClient::read(uint8_t* buf, size_t size) {
     ret = ssldrv.getDataBuf(&sslclient, buf, _size);
     if (ret <= 0) {
         err = ssldrv.getLastErrno(&sslclient);
-        if (err != EAGAIN) {
+        if ((err > 0) && (err != EAGAIN)) {
             _is_connected = false;
         }
     }

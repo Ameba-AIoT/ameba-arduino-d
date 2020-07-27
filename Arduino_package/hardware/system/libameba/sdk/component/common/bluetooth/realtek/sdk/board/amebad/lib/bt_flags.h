@@ -16,6 +16,7 @@
  *============================================================================*/
 #define F_BT_LE_GAP_CENTRAL_SUPPORT         (F_BT_LE_SUPPORT && 1)
 #define F_BT_LE_GAP_SCAN_SUPPORT            (F_BT_LE_SUPPORT && 1)
+#define F_BT_LE_GAP_SCAN_FILTER_SUPPORT     (F_BT_LE_SUPPORT && 1)
 #define F_BT_LE_GAP_PERIPHERAL_SUPPORT      (F_BT_LE_SUPPORT && 1)
 #define F_BT_LE_GATT_CLIENT_SUPPORT         (F_BT_LE_SUPPORT && 1)
 #define F_BT_LE_GATT_SERVER_SUPPORT         (F_BT_LE_SUPPORT && 1)

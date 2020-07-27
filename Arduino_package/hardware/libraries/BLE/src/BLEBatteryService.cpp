@@ -1,6 +1,5 @@
 #include "BLEDevice.h"
 #include "BLEBatteryService.h"
-#include "Arduino.h"
 
 #ifdef __cplusplus
 extern "C" {
