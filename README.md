@@ -16,3 +16,5 @@ Press "Install" at the right side.
 
 3. Select Ameba in "Tools" -> "Board" -> "Ameba Arduino".
 Now you are able to develop Arduino code and upload image onto Ameba.
+
+More information refer to https://www.amebaiot.com/en/ameba-arduino-summary/
