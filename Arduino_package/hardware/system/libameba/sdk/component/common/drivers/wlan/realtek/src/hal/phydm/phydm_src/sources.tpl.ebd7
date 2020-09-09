@@ -1,0 +1,31 @@
+TARGETNAME=phydm
+TARGETTYPE=LIBRARY
+
+RELEASETYPE=CUSTOM
+TARGETPATH=obj\$(_TGTCPU)\$(WINCEDEBUG)
+
+SYNCHRONIZE_DRAIN=1
+SYNCHRONIZE_BLOCK=1
+DISABLE_OPTIMIZER=1
+
+INCLUDES=\
+		.;					\
+		..;					\
+		$(SRC_ROOT)\Header;			\
+		$(SRC_ROOT)\Common;			\
+		$(HAL_INC_DIRS);			\
+		$(_WINCEROOT)\PUBLIC\COMMON\SDK\INC; 	\
+   	 	$(_WINCEROOT)\PUBLIC\COMMON\DDK\INC; 	\
+    		$(_WINCEROOT)\PUBLIC\COMMON\OAK\INC;	
+
+#
+# OS and Bus dependent setting.
+#
+#!include $(92CU_SRC_ROOT)\PLATFORM\NDIS5\USB\n51_CEx86_usb.inc
+!include $(SRC_ROOT)\$(PLATFORM_INC)
+
+#
+# Because we will copy HAL source file to HALSOURCE. But we can not copy HAL
+# root directory to HALSOURCE, otherwise, WDK6000 warning.
+#
+SOURCES = <!--TAG_REALTEK_SOURCE_FILES-->

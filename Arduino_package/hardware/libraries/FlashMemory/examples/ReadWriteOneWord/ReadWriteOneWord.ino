@@ -6,6 +6,7 @@
 
 void setup() {
     unsigned int value;
+
     /* request flash size 0x2000 from 0x00100000 */
     FlashMemory.begin(0x00100000, 0x2000);
 

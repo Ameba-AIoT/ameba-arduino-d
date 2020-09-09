@@ -24,9 +24,19 @@
  */
 #include <WiFi.h>
 
+// 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
+#define password_type                            0
+
 char ssid[] = "yourNetwork";                     // your network SSID (name)
-char key[] = "D0D0DEADF00DABBADEAFBEADED";       // your network key
+#if (password_type == 0)
+char key[] = "D0D0DEADF00DABBADEAFBEADED";       // your network key, Exactly 10 or 26 hexadecimal characters
 int keyIndex = 0;                                // your network key Index number
+#elif (password_type == 1)
+char pass[] = "secretPassword";                  // your network password, Exactly 5 or 13 ASCII characters
+#else
+    #error                                       // Error unsupported password type
+#endif
+
 int status = WL_IDLE_STATUS;                     // the Wifi radio's status
 
 void setup() {
@@ -52,8 +62,13 @@ void setup() {
     while (status != WL_CONNECTED) {
         Serial.print("Attempting to connect to WEP network, SSID: ");
         Serial.println(ssid);
+#if (password_type == 0)
         status = WiFi.begin(ssid, keyIndex, key);
-
+#elif (password_type == 1)
+        status = WiFi.begin(ssid, pass);
+#else
+    #error                                       // Error unsupported password type
+#endif
         // wait 10 seconds for connection:
         delay(10000);
     }

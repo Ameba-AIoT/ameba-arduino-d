@@ -1,0 +1,39 @@
+{
+  "Disable": "N",
+  "IsLib": "N",
+  "OutLib": "wlan.a",
+
+  "TargetDep": [
+    "rtl8195b-hp"
+  ],
+
+  "SecureDep": [
+    "NonSecure"
+  ],
+
+  "BuildModeDep": [
+    "All",
+    "Rom"
+  ],
+
+  "localIncludePath": [
+    ".",
+    "../../src/hci",
+    "../../src/osdep",
+    "../../src/osdep/freertos",
+    "../../../../../../sw/lib/api"
+  ],
+
+  "extraIncludes": [
+  ],
+
+  "extraCCFlags": [
+    "-DROM_REGION=1"
+  ],
+  
+  "excludePath": [
+  ],
+
+  "excludeSource": [
+  ]  
+}

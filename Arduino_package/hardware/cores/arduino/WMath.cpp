@@ -20,7 +20,8 @@
 #include "WMath.h"
 
 extern "C" {
-extern void rtl_srandom( uint32_t seed );
+//extern void rtl_srandom( uint32_t seed );
+extern uint32_t rtl_srandom( uint32_t seed );
 extern uint32_t rtl_random( void );
 }
 

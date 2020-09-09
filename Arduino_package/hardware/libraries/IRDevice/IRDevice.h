@@ -17,7 +17,7 @@ class IRDevice {
         uint8_t getFreq();
         void begin(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode, uint32_t freq);
         void end();
-        void send();
+        void send(const unsigned int buf[], uint16_t len);
         void recv();
         void beginNEC(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode);
         void sendNEC(uint8_t adr, uint8_t cmd);

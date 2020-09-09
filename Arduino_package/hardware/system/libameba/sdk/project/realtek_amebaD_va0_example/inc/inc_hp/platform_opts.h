@@ -100,12 +100,8 @@
 #endif
 
 /* For SSL/TLS */
-// zzw arduino
-#define CONFIG_USE_POLARSSL     1
-#define CONFIG_USE_MBEDTLS      0
-//#define CONFIG_USE_POLARSSL     0
-//#define CONFIG_USE_MBEDTLS      1
-
+#define CONFIG_USE_POLARSSL     0
+#define CONFIG_USE_MBEDTLS      1
 #if ((CONFIG_USE_POLARSSL == 0) && (CONFIG_USE_MBEDTLS == 0)) || ((CONFIG_USE_POLARSSL == 1) && (CONFIG_USE_MBEDTLS == 1))
 #undef CONFIG_USE_POLARSSL
 #define CONFIG_USE_POLARSSL 1

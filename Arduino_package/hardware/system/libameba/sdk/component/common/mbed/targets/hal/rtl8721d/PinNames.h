@@ -18,7 +18,7 @@ typedef enum {
 } GPIO_PORT;
 
 typedef enum {
-	PIN_INPUT = 0,
+	PIN_INPUT=0,
 	PIN_OUTPUT
 } PinDirection;
 
@@ -99,7 +99,7 @@ typedef enum {
 	AD_5 = PB_2, //CH5
 	AD_6 = PB_3, //CH6
 	AD_7 = VBAT_MEAS,//CH7
-
+	
 	// Not connected
 	NC = (uint32_t)0xFFFFFFFF
 } PinName;

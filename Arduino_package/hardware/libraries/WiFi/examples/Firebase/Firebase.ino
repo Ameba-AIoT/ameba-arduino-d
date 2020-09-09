@@ -60,8 +60,8 @@ void setup() {
     if (client.connect(server, 443)) {  //HTTPS default port 443
         Serial.println("connected to server");
         // Make a HTTP request:
-        sprintf(message,"%s%s%s%s%s%d%s%s%s","POST /fcm/send HTTP/1.1\nContent-Type: application/json\nAuthorization: key=",SERVER_KEY,"\nHost: ",HOST_NAME,"\nContent-Length: ",strlen(payload),"\n\n",payload,"\n");
-        printf("\nRequest:\n%s \n",message);
+        sprintf(message, "%s%s%s%s%s%d%s%s%s", "POST /fcm/send HTTP/1.1\nContent-Type: application/json\nAuthorization: key=", SERVER_KEY, "\nHost: ", HOST_NAME, "\nContent-Length: ", strlen(payload), "\n\n", payload, "\n");
+        printf("\nRequest:\n%s \n", message);
         client.println(message);
         client.println();
     }

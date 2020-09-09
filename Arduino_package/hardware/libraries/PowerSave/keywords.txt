@@ -1,0 +1,22 @@
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AmebaPowerSave              KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+PMUClass                    KEYWORD2
+begin                       KEYWORD2
+AONTimerDuration            KEYWORD2
+AONTimerCmd                 KEYWORD2
+RTCWakeSetup                KEYWORD2
+enable                      KEYWORD2
+AONWakeReason               KEYWORD2
+WakePinCheck                KEYWORD2
+AONWakeClear                KEYWORD2
+DsleepWakeStatusGet         KEYWORD2
+TL_sysactive_time           KEYWORD2
+TL_wakelock                 KEYWORD2

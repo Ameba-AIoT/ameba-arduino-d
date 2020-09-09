@@ -187,7 +187,91 @@ void IRDevice::end() {
     Pinmux_Config(_transmitPin, PINMUX_FUNCTION_GPIO);
 }
 
-void IRDevice::send() {
+/*!
+* @ brief:NEC protocol structure.
+* @ note: Store parameters of NEC protocol.
+* @ Carrier frequency = 38000Hz
+* @ duty factor = 1/2
+* @ first pulse : 9.5ms 4.5ms
+* @ Address (8 bits) is sent first, then ~Address
+* @ Command (8 bits) follows, then ~Command
+* @ LSB is sent first !
+*/
+const IR_ProtocolTypeDef NEC_PROTOCOL =
+	{
+		38000,										  /* Carrier freqency */
+		2,											  /* headerLen */
+		{PULSE_HIGH | 9000, PULSE_LOW | (4500 - 26)}, /* headerBuf unit: us*/
+		{PULSE_HIGH | 560, PULSE_LOW | (560 - 26)},	  /* log0Buf */
+		{PULSE_HIGH | 560, PULSE_LOW | (1690 - 26)},  /* log1Buf */
+		PULSE_HIGH | 560,							  /* stopBuf */
+		30											  /* tolerance percentage is 10% */
+};
+
+static IR_DataType ConvertToCarrierCycle(uint32_t time, uint32_t freq)
+{
+	return ((time & PULSE_HIGH) | ((time & IR_DATA_MSK) * freq / 1000000));
+}
+
+void IRDevice::send(const unsigned int buf[], uint16_t len) {
+    u32 tx_count = 0;
+    const u8 tx_thres = 1;
+    uint16_t index = 0;
+	uint16_t bufLen = 0;
+	uint32_t Log1[MAX_LOG_WAVFORM_SIZE];
+	uint32_t Log0[MAX_LOG_WAVFORM_SIZE];
+	uint32_t inputTime = 0;
+    IR_ProtocolTypeDef *IR_Protocol = (IR_ProtocolTypeDef *)(&NEC_PROTOCOL);
+    
+    IR_DataStruct.carrierFreq = IR_InitStruct.IR_Freq;
+    IR_DataStruct.codeLen = len;
+
+    for (index = 0; index < MAX_LOG_WAVFORM_SIZE; index++) 
+	{
+		Log0[index] = ConvertToCarrierCycle(IR_Protocol->log0Buf[index], IR_DataStruct.carrierFreq);
+		Log1[index] = ConvertToCarrierCycle(IR_Protocol->log1Buf[index], IR_DataStruct.carrierFreq);
+	}
+
+    for (unsigned int i = 1; i <= IR_DataStruct.codeLen; i++)
+	{
+		IR_DataStruct.irBuf[i] = buf[i - 1];
+
+		if (i & 1 == 1) 
+		{
+			inputTime = IR_DataStruct.irBuf[i] | PULSE_HIGH;
+			IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
+		}
+		else 
+		{
+			inputTime = (IR_DataStruct.irBuf[i] - 26) | PULSE_LOW; 
+			IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
+		}
+		bufLen += MAX_LOG_WAVFORM_SIZE;
+	}
+    bufLen++;
+	IR_DataStruct.bufLen = bufLen;
+
+    IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE); 
+    IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
+
+    tx_count += IR_TX_FIFO_SIZE;
+   
+    while ((IR_DataStruct.bufLen - tx_count) > 0) {
+        // while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
+        //     taskYIELD();
+        // }
+        if ((IR_DataStruct.bufLen - tx_count) > tx_thres) {
+            IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), tx_thres, FALSE);
+            tx_count += tx_thres;
+            
+        } else {
+            IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), (IR_DataStruct.bufLen - tx_count), TRUE);
+            tx_count = IR_DataStruct.bufLen;
+        }
+    }
+
+    vTaskDelay((200 / portTICK_RATE_MS));     
+    IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
 }
 
 void IRDevice::recv() {

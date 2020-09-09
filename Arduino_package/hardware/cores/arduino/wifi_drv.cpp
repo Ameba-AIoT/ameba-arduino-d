@@ -220,6 +220,10 @@ int8_t WiFiDrv::apSetPassphrase(const char *passphrase, uint8_t len)
     strcpy((char *)password, (char*)passphrase);
     ap.password = password;
     ap.password_len = len;
+    if (ap.password_len < 8) {
+        printf("Error: Password length can't less than 8\n\r");
+        ret = WL_FAILURE;
+    }
     return ret;
 }
 

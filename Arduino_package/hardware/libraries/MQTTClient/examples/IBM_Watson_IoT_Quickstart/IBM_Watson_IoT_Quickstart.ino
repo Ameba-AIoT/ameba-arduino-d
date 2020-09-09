@@ -30,7 +30,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print("Message arrived [");
     Serial.print(topic);
     Serial.print("] ");
-    for (int i = 0; i < length; i++) {
+    unsigned int i;
+    for (i = 0; i < length; i++) {
         Serial.print((char)(payload[i]));
     }
     Serial.println();
@@ -46,7 +47,7 @@ void reconnect() {
         // Attempt to connect
         if (client.connect(clientId)) {
             Serial.println("Connected successfully\n");
-            Serial.println("Temperature(in C)\tDevice Event (JSON)");
+            Serial.println("Device Event (JSON) \t Temperature(in C)");
             Serial.println("____________________________________________________________________________");
         } else {
             Serial.print("failed, rc=");
@@ -94,16 +95,16 @@ void loop() {
     }
 
     memset(publishPayload, 0, sizeof(publishPayload));
-    sprintf(publishPayload, "{\"d\":{\"myName\":\"Ameba\",\"temperature\":\"%.1f\"}}", getTemp());
-    printf("\t%s\r\n", publishPayload);
+    sprintf(publishPayload, "{\"d\":{\"myName\":\"Ameba\",\"temperature\":\"%d\"}}", getTemp());
+    printf("%s\r\n", publishPayload);
     client.publish(publishTopic, publishPayload);
     delay(1000);
 }
 
-float fakeTemp = 20.0;
-float getTemp(void) {
-    fakeTemp += 0.1;
-    if (fakeTemp > 21) {
+int fakeTemp = 20;
+int getTemp(void) {
+    fakeTemp += 1;
+    if (fakeTemp > 30) {
         fakeTemp = 20;
     }
     return fakeTemp;

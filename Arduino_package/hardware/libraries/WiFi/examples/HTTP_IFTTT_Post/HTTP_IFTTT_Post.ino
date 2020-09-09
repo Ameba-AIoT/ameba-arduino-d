@@ -18,8 +18,7 @@ const int kNetworkTimeout = 30 * 1000;
 const int kNetworkDelay = 1000;
 int status = WL_IDLE_STATUS;
 
-void setup()
-{
+void setup() {
     Serial.begin(115200);
     while (status != WL_CONNECTED) {
         Serial.print("Attempting to connect to SSID: ");
@@ -32,8 +31,7 @@ void setup()
     printWifiStatus();
 }
 
-void loop()
-{
+void loop() {
     int err = 0;
 
     WiFiClient c;

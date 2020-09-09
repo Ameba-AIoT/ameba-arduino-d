@@ -1,0 +1,232 @@
+//
+// Command:	+(OS, ...) -(OS, ...) [FILE]
+//		//: Comment at the beginning
+//		OS: * Ebd6 Ebd7 WinXP Vista Win7 Win8 WinBlue
+//		+: Add for OS
+//		-: Remove for OS
+//
+
++(*) [..\phydm_interface.c]
++(*) [..\phydm_debug.c]
++(*) [..\phydm_hwconfig.c]
++(*) [..\phydm_phystatus.c]
++(*) [..\phydm.c]
++(*) [..\phydm_DIG.c]
++(*) [..\phydm_soml.c]
++(*) [..\phydm_smt_ant.c]
++(*) [..\phydm_PathDiv.c]
++(*) [..\phydm_DynamicTxPower.c]
++(*) [..\phydm_RaInfo.c]
++(*) [..\phydm_AntDiv.c]
++(*) [..\phydm_AntDect.c]
++(*) [..\phydm_CfoTracking.c]
++(*) [..\PhyDM_Adaptivity.c]
++(*) [..\phydm_adc_sampling.c]
++(*) [..\phydm_psd.c]
++(*) [..\phydm_primary_cca.c]
++(*) [..\phydm_Beamforming.c]
++(*) [..\phydm_ccx.c]
++(*) [..\phydm_cck_pd.c]
++(*) [..\phydm_rssi_monitor.c]
++(*) [..\phydm_noisemonitor.c]
++(*) [..\phydm_dfs.c]
++(*) [..\phydm_auto_dbg.c]
++(*) [..\phydm_math_lib.c]
++(*) [..\phydm_api.c]
++(*) [..\phydm_pow_train.c]
++(*) [..\phydm_lna_sat.c]
++(*) [..\phydm_pmac_tx_setting.c]
++(*) [..\phydm_mp.c]
++(*) [..\phydm_direct_bf.c]
++(*) [..\phydm_cck_rx_pathdiv.c]
+
+// 8188E Start
++(*) [Hal8188ERateAdaptive.c]
++(*) [HalHWImg8188E_MAC.c]
++(*) [HalHWImg8188E_RF.c]
++(*) [HalHWImg8188E_BB.c]
++(*) [phydm_RegConfig8188E.c]
++(*) [phydm_RTL8188E.c]
+// 8188E End
+
+// 8188F Start
++(*) [HalHWImg8188F_BB.c]
++(*) [HalHWImg8188F_MAC.c]
++(*) [HalHWImg8188F_RF.c]
++(*) [phydm_RegConfig8188F.c]
++(*) [phydm_rtl8188f.c]
+// 8188F End
+
+// 8192E Start
++(*) [HalHWImg8192E_MAC.c]
++(*) [HalHWImg8192E_RF.c]
++(*) [HalHWImg8192E_BB.c]
++(*) [phydm_RegConfig8192E.c]
++(*) [phydm_RTL8192E.c]
+// 8192E End
+
+// 8723B Start
++(*) [HalHWImg8723B_MAC.c]
++(*) [HalHWImg8723B_RF.c]
++(*) [HalHWImg8723B_BB.c]
++(*) [phydm_RegConfig8723B.c]
++(*) [phydm_RTL8723B.c]
+// 8723B End
+
+// 8703B Start
++(*) [HalHWImg8703B_BB.c]
++(*) [HalHWImg8703B_MAC.c]
++(*) [HalHWImg8703B_RF.c]
++(*) [phydm_RegConfig8703B.c]
++(*) [phydm_rtl8703B.c]
+// 8703B End
+
+// 8723D Start
++(*) [HalHWImg8723D_MAC.c]
++(*) [HalHWImg8723D_RF.c]
++(*) [HalHWImg8723D_BB.c]
++(*) [phydm_RegConfig8723D.c]
++(*) [phydm_rtl8723d.c]
+// 8723D End
+
+// 8710B Start
++(*) [HalHWImg8710B_MAC.c]
++(*) [HalHWImg8710B_RF.c]
++(*) [HalHWImg8710B_BB.c]
++(*) [phydm_RegConfig8710B.c]
++(*) [phydm_rtl8710b.c]
+// 8710B End
+
+// 8812A Start
++(*) [HalHWImg8812A_MAC.c]
++(*) [HalHWImg8812A_BB.c]
++(*) [HalHWImg8812A_RF.c]
++(*) [phydm_RegConfig8812A.c]
++(*) [phydm_RTL8812A.c]
+// 8812A End
+
+// 8821A Start
++(*) [HalHWImg8821A_MAC.c]
++(*) [HalHWImg8821A_BB.c]
++(*) [HalHWImg8821A_RF.c]
++(*) [phydm_RTL8821A.c]
++(*) [phydm_RegConfig8821A.c]
+// 8821A End
+
+// 8822B Start
++(*) [halhwImg8822b_mac.c]
++(*) [halhwImg8822b_rf.c]
++(*) [halhwImg8822b_bb.c]
++(*) [phydm_regconfig8822b.c]
++(*) [phydm_rtl8822b.c]
++(*) [phydm_hal_api8822b.c]
+// 8822B End
+
+// 8821C Start
++(*) [halhwImg8821c_mac.c]
++(*) [halhwImg8821c_rf.c]
++(*) [halhwImg8821c_bb.c]
++(*) [phydm_regconfig8821c.c]
++(*) [phydm_hal_api8821c.c]
+// 8821C End
+
+// 8814A Start
++(*) [HalHWImg8814A_MAC.c]
++(*) [HalHWImg8814A_RF.c]
++(*) [HalHWImg8814A_BB.c]
++(*) [phydm_RegConfig8814A.c]
++(*) [phydm_RTL8814A.c]
+// 8814A End
+
+// 8192F Start
++(*) [halhwImg8192f_mac.c]
++(*) [halhwImg8192f_rf.c]
++(*) [halhwImg8192f_bb.c]
++(*) [phydm_regconfig8192f.c]
++(*) [phydm_rtl8192f.c]
++(*) [phydm_hal_api8192f.c]
+// 8192F End
+
+// 8195B Start
+//+(*) [phydm_hal_api8195b.c]
+// 8195B End
+
+// 8198F Start
+//+(*) [halhwImg8198f_mac.c]
+//+(*) [halhwImg8198f_rf.c]
+//+(*) [halhwImg8198f_bb.c]
+//+(*) [phydm_regconfig8198f.c]
+//+(*) [phydm_hal_api8198F.c]
+// 8198F End
+
+// 8814B Start
++(*) [halhwImg8814b_rf.c]
++(*) [halhwImg8814b_bb.c]
++(*) [phydm_regconfig8814b.c]
++(*) [phydm_hal_api8814b.c]
+// 8814B End
+
+// 8822C Start
++(*) [halhwImg8822c_rf.c]
++(*) [halhwImg8822c_bb.c]
++(*) [phydm_regconfig8822c.c]
++(*) [phydm_hal_api8822c.c]
++(*) [phydm_rtl8822c.c]
+// 8822C End
+
+// HALRF Start
++(*) [HalPhyRf_WIN.c]
++(*) [halrf.c]
++(*) [halrf_debug.c]
++(*) [halrf_powertracking_win.c]
++(*) [halrf_powertracking.c]
++(*) [halrf_kfree.c]
++(*) [halrf_txgapcal.c]
++(*) [halrf_psd.c]
+
++(*) [halrf_8188e_win.c]
++(*) [halrf_8192e_win.c]
++(*) [halrf_8814a_win.c]
++(*) [halrf_iqk_8814a.c]
++(*) [halrf_8812a_win.c]
++(*) [halrf_8821a_win.c]
++(*) [halrf_8723b_win.c]
++(*) [halrf_8703b.c]
++(*) [halrf_8188f.c]
++(*) [halrf_8723d.c]
++(*) [halrf_8710b.c]
++(*) [halrf_8192f.c]
+
+// HALRF 8821C Start
+
++(*) [halrf_8821c.c]
++(*) [halrf_iqk_8821c.c]
+
+// HALRF 8822B Start
+
++(*) [halrf_8822b.c]
++(*) [halrf_iqk_8822b.c]
++(*) [halrf_rfk_init_8822b.c]
+
+// HALRF 8822C Start
++(*) [halrf_8822c.c]
++(*) [halrf_iqk_8822c.c]
++(*) [halrf_tssi_8822c.c]
++(*) [halrf_dpk_8822c.c]
++(*) [halrf_rfk_init_8822c.c]
+
+// HALRF 8814B Start
++(*) [halrf_8814b.c]
++(*) [halrf_iqk_8814b.c]
++(*) [halrf_rfk_init_8814b.c]
++(*) [halrf_dpk_8814b.c]
+
+// HALRF End
+
++(*) [HalTxbfJaguar.c]
++(*) [HalTxbfinterface.c]
++(*) [HalTxbf8192E.c]
++(*) [HalTxbf8814A.c]
++(*) [haltxbf8822b.c]
++(*) [HalComTxbf.c]
++(*) [phydm_hal_txbf_api.c]
