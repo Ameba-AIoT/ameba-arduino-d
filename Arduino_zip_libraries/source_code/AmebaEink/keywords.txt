@@ -1,0 +1,67 @@
+#######################################
+# Display for Waveshare Eink Modules
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AmebaEink                   KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+qrcode_getBufferSize        KEYWORD2
+qrcode_initText             KEYWORD2
+qrcode_initBytes            KEYWORD2
+qrcode_getModule            KEYWORD2
+
+EpdIf                       KEYWORD2
+~EpdIf                      KEYWORD2
+EPD_Dis_Part                KEYWORD2
+EPD_SetFrame                KEYWORD2
+EPD_SetRAMValue_BaseMap     KEYWORD2
+EPD_SetFrameMemory          KEYWORD2
+EPD_UpdateDisplay           KEYWORD2
+EPD_Part_Update             KEYWORD2
+EPD_ClearScreen_White       KEYWORD2
+EPD_ClearScreen_Black       KEYWORD2
+EPD_Busy                    KEYWORD2
+EPD_Sleep                   KEYWORD2
+EPD_Reset                   KEYWORD2
+driver_delay_us             KEYWORD2
+driver_delay_xms            KEYWORD2
+DELAY_S                     KEYWORD2
+SPI_Delay                   KEYWORD2
+SpiTransfer                 KEYWORD2
+SendData                    KEYWORD2
+SendCommand                 KEYWORD2
+EPD_Init                    KEYWORD2
+EPD_InitText                KEYWORD2
+EPD_Part_Init               KEYWORD2
+SetLUT                      KEYWORD2
+
+Paint                       KEYWORD2
+~Paint                      KEYWORD2
+Clear                       KEYWORD2
+GetWidth                    KEYWORD2
+SetWidth                    KEYWORD2
+GetHeight                   KEYWORD2
+SetHeight                   KEYWORD2
+GetRotate                   KEYWORD2
+SetRotate                   KEYWORD2
+GetImage                    KEYWORD2
+DrawAbsolutePixel           KEYWORD2
+DrawPixel                   KEYWORD2
+DrawLine                    KEYWORD2
+DrawHorizontalLinent        KEYWORD2 
+DrawVerticalLinent          KEYWORD2
+DrawRectangle               KEYWORD2
+DrawFilledRectangle         KEYWORD2
+DrawCirclent                KEYWORD2
+DrawFilledCircle            KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
