@@ -456,8 +456,8 @@
               "host": "i686-mingw32",
               "archiveFileName": "ameba_d_tools_windows-1.0.4.tar.gz",
               "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_windows-1.0.4.tar.gz",
-              "checksum": "SHA-256:2b9925ffca10d7bfcfa4b65d9f7f7bdfd261b1a61199e1c25147fd5204158ab9",
-              "size": "9565551"
+              "checksum": "SHA-256:4b4deef71f2a67697fc5b87294d4657ea8e78b0d88aac81f3966a81d3bae67cb",
+              "size": "4137088"
             },
             {
               "host": "x86_64-pc-linux-gnu",
