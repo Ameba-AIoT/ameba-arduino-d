@@ -91,7 +91,7 @@ typedef void (*usb_req_complete_t)(struct usb_ep *, struct usb_request *);
  * @status: Reports completion code, zero or a negative errno.
  *  Normally, faults block the transfer queue from advancing until
  *  the completion callback returns.
- *  Code "-ESHUTDOWN" indicates completion caused by device disconnect,
+ *  Code "-USB_ESHUTDOWN" indicates completion caused by device disconnect,
  *  or when the driver disabled the endpoint.
  * @actual: Reports bytes transferred to/from the buffer.  For reads (OUT
  *  transfers) this may be less than the requested length.  If the
@@ -342,6 +342,7 @@ struct usb_gadget_driver {
     void (*resume)(struct usb_gadget *);
 
     void *driver;
+    struct usb_config_descriptor *config_desc;
 };
 
 struct gadget_wrapper {

@@ -25,6 +25,12 @@
 #include <string.h>
 #include <math.h>
 
+//#define Arduino_STD_PRINTF
+
+#ifdef Arduino_STD_PRINTF
+#include <stdio.h>
+#endif
+
 #include "binary.h"
 
 #ifdef __cplusplus
@@ -44,11 +50,14 @@ void yield(void);
 extern uint32_t                     DiagPrintf(const char *fmt, ...);
 extern int                          _rtl_printf(const char *fmt, ...);
 extern int                          _rtl_sprintf(char* str, const char* fmt, ...);
+
+#ifndef Arduino_STD_PRINTF
 #ifndef printf
 #define printf                      _rtl_printf
 #endif
 #ifndef sprintf
 #define sprintf                     _rtl_sprintf
+#endif
 #endif
 
 extern void *pvPortMalloc(size_t xWantedSize);

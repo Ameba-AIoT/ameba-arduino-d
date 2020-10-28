@@ -1,4 +1,0 @@
-LIBRARY iothub_client_dll
-EXPORTS
-    IoTHubClient_UploadToBlobAsync
-    IOTHUB_CLIENT_FILE_UPLOAD_GET_DATA_RESULTStrings

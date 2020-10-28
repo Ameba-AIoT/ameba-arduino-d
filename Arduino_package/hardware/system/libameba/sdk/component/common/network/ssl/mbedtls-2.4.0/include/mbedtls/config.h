@@ -12,7 +12,14 @@
 #define RTL_CRYPTO_FRAGMENT               15360
 #endif
 
-#if defined(CONFIG_SSL_ROM)
+#if defined(CONFIG_PLATFORM_8710C)
+//#define SUPPORT_HW_SSL_HMAC_SHA256
+#endif
+
+#if defined(ARDUINO_SDK)
+#include "platform_stdlib.h"
+#include "mbedtls/config_arduino.h"
+#elif defined(CONFIG_SSL_ROM)
 #include <section_config.h>
 #include "platform_stdlib.h"
 #include "mbedtls/config_rom.h"
@@ -20,6 +27,11 @@
 #elif defined(CONFIG_BAIDU_DUER) && CONFIG_BAIDU_DUER
 #define CONFIG_SSL_RSA          0
 #include "baidu_ca_mbedtls_config.h"
+#elif defined(ENABLE_AMAZON_COMMON)
+#undef CONFIG_SSL_RSA
+#define CONFIG_SSL_RSA          0
+#include "platform_stdlib.h"
+#include "mbedtls/config_amazon.h"
 #elif defined(CONFIG_SSL_RSA) && CONFIG_SSL_RSA
 #include "platform_stdlib.h"
 #include "mbedtls/config_rsa.h"

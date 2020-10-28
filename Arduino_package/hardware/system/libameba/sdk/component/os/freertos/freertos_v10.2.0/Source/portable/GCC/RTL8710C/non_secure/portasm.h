@@ -110,4 +110,14 @@ void vPortAllocateSecureContext( uint32_t ulSecureStackSize ) __attribute__ (( n
  */
 void vPortFreeSecureContext( uint32_t *pulTCB ) __attribute__ (( naked )) PRIVILEGED_FUNCTION;
 
+/**
+ * @brief Do SVCall ulR0(ulR1, ulR2, ulR3).
+ *
+ * @param[in] ulR0 Pointer to function
+ * @param[in] ulR1 1st parameter
+ * @param[in] ulR2 2nd parameter
+ * @param[in] ulR3 3rd parameter
+ */
+int vPortDoSecCall( uint32_t ulR0, uint32_t ulR1, uint32_t ulR2, uint32_t ulR3 ) __attribute__ (( naked )) PRIVILEGED_FUNCTION;
+
 #endif /* __PORT_ASM_H__ */

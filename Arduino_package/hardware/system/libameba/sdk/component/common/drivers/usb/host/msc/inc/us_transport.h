@@ -33,7 +33,7 @@
 /*
  * We used to have USB_STOR_XFER_ABORTED and USB_STOR_TRANSPORT_ABORTED
  * return codes.  But now the transport and low-level transfer routines
- * treat an abort as just another error (-ENOENT for a cancelled URB).
+ * treat an abort as just another error (-USB_ENOENT for a cancelled URB).
  * It is up to the invoke_transport() function to test for aborts and
  * distinguish them from genuine communication errors.
  */

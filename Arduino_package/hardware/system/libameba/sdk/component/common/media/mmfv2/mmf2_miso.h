@@ -8,6 +8,7 @@
 typedef struct mm_miso_s{
 	int input_cnt;
 	mm_context_t *input[4];  // max 4 input
+	int input_port_idx[4];
 
 	mm_context_t *output;
 

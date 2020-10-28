@@ -7,6 +7,7 @@
 #define BT_VENDOR_CMD_ONE_SHOT_SUPPORT      1
 #define BT_VENDOR_CMD_ADV_TX_POWER_SUPPORT  1
 #define BT_VENDOR_CMD_CONN_TX_POWER_SUPPORT 1
+#define BT_VENDOR_CMD_SLAVE_LATENCY_SUPPORT 1
 
 /** @brief  LE Vendor Command Opcode*/
 #define HCI_LE_VENDOR_EXTENSION_FEATURE2        0xFC87
@@ -14,6 +15,7 @@
 
 #define HCI_LE_VENDOR_EXTENSION_FEATURE         0xFD80
 #define HCI_EXT_SUB_SET_ADV_TX_POWER            0
+#define HCI_EXT_SUB_DISABLE_LATENCY             1
 #define HCI_EXT_SUB_SET_LINK_TX_POW             0xC
 
 /**
@@ -168,6 +170,10 @@ T_GAP_CAUSE le_adv_set_tx_power(uint8_t option, uint8_t tx_gain);
   */
 #if BT_VENDOR_CMD_CONN_TX_POWER_SUPPORT
 T_GAP_CAUSE le_set_conn_tx_power(uint8_t conn_id, bool reset, uint8_t tx_gain);
+#endif
+
+#if BT_VENDOR_CMD_SLAVE_LATENCY_SUPPORT
+T_GAP_CAUSE le_disable_slave_latency(uint8_t conn_id, bool disable);
 #endif
 
 /**

@@ -22,6 +22,8 @@ typedef struct _mp4root{
 #define STORAGE_WRITE_VIDEO     4
 #define STORAGE_WRITE_AUDIO     5
 #define STORAGE_STOP            6
+#define STORAGE_END             7
+#define STORAGE_ERROR           8
 
 #define STORAGE_ALL     0
 #define STORAGE_VIDEO   1
@@ -37,7 +39,7 @@ typedef struct _mp4_context{
 	int         drv_num;
 	char        _drv[4];
 	FIL         m_file;
-	char        filename[32];
+	char        filename[128];
 	int         Fatfs_ok;
 	int         filecount;
 	int         width;
@@ -90,8 +92,11 @@ typedef struct _mp4_context{
 	unsigned    int  *audio_timestamp_buffer;
 	int (*cb_start)(void*);
 	int (*cb_stop)(void*);
-	int (*cb_end)(void*);
+        int (*cb_end)(void*);
+        int (*cb_error)(void*);
+        int (* sd_card_is_mounted_cb)(void);//Provide the sd card detection, 1:The sd card is alive 0:The sd card is removed
 	int loop_mode;
+        int remove_append_name;//1. without .mp4 0.default
 }mp4_context,*pmp4_context;
 
 void mp4_muxer_init(pmp4_context mp4_ctx);
@@ -101,6 +106,7 @@ void set_mp4_fatfs_param(pmp4_context mp4_ctx, fatfs_sd_params_t* fatfs_param);
 u8 mp4_is_recording(pmp4_context mp4_ctx);
 int mp4_start_record(pmp4_context mp4_ctx, int file_num);
 int mp4_stop_record(pmp4_context mp4_ctx);
+int mp4_stop_record_immediately(pmp4_context mp4_ctx);
 void mp4_muxer_handle(pmp4_context mp4_ctx,unsigned char *buf,unsigned int size,int type,unsigned int timestamp);
 
 #endif //_MP4_MUXER_H_

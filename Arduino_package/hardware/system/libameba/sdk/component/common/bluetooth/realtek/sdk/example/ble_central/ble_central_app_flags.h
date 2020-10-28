@@ -17,7 +17,9 @@
 
 #include <trace_app.h>
 #include <bt_flags.h>
+
 #include <app_common_flags.h>
+
 
 /** @defgroup  CENTRAL_CLIENT_Config Central Client App Configuration
     * @brief This file is used to config app functions.

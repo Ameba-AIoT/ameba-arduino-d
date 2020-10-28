@@ -21,6 +21,10 @@
 #define CMD_H264_FORCE_IFRAME		MM_MODULE_CMD(0x0e)
 #define CMD_H264_SET_RCADVPARAM		MM_MODULE_CMD(0x10)
 #define CMD_H264_GET_RCADVPARAM		MM_MODULE_CMD(0x11)
+#define CMD_H264_SET_ROIPARM		MM_MODULE_CMD(0x12)
+#define CMD_H264_SET_ROI		MM_MODULE_CMD(0x13)
+#define CMD_H264_SET_QPCHROMA_OFFSET    MM_MODULE_CMD(0x14)
+#define CMD_H264_SET_FORCE_DROP_FRAME   MM_MODULE_CMD(0x15)
 
 #define CMD_SNAPSHOT_ENCODE_CB		MM_MODULE_CMD(0x30)
 
@@ -43,7 +47,9 @@ typedef struct h264_params_s{
 	uint32_t fps;
 	uint32_t gop;
 	uint32_t rc_mode;
-	uint32_t vbr_mode;			// mode 0: fixed min/max QP (try to keep quality), mode 1: flexible min/max QP (try to fit requried bitrate)
+	uint32_t auto_qp;			// 1 : enable auto QP, discard qpMin, qpMax
+	uint32_t rst_rcerr;			// 1 : reset rc error when rate change
+        uint32_t rotation;                      // 0 : Rotate 0 1:Rotate 90R 2: Rorate 90L
 	uint32_t mem_total_size;
 	uint32_t mem_block_size;
 	uint32_t mem_frame_size;
@@ -69,6 +75,15 @@ typedef struct h264_rc_adv_parm_s
 	int mbQpAdjustment;
 	unsigned int mbQpAutoBoost;
 }h264_rc_adv_parm_t;
+
+typedef struct h264_roi_parm_s
+{
+	unsigned int enable;
+	unsigned int left;		// for fixed QP
+	unsigned int right;		// for fixed QP
+	unsigned int top;		// for CBR/VBR
+	unsigned int bottom;	// for CBR/VBR
+}h264_roi_parm_t;
 
 extern mm_module_t h264_module;
 

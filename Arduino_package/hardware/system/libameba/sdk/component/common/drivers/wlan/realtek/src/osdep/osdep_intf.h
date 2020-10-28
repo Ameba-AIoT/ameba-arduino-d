@@ -63,27 +63,6 @@ struct pkt_buff {
 #include "ecos/ecos_mlme.h"
 #include "ecos/ecos_intfs.h"
 
-#ifdef CONFIG_PROC_DEBUG  //need move to ecos/ecos_intfs.h
-void rtw_proc_init_one(struct net_device *dev);
-void rtw_proc_remove_one(struct net_device *dev);
-#else
-static void rtw_proc_init_one(struct net_device *dev){}
-static void rtw_proc_remove_one(struct net_device *dev){}
-#endif //CONFIG_PROC_DEBUG
-
-#elif defined(PLATFORM_LINUX)
-int rtw_ioctl(struct net_device *dev, struct ifreq *rq, int cmd);
-
-int rtw_init_netdev_name(struct net_device *pnetdev, const char *ifname);
-struct net_device *rtw_init_netdev(_adapter *padapter);
-
-#ifdef CONFIG_PROC_DEBUG
-void rtw_proc_init_one(struct net_device *dev);
-void rtw_proc_remove_one(struct net_device *dev);
-#else
-static void rtw_proc_init_one(struct net_device *dev){}
-static void rtw_proc_remove_one(struct net_device *dev){}
-#endif //CONFIG_PROC_DEBUG
 #endif
 
 #ifdef CONFIG_CONCURRENT_MODE
@@ -103,28 +82,5 @@ void	rtw_netif_stop_queue(struct net_device *pnetdev);
 
 struct pkt_buff *rtw_alloc_pktbuf(unsigned int size);
 void rtw_free_pktbuf(struct pkt_buff *skb);
-
-#if 0
-int RTW_STATUS_CODE(int error_code);
-
-//flags used for rtw_update_mem_stat()
-enum {
-	MEM_STAT_VIR_ALLOC_SUCCESS,
-	MEM_STAT_VIR_ALLOC_FAIL,
-	MEM_STAT_VIR_FREE,
-	MEM_STAT_PHY_ALLOC_SUCCESS,
-	MEM_STAT_PHY_ALLOC_FAIL,
-	MEM_STAT_PHY_FREE,
-	MEM_STAT_TX, //used to distinguish TX/RX, asigned from caller
-	MEM_STAT_TX_ALLOC_SUCCESS,
-	MEM_STAT_TX_ALLOC_FAIL,
-	MEM_STAT_TX_FREE,
-	MEM_STAT_RX, //used to distinguish TX/RX, asigned from caller
-	MEM_STAT_RX_ALLOC_SUCCESS,
-	MEM_STAT_RX_ALLOC_FAIL,
-	MEM_STAT_RX_FREE
-};
-#endif
-
 #endif	//_OSDEP_INTF_H_
 

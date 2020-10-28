@@ -79,7 +79,7 @@
 #endif
 #define CONFIG_LITTLE_ENDIAN
 #define CONFIG_80211N_HT
-//#define CONFIG_RECV_REORDERING_CTRL
+#define CONFIG_RECV_REORDERING_CTRL
 #define RTW_NOTCH_FILTER 0
 #define CONFIG_EMBEDDED_FWIMG
 #define CONFIG_PHY_SETTING_WITH_ODM
@@ -145,7 +145,7 @@
 	#ifdef CONFIG_HIGH_TP_TEST
     		#define RX_AGGREGATION 1
 	#else
-		#define RX_AGGREGATION 0
+		#define RX_AGGREGATION 1
 	#endif
 	#define RX_AMSDU 0
 #endif
@@ -232,16 +232,23 @@
 #define PSK_SUPPORT_TKIP	1
 #endif
 
-#define CONFIG_PMKSA_CACHING
+//#define CONFIG_PMKSA_CACHING
 
 /* For WPA3 */
+//#define CONFIG_IEEE80211W
+//#define CONFIG_SAE_SUPPORT
+#ifdef CONFIG_SAE_SUPPORT
+#define CONFIG_SAE_DH_SUPPORT 1
+//#define ALL_DH_GROUPS
+#endif
+
+//#define CONFIG_RTK_MESH
+#ifdef CONFIG_RTK_MESH
 #define CONFIG_IEEE80211W
 #define CONFIG_SAE_SUPPORT
-#ifdef CONFIG_SAE_SUPPORT
 #define CONFIG_SAE_DH_SUPPORT 1
 #define ALL_DH_GROUPS
 #endif
-
 
 
 /* For promiscuous mode */
@@ -269,20 +276,16 @@
   #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
     #define CONFIG_RUNTIME_PORT_SWITCH
   #endif
-  #ifdef CONFIG_BRIDGE
-    #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_BRIDGE) + (CONFIG_WLAN) + 1)
-  #else
-    #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
-  #endif
+  #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
 #else
   #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN))
 #endif
 
 
 /****************** For EAP auth configurations *******************/
-#define CONFIG_TLS	1
-#define CONFIG_PEAP	1
-#define CONFIG_TTLS	1
+#define CONFIG_TLS	0
+#define CONFIG_PEAP	0
+#define CONFIG_TTLS	0
 
 // DO NOT change the below config of EAP
 #ifdef PRE_CONFIG_EAP
@@ -426,6 +429,7 @@ extern unsigned int g_ap_sta_num;
 		//#define CONFIG_BT_COEXIST
 		//#define CONFIG_SW_MAILBOX_EN
 		//#define NEW_BT_COEX
+		#define CONFIG_BT_COEXIST_SOC
 	#endif
 #endif // #ifdef CONFIG_MP_INCLUDED
 
@@ -508,6 +512,8 @@ extern unsigned int g_ap_sta_num;
 		//#define CONFIG_TRAFFIC_PROTECT
 		#undef SUPPORT_5G_CHANNEL
 		#define SUPPORT_5G_CHANNEL	1
+		//#define RX_SHORTCUT
+		//#define TX_SHORTCUT
 		#define CONFIG_DFS
 		#define CONFIG_XMIT_ACK
 		#define TXBD_PRE_MALLOC
@@ -530,6 +536,7 @@ extern unsigned int g_ap_sta_num;
 			#undef CONFIG_CONCURRENT_MODE
 			#undef CONFIG_AUTO_RECONNECT
 		#endif
+		//#define CONFIG_WIFI_MESH	0	
 	#endif
 	#if defined(CONFIG_PLATFORM_8195BHP)
 		#define CONFIG_RTL8195B
@@ -642,6 +649,10 @@ extern unsigned int g_ap_sta_num;
 		#if defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 3)
 		#define CONFIG_MAC_LOOPBACK_DRIVER_AMEBA
 		#endif
+		#define CONFIG_UNSUPPORT_PLCPHDR_RPT 1
+
+		//#define CONFIG_ENHANCE_ACTIVE_SCAN	// double scan action on each channel and reduce SURVEY_TO to half	
+		//#define CONFIG_WLAN_SWITCH_MODE         //save memory while switching mode without driver re-init
 	#endif
 #elif defined(CONFIG_HARDWARE_8188F)
 #define CONFIG_RTL8188F
@@ -857,5 +868,13 @@ extern unsigned int g_ap_sta_num;
 #define WLAN_WRAPPER_VERSION 1
 
 #define TIME_THRES	20
+
+/* 80211 - K V R */
+//#define CONFIG_IEEE80211K
+//#define CONFIG_LAYER2_ROAMING
+#ifdef CONFIG_LAYER2_ROAMING
+    //#define CONFIG_RTW_WNM
+    //#define CONFIG_IEEE80211R
+#endif
 
 #endif //WLANCONFIG_H

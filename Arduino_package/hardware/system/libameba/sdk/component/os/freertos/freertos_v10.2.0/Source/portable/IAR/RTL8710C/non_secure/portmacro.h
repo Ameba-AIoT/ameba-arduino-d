@@ -204,6 +204,8 @@ typedef struct MPU_SETTINGS
 #define portSVC_FREE_SECURE_CONTEXT							1
 #define portSVC_START_SCHEDULER								2
 #define portSVC_RAISE_PRIVILEGE								3
+
+#define portSVC_SECCALL										0x10
 /*-----------------------------------------------------------*/
 
 /**
@@ -252,7 +254,12 @@ typedef struct MPU_SETTINGS
 	 *
 	 * @param[in] pxTCB The TCB of the task being deleted.
 	 */
-	#define portCLEAN_UP_TCB( pxTCB )							vPortFreeSecureContext( ( uint32_t * ) pxTCB )
+	#define portCLEAN_UP_TCB( pxTCB )	do{\
+		int in_critical = __get_PRIMASK();\
+		if(in_critical) portEXIT_CRITICAL();\
+			vPortFreeSecureContext( ( uint32_t * ) pxTCB );\
+		if(in_critical) portENTER_CRITICAL();\
+	    }while(0)
 #else
 	#define portALLOCATE_SECURE_CONTEXT( ulSecureStackSize )
 	#define portCLEAN_UP_TCB( pxTCB )

@@ -1,6 +1,7 @@
 #ifndef _BLE_BATTSERVICE_H_
 #define _BLE_BATTSERVICE_H_
 
+#include <Arduino.h>
 #include "BLEAdvertData.h"
 
 #ifdef __cplusplus

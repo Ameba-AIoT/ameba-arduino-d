@@ -51,12 +51,6 @@
 #define MM_STAT_ERR_QUEUE			0x12
 #define MM_STAT_ERR_NEWITEM			0x13
 
-/* common error code for MMF */
-#define EAGAIN          11
-#define	EFAULT          14
-#define	EINVAL          22
-#define ENOSR			63
-
 typedef struct mm_module_s{
     void* (*create)(void*);
 	void* (*destroy)(void*);
@@ -117,7 +111,7 @@ typedef struct mm_queue_item_s{
 }mm_queue_item_t;
 
 
-extern void mm_module_ctrl(mm_context_t *ctx, int cmd, int arg);
+extern int mm_module_ctrl(mm_context_t *ctx, int cmd, int arg);
 extern mm_context_t* mm_module_open(mm_module_t *mm );
 extern mm_context_t* mm_module_close(mm_context_t *ctx);
 

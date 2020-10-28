@@ -38,10 +38,6 @@
 #include "rtl8711b/Hal8711BPhyCfg.h"
 #include "rtl8711b/rom_Hal8711BPhyCfg.h"
 
-#ifdef DBG_CONFIG_ERROR_DETECT
-#include "rtl8711b/rtl8711b_sreset.h"
-#endif
-
 #include "../src/hal/OUTSRC/phydm_precomp.h"
 
 #if (RTL8711B_SUPPORT==1)

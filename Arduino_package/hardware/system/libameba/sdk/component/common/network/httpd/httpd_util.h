@@ -39,11 +39,13 @@ void httpd_page_remove(struct httpd_page *page);
 void httpd_page_clear(void);
 struct httpd_conn *httpd_conn_add(int sock);
 void httpd_conn_remove(struct httpd_conn *conn);
+void httpd_conn_detach(struct httpd_conn *conn);
 void httpd_conn_clear(void);
 void httpd_query_remove_special(uint8_t *input, size_t input_len, uint8_t *output, size_t output_len);
 int httpd_write(struct httpd_conn *conn, uint8_t *buf, size_t buf_len);
 int httpd_read(struct httpd_conn *conn, uint8_t *buf, size_t buf_len);
 int httpd_read_with_timeout(struct httpd_conn *conn, uint8_t *buf, uint16_t buf_len, int recv_timeout);
+void httpd_buf_tolower(uint8_t *buf, size_t buf_len);
 
 int httpd_tls_setup_init(const char *server_cert,const  char *server_key, const char *ca_certs);
 void httpd_tls_setup_free(void);

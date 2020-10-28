@@ -154,6 +154,11 @@ BaseType_t xPortStartScheduler( void ) PRIVILEGED_FUNCTION;
 void vPortEndScheduler( void ) PRIVILEGED_FUNCTION;
 
 /*
+ * Do SVC seccall to some function that need privilege or environment to execute
+ */
+int vPortSecCall( void *pvFunc, uint32_t ulArg0, uint32_t ulArg1, uint32_t ulArg2 ) PRIVILEGED_FUNCTION;
+
+/*
  * The structures and methods of manipulating the MPU are contained within the
  * port layer.
  *

@@ -41,6 +41,17 @@
 #define CMD_RTSP2_SET_BLOCK_TYPE                MM_MODULE_CMD(0x15)
 #define CMD_RTSP2_SET_SYNC_MODE                 MM_MODULE_CMD(0x16)
 
+#define CMD_RTSP2_SET_URL                       MM_MODULE_CMD(0x17)        
+#define CMD_RTSP2_SET_INTERFACE                 MM_MODULE_CMD(0x18)
+#define CMD_RTSP2_SET_DROP_FRAME_EN             MM_MODULE_CMD(0x19)
+#define CMD_RTSP2_SET_DROP_FRAME_FORCEI         MM_MODULE_CMD(0x1a)
+#define CMD_RTSP2_SET_H264_CTX                  MM_MODULE_CMD(0x1b)
+#define CMD_RTSP2_SET_CHANGE_RATE_EN            MM_MODULE_CMD(0x1c)
+#define CMD_RTSP2_SET_CUSTOM_CODEC              MM_MODULE_CMD(0x1d)
+#define CMD_RTSP2_SET_PACKET_RETRY              MM_MODULE_CMD(0x1e)
+#define RTSP_WIFI_STA           0
+#define RTSP_ETHERNET           2
+
 typedef struct rtsp2_params_s{
 	uint32_t type;
 	union{

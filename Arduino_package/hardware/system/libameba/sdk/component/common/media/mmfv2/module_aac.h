@@ -22,6 +22,7 @@ typedef struct aac_param_s{
     uint32_t sample_rate;	// 8000
 	uint32_t channel;		// 1
 	uint32_t bit_length;	// 16
+	uint32_t output_format;	// 16
 	uint32_t mpeg_version;	// 16
 	
 	uint32_t mem_total_size;

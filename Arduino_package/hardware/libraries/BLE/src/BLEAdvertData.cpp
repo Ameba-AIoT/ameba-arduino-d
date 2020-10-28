@@ -194,7 +194,7 @@ void BLEAdvertData::parseScanInfo(T_LE_CB_DATA *p_data) {
             // AD Type, one octet.
             type = scan_info->data[pos];
 
-            if (BTDEBUG) printf("parseScanInfo: AD Structure Info: AD type 0x%x, AD Data Length %d\r\n", type, (length - 1));
+            //if (BTDEBUG) printf("parseScanInfo: AD Structure Info: AD type 0x%x, AD Data Length %d\r\n", type, (length - 1));
 
             switch (type) {
                 case GAP_ADTYPE_FLAGS: {
@@ -268,7 +268,7 @@ void BLEAdvertData::parseScanInfo(T_LE_CB_DATA *p_data) {
                 default: {
                     uint8_t i = 0;
                     for (i = 0; i < (length - 1); i++) {
-                        if (BTDEBUG) printf("parseScanInfo: Unhandled Data = 0x%x\r\n", scan_info->data[(pos + i)]);
+                        //if (BTDEBUG) printf("parseScanInfo: Unhandled Data = 0x%x\r\n", scan_info->data[(pos + i)]);
                     }
                     break;
                 }

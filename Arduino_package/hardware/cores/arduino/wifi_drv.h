@@ -261,7 +261,7 @@ class WiFiDrv
 
         static int8_t apSetChannel(const char *channel);
 
-        static int8_t apActivate();
+        static int8_t apActivate(uint8_t hidden_ssid);
 
         static int disablePowerSave();
 };

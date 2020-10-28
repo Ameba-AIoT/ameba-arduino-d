@@ -109,6 +109,16 @@ struct TDLS_PeerKey {
 } ;
 #endif //CONFIG_TDLS
 
+#ifdef TX_SHORTCUT
+struct tx_sc_entry {
+	u8 shortcut_hdr[128];//tx_desc(32B) + wlanhdr + snap[6];
+	u32 sc_hdr_len;
+	u8 ethhdr[14];
+	struct pkt_attrib	attrib;
+	u32 fr_len;
+};
+#endif
+
 struct sta_info {
 
 	_lock	lock;
@@ -131,7 +141,6 @@ struct sta_info {
 	//uint aid;
 	//uint mac_id;
 	uint qos_option;
-	u8	hwaddr[ETH_ALEN];
 	
 	uint	ieee8021x_blocked;	//0: allowed, 1:blocked 
 	uint	dot118021XPrivacy; //aes, tkip...
@@ -189,11 +198,11 @@ struct sta_info {
 	_timer addba_retry_timer;
 #ifdef CONFIG_RECV_REORDERING_CTRL
 	//for A-MPDU Rx reordering buffer control 
-	struct recv_reorder_ctrl recvreorder_ctrl[16];
+	struct recv_reorder_ctrl recvreorder_ctrl[MAXTID];
 #endif
 	//for A-MPDU Tx
 	//unsigned char		ampdu_txen_bitmap;
-	u16	BA_starting_seqctrl[16];
+	u16	BA_starting_seqctrl[MAXTID];
 	
 
 #ifdef CONFIG_80211N_HT
@@ -263,36 +272,32 @@ struct sta_info {
 	u8 has_legacy_ac;
 	unsigned int sleepq_ac_len;
 
-#ifdef CONFIG_P2P
-	//p2p priv data
-	u8 is_p2p_device;
-	u8 p2p_status_code;
-
-	//p2p client info
-	u8 dev_addr[ETH_ALEN];
-	//u8 iface_addr[ETH_ALEN];//= hwaddr[ETH_ALEN]
-	u8 dev_cap;
-	u16 config_methods;
-	u8 primary_dev_type[8];
-	u8 num_of_secdev_type;
-	u8 secdev_types_list[32];// 32/8 == 4;
-	u16 dev_name_len;
-	u8 dev_name[32];	
-#endif //CONFIG_P2P
-
 #ifdef CONFIG_TX_MCAST2UNI
 	u8 under_exist_checking;
 #endif	// CONFIG_TX_MCAST2UNI
 	
 #endif	// CONFIG_AP_MODE	
 
-#ifdef CONFIG_IOCTL_CFG80211
-	u8 *passoc_req;
-	u32 assoc_req_len;
-#endif
-
 #ifdef CONFIG_LPS_PG
 	u8		lps_pg_rssi_lv;
+#endif
+#ifdef CONFIG_RTK_MESH
+	struct MESH_Neighbor_Entry	mesh_neighbor_TBL;	//mesh_neighbor
+	_list	mesh_mp_ptr;	// MESH MP list
+	u16 reason;
+
+#ifdef CONFIG_SAE_SUPPORT
+	unsigned char aek[MBEDTLS_DIGEST_LENGTH];
+	unsigned char my_nonce[32];
+	unsigned char peer_nonce[32];
+	unsigned char mtk[16];
+	unsigned char mgtk[16];
+	unsigned char igtk[16];
+	_list	mesh_auth_ptr;	// MESH AUTH list
+	u8 user_group_id;			//for user to set group id
+	struct sae_data *sae_priv;
+#endif
+
 #endif
 
 	//for DM
@@ -316,6 +321,11 @@ struct sta_info {
 	u8		RSSI_Ave;
 	u8		RXEVM[4];
 	u8		RXSNR[4];
+
+#ifdef TX_SHORTCUT
+		struct tx_sc_entry	tx_sc_ent[TX_SC_ENTRY_NUM];
+		int tx_sc_replace_idx;
+#endif
 
 	// ODM Write
 	//1 TX_INFO (may changed by IC)
@@ -358,7 +368,11 @@ struct	sta_priv {
 	
 	u8 *pallocated_stainfo_buf;
 	u32 allocated_stainfo_size;
+#ifdef CONFIG_WLAN_SWITCH_MODE
+	u8* pstainfo_buf[2 + AP_STA_NUM];
+#else
 	u8 *pstainfo_buf;
+#endif
 	_queue	free_sta_queue;
 	
 	_lock sta_hash_lock;

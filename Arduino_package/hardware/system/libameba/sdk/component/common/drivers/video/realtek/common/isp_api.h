@@ -35,13 +35,21 @@
 
 
 extern uint32_t ConfigDebugMmfErr;
+extern uint32_t ConfigDebugMmfInfo;
+extern int InitExposureTimeAtNormalMode;
 
 #define ISP_PRINTK      rt_printf
 #define ISP_DBG_ERROR(...)													\
 			do {															\
 				if (ConfigDebugMmfErr&_MMF_DBG_ISP_)						\
 					ISP_PRINTK("\n\r" ISP_ERR_PREFIX __VA_ARGS__);			\
-			}while(0)				
+			}while(0)
+                          
+#define ISP_DBG_INFO(...)													\
+			do {															\
+				if (ConfigDebugMmfInfo&_MMF_DBG_ISP_)						\
+					ISP_PRINTK("\n\r" ISP_INFO_PREFIX __VA_ARGS__);			\
+			}while(0)
 
 // for h264 encoder (V1)
 // TODO: Remove this after V2 stable
@@ -61,6 +69,9 @@ typedef struct isp_init_cfg_s {
 	int clk;
 	int ldc;
         int fps;
+        int isp_fw_location;
+        int isp_multi_sensor;
+				int isp_InitExposureTime;
 } isp_init_cfg_t;
 
 typedef struct isp_cfg_s{
@@ -111,8 +122,21 @@ typedef struct isp_global_data_s{
         int pin_idx;
 	int clk;
 	int ldc;
-        int sensor_fps; 
+        int sensor_fps;
+        int isp_fw_location;
+        int isp_multi_sensor;
+				int isp_InitExposureTime;
+        
+        int power_off_enable;//default sensor power off, after the streaming is all closed
 }isp_global_data_t;
+#define MAX_SENSOR_NUM 0X08
+struct sensor_select_config{
+        int     index;
+        int     offset;
+};
+typedef struct isp_sensor_selection_s{
+        struct sensor_select_config sen_sel_con[MAX_SENSOR_NUM];
+}isp_sensor_selection_t;
 
 extern int video_subsys_init(isp_init_cfg_t *ctx);
 
@@ -134,6 +158,11 @@ extern int video_subsys_deinit(void *parm);
 extern uint8_t isp_i2c_read_byte(int addr);
 extern uint8_t isp_i2c_write_byte(int addr, uint8_t data);
 extern uint8_t isp_power_sequence_write(int index, uint8_t data);//index: 0=reset, 1=power down, 2=power control, value:  0=low, 1=high
+extern int isp_stream_power_off_config(unsigned char enable);
+extern int isp_check_boot_status(void);
+extern void isp_get_lost_frame_info(void *parm);
+
+
 
 #define MODE_EXCHANGE	0		// exchange used frame and ready frame's buf.y_addr/uv_addr
 #define MODE_SNAPSHOT	1		// only get ready frame from ISP

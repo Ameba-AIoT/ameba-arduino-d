@@ -61,6 +61,7 @@ plt_mutex_t plt_mutex_create(void);
   */
 typedef void *plt_os_queue_handle_t;
 plt_os_queue_handle_t plt_os_queue_create(uint32_t item_num, uint32_t item_size);
+#define plt_os_queue_delete(queue_handle)                           os_msg_queue_delete(queue_handle)
 #define plt_os_queue_send(queue_handle, pmsg, wait_ms)              os_msg_send(queue_handle, pmsg, wait_ms)
 #define plt_os_queue_receive(queue_handle, pmsg, wait_ms)           os_msg_recv(queue_handle, pmsg, wait_ms)
 /** @} */

@@ -3,7 +3,8 @@
 char ssid[] = "yourNetwork";  //Set the AP's SSID
 char pass[] = "Password";     //Set the AP's password
 char channel[] = "1";         //Set the AP's channel
-int status = WL_IDLE_STATUS;  // the Wifi radio's status
+int status = WL_IDLE_STATUS;  //Set the Wifi radio's status
+int ssid_status = 0;          //Set SSID status, 1 hidden, 0 not hidden
 
 void setup() {
     //Initialize serial and wait for port to open:
@@ -17,16 +18,12 @@ void setup() {
         Serial.println("WiFi shield not present");
         while (true);
     }
-    String fv = WiFi.firmwareVersion();
-    if (fv != "1.0.0") {
-        Serial.println("Please upgrade the firmware");
-    }
 
     // attempt to start AP:
     while (status != WL_CONNECTED) {
         Serial.print("Attempting to start AP with SSID: ");
         Serial.println(ssid);
-        status = WiFi.apbegin(ssid, pass, channel);
+        status = WiFi.apbegin(ssid, pass, channel, ssid_status);
         delay(10000);
     }
 

@@ -40,8 +40,7 @@ BEGIN_DECLS
  * @brief Mesh model id
  * @{
  */
-#define MESH_MODEL_DATATRANS_SERVER                     0x0004005D
-#define MESH_MODEL_DATATRANS_CLIENT                     0x0005005D
+#define MESH_MODEL_DATATRANS                            0x0004005D
 /** @} */
 
 /**
@@ -99,6 +98,9 @@ typedef struct
      * app modify status and success written length if need to,
      * the default value is DATATRANS_SUCCESS and data_len
      */
+#if defined(CONFIG_BT_MESH_TEST) && CONFIG_BT_MESH_TEST
+    uint16_t src;
+#endif
     datatrans_stat_t status;
     uint16_t written_len;
 } datatrans_server_write_t;;
@@ -116,8 +118,8 @@ typedef struct
  * @brief Data types and structure used by data process callback
  * @{
  */
-#define DATATRANS_CLIENT_STATUS                           0 //!< @ref datatrans_client_status_t
-#define DATATRANS_CLIENT_DATA                             1 //!< @ref datatrans_client_data_t  
+#define DATATRANS_CLIENT_STATUS                           2 //!< @ref datatrans_client_status_t
+#define DATATRANS_CLIENT_DATA                             3 //!< @ref datatrans_client_data_t  
 
 typedef struct
 {
@@ -167,13 +169,13 @@ mesh_msg_send_cause_t datatrans_publish(const mesh_model_info_p pmodel_info,
  */
 
 /**
- * @brief register data transmission client
+ * @brief register data transmission
  * @param[in] element_index: element index that model registered to
- * @param[in] pmodel_info: pointer to data transimission client model context
+ * @param[in] pmodel_info: pointer to data transimission model context
  * @retval TRUE: register success
  * @retval FALSE: register failed
  */
-bool datatrans_client_reg(uint8_t element_index, mesh_model_info_p pmodel_info);
+bool datatrans_reg(uint8_t element_index, mesh_model_info_p pmodel_info);
 
 /**
  * @brief data transmission write data

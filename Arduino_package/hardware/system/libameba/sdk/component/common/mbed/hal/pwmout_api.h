@@ -126,10 +126,7 @@ void pwmout_pulsewidth_us(pwmout_t* obj, int us);
 
 ///@}
 
-#if (defined(CONFIG_PLATFORM_8195BHP) && (CONFIG_PLATFORM_8195BHP == 1))  ||  \
-	(defined(CONFIG_PLATFORM_8195BLP) && (CONFIG_PLATFORM_8195BLP == 1))||  \
-	(defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1)) || \
-	(defined(CONFIG_PLATFORM_8721D) && (CONFIG_PLATFORM_8721D == 1))
+#if (defined(CONFIG_PLATFORM_8195BHP) && (CONFIG_PLATFORM_8195BHP == 1))  ||  (defined(CONFIG_PLATFORM_8195BLP) && (CONFIG_PLATFORM_8195BLP == 1))||  (defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
 ///@name AmebaPro & AmebaZ2 
 ///@{
 /**
@@ -142,7 +139,7 @@ void pwmout_pulsewidth_us(pwmout_t* obj, int us);
   * @retval none
   */
 void pwmout_set_polarity(pwmout_t* obj, int polarity);
-#endif  // end of "#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8195BLP) || (defined(CONFIG_PLATFORM_8710C) || (defined(CONFIG_PLATFORM_8721D)"
+#endif  // end of "#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8195BLP) || (defined(CONFIG_PLATFORM_8710C)"
 ///@}
 
 /*\@}*/

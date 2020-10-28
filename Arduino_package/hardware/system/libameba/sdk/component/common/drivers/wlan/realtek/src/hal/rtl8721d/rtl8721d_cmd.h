@@ -50,9 +50,6 @@ enum h2c_cmd{
 	H2C_INACTIVE_PS_ = 0x27, //Inactive_PS
 	H2C_FWLPS_IN_IPS_ = 0x28,
 	
-#if defined(LOW_POWER_WIFI_CONNECT) && LOW_POWER_WIFI_CONNECT
-	H2C_NULL1_PARAM = 0x3F,
-#endif
 	//Dynamic Mechanism Class: 010
 	H2C_MACID_CFG = 0x40,
 	H2C_TXBF = 0x41,	
@@ -304,7 +301,6 @@ enum h2c_cmd_8721D{
 
 	H2C_8721D_RESET_TSF = 0xC0,
 	H2C_8721D_BCN_IGNORE_EDCCA = 0xC2,
-	H2C_8711B_UNSUPPORT_PLCPHDR_RPT = 0xCC,
 	
 	H2C_8721D_MAXID,
 };
@@ -550,9 +546,6 @@ void rtl8721d_set_FwMacIdConfig_cmd(_adapter* padapter, u8 mac_id, u8 raid, u8 b
 void rtl8721d_set_FwMediaStatusRpt_cmd(PADAPTER	padapter, u8 mstatus, u8 macid);
 void rtl8721d_set_FwBtMpOper_cmd(PADAPTER padapter, u8 idx, u8 ver, u8 reqnum, u8 *param);
 void rtl8721d_download_rsvd_page(PADAPTER padapter, u8 mstatus, u8 state);
-#ifdef CONFIG_P2P
-void rtl8721d_set_p2p_ps_offload_cmd(PADAPTER padapter, u8 p2p_ps_state);
-#endif //CONFIG_P2P
 
 void rtl8721d_set_FwPwrModeInIPS_cmd(PADAPTER padapter);
 

@@ -20,6 +20,7 @@
 #include "light_ctl.h"
 #include "light_hsl.h"
 #include "light_xyl.h"
+#include "light_lc.h"
 
 BEGIN_DECLS
 
@@ -38,6 +39,7 @@ extern mesh_model_info_t light_lightness_client;
 extern mesh_model_info_t light_ctl_client;
 extern mesh_model_info_t light_hsl_client;
 extern mesh_model_info_t light_xyl_client;
+extern mesh_model_info_t light_lc_client;
 /** @} */
 
 /**

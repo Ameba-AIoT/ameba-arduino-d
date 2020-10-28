@@ -346,6 +346,8 @@ extern "C"
 							  * qpMin range [max(qpMin-6, 10)..qpMin] 
 							  * qpMax range [qpMax..min(qpMax-6, 51)] 
 							  */
+		
+		i32 rcErrorRst;		 /* reset rc error when rate chagne */
     } H264EncRateCtrl;
 
 /* Encoder input structure */

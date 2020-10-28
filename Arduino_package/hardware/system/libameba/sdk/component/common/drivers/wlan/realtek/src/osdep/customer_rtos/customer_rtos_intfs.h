@@ -21,85 +21,12 @@
 #ifndef __CUSTOMER_RTOS_INTFS_H_
 #define __CUSTOMER_RTOS_INTFS_H_
 
-//TODO
-#if 0
-
-struct intf_priv {
-	
-	u8 *intf_dev;
-	u32	max_iosz; 	//USB2.0: 128, USB1.1: 64, SDIO:64
-	u32	max_xmitsz; //USB2.0: unlimited, SDIO:512
-	u32	max_recvsz; //USB2.0: unlimited, SDIO:512
-
-	volatile u8 *io_rwmem;
-	volatile u8 *allocated_io_rwmem;
-	u32	io_wsz; //unit: 4bytes
-	u32	io_rsz;//unit: 4bytes
-	u8 intf_status;	
-	
-	void (*_bus_io)(u8 *priv);	
-
-/*
-Under Sync. IRP (SDIO/USB)
-A protection mechanism is necessary for the io_rwmem(read/write protocol)
-
-Under Async. IRP (SDIO/USB)
-The protection mechanism is through the pending queue.
-*/
-
-	_mutex ioctl_mutex;
-
-	
-#ifdef PLATFORM_LINUX	
-	#ifdef CONFIG_USB_HCI	
-	// when in USB, IO is through interrupt in/out endpoints
-	struct usb_device 	*udev;
-	PURB	piorw_urb;
-	u8 io_irp_cnt;
-	u8 bio_irp_pending;
-	_sema io_retevt;
-	_timer	io_timer;
-	u8 bio_irp_timeout;
-	u8 bio_timer_cancel;
-	#endif
-#endif
-
-#ifdef PLATFORM_OS_XP
-	#ifdef CONFIG_SDIO_HCI
-		// below is for io_rwmem...	
-		PMDL pmdl;
-		PSDBUS_REQUEST_PACKET  sdrp;
-		PSDBUS_REQUEST_PACKET  recv_sdrp;
-		PSDBUS_REQUEST_PACKET  xmit_sdrp;
-
-			PIRP		piorw_irp;
-
-	#endif
-	#ifdef CONFIG_USB_HCI
-		PURB	piorw_urb;
-		PIRP		piorw_irp;
-		u8 io_irp_cnt;
-		u8 bio_irp_pending;
-		_sema io_retevt;	
-	#endif	
-#endif
-
-};	
-
-
-#ifdef CONFIG_R871X_TEST
-int rtw_start_pseudo_adhoc(_adapter *padapter);
-int rtw_stop_pseudo_adhoc(_adapter *padapter);
-#endif
-
-#endif	//#if 0
-
 typedef struct _driver_priv {
 	int drv_registered;
 
 	_mutex hw_init_mutex;
 	_mutex h2c_fwcmd_mutex;
-#if defined(CONFIG_CONCURRENT_MODE) || defined(CONFIG_DUALMAC_CONCURRENT)
+#if defined(CONFIG_CONCURRENT_MODE)
 	//global variable
 	_mutex setch_mutex;
 	_mutex setbw_mutex;
@@ -109,18 +36,6 @@ typedef struct _driver_priv {
 
 struct net_device *rtw_init_netdev(_adapter *padapter);
 void rtw_os_indicate_disconnect( _adapter *adapter );
-
-#ifdef CONFIG_PROC_DEBUG
-void rtw_proc_init_one(struct net_device *dev);
-void rtw_proc_remove_one(struct net_device *dev);
-#else
-//static void should be declared in .c file
-//proc is not supported in freertos
-//static void rtw_proc_init_one(struct net_device *dev){}
-//static void rtw_proc_remove_one(struct net_device *dev){}
-#define rtw_proc_init_one(dev)
-#define rtw_proc_remove_one(dev)
-#endif
 
 extern int rtw_set_wpa_ie(_adapter *padapter, char *pie, unsigned short ielen);
 extern void rtw_os_indicate_connect(_adapter *adapter);

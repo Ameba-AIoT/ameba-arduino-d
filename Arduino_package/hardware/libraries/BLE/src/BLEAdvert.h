@@ -1,6 +1,7 @@
 #ifndef _BLE_ADVERT_H_
 #define _BLE_ADVERT_H_
 
+#include <Arduino.h>
 #include "BLEUUID.h"
 #include "BLEAdvertData.h"
 
@@ -33,7 +34,7 @@ class BLEAdvert {
     private:
         BLEAdvert();
         friend class BLEDevice;
-        
+
         // Advertising parameters
         uint8_t  _slaveInitMtuReq = false;
         uint8_t  _advEvtType = GAP_ADTYPE_ADV_IND;
@@ -45,21 +46,21 @@ class BLEAdvert {
         uint16_t _advIntMax = 480;  // Maximum advertising interval for undirected and low duty cycle directed advertising. Value range: 0x0020 - 0x4000 (20ms - 10240ms)(0.625ms/step)
 
         uint8_t _advData[31] = {
-                                        /* Flags */
-                                        0x02,             /* length */
-                                        GAP_ADTYPE_FLAGS, /* type="Flags" */
-                                        GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
-                                        /* Local name */
-                                        0x0E,             /* length */
-                                        GAP_ADTYPE_LOCAL_NAME_COMPLETE,
-                                        'A', 'M', 'E', 'B', 'A', '_', 'B', 'L', 'E', '_', 'D', 'E', 'V',
-                                        };
+                                    /* Flags */
+                                    0x02,             /* length */
+                                    GAP_ADTYPE_FLAGS, /* type="Flags" */
+                                    GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED,
+                                    /* Local name */
+                                    0x0E,             /* length */
+                                    GAP_ADTYPE_LOCAL_NAME_COMPLETE,
+                                    'A', 'M', 'E', 'B', 'A', '_', 'B', 'L', 'E', '_', 'D', 'E', 'V',
+                                    };
         uint8_t _scanRspData[31] = {
-                                        0x03,                             /* length */
-                                        GAP_ADTYPE_APPEARANCE,            /* type="Appearance" */
-                                        LO_WORD(GAP_GATT_APPEARANCE_UNKNOWN),
-                                        HI_WORD(GAP_GATT_APPEARANCE_UNKNOWN),
-                                        };
+                                    0x03,                             /* length */
+                                    GAP_ADTYPE_APPEARANCE,            /* type="Appearance" */
+                                    LO_WORD(GAP_GATT_APPEARANCE_UNKNOWN),
+                                    HI_WORD(GAP_GATT_APPEARANCE_UNKNOWN),
+                                    };
         uint8_t  _advDataSize = 18;
         uint8_t  _scanRspDataSize = 4;
 };

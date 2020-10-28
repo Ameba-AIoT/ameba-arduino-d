@@ -69,9 +69,9 @@ SECTIONS
 		*(.data*)
 		__data_end__ = .;
 		__ram_image2_text_end__ = .;
-		. = ALIGN(16);
+		. = ALIGN(16);	
 	} > BD_RAM_NS
-
+  
 	.ram_image2.bss :
 	{
 		__bss_start__ = .;
@@ -99,14 +99,14 @@ SECTIONS
 	
 	} > BD_RAM_NS
 
-	.xip_image2.text :
+	.xip_image2.text : 
 	{
 		__flash_text_start__ = .;
 
 		*(.img2_custom_signature*)
 
 		*(.text*)
-	/*	*(.image2.net.ram.text*) */
+	/*	*(.image2.net.ram.text*) */		
 		*(.rodata*)
 
 		/* Add This for C++ support */
@@ -123,8 +123,8 @@ SECTIONS
 		__fini_array_start = .;
 		KEEP(*(SORT(.fini_array.*)))
 		KEEP(*(.fini_array))
-		__fini_array_end = .;
-		/*-----------------*/
+		__fini_array_end = .;	
+		/*-----------------*/		
 
 		. = ALIGN (4);
 		__cmd_table_start__ = .;
@@ -132,12 +132,12 @@ SECTIONS
 		__cmd_table_end__ = .;
 
 		__flash_text_end__ = .;
-
+	
 		. = ALIGN (16);
 	} > KM4_IMG2
 
 	/* Add This for C++ support */
-	.ARM.extab :
+	.ARM.extab  : 
 	{
 		*(.ARM.extab* .gnu.linkonce.armextab.*) 
 
@@ -148,7 +148,7 @@ SECTIONS
 		__exidx_start = .;
 		*(.ARM.exidx* .gnu.linkonce.armexidx.*)
 		__exidx_end = .;
-		end = .;
+/*		end = .;*/
 	} > KM4_IMG2
 
 	__wrap_printf = 0x1010a3f5;
@@ -203,7 +203,7 @@ SECTIONS
 		. = ALIGN (32);
 		*(.psram.rodata*)
 	} > PSRAM_NS
-
+  
 	.psram_image2.bss :
 	{
 		. = ALIGN (32);

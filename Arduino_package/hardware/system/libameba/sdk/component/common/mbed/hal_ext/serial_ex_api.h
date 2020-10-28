@@ -199,16 +199,6 @@ int32_t serial_recv_stream_dma_timeout(serial_t *obj, char *prxbuf, uint32_t len
   */
 void serial_rx_fifo_level(serial_t *obj, SerialFifoLevel FifoLv);
 
-#if (defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
-/**
-  * @brief  controls the RTS signal.
-  * @param  obj: uart object define in application software.
-  * @param  rts_state: RTS signal control value.
-  * @retval   none
-  */
-void serial_rts_control(serial_t *obj, BOOLEAN rts_state);
-#endif
-
 ///@}
 
 /*\@}*/

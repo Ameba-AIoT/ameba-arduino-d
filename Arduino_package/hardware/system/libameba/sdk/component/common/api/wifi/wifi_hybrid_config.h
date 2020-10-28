@@ -9,7 +9,9 @@
 #include "main.h"
 #include "udp.h"
 #include <sockets.h>
+#if CONFIG_LWIP_LAYER
 #include <lwip_netconf.h>
+#endif
 #include <osdep_service.h>
 #include "platform_stdlib.h"
 #include "wifi_constants.h"

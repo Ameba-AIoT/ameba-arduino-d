@@ -1,7 +1,9 @@
 #ifndef __ATCMD_WIFI_H__
 #define __ATCMD_WIFI_H__
 #include "main.h"
+#if CONFIG_LWIP_LAYER
 #include "lwip_netconf.h"
+#endif
 
 #ifndef WLAN0_NAME
   #define WLAN0_NAME		"wlan0"

@@ -1,13 +1,16 @@
 
 #include "BLEDevice.h"
-#include "BLEBatteryClient.h"
 
-int8_t connID;
+#define BATT_SERVICE_UUID   "180F"
+#define BATT_LEVEL_UUID     "2A19"
+
 BLEAdvertData foundDevice;
 BLEAdvertData targetDevice;
-BLEBatteryClient battClient;
-uint8_t battlevel = 0;
-bool notifyState = 0;
+BLEClient* client;
+BLERemoteService* battService;
+BLERemoteCharacteristic* battChar;
+bool notifyState = false;
+int8_t connID;
 
 void scanCB(T_LE_CB_DATA* p_data) {
     foundDevice.parseScanInfo(p_data);
@@ -30,28 +33,13 @@ void scanCB(T_LE_CB_DATA* p_data) {
     }
 }
 
-void discoveryCB (uint8_t conn_id, bool service_found) {
-    if (service_found) {
-        Serial.print("Battery service found on connection id: ");
-        Serial.println(conn_id);
-    } else {
-        Serial.print("Battery service not found on connection id: ");
-        Serial.println(conn_id);
+void notificationCB (BLERemoteCharacteristic* chr, uint8_t* data, uint16_t len) {
+    Serial.print("Notification received for chr UUID: ");
+    Serial.print(chr->getUUID().str());
+    if (len == 1) {
+        Serial.print(" Battery level: ");
+        Serial.println(data[0]);
     }
-}
-
-void notificationCB (uint8_t conn_id, uint8_t batt_level) {
-    Serial.print("Notification received for connection id: ");
-    Serial.print(conn_id);
-    Serial.print(" Battery level: ");
-    Serial.println(batt_level);
-}
-
-void readCB (uint8_t conn_id, uint8_t batt_level) {
-    Serial.print("Battery level read callback for connection id: ");
-    Serial.print(conn_id);
-    Serial.print(" Battery level: ");
-    Serial.println(batt_level);
 }
 
 void setup() {
@@ -64,43 +52,52 @@ void setup() {
     BLE.setScanCallback(scanCB);
     BLE.beginCentral(1);
 
-    BLE.configClient(1);
-    battClient.addClient(1);
-    battClient.setDiscoveryCallback(discoveryCB);
-    battClient.setNotificationCallback(notificationCB);
-    battClient.setReadCallback(readCB);
-
     BLE.configScan()->startScan(2000);    // Scan for 2 seconds, then stop
-
     BLE.configConnection()->connect(targetDevice, 2000);
+    delay(2000);
     connID = BLE.configConnection()->getConnId(targetDevice);
-    vTaskDelay(2000 / portTICK_RATE_MS);
 
-    if (BLE.connected(connID)) {
-        Serial.print("BLE connected to device at ");
-        Serial.println(connID);
-        battClient.discoverServices(connID);
-    } else {
+    if (!BLE.connected(connID)) {
         Serial.println("BLE not connected");
+    } else {
+        BLE.configClient();
+        client = BLE.addClient(connID);
+        client->discoverServices();
+        Serial.print("Discovering services of connected device");
+        do {
+            Serial.print(".");
+            delay(1000);
+        } while (!(client->discoveryDone()));
+        Serial.println();
+
+        battService = client->getService(BATT_SERVICE_UUID);
+        if (battService != nullptr) {
+            battChar = battService->getCharacteristic(BATT_LEVEL_UUID);
+            if (battChar != nullptr) {
+                Serial.println("Battery level characteristic found");
+                battChar->setNotifyCallback(notificationCB);
+            }
+        }
     }
 }
 
 void loop() {
     if (BLE.connected(connID)) {
-        vTaskDelay(5000 / portTICK_RATE_MS);
-        battClient.readLevel(connID);
+        delay(5000);
+        Serial.print("Battery level read: ");
+        Serial.println(battChar->readData8());
 
-        vTaskDelay(5000 / portTICK_RATE_MS);
-        notifyState = battClient.readNotificationState(connID);
+        delay(5000);
         notifyState = !notifyState;
-        battClient.setNotificationState(connID, notifyState);
-        if (notifyState)
+        if (notifyState) {
             Serial.println("Notifications Enabled");
-        else
+            battChar->enableNotifyIndicate();
+        } else {
             Serial.println("Notifications Disabled");
+            battChar->disableNotifyIndicate();
+        }
     } else {
         Serial.println("BLE not connected");
-        vTaskDelay(5000 / portTICK_RATE_MS);
+        delay(5000);
     }
 }
-

@@ -10,33 +10,18 @@
 #ifndef __RTW_DEBUG_H__
 #define __RTW_DEBUG_H__
 
-#ifdef PLATFORM_WINDOWS
-	#define RTW_PRINT do {} while (0)
-	#define RTW_ERR do {} while (0)
-	#define RTW_WARN do {} while (0)
-	#define RTW_INFO do {} while (0)
-	#define RTW_DBG do {} while (0)
-	#define RTW_PRINT_SEL do {} while (0)
-	#define _RTW_PRINT do {} while (0)
-	#define _RTW_ERR do {} while (0)
-	#define _RTW_WARN do {} while (0)
-	#define _RTW_INFO do {} while (0)
-	#define _RTW_DBG do {} while (0)
-	#define _RTW_PRINT_SEL do {} while (0)
-#else
-	#define RTW_PRINT(x, ...) do {} while (0)
-	#define RTW_ERR(x, ...) do {} while (0)
-	#define RTW_WARN(x,...) do {} while (0)
-	#define RTW_INFO(x,...) do {} while (0)
-	#define RTW_DBG(x,...) do {} while (0)
-	#define RTW_PRINT_SEL(x,...) do {} while (0)
-	#define _RTW_PRINT(x, ...) do {} while (0)
-	#define _RTW_ERR(x, ...) do {} while (0)
-	#define _RTW_WARN(x,...) do {} while (0)
-	#define _RTW_INFO(x,...) do {} while (0)
-	#define _RTW_DBG(x,...) do {} while (0)
-	#define _RTW_PRINT_SEL(x,...) do {} while (0)
-#endif
+#define RTW_PRINT(x, ...) do {} while (0)
+#define RTW_ERR(x, ...) do {} while (0)
+#define RTW_WARN(x,...) do {} while (0)
+#define RTW_INFO(x,...) do {} while (0)
+#define RTW_DBG(x,...) do {} while (0)
+#define RTW_PRINT_SEL(x,...) do {} while (0)
+#define _RTW_PRINT(x, ...) do {} while (0)
+#define _RTW_ERR(x, ...) do {} while (0)
+#define _RTW_WARN(x,...) do {} while (0)
+#define _RTW_INFO(x,...) do {} while (0)
+#define _RTW_DBG(x,...) do {} while (0)
+#define _RTW_PRINT_SEL(x,...) do {} while (0)
 
 #define _drv_always_		1
 #define _drv_emerg_			2
@@ -164,10 +149,6 @@
 	#define	_MODULE_DEFINE_	_module_efuse_
 #endif
 
-#ifdef PLATFORM_OS_CE
-extern void rtl871x_cedbg(const char *fmt, ...);
-#endif
-
 extern u32 GlobalDebugEnable;
 extern u8 OtherDebugPortEnable;
 extern u16 GlobalDebugLevel;
@@ -178,17 +159,10 @@ extern u16 GlobalDebugLevel;
 #define _func_exit_ do{}while(0)
 #define RT_PRINT_DATA(_Comp, _Level, _TitleString, _HexData, _HexDataLen) do{}while(0)
 
-#ifdef PLATFORM_WINDOWS
-	#define DBG_871X do {} while(0)
-	#define MSG_8192C do {} while(0)
-	#define DBG_8192C do {} while(0)
-	#define DBG_871X_LEVEL do {} while(0)
-#else
-	#define DBG_871X(x, ...) do {} while(0)
-	#define MSG_8192C(x, ...) do {} while(0)
-	#define DBG_8192C(x,...) do {} while(0)
-	#define DBG_871X_LEVEL(x,...) do {} while(0)
-#endif
+#define DBG_871X(x, ...) do {} while(0)
+#define MSG_8192C(x, ...) do {} while(0)
+#define DBG_8192C(x,...) do {} while(0)
+#define DBG_871X_LEVEL(x,...) do {} while(0)
 
 #ifdef CONFIG_BT_COEXIST
 	#define RTW_INFO(x,...) do {} while (0)
@@ -196,22 +170,11 @@ extern u16 GlobalDebugLevel;
 #endif
 
 #undef	_dbgdump
-#ifdef PLATFORM_WINDOWS
 
-	#ifdef PLATFORM_OS_XP
-		#define _dbgdump	DbgPrint
-	#elif defined PLATFORM_OS_CE
-		#define _dbgdump	rtl871x_cedbg
-	#endif
-
-#elif defined PLATFORM_LINUX
-	#define _dbgdump	printk
-#elif defined PLATFORM_ECOS
+#ifdef PLATFORM_ECOS
 	#define _dbgdump	diag_printf
 #elif defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS)
 	#define _dbgdump_nr	printf("\n\r"); printf
-	#define _dbgdump	printf
-#elif defined PLATFORM_FREEBSD
 	#define _dbgdump	printf
 #endif
 
@@ -344,167 +307,6 @@ do {\
 			}
 #endif
 #endif /* CONFIG_DEBUG_RTL871X */
-
-
-#ifdef CONFIG_PROC_DEBUG
-
-	int proc_get_drv_version(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_write_reg(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
- 	int proc_set_write_reg(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-
-	int proc_get_read_reg(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_set_read_reg(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-
-
-	int proc_get_fwstate(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_sec_info(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_mlmext_state(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_qos_option(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_ht_option(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_rf_info(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_ap_info(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_adapter_state(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_trx_info(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_mac_reg_dump1(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_mac_reg_dump2(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_mac_reg_dump3(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_bb_reg_dump1(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_bb_reg_dump2(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_bb_reg_dump3(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_rf_reg_dump1(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_rf_reg_dump2(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_rf_reg_dump3(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_rf_reg_dump4(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-#ifdef CONFIG_AP_MODE
-
-	int proc_get_all_sta_info(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-#endif
-
-#ifdef DBG_MEMORY_LEAK
-	int proc_get_malloc_cnt(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-#endif
-
-#ifdef CONFIG_FIND_BEST_CHANNEL
-	int proc_get_best_channel(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-#endif
-
-	int proc_get_rx_signal(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_set_rx_signal(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-#ifdef CONFIG_80211N_HT
-	int proc_get_cbw40_enable(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_set_cbw40_enable(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-	
-	int proc_get_ampdu_enable(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-			  
-	int proc_set_ampdu_enable(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-	
-	int proc_get_rx_stbc(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-		
-	int proc_set_rx_stbc(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-#endif //CONFIG_80211N_HT
-
-	int proc_get_two_path_rssi(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_get_rssi_disp(char *page, char **start,
-			  off_t offset, int count,
-			  int *eof, void *data);
-
-	int proc_set_rssi_disp(struct file *file, const char *buffer,
-		unsigned long count, void *data);
-
-
-#endif //CONFIG_PROC_DEBUG
 
 #endif	//__RTW_DEBUG_H__
 

@@ -1650,7 +1650,6 @@ typedef struct {
 /** @} End of group AmebaD_Peripheral_Declaration */
 #endif
 
-
 /** @} End of group AmebaD_Outline */
 #endif //_HAL_PLATFORM_
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

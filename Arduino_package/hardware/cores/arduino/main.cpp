@@ -27,7 +27,6 @@ extern "C" {
 
 extern void console_init(void);
 
-
 osThreadId main_tid = 0;
 
 // Weak empty variant initialization function.

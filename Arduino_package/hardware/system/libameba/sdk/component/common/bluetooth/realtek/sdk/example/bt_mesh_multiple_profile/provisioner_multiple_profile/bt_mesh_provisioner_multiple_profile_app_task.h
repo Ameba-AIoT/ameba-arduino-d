@@ -10,7 +10,7 @@
 #define _BT_MESH_PROVISIONER_MULTIPLE_PROFILE_APP_TASK_H_
 
 #include "mesh_config.h"
-void bt_mesh_scatternet_send_msg(uint16_t sub_type);
+
 /**
  * @brief  Initialize App task
  * @return void

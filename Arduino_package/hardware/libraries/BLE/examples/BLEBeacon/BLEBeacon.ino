@@ -1,7 +1,6 @@
 
 #include "BLEDevice.h"
 #include "BLEBeacon.h"
-#include "BLEUUID.h"
 
 iBeacon beacon;
 //altBeacon beacon;

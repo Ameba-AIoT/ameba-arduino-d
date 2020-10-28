@@ -16,10 +16,10 @@
 #define CMD_I2S_APPLY				MM_MODULE_CMD(0x20)  // for hardware module
 
 typedef struct i2s_param_s{
-	uint32_t		    sample_rate;		// SR_32KHZ
-	uint32_t		    out_sample_rate;	// SR_8KHZ
-	uint32_t		    word_length;		// WL_24b
-	uint32_t		    out_word_length;	// WL_16b
+	int		    sample_rate;	// SR_32KHZ
+        int              out_sample_rate;	// SR_8KHZ
+	int		    word_length;	// WL_24b
+	int		    out_word_length;	// WL_16b
 	audio_mic_gain	mic_gain;		// MIC_40DB
 	int				channel;		// 1
     int             out_channel;

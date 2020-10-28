@@ -30,11 +30,17 @@ enum bt_mesh_device_cmd
 	GEN_MESH_CODE(_lpn_sub) ,  
 	GEN_MESH_CODE(_lpn_clear) , /*5*/
 #endif
+#if MESH_FN
+	GEN_MESH_CODE(_fn_init) ,
+#endif
     GEN_MESH_CODE(_data_transmission_notify) ,
     GEN_MESH_CODE(_generic_on_off_publish) ,
+    GEN_MESH_CODE(_datatrans_write) ,
+    GEN_MESH_CODE(_datatrans_read) ,
     GEN_MESH_CODE(_connect) ,
  	GEN_MESH_CODE(_disconnect) ,
     GEN_MESH_CODE(_list) ,
+    GEN_MESH_CODE(_dev_info_show) ,
 	
 	MAX_MESH_DEVICE_CMD
 };

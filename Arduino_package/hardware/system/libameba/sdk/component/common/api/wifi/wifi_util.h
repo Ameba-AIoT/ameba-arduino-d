@@ -35,6 +35,9 @@ int wext_set_mfp_support(const char *ifname, __u8 value);
 #ifdef CONFIG_SAE_SUPPORT
 int wext_set_group_id(const char *ifname, __u8 value);
 #endif
+#ifdef CONFIG_PMKSA_CACHING
+int wext_set_pmk_cache_enable(const char *ifname, __u8 value);
+#endif
 int wext_set_key_ext(const char *ifname, __u16 alg, const __u8 *addr, int key_idx, int set_tx, const __u8 *seq, __u16 seq_len, __u8 *key, __u16 key_len);
 int wext_get_enc_ext(const char *ifname, __u16 *alg, __u8 *key_idx, __u8 *passphrase);
 int wext_set_passphrase(const char *ifname, const __u8 *passphrase, __u16 passphrase_len);
@@ -44,6 +47,7 @@ int wext_get_mode(const char *ifname, int *mode);
 int wext_set_ap_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len);
 int wext_set_country(const char *ifname, rtw_country_code_t country_code);
 int wext_get_rssi(const char *ifname, int *rssi);
+int wext_get_snr(const char *ifname, int *snr);
 int wext_set_channel(const char *ifname, __u8 ch);
 int wext_get_channel(const char *ifname, __u8 *ch);
 int wext_register_multicast_address(const char *ifname, rtw_mac_t *mac);
@@ -73,8 +77,9 @@ int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u
 int wext_set_autoreconnect(const char *ifname, __u8 mode, __u8 retry_times, __u16 timeout);
 int wext_get_autoreconnect(const char *ifname, __u8 *mode);
 int wext_set_adaptivity(rtw_adaptivity_mode_t adaptivity_mode);
-int wext_set_trp_tis(__u8 enable);
 int wext_set_adaptivity_th_l2h_ini(__u8 l2h_threshold);
+int wext_set_trp_tis(__u8 enable);
+int wext_set_support_wpa3(__u8 enable);
 int wext_get_auto_chl(const char *ifname, unsigned char *channel_set, unsigned char channel_num);
 int wext_set_sta_num(unsigned char ap_sta_num);
 int wext_del_station(const char *ifname, unsigned char* hwaddr);

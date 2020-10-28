@@ -36,11 +36,6 @@
 #include "rtl8721d/Hal8721DPhyReg.h"
 #include "rtl8721d/Hal8721DPhyCfg.h"
 #include "rtl8721d/rom_Hal8721DPhyCfg.h"
-
-#ifdef DBG_CONFIG_ERROR_DETECT
-//#include "rtl8721d/rtl8721d_sreset.h"
-#endif
-
 #include "../src/hal/phydm/phydm_precomp.h"
 
 #if (RTL8721D_SUPPORT==1)
@@ -247,29 +242,6 @@ typedef struct _RT_8723B_FIRMWARE_HDR
 
 // Description: Determine the types of C2H events that are the same in driver and Fw.
 // Fisrt constructed by tynli. 2009.10.09.
-#if 0
-typedef enum _C2H_EVT
-{
-	C2H_DBG = 0,
-	C2H_TSF = 1,
-	C2H_AP_RPT_RSP = 2,
-	C2H_CCX_TX_RPT = 3,	// The FW notify the report of the specific tx packet.
-	C2H_BT_RSSI = 4,
-	C2H_BT_OP_MODE = 5,
-	C2H_EXT_RA_RPT = 6,
-	C2H_8723B_BT_INFO = 9,
-	C2H_HW_INFO_EXCH = 10,
-	C2H_8723B_BT_MP_INFO = 11,
-	MAX_C2HEVENT
-} C2H_EVT;
-
-typedef _PACKED struct _C2H_EVT_HDR
-{
-	u8	CmdID;
-	u8	CmdLen;
-	u8	CmdSeq;
-} C2H_EVT_HDR, *PC2H_EVT_HDR;
-#endif
 typedef enum tag_Package_Definition
 {
 	PACKAGE_QFN48,

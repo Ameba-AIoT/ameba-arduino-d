@@ -1874,6 +1874,7 @@ extern int usb_get_device_descriptor(struct usb_device *dev, unsigned int size);
 extern int usb_clear_halt(struct usb_device *dev, int pipe);
 
 extern struct usb_interface *usb_ifnum_to_if(const struct usb_device *dev, unsigned ifnum);
+extern int usbh_get_connect_status(void);
 
 extern _sema  CtrlUrbCompSema;  /* Semaphore for for Control URB Complete waiting */    
 extern _sema  UrbKillSema;  /* Semaphore for for URB Kill waiting */
@@ -2016,5 +2017,6 @@ int usb_free_dev(void);
 void usb_remove_hcd(struct usb_hcd *hcd);
 int usb_match_one_id(struct usb_interface *interface, const struct usb_device_id *id);
 int usb_unlink_urb(struct urb *urb);
+struct usb_device *usb_get_dev_index(int index);
 
 #endif /* _USB_H_ */

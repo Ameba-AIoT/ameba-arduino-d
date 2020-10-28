@@ -23,28 +23,6 @@
 #define SIDEBANDWoWLAN      BIT2
 
 /*--------------------Define Struct---------------------------------------*/
-#if CONFIG_DRV_AUTO_CONFIG
-typedef struct _DRV_AUTO_CONFIG_8721D_{
-
-    u8 wlanimr0_bk;
-    u8 wlanimr1_bk;
-    u8 wlanimr2_bk;
-    u8 wlanimr3_bk;
-    u8 wlanimr20_bk;
-    u8 wlanimr21_bk;
-    u8 wlanimr22_bk;
-    u8 wlanimr23_bk;
-    u8 ftimr0_bk;
-    u8 ftimr1_bk;
-    u8 ftimr2_bk;
-    u8 ftimr3_bk;
-    u8 report_enable:1;
-    u8 len_thres_low_en:1;
-    u8 rsvd:6;
-    u16 len_thres_low;
-
-}DRV_AUTO_CONFIG_8721D,*PDRV_AUTO_CONFIG_8721D;
-#endif
 
 //3 1.) Xdata Section
 typedef struct _mib_info_ {
@@ -355,10 +333,6 @@ typedef struct _mib_info_ {
     }RfDlpsParmUnion;
     u32                    RF_18;
 
-#if CONFIG_DRV_AUTO_CONFIG
-	DRV_AUTO_CONFIG_8721D	   DRVAutoconf;
-#endif
-
 }mib_info, *Pmib_info;
 
 #ifdef __RTL8721D_INIT_RAM_C__
@@ -401,7 +375,6 @@ typedef struct _S1_null1_ivl_patch_{
         H2C_S1_null1_ctrl_parm s1_null1_ctrl_parm;
 }S1_null1_ivl_patch, *PS1_null1_ivl_patch;
 
-
 typedef struct _BT_B_TYPE_TDMA_Parm_8721D_ {
 
     //20200116
@@ -411,6 +384,8 @@ typedef struct _BT_B_TYPE_TDMA_Parm_8721D_ {
     u8      TDMASlotToggleCount;
     u8      LeapyAPCountForObservation;
 
+    u8      NullTypeTDMA;
+    u8      Null_P_PacketSend;
 } BT_B_TYPE_TDMA_Parm_8721D, *PBT_B_TYPE_TDMA_Parm_8721D;
 
 
@@ -420,7 +395,6 @@ typedef struct _mib_info_8721D_ {
     #if CONFIG_BT_MAILBOX
     BT_B_TYPE_TDMA_Parm_8721D   BtTdmaParm8721D;
     #endif
-
 }mib_info_8721D, *Pmib_info_8721D;
 
 

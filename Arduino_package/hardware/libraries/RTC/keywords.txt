@@ -1,0 +1,24 @@
+#######################################
+# Realtime Clock (RTC)
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AmebaRTC				KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+Init            KEYWORD2
+DeInit          KEYWORD2
+Write           KEYWORD2
+Read            KEYWORD2
+SetEpoch        KEYWORD2
+Wait            KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

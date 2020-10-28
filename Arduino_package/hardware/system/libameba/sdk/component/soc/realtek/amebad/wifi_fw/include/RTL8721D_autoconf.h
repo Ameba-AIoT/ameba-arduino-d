@@ -778,7 +778,6 @@
 #define CONFIG_TX_PAUSE_DRV_INFO		1
 #define CONFIG_MACID_PAUSE_DRV_INFO		0
 #define CONFIG_TX_PAUSE_WO_MASK         0
-#define CONFIG_DRV_AUTO_CONFIG			1
 
 
 //3 PS Related
@@ -799,7 +798,7 @@
 #define CONFIG_BCNEARLY_ADJUST_V1       0	//must disable while CONFIG_NAN enable!!ben, 170206
 #define CONFIG_BCNEARLY_ADJUST_V2       1   //david_liu,181016
 #define CONFIG_LOWPWR_BEACON_MODE       0
-#define CONFIG_S1_NULL1_IVL_PATCH      1 
+#define CONFIG_S1_NULL1_IVL_PATCH      0
 #define CONFIG_DLPS                     1
 #else
 #define CONFIG_HW_PS_CTRL               0
@@ -839,7 +838,6 @@
     #define CONFIG_AES_GTK              1   
     #define CONFIG_ARP                  1   
     #define CONFIG_NDP                  1 
-	#define CONFIG_BroadDHCP_WAKE          1 
     #define CONFIG_TEREDO_REALWOWL      0
     #define CONFIG_REALWOW_V2           1
     #define CONFIG_RTD3_SCAN_OFFLOAD    1    
@@ -862,7 +860,6 @@
     #define CONFIG_AES_GTK              0   
     #define CONFIG_ARP                  0  
     #define CONFIG_NDP                  0 
-	#define CONFIG_BroadDHCP_WAKE                  0
     #define CONFIG_TEREDO_REALWOWL      0
     #define CONFIG_REALWOW_V2           0
     #define CONFIG_RTD3_SCAN_OFFLOAD    0    

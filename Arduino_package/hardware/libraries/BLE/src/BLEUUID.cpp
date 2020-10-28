@@ -27,7 +27,7 @@
 BLEUUID::BLEUUID() {
 }
 
-BLEUUID::BLEUUID(const char * str) {
+BLEUUID::BLEUUID(const char* str) {
     char temp[] = {0, 0, 0};
 
     memset(_data, 0x00, sizeof(_data));
@@ -113,3 +113,4 @@ uint8_t BLEUUID::length() {
 bool BLEUUID::operator ==(const BLEUUID &uuid) {
     return(memcmp(_dataNative, uuid._dataNative, BLE_UUID_MAX_LENGTH) == 0);
 }
+

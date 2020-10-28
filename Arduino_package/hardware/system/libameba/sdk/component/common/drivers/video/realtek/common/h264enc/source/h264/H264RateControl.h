@@ -137,6 +137,7 @@ typedef struct
     i32 longTermPicRate;
     i32 mbQpAutoBoost;
 	/* for adaptive QP (can be lower or higher) */
+	i32 rcErrorRst;				/* reset rc error when rate change */
 	i32 adaptQpEn;				/* enable = 1 */
 	i32 qpPrevDesired;			/* store unbounded QP (not limited by qpMax and qpMin) */
 	i32 qpInitMax;				/* init value of qpMax */

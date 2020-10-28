@@ -148,7 +148,6 @@ typedef enum _H2C_CMD_ {
     H2CID_Customer_string1      = 0xC6,
     H2CID_Customer_string2      = 0xC7,
     H2CID_Customer_string3      = 0xC8,
-    H2CID_UnSupport_PlcpHdr_report    = 0xCC,  
     H2CID_IOTDRV_CloseRF      = 0xCF,
     //1 Class8: Testing
     H2CID_H2C2HLB               = 0xE0,
@@ -880,11 +879,6 @@ typedef struct _wwlan_parm_ {
     u8          nullpkt:1;
     u8          DriverRdy:1;
     u8          rsvd:6;
-	
-	u8			rsvd1:6;
-	u8			BroadDHCP_WakeUp_En:1;
-	u8			rsvd2:1;
-	
 }WWlan_Parm, *PWWlan_Parm;
 
 

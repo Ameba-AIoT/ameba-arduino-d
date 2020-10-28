@@ -1,7 +1,7 @@
 #ifndef __FREERTOS_PMU_H_
 #define __FREERTOS_PMU_H_
 
-#if (defined CONFIG_PLATFORM_8721D)
+#if (defined CONFIG_PLATFORM_8721D) || (defined CONFIG_PLATFORM_AMEBAD2)
 #include "ameba_soc.h"
 #endif
 
@@ -81,9 +81,11 @@ typedef uint32_t (*PSM_HOOK_FUN)( unsigned int, void* param_ptr );
 typedef enum {
 	PMU_OS					=0,
 	PMU_WLAN_DEVICE		=1,
-	PMU_LOGUART_DEVICE	=2,
-	PMU_WAKWLOCK_TIMEOUT=3,
-	PMU_MAX
+	PMU_WAKELOCK_TIMEOUT=3,
+	PMU_ROAMING_TICKLESS = 4,
+	PMU_DEV_USER_BASE = 16,
+	PMU_LOGUART_DEVICE	=30, //must keep log uart the max id
+	PMU_MAX = 31
 } PMU_DEVICE;
 
 enum SLEEP_TYPE {

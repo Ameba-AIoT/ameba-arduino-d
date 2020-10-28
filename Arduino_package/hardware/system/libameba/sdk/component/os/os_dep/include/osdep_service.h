@@ -32,7 +32,7 @@ extern "C" {
 
 #define CONFIG_LITTLE_ENDIAN
 
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)|| (defined CONFIG_PLATFORM_AMEBAD2)
 #define CONFIG_PLATFORM_AMEBA_X 1
 #endif
 
@@ -1014,6 +1014,14 @@ void rtw_delete_task(struct task_struct * task);
  */
 void rtw_wakeup_task(struct task_struct *task);
 
+void rtw_set_priority_task(void* task, u32 NewPriority );
+
+int rtw_get_priority_task(void* task);
+
+void rtw_suspend_task (void* task);
+
+void rtw_resume_task (void* task);
+
 /**
  * @brief  This function creates a new worker thread.
  * @param[in] worker_thread:  The pointer to the worker thread stucture.
@@ -1378,6 +1386,10 @@ struct osdep_service_ops {
 	int (*rtw_create_task)(struct task_struct *task, const char *name, u32 stack_size, u32 priority, thread_func_t func, void *thctx);
 	void (*rtw_delete_task)(struct task_struct *task);
 	void (*rtw_wakeup_task)(struct task_struct *task);
+	void (*rtw_set_priority_task)(void* task, u32 NewPriority);	
+	int (*rtw_get_priority_task)(void* task);
+	void (*rtw_suspend_task)(void* task);
+	void (*rtw_resume_task)(void* task);
 	
 #if 0	//TODO
 	void (*rtw_init_delayed_work)(struct delayed_work *dwork, work_func_t func, const char *name);
@@ -1424,6 +1436,7 @@ struct osdep_service_ops {
 	void (*rtw_wakelock_timeout)(u32 timeoutMs);
 	u8 (*rtw_get_scheduler_state)(void);
 	void (*rtw_create_secure_context)(u32 secure_stack_size);
+	void* (*rtw_get_current_TaskHandle)(void);
 };
 
 #ifdef __cplusplus

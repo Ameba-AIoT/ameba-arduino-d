@@ -38,7 +38,7 @@
 	#define MAX_RSPSZ	512
 	#define MAX_EVTSZ	1024
 
-#if defined(PLATFORM_OS_CE) || defined(PLATFORM_ECOS) || defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS)
+#if defined(PLATFORM_ECOS) || defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS)
 	#define CMDBUFF_ALIGN_SZ 4
 #else
 	#define CMDBUFF_ALIGN_SZ 512
@@ -115,9 +115,6 @@
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 		u8	*c2h_mem;
 		u8	*allocated_c2h_mem;
-#ifdef PLATFORM_OS_XP
-		PMDL	pc2h_mdl;
-#endif
 #endif
 
 	};
@@ -151,9 +148,6 @@ extern u32 rtw_init_evt_priv (struct evt_priv *pevtpriv);
 extern void rtw_free_evt_priv (struct evt_priv *pevtpriv);
 extern void rtw_cmd_clr_isr(struct cmd_priv *pcmdpriv);
 extern void rtw_evt_notify_isr(struct evt_priv *pevtpriv);
-#ifdef CONFIG_P2P
-u8 p2p_protocol_wk_cmd(_adapter*padapter, int intCmdType );
-#endif //CONFIG_P2P
 
 #else	/* CONFIG_RTL8711FW */
 	#include <ieee80211.h>
@@ -305,12 +299,20 @@ Command-Event Mode
 #else
 #define RTW_SSID_SCAN_AMOUNT 9 // for WEXT_CSCAN_AMOUNT 9
 #endif
+#define RTW_CHANNEL_SCAN_AMOUNT (14+37)
 
 struct sitesurvey_parm {
 	sint scan_mode;	//active: 1, passive: 0 
-	sint bsslimit;	// 1 ~ 48
+	//sint bsslimit;	// 1 ~ 48
 	// for up to 9 probreq with specific ssid
 	NDIS_802_11_SSID ssid[RTW_SSID_SCAN_AMOUNT];
+	u8 ssid_num;
+#if  defined(CONFIG_IEEE80211K) || defined(CONFIG_RTW_WNM)
+	struct rtw_ieee80211_channel ch[RTW_CHANNEL_SCAN_AMOUNT];
+	u8 ch_num;
+	u32 token; 	/* 80211k use it to identify caller */
+	u16 duration;	/* 0: use default, otherwise: channel scan time */
+#endif
 };
 
 /*
@@ -810,35 +812,6 @@ struct getcurtxpwrlevel_rsp{
 	unsigned short tx_power;
 };
 
-///TODO
-#if 0
-
-struct setprobereqextraie_parm {
-	unsigned char e_id;
-	unsigned char ie_len;
-	unsigned char ie[0];
-};
-
-struct setassocreqextraie_parm {
-	unsigned char e_id;
-	unsigned char ie_len;
-	unsigned char ie[0];
-};
-
-struct setproberspextraie_parm {
-	unsigned char e_id;
-	unsigned char ie_len;
-	unsigned char ie[0];
-};
-
-struct setassocrspextraie_parm {
-	unsigned char e_id;
-	unsigned char ie_len;
-	unsigned char ie[0];
-};
-
-#endif	//#if 0
-
 struct addBaReq_parm
 {
  	unsigned int tid;
@@ -915,15 +888,6 @@ struct SetChannelPlan_param
 	u8 channel_plan;
 };
 
-//TODO
-#if 0
-/*H2C Handler index: 60 */ 
-struct LedBlink_param
-{
-	PLED_871x	 pLed;
-};
-#endif	//#if 0
-
 /*H2C Handler index: 61 */ 
 struct SetChannelSwitch_param
 {
@@ -970,7 +934,7 @@ Result:
 
 extern u8 rtw_setassocsta_cmd(_adapter  *padapter, u8 *mac_addr);
 extern u8 rtw_setstandby_cmd(_adapter *padapter, uint action);
-extern u8 rtw_sitesurvey_cmd(_adapter  *padapter, NDIS_802_11_SSID *pssid, int ssid_max_num);
+extern u8 rtw_sitesurvey_cmd(_adapter  *padapter, struct sitesurvey_parm *pparm);
 extern u8 rtw_createbss_cmd(_adapter  *padapter);
 extern u8 rtw_createbss_cmd_ex(_adapter  *padapter, unsigned char *pbss, unsigned int sz);
 extern u8 rtw_setphy_cmd(_adapter  *padapter, u8 modem, u8 ch);
@@ -1039,9 +1003,10 @@ extern u8 rtw_c2h_wk_cmd(PADAPTER padapter, u8 *pbuf, u16 length, u8 type);
 u8 rtw_c2h_packet_wk_cmd(_adapter *adapter, u8 *c2h_evt, u16 length);
 #endif
 u8 rtw_drvextra_cmd_hdl(_adapter *padapter, unsigned char *pbuf);
-#ifdef CONFIG_P2P_NEW
+
 u8 rtw_p2p_cmd_hdl(_adapter *padapter, unsigned char *pbuf);
-#endif
+u8 rtw_rm_post_event_hdl(_adapter *padapter, u8 *pbuf);
+
 extern void rtw_survey_cmd_callback(_adapter  *padapter, struct cmd_obj *pcmd);
 extern void rtw_disassoc_cmd_callback(_adapter  *padapter, struct cmd_obj *pcmd);
 extern void rtw_joinbss_cmd_callback(_adapter  *padapter, struct cmd_obj *pcmd);	
@@ -1134,7 +1099,7 @@ enum rtw_h2c_cmd
 	GEN_CMD_CODE(_SetChannelSwitch), /*61*/
 	GEN_CMD_CODE(_TDLS), /*62*/
 	GEN_CMD_CODE(_P2P), /*63*/
-	
+	GEN_CMD_CODE(_RM_POST_EVENT), /*64*/
 	MAX_H2CCMD
 };
 
@@ -1224,9 +1189,8 @@ const struct _cmd_callback 	rtw_cmd_callback[] =
 	
 	{GEN_CMD_CODE(_SetChannelSwitch), NULL},/*61*/
 	{GEN_CMD_CODE(_TDLS), NULL},/*62*/
-#ifdef CONFIG_P2P_NEW
 	{GEN_CMD_CODE(_P2P), NULL},/*63*/
-#endif
+	{GEN_CMD_CODE(_RM_POST_EVENT), NULL},/*64*/
 };
 #endif
 

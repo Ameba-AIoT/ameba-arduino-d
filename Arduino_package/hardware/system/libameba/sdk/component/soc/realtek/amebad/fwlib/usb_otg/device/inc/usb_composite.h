@@ -351,7 +351,7 @@ inline int usb_ep_enable(struct usb_ep *ep, const struct usb_endpoint_descriptor
  *
  * no other task may be using this endpoint when this is called.
  * any pending and uncompleted requests will complete with status
- * indicating disconnect (-ESHUTDOWN) before this call returns.
+ * indicating disconnect (-USB_ESHUTDOWN) before this call returns.
  * gadget drivers must call usb_ep_enable() again before queueing
  * requests to the endpoint.
  *
@@ -460,7 +460,7 @@ inline int usb_ep_queue(struct usb_ep *ep, void *req, gfp_t gfp_flags)
  * @req:the request being canceled
  *
  * if the request is still active on the endpoint, it is dequeued and its
- * completion routine is called (with status -ECONNRESET); else a negative
+ * completion routine is called (with status -USB_ECONNRESET); else a negative
  * error code is returned.
  *
  * note that some hardware can't clear out write fifos (to unlink the request
@@ -490,7 +490,7 @@ inline int usb_ep_dequeue(struct usb_ep *ep, struct usb_request *req)
  *
  * Returns zero, or a negative error code.  On success, this call sets
  * underlying hardware state that blocks data transfers.
- * Attempts to halt IN endpoints will fail (returning -EAGAIN) if any
+ * Attempts to halt IN endpoints will fail (returning -USB_EAGAIN) if any
  * transfer requests are still queued, or if the controller hardware
  * (usually a FIFO) still holds bytes that the host hasn't collected.
  */
@@ -548,7 +548,7 @@ void free_iso_request(struct usb_ep *ep, struct usb_iso_request *req);
 * one configuration (or more than once in a given configuration) need
 * multiple versions of the relevant descriptors.
 *
-* Returns the interface ID which was allocated; or -ENODEV if no
+* Returns the interface ID which was allocated; or -USB_ENODEV if no
 * more interface IDs can be allocated.
 */
 int usb_interface_id(struct usb_configuration *config, struct usb_function *function);

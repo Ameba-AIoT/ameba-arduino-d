@@ -258,7 +258,7 @@ typedef struct hal_com_data
 	|| defined(CONFIG_PLATFORM_8721D) || defined (CONFIG_RTL8188F) \
 	|| defined (CONFIG_RTL8192E) || defined (CONFIG_RTL8723D) \
 	|| defined(CONFIG_PLATFORM_8710C)
-	u32	ChipID;
+	u8	ChipID;
 #endif
 	u8	NumTotalRFPath;
 
@@ -275,10 +275,15 @@ typedef struct hal_com_data
 //	u8	EEPROMSubCustomerID;
 	u8	EEPROMVersion;
 	u8	EEPROMRegulatory;
+#if defined(CONFIG_RTL8710C)
+	u8	EEPROMRFPwrSaveMode;
+#endif
 
 #if defined(CONFIG_RTL8821C) || defined(CONFIG_RTL8195B) || defined(CONFIG_RTL8721D) || defined(CONFIG_RTL8710C)
 	u8	tx_bbswing_24G;
+#if !defined(NOT_SUPPORT_5G)
 	u8	tx_bbswing_5G;
+#endif
 #endif
 #ifdef CONFIG_RF_GAIN_OFFSET
 #ifdef CONFIG_RTL8188F
@@ -400,8 +405,9 @@ typedef struct hal_com_data
 	u8	CurrentCckTxPwrIdx;
 	u8	CurrentOfdm24GTxPwrIdx;
 	u8	CurrentBW2024GTxPwrIdx;
+#if !defined(NOT_SUPPORT_40M)
 	u8	CurrentBW4024GTxPwrIdx;
-
+#endif
 	u8	CrystalCap;
 	//u32	AntennaTxPath;					// Antenna path Tx
 	//u32	AntennaRxPath;					// Antenna path Rx
@@ -454,6 +460,10 @@ typedef struct hal_com_data
 	u8  bDisableTXPowerTraining;
 	/* PHY DM & DM Section */
 	_lock		IQKSpinLock;
+#if defined(CONFIG_RTL8710C)
+	_lock		RfRwSpinLock;
+	_lock		GntBTSpinLock;
+#endif
 #endif
 	
 #if (PHYDM_LINUX_CODING_STYLE==1)
@@ -489,9 +499,6 @@ typedef struct hal_com_data
 	struct dm_priv	dmpriv;
 	DM_ODM_T 		odmpriv;
 	//_lock			odm_stainfo_lock;
-#ifdef DBG_CONFIG_ERROR_DETECT
-	struct sreset_priv srestpriv;
-#endif
 
 #ifdef CONFIG_BT_COEXIST
 	u8	ant_path; /* for 8723B s0/s1 selection	 */
@@ -536,10 +543,6 @@ typedef struct hal_com_data
 	//BOOLEAN		SlimComboDbg;
 
 	u16	EfuseUsedBytes;
-
-#ifdef CONFIG_P2P
-	struct P2P_PS_Offload_t	p2p_ps_offload;
-#endif
 
 	u8	AMPDUDensity;
 
@@ -590,30 +593,6 @@ typedef struct hal_com_data
 	u8			SdioRxFIFOCnt;
 //	u16			SdioRxFIFOSize;
 #endif //CONFIG_SDIO_HCI
-
-#ifdef CONFIG_USB_HCI
-	u32	UsbBulkOutSize;
-
-	// Interrupt relatd register information.
-	u32	IntArray[3];//HISR0,HISR1,HSISR
-	u32	IntrMask[3];
-	//u8	C2hArray[16];
-#ifdef CONFIG_USB_TX_AGGREGATION
-	u8	UsbTxAggMode;
-	u8	UsbTxAggDescNum;
-#endif
-#ifdef CONFIG_USB_RX_AGGREGATION
-	u16	HwRxPageSize;				// Hardware setting
-	u32	MaxUsbRxAggBlock;
-
-	USB_RX_AGG_MODE	UsbRxAggMode;
-	u8	UsbRxAggBlockCount;			// USB Block count. Block size is 512-byte in hight speed and 64-byte in full speed
-	u8	UsbRxAggBlockTimeout;
-	u8	UsbRxAggPageCount;			// 8192C DMA page count
-	u8	UsbRxAggPageTimeout;
-#endif
-#endif //CONFIG_USB_HCI
-
 
 #if defined (CONFIG_PCI_HCI) || defined(CONFIG_LX_HCI) || defined(CONFIG_AXI_HCI)
 //	u32	TransmitConfig;	

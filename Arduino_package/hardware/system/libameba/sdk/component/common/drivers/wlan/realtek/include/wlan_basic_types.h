@@ -179,7 +179,7 @@
 #define ENSRQUERYDOMAINTOOLONG  176 /* Domain name is too long */
 #define ENSRCNAMELOOP 177 /* Domain name is too long */
 
-
+#define _KEEP_AUTH 3
 
 
 
@@ -220,7 +220,7 @@
 
 #define RTW_WEAK					__attribute__ ((weak))
 
-#elif defined(PLATFORM_WINDOWS)
+#else
 
 #define RTW_PACK_STRUCT_BEGIN
 #define RTW_PACK_STRUCT_STRUCT 

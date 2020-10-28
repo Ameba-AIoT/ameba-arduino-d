@@ -96,5 +96,7 @@ int dwc_otg_driver_remove_common(void);
 int dwc_otg_boot_deinit(void);
 int dwc_otg_driver_probe_sub(void);
 int dwc_otg_boot_normal(void);
+void dwc_otg_write_phy_reg(u8 addr, u8 data);
+u8 dwc_otg_read_phy_reg(u8 addr);
 
 #endif

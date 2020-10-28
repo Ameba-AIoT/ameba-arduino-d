@@ -1,18 +1,18 @@
-#ifndef _MODULE_USBH_H
-#define _MODULE_USBH_H
+#ifndef _MODULE_UVCH_H
+#define _MODULE_UVCH_H
 
 #include "platform_opts.h"
-#if defined(CONFIG_PLATFORM_8721D)
+#if defined(CONFIG_PLATFORM_8721D) && (defined(CONFIG_USBH_UVC) || defined(REFER_USBH_UVC))
 
 #include <stdint.h>
 #include <osdep_service.h>
 #include "timer_api.h"
 #include "mmf2_module.h"
+#include "uvc_intf.h"
 
 #define MM_CMD_UVCH_SET_PARAMS         MM_MODULE_CMD(0x00)
-#define MM_CMD_UVCH_INIT_FB            MM_MODULE_CMD(0x01)
-#define MM_CMD_UVCH_SET_STREAMING      MM_MODULE_CMD(0x02)
-#define MM_CMD_UVCH_APPLY              MM_MODULE_CMD(0x03)
+#define MM_CMD_UVCH_SET_STREAMING      MM_MODULE_CMD(0x01)
+#define MM_CMD_UVCH_APPLY              MM_MODULE_CMD(0x02)
 
 #define MM_UVCH_PUMP_THREAD_STACK_SIZE 1024
 #define MM_UVCH_PUMP_THREAD_PRIORITY  (tskIDLE_PRIORITY + 2)
@@ -23,7 +23,12 @@ typedef struct {
     int height;
     int frame_rate;
     int compression_ratio;
-    int ext_buf;
+    int frame_buf_size;
+    int ext_frame_buf;
+#if UVC_BUF_DYNAMIC
+    int req_buf_num;
+    int req_buf_size;
+#endif
 } uvc_parameter_t;
 
 typedef struct {

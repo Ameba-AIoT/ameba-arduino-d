@@ -376,6 +376,7 @@ extern const unsigned char igtk_expansion_const[];
 
 int wpa_key_mgmt_sae(int akm);
 int wpa_key_mgmt_sha256(int akm);
+int wpa_key_mgmt_sha384(int akm);
 void ClientSendEAPOL(_adapter *padapter, struct sta_info *psta, int resend);
 void SendEAPOL(_adapter *padapter, struct sta_info *psta, int resend);
 void EAPOLKeyRecvd(_adapter *padapter, struct sta_info *psta);

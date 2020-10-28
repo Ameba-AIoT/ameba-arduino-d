@@ -94,11 +94,6 @@ ISR_TRIGGER_PKT_8721D(
 );
 
 extern void
-ISR_BTCMD_8721D(
-    void
-);
-
-extern void
 ISR_RETRIVE_BUFFERED_8721D(
     void
 );

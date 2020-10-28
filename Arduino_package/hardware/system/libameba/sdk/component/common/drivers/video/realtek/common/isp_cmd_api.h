@@ -41,9 +41,13 @@ extern void isp_set_WDR_mode(int a_dValue);
 extern void isp_get_WDR_mode(int *a_pdValue);
 extern void isp_set_WDR_level(int a_dValue);
 extern void isp_get_WDR_level(int *a_pdValue);
+extern void isp_set_IR_mode(int a_dValue);
+extern void isp_get_IR_mode(int *a_pdValue);
+extern void isp_set_AE_target_delta(int a_dValue);
+extern void isp_get_AE_target_delta(int *a_pdValue);
 
 extern void isp_cmd_set_all_stream_fps(int fps);
-extern void isp_cmd_stop_preview(int streamid);
+extern void isp_cmd_stop_preview(int streamid,char power_off);
 extern void isp_cmd_set_start_preview(int streamid, u32 yuv_width, u32 yuv_height);
 extern void isp_cmd_set_output_format(int streamid,int format);
 extern void isp_cmd_set_format(int streamid,int format);
@@ -51,5 +55,7 @@ extern void isp_cmd_set_ldc(int enable);
 extern void isp_cmd_get_ldc(unsigned char *buf);
 extern void isp_cmd_set_stream_fps(unsigned char *buf);
 extern void isp_cmd_set_power_line_freq(int a_dValue);
+extern void isp_fixed_fps(unsigned char fps);
 
+extern void isp_set_Init_ExposureTime(unsigned int Exp,unsigned int gain);
 #endif

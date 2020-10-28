@@ -1,7 +1,7 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
- *                                        
+ * Copyright(c) 2013 Realtek Corporation. All rights reserved.
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -26,5 +26,5 @@ void hal_coex_init(_adapter * padapter);
 u16 hal_coex_wifi_tdma_scan_start(PADAPTER padapter, RT_SCAN_TYPE scan_type);
 u16 hal_coex_wifi_tdma_scan_handle(PADAPTER padapter);
 
-#endif //__HAL_INTF_H__
+#endif //__HAL_BTCOEX_SOC_H__
 

@@ -1,6 +1,7 @@
 #ifndef _BLE_SCAN_H_
 #define _BLE_SCAN_H_
 
+#include <Arduino.h>
 #include "BLEAddr.h"
 #include "BLEUUID.h"
 

@@ -78,6 +78,7 @@ typedef struct {
 //#endif
 
 #define AMEBA_CONSOLE_PREFIX	"#"
+// zzw arduino
 #define CONSOLE_AMEBA(...)     do {\
 	_ConsolePrint("\r" AMEBA_CONSOLE_PREFIX __VA_ARGS__);\
 }while(0)

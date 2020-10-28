@@ -20,11 +20,6 @@
 #ifndef __RTW_PWRCTRL_H_
 #define __RTW_PWRCTRL_H_
 
-
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
-#endif //CONFIG_HAS_EARLYSUSPEND
-
 #define FW_PWR0		0	
 #define FW_PWR1 	1
 #define FW_PWR2 	2
@@ -331,21 +326,6 @@ struct pwrctrl_priv
 	u8		brfoffbyhw;
 	unsigned long PS_BBRegBackup[PSBBREG_TOTALCNT];
 
-	#ifdef CONFIG_RESUME_IN_WORKQUEUE
-	struct workqueue_struct *rtw_workqueue;
-	_workitem resume_work;
-	#endif
-
-	#ifdef CONFIG_HAS_EARLYSUSPEND
-	struct early_suspend early_suspend;
-	u8 do_late_resume;
-	#endif //CONFIG_HAS_EARLYSUSPEND
-	
-	#ifdef CONFIG_ANDROID_POWER
-	android_early_suspend_t early_suspend;
-	u8 do_late_resume;
-	#endif
-
 	#ifdef CONFIG_INTEL_PROXIM
 	u8	stored_power_mgnt;
 	#endif
@@ -444,14 +424,6 @@ int ips_leave(_adapter * padapter);
 
 void rtw_ps_processor(_adapter*padapter);
 
-#ifdef CONFIG_AUTOSUSPEND
-int autoresume_enter(_adapter* padapter);
-#endif
-#ifdef SUPPORT_HW_RFOFF_DETECTED
-rt_rf_power_state RfOnOffDetect(IN	PADAPTER pAdapter );
-#endif
-
-
 #ifdef CONFIG_LPS
 s32 LPS_RF_ON_check(PADAPTER padapter, u32 delay_ms);
 void LPS_Enter(PADAPTER padapter);
@@ -461,15 +433,6 @@ void LPS_Leave(PADAPTER padapter);
 //#endif
 #endif
 
-#ifdef CONFIG_RESUME_IN_WORKQUEUE
-void rtw_resume_in_workqueue(struct pwrctrl_priv *pwrpriv);
-#endif //CONFIG_RESUME_IN_WORKQUEUE
-
-#if defined(CONFIG_HAS_EARLYSUSPEND ) || defined(CONFIG_ANDROID_POWER)
-#define rtw_is_earlysuspend_registered(pwrpriv) (pwrpriv)->early_suspend.suspend
-void rtw_register_early_suspend(struct pwrctrl_priv *pwrpriv);
-void rtw_unregister_early_suspend(struct pwrctrl_priv *pwrpriv);
-#endif //CONFIG_HAS_EARLYSUSPEND || CONFIG_ANDROID_POWER
 //TODO
 //u8 rtw_interface_ps_func(_adapter *padapter,HAL_INTF_PS_FUNC efunc_id,u8* val);
 int _rtw_pwr_wakeup(_adapter *padapter, u32 ips_deffer_ms, const char *caller);

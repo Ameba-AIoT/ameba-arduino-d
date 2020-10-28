@@ -98,10 +98,10 @@ extern const ip_addr_t ip_addr_any_type;
 /** @ingroup ip4addr */
 #define IP_IS_V4(ipaddr)              (((ipaddr) == NULL) || IP_IS_V4_VAL(*(ipaddr)))
 /** @ingroup ip6addr */
-#define IP_IS_V6(ipaddr)              (((ipaddr) != NULL) && IP_IS_V6_VAL(*(ipaddr)))
+#define IP_IS_V6(ipaddr)              ((((uintptr_t)ipaddr) != (uintptr_t)NULL) && IP_IS_V6_VAL(*(ipaddr)))
 
 #define IP_SET_TYPE_VAL(ipaddr, iptype) do { (ipaddr).type = (iptype); }while(0)
-#define IP_SET_TYPE(ipaddr, iptype)     do { if((ipaddr) != NULL) { IP_SET_TYPE_VAL(*(ipaddr), iptype); }}while(0)
+#define IP_SET_TYPE(ipaddr, iptype)     do { if(((uintptr_t)ipaddr) != (uintptr_t)NULL) { IP_SET_TYPE_VAL(*(ipaddr), iptype); }}while(0)
 #define IP_GET_TYPE(ipaddr)           ((ipaddr)->type)
 
 #define IP_ADDR_PCB_VERSION_MATCH_EXACT(pcb, ipaddr) (IP_GET_TYPE(&pcb->local_ip) == IP_GET_TYPE(ipaddr))
@@ -136,7 +136,7 @@ extern const ip_addr_t ip_addr_any_type;
 #define ip_addr_copy_from_ip4(dest, src)      do{ \
   ip4_addr_copy(*ip_2_ip4(&(dest)), src); IP_SET_TYPE_VAL(dest, IPADDR_TYPE_V4); }while(0)
 /** @ingroup ip4addr */
-#define ip_addr_set_ip4_u32(ipaddr, val)  do{if(ipaddr){ip4_addr_set_u32(ip_2_ip4(ipaddr), val); \
+#define ip_addr_set_ip4_u32(ipaddr, val)  do{if((uintptr_t)ipaddr != (uintptr_t)NULL){ip4_addr_set_u32(ip_2_ip4(ipaddr), val); \
   IP_SET_TYPE(ipaddr, IPADDR_TYPE_V4); }}while(0)
 /** @ingroup ip4addr */
 #define ip_addr_get_ip4_u32(ipaddr)  (((ipaddr) && IP_IS_V4(ipaddr)) ? \
@@ -214,7 +214,7 @@ extern const ip_addr_t ip_addr_any_type;
 #define ipaddr_ntoa(addr)   (((addr) == NULL) ? "NULL" : \
   ((IP_IS_V6(addr)) ? ip6addr_ntoa(ip_2_ip6(addr)) : ip4addr_ntoa(ip_2_ip4(addr))))
 /** @ingroup ipaddr */
-#define ipaddr_ntoa_r(addr, buf, buflen)   (((addr) == NULL) ? "NULL" : \
+#define ipaddr_ntoa_r(addr, buf, buflen)   (((uintptr_t)(addr) == (uintptr_t)NULL) ? "NULL" : \
   ((IP_IS_V6(addr)) ? ip6addr_ntoa_r(ip_2_ip6(addr), buf, buflen) : ip4addr_ntoa_r(ip_2_ip4(addr), buf, buflen)))
 int ipaddr_aton(const char *cp, ip_addr_t *addr);
 

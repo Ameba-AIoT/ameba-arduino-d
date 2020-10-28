@@ -29,11 +29,11 @@
 #define RTSP_SERVICE_PRIORITY    3
 #define RTSP_MAX_STREAM_NUM	2
 #define RTSP_REQUEST_BUF_SIZE   512
-#define RTSP_RESPONSE_BUF_SIZE 	MAX_SDP_SIZE //max size for response buffer  
+#define RTSP_RESPONSE_BUF_SIZE 	1024//MAX_SDP_SIZE //max size for response buffer//  
 #define DEF_RTSP_PORT 554
 #define DEF_HTTP_PORT 5008
 
-#define RTSP_SELECT_SOCK 8 
+#define RTSP_SELECT_SOCK 16//8 
 
 /*rtsp request type list*/
 #define REQUEST_OPTIONS 1
@@ -117,8 +117,10 @@ struct stream_context
 	struct rtp_statistics statistics;
 	struct rtp_periodic_report_s periodic_report;
 	struct __internal_payload rtpobj;
+	//add for frame control	
+	struct rtp_frame_control_s framecontrol;
 };
-
+#define RTSP_URL_LEN 64
 struct rtsp_context
 {
 	int id;
@@ -158,7 +160,10 @@ struct rtsp_context
 	uint32_t pre_filter_packet;
 	int client_socket;
 	_mutex socket_lock;
-	
+        //////Use the url
+        u8 rtsp_url[RTSP_URL_LEN];
+        int rtsp_url_config;
+	int interface;//0 1 wifi 2 Ethernet
 	// callback
 	int (*cb_start)(void*);		// play
 	int (*cb_stop)(void*);		// teardown
@@ -188,4 +193,15 @@ void rtsp_stream_context_init(struct rtsp_context *rtsp_ctx, struct stream_conte
 void set_prefilter_packet(struct rtsp_context *rtsp_ctx,uint32_t num);
 void time_sync_disable(void);
 void time_sync_enable(void);
+void set_rtsp_url(struct rtsp_context *rtsp_ctx,char *url);
+void set_rtp_drop_threshold(struct stream_context *stream_ctx,uint32_t drop_ms);
+uint32_t get_rtp_drop_threshold(struct stream_context *stream_ctx);
+
+void set_drop_frame_enable(struct stream_context *stream_ctx,uint32_t en);
+void set_drop_frame_forcei(struct stream_context *stream_ctx,uint32_t forcei);
+void set_h264_ctx(struct stream_context *stream_ctx,void* h264_ctx);
+
+void set_change_rate_enable(struct stream_context *stream_ctx,uint32_t en);
+
+void set_packet_retry(struct stream_context *stream_ctx,uint32_t retry);
 #endif

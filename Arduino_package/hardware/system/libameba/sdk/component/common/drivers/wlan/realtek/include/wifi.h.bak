@@ -65,6 +65,17 @@
 #define WLAN_A3_PN_OFFSET	24
 #define WLAN_A4_PN_OFFSET	30
 
+#ifdef CONFIG_RTK_MESH
+// Define mesh header length, But 11s data 11s mgt frame header length different, So have two type.
+#define WLAN_HDR_A4_MESH_DATA_LEN 34		// WLAN_HDR_A4_LEN + MeshHeader_Len(4 bytes)
+#define WLAN_HDR_A6_MESH_DATA_LEN 46		// WLAN_HDR_A4_LEN + MeshHeader_Len(16 bytes)
+#define WLAN_HDR_A4_MESH_DATA_LEN_QOS 36	// WLAN_HDR_A4_LEN + MeshHeader_Len(4 bytes) + QOS
+#define WLAN_HDR_A6_MESH_DATA_LEN_QOS 48	// WLAN_HDR_A4_LEN + MeshHeader_Len(16 bytes) + QOS
+// #define WLAN_HDR_A4_MESH_MGT_LEN 34		// always processed by daemon (raw socket)
+
+#define WLAN_HDR_MAX_MESH_HDR_LEN	18
+#endif // CONFIG_RTK_MESH
+
 #define WLAN_MIN_ETHFRM_LEN	60
 #ifndef CONFIG_DONT_CARE_TP
 #if WIFI_LOGO_CERTIFICATION
@@ -81,8 +92,13 @@
 #define WLAN_MAX_IV_LEN		8
 #define WLAN_MAX_ICV_LEN	8
 #define WLAN_MAX_MIC_LEN	8
+#ifdef CONFIG_RTK_MESH
+#define WLAN_MAX_PROTOCOL_OVERHEAD (WLAN_HDR_A4_QOS_LEN+WLAN_MAX_IV_LEN\
+						+WLAN_HDR_MAX_MESH_HDR_LEN+WLAN_SNAP_HEADER+WLAN_MAX_MIC_LEN+WLAN_MAX_ICV_LEN)	//=64+18
+#else
 #define WLAN_MAX_PROTOCOL_OVERHEAD (WLAN_HDR_A4_QOS_LEN+WLAN_MAX_IV_LEN\
 						+WLAN_SNAP_HEADER+WLAN_MAX_MIC_LEN+WLAN_MAX_ICV_LEN)	//=64
+#endif
 
 #define P80211CAPTURE_VERSION	0x80211001
 
@@ -104,6 +120,10 @@ enum WIFI_FRAME_TYPE {
 	WIFI_CTRL_TYPE =	(BIT(2)),
 	WIFI_DATA_TYPE =	(BIT(3)),
 	WIFI_QOS_DATA_TYPE	= (BIT(7)|BIT(3)),	//!< QoS Data	
+#ifdef CONFIG_RTK_MESH
+	// Hardware of 8186 doesn't support it. Confirm by David, 2007/1/5
+	WIFI_EXT_TYPE  =	(BIT(2) | BIT(3))	///< 11 is 802.11S Extended Type
+#endif
 };
 
 enum WIFI_FRAME_SUBTYPE {
@@ -121,6 +141,9 @@ enum WIFI_FRAME_SUBTYPE {
     WIFI_AUTH           = (BIT(7) | BIT(5) | BIT(4) | WIFI_MGT_TYPE),
     WIFI_DEAUTH         = (BIT(7) | BIT(6) | WIFI_MGT_TYPE),
     WIFI_ACTION         = (BIT(7) | BIT(6) | BIT(4) | WIFI_MGT_TYPE),
+#ifdef CONFIG_RTK_MESH
+    WIFI_MULTIHOP_ACTION 	= (BIT(7) | BIT(6) | BIT(5) |BIT(4) | WIFI_MGT_TYPE),	// (Refer: Draft 1.06, Page 8, 7.1.3.1.2, Table 7-1, 2007/08/13 by popen)
+#endif
 
     // below is for control frame
     WIFI_PSPOLL         = (BIT(7) | BIT(5) | WIFI_CTRL_TYPE),
@@ -140,6 +163,13 @@ enum WIFI_FRAME_SUBTYPE {
     WIFI_CF_POLL        = (BIT(6) | BIT(5) | WIFI_DATA_TYPE),
     WIFI_CF_ACKPOLL     = (BIT(6) | BIT(5) | BIT(4) | WIFI_DATA_TYPE),
     WIFI_QOS_DATA_NULL	= (BIT(6) | WIFI_QOS_DATA_TYPE),
+
+#ifdef CONFIG_RTK_MESH    // (CAUTION!! Below not exist in D1.06!!)
+	// Because hardware of RTL8186 doen's support TYPE=11, we use BIT(7) | WIFI_DATA_TYPE to
+	// simulate TYPE=11, 2007/1/8
+    WIFI_11S_MESH	    = (WIFI_QOS_DATA_TYPE),	// CAUTION!! Below not exist in D1.06!!
+    WIFI_11S_MESH_ACTION = (BIT(5) | WIFI_11S_MESH),	///< Mesh Action
+#endif
 };
 
 enum WIFI_REASON_CODE	{
@@ -472,6 +502,76 @@ enum WIFI_REG_DOMAIN {
 
 #define GetAddr4Ptr(pbuf)	((unsigned char *)((SIZE_PTR)(pbuf) + 24))
 
+//WIFI_WMM
+#define GetQosControl(pbuf) (unsigned char *)((SIZE_PTR)(pbuf) + (((GetToDs(pbuf)<<1)|GetFrDs(pbuf))==3?30:24))
+
+#ifdef CONFIG_RTK_MESH
+
+#define SetMeshControlPresent(pbuf, present)	\
+	do	{	\
+		*(unsigned short *)(pbuf) |= cpu_to_le16((present & 0x1) << 8); \
+	} while(0)
+
+#define SetMeshPsLevel(pbuf, pslevel) \
+	do	{	\
+		*(unsigned short *)(pbuf) |= cpu_to_le16((pslevel & 0x1) << 9); \
+	} while(0)
+
+#define SetRSPI(pbuf, rspi) \
+	do	{	\
+		*(unsigned short *)(pbuf) |= cpu_to_le16((rspi & 0x1) << 10); \
+	} while(0)
+
+//#define GetMeshHeaderFlagWithoutQOS(pbuf)	((unsigned char *)(pbuf) + 30)
+//#define GetGetMeshHeaderFlag(pbuf)			((unsigned char *)(pbuf) + 32)
+#define GetMeshHeaderFlagWithoutQOS(pbuf)	(GetQosControl(pbuf)+0)
+#define GetGetMeshHeaderFlag(pbuf)			(GetQosControl(pbuf)+2)
+
+
+//#define GetMeshHeaderTTLWithOutQOS(pbuf)	((unsigned char *)(pbuf) + 31)  	// mesh header ttl
+//#define GetMeshHeaderTTL(pbuf)				((unsigned char *)(pbuf) + 33)  	// mesh header ttl
+#define GetMeshHeaderTTLWithOutQOS(pbuf)	(GetMeshHeaderFlagWithoutQOS(pbuf)+1)
+#define GetMeshHeaderTTL(pbuf)				(GetGetMeshHeaderFlag(pbuf)+1) 
+
+//#define GetMeshHeaderSeqNumWithoutQOS(pbuf)	((unsigned short *)((unsigned long)(pbuf) + 32))	// Don't use cpu_to_le16(Other not use cpu_to_le16)
+//#define GetMeshHeaderSeqNum(pbuf)			((unsigned short *)((unsigned long)(pbuf) + 34))	// Don't use cpu_to_le16(Other not use cpu_to_le16)
+#define GetMeshHeaderSeqNumWithoutQOS(pbuf)	((unsigned int *)(GetMeshHeaderTTLWithOutQOS(pbuf)+1))	
+#define GetMeshHeaderSeqNum(pbuf)			((unsigned int *)(GetMeshHeaderTTL(pbuf)+1))
+
+/*
+#define SetMeshHeaderSeqNum(pbuf, num) \
+	do {    \
+		*(unsigned short *)((unsigned long)(pbuf) + 34) = \
+			((*(unsigned short *)((unsigned long)(pbuf) + 34)) & le16_to_cpu((unsigned short)~0xffff)) | \
+			le16_to_cpu((unsigned short)(0xffff & num )); \
+	} while(0)
+*/
+#define SetMeshHeaderSeqNum(pbuf, num)		(*GetMeshHeaderSeqNum(pbuf) = (num))
+
+
+
+//debug note: 
+//(u16 *)pHeader)[0] - flow control field
+//((u16 *)((u8 *)pHeader + 24/30))[0] - QoS control field
+//((u8 *)pHeader)[26/32] - mesh control field (i.e pQoS+2)
+
+#define ETHER_ADDR_EQUAL(a, b)  	(((((const u16 *)a)[0] ^ ((const u16 *)b)[0]) | (((const u16 *)a)[1] ^ ((const u16 *)b)[1]) | (((const u16 *)a)[2] ^ ((const u16 *)b)[2])) == 0)
+#define HAS_A4(pHeader)             ((((u16 *)pHeader)[0] & cpu_to_le16(_TO_DS_ | _FROM_DS_)) == cpu_to_le16(_TO_DS_ | _FROM_DS_))
+#define HAS_A5(pHeader)             (HAS_A4(pHeader) ? (((u8 *)pHeader)[32] & cpu_to_le16(BIT1 | BIT0) == 1):(((u8 *)pHeader)[26] & cpu_to_le16(BIT1 | BIT0) == 1))
+#define HAS_A6(pHeader)             (HAS_A5(pHeader))
+#define HAS_TO_DS(pHeader)          ((((u16 *)pHeader)[0] & cpu_to_le16(_TO_DS_)) != 0)
+#define HAS_FR_DS(pHeader)          ((((u16 *)pHeader)[0] & cpu_to_le16(_FROM_DS_)) != 0)
+#define HAS_MESH_CTL_FIELD(pHeader) (HAS_A4(pHeader) ? ((((u16 *)((u8 *)pHeader + 30))[0] & cpu_to_le16(RTW_IEEE80211_QOS_CTL_MESH_CONTROL_PRESENT)) == cpu_to_le16(RTW_IEEE80211_QOS_CTL_MESH_CONTROL_PRESENT)):((((u16 *)((u8 *)pHeader + 24))[0] & cpu_to_le16(RTW_IEEE80211_QOS_CTL_MESH_CONTROL_PRESENT)) == cpu_to_le16(RTW_IEEE80211_QOS_CTL_MESH_CONTROL_PRESENT)))
+#define IS_DATA(pHeader)            ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FTYPE_DATA)) == cpu_to_le16(RTW_IEEE80211_FTYPE_DATA))
+#define IS_MGMT(pHeader)            ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FCTL_FTYPE)) == cpu_to_le16(RTW_IEEE80211_FTYPE_MGMT))
+#define IS_ACTION(pHeader)          ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FCTL_FTYPE | RTW_IEEE80211_FCTL_STYPE)) == cpu_to_le16(RTW_IEEE80211_FTYPE_MGMT | RTW_IEEE80211_STYPE_ACTION))
+#define IS_PROBE_REQ(pHeader)       ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FCTL_FTYPE | RTW_IEEE80211_FCTL_STYPE)) == cpu_to_le16(RTW_IEEE80211_FTYPE_MGMT | RTW_IEEE80211_STYPE_PROBE_REQ))
+#define IS_PROBE_RSP(pHeader)       ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FCTL_FTYPE | RTW_IEEE80211_FCTL_STYPE)) == cpu_to_le16(RTW_IEEE80211_FTYPE_MGMT | RTW_IEEE80211_STYPE_PROBE_RESP))
+#define IS_BEACON(pHeader)          ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FCTL_FTYPE | RTW_IEEE80211_FCTL_STYPE)) == cpu_to_le16(RTW_IEEE80211_FTYPE_MGMT | RTW_IEEE80211_STYPE_BEACON))
+#define IS_AUTH(pHeader)            ((((u16 *)pHeader)[0] & cpu_to_le16(RTW_IEEE80211_FCTL_FTYPE | RTW_IEEE80211_FCTL_STYPE)) == cpu_to_le16(RTW_IEEE80211_FTYPE_MGMT | RTW_IEEE80211_STYPE_AUTH))
+
+#endif // CONFIG_RTK_MESH
+
 #define MacAddr_isBcst(addr) \
 ( \
 	( (addr[0] == 0xff) && (addr[1] == 0xff) && \
@@ -603,6 +703,15 @@ __inline static int IsFrameTypeCtrl(unsigned char *pframe)
 
 #define _FIXED_IE_LENGTH_			_BEACON_IE_OFFSET_
 
+#ifdef CONFIG_RTK_MESH
+#define	_MESH_SP_OPEN_IE_OFFSET_		4 // 2(cat + action) + 2(cap)
+#define	_MESH_SP_CONFIRM_IE_OFFSET_		6 // 2(cat + action) + 2(cap) + 2(AID)
+#define	_MESH_SP_CLOSE_IE_OFFSET_		2 // 2(cat + action)
+#define	_MESH_HEADER_WITH_AE_		16	// mesh header with AE(Address Extension)
+#define	_MESH_HEADER_WITHOUT_AE_	4	// mesh header without AE(Address Extension)
+#define	_MESH_ACTIVE_FIELD_OFFSET_	2	// mesh active field Category+Action length
+#endif
+
 #define _SSID_IE_				0
 #define _SUPPORTEDRATES_IE_	1
 #define _DSSET_IE_				3
@@ -612,18 +721,22 @@ __inline static int IsFrameTypeCtrl(unsigned char *pframe)
 #define _CHLGETXT_IE_			16
 #define _SUPPORTED_CH_IE_		36
 #define _CH_SWTICH_ANNOUNCE_	37	//Secondary Channel Offset
+#define	_MEAS_REQ_IE_		38
+#define	_MEAS_RSP_IE_		39
 #define _RSN_IE_2_				48
 #define _SSN_IE_1_					221
 #define _ERPINFO_IE_			42
 #define _EXT_SUPPORTEDRATES_IE_	50
 
 #define _HT_CAPABILITY_IE_			45
+#define _MDIE_					54
 #define _FTIE_						55
 #define _TIMEOUT_ITVL_IE_			56
 #define _SRC_IE_				59
 #define _HT_EXTRA_INFO_IE_			61
 #define _HT_ADD_INFO_IE_			61 //_HT_EXTRA_INFO_IE_
 #define _WAPI_IE_					68
+#define _EID_RRM_EN_CAP_IE_			70
 
 #define _RIC_Descriptor_IE_			75
 #ifdef CONFIG_IEEE80211W
@@ -662,6 +775,7 @@ typedef	enum _ELEMENT_ID {
 	/* vivi for WIFITest, 802.11h AP, 20100427 */
 	/* 2010/12/26 MH The definition we can declare always!! */
 	EID_PowerCap				= 33,
+	EID_TPC				= 35,
 	EID_SupportedChannels		= 36,
 	EID_ChlSwitchAnnounce		= 37,
 
@@ -714,6 +828,42 @@ typedef	enum _ELEMENT_ID {
 	EID_AID						= 197, /* Based on 802.11ac D4.0 */
 	EID_OpModeNotification		= 199, /* Based on 802.11ac D3.0 */
 } ELEMENT_ID, *PELEMENT_ID;
+
+
+/*-----------------------------------------------------------------------------
+            Below is for mesh related definition
+------------------------------------------------------------------------------*/
+
+/*used in Multihop category */
+#define _PROXY_UPDATES_ACTION_ID_         0
+#define _PROXY_UPDATES_CONFIRM_ACTION_ID_ 1
+
+#define _SECONDARY_CHANNEL_OFFSET_IE_					62
+#define _WLAN_MESH_CAP_IE_			   113	// WLAN mesh configuration IE
+#define _MESH_ID_IE_				   114	// MESH ID infoemation element
+#define _MESH_LINK_METRIC_REPORT_IE_   115	// Local link state announcement IE
+#define _MESH_PEER_MGMT_IE_            117	// MESH peering managment IE
+#define _MESH_CHANNEL_SWITCH_IE_       118
+#define _MESH_AWAKE_WINDOW_IE_    119 //MESH awake window
+#define _MESH_GANN_IE_	               125
+#define _MESH_RANN_IE_	               126
+#define _MESH_PREQ_IE_	               130
+#define _MESH_PREP_IE_	               131
+#define _MESH_PERR_IE_	               132
+#define _PROXY_UPDATE_IE_			   137
+#define _PROXY_UPDATE_CONFIRM_IE_	   138
+#define _MESH_AMPE_IE_					139
+#define _MESH_MIC_IE_					140
+
+// CATUTION: below ALL undefine !!
+#define _OFDM_PARAMETER_SET_IE_		   200
+#define _NEIGHBOR_LIST_IE_			   205	// neighbor list IE
+#define _UCG_SWITCH_ANNOU_IE_		   210
+#define _MDAOP_ADVERTISMENTS_IE_	   211
+#define _MOAOP_SET_TEARDOWN_IE_		   212
+#define _PEER_LINK_OPEN_IE_			   223
+#define _PEER_LINK_CONFIRM_IE_		   224
+#define _PEER_LINK_CLOSE_IE_		   225
 
 /* ---------------------------------------------------------------------------
 					Below is the fixed elements...
@@ -774,48 +924,137 @@ typedef	enum _ELEMENT_ID {
 #define _WMM_IE_Length_				7  // for WMM STA
 #define _WMM_Para_Element_Length_		24
 
-//TODO
-#if 0
-
-/*-----------------------------------------------------------------------------
-				Below is the definition for 802.11n 
-------------------------------------------------------------------------------*/
-
-//#ifdef CONFIG_80211N_HT
-
-#define SetOrderBit(pbuf)	\
-	do	{	\
-		*(unsigned short *)(pbuf) |= cpu_to_le16(_ORDER_); \
-	} while(0)
-
-#define GetOrderBit(pbuf)	(((*(unsigned short *)(pbuf)) & le16_to_cpu(_ORDER_)) != 0)
+#if defined(CONFIG_RTL8712FW) || defined(PLATFORM_ECOS) || defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS) || defined(PLATFORM_ALIOS)
 
 
-/**
- * struct rtw_ieee80211_bar - HT Block Ack Request
- *
- * This structure refers to "HT BlockAckReq" as
- * described in 802.11n draft section 7.2.1.7.1
- */
- #if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8712FW)
-struct rtw_ieee80211_bar {
-	unsigned short frame_control;
-	unsigned short duration;
-	unsigned char ra[6];
-	unsigned char ta[6];
-	unsigned short control;
-	unsigned short start_seq_num;
-} __attribute__((packed));
- #endif
+#ifdef CONFIG_RTK_MESH
 
-/* 802.11 BAR control masks */
-#define IEEE80211_BAR_CTRL_ACK_POLICY_NORMAL     0x0000
-#define IEEE80211_BAR_CTRL_CBMTID_COMPRESSED_BA  0x0004
+typedef struct _ieee80211_rann_ie_ {
+	u8 rann_flags;
+	u8 rann_hopcount;
+	u8 rann_ttl;
+	u8 rann_addr[6];
+	u32 rann_seq;
+	u32 rann_interval;
+	u32 rann_metric;
+} ieee80211_rann_ie;
 
-#endif	//#if 0
+typedef struct _ieee80211_ampe_ie_ {
+	u8 selected_pairwise_suite[4];
+	u8 local_nonce[32];
+	u8 peer_nonce[32];
+} ieee80211_ampe_ie;
 
- #if defined(PLATFORM_LINUX) || defined(CONFIG_RTL8712FW) || defined(PLATFORM_FREEBSD) || defined(PLATFORM_ECOS) || defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS) || defined(PLATFORM_ALIOS)
+typedef union _mesh_formation_info_{
+	struct {
+		u8 connected_to_mesh_gate : 1;
+		u8 number_of_peerings : 6;
+		u8 connected_to_as : 1;
+	};
+	u8 u8Val;
+} mesh_formation_info;
 
+typedef union _mesh_capability_ {
+	struct{
+		u8 accepting_additional_mesh_peerings : 1;
+		u8 mcca_supported : 1;
+		u8 mcca_enabled : 1;
+		u8 forwarding : 1;
+		u8 mbac_enabled : 1;
+		u8 tbtt_adjusting : 1;
+		u8 mesh_power_save_level : 1;
+		u8 reserved : 1;
+	};
+	u8 u8Val;
+} mesh_capability;
+
+//element ID: 113, length: 7
+typedef union _Mesh_Configuration_IE_ {
+	struct {
+		u8 active_path_selection_protocol_identifier;
+		u8 active_path_selection_metric_identifier;
+		u8 congestion_control_mode_identifier;
+		u8 synchronization_method_identifier;
+		u8 authentication_protocol_identifier;
+		mesh_formation_info mesh_formation_info;
+		mesh_capability mesh_capability;
+	};
+	u8 Octets[7];
+}mesh_config_ie;
+
+//element ID: 117, length+ID: 5, 7, 9, 21, 23, or 25 p692
+typedef struct _Mesh_Peering_Management_IE_{
+		u16 mesh_peering_protocol_identifier;
+		u16 local_link_id;
+		u16 peer_link_id; //conditional 
+		u16 reason_code; //conditional
+		u8 choosen_pmk[16]; //optional
+}mesh_peering_management_ie;
+
+ /* Parsed Information Elements */
+ typedef struct rtw_ieee802_11_elems_ext {
+	 u8 *ssid;
+	 u8 ssid_len;
+	 u8 *supp_rates;
+	 u8 supp_rates_len;
+	 u8 *fh_params;
+	 u8 fh_params_len;
+	 u8 *ds_params;
+	 u8 ds_params_len;
+	 u8 *cf_params;
+	 u8 cf_params_len;
+	 u8 *tim;
+	 u8 tim_len;
+	 u8 *ibss_params;
+	 u8 ibss_params_len;
+	 u8 *challenge;
+	 u8 challenge_len;
+	 u8 *erp_info;
+	 u8 erp_info_len;
+	 u8 *ext_supp_rates;
+	 u8 ext_supp_rates_len;
+	 u8 *wpa_ie;
+	 u8 wpa_ie_len;
+	 u8 *rsn_ie;
+	 u8 rsn_ie_len;
+	 u8 *wme;
+	 u8 wme_len;
+	 u8 *wme_tspec;
+	 u8 wme_tspec_len;
+	 u8 *wps_ie;
+	 u8 wps_ie_len;
+	 u8 *power_cap;
+	 u8 power_cap_len;
+	 u8 *supp_channels;
+	 u8 supp_channels_len;
+	 u8 *mdie;
+	 u8 mdie_len;
+	 u8 *ftie;
+	 u8 ftie_len;
+	 u8 *timeout_int;
+	 u8 timeout_int_len;
+	 u8 *ht_capabilities;
+	 u8 ht_capabilities_len;
+	 u8 *ht_operation;
+	 u8 ht_operation_len;
+	 //u8 *vendor_ht_cap;
+	 //u8 vendor_ht_cap_len;
+	 u8 *vendor_specific;
+	 u8 vendor_specific_len;
+#ifdef CONFIG_RTK_MESH
+	 u8 mesh_id_len;
+	 u8* mesh_id;
+	 u8 mesh_configuration_len;
+	 mesh_config_ie* mesh_configuration;
+	 u8 mesh_peering_mgmnt_len;
+	 u8* mesh_peering_mgmnt;
+	 u8 mic_len;
+	 u8* mic;
+#endif //CONFIG_RTK_MESH
+ }dot_11_IEs;
+#define SAE_AUTH_COMMIT                 1
+#define SAE_AUTH_CONFIRM                2
+#endif //CONFIG_RTK_MESH
 
 
  /**
@@ -959,81 +1198,7 @@ RTW_PACK_STRUCT_END
 #  include "pack_end.h"
 #endif
 
-#endif //#if defined PLATFORM_LINUX/CONFIG_RTL8712FW/PLATFORM_FREEBSD/PLATFORM_ECOS/PLATFORM_FREERTOS
-
-
-#ifdef PLATFORM_WINDOWS
-
-#pragma pack(1)
-
-struct rtw_ieee80211_ht_cap {
-	unsigned short 	cap_info;
-	unsigned char 	ampdu_params_info;
-	unsigned char 	supp_mcs_set[16];
-	unsigned short 	extended_ht_cap_info;
-	unsigned int		tx_BF_cap_info;
-	unsigned char	       antenna_selection_info;
-};
-
-
-struct ieee80211_ht_addt_info {
-	unsigned char 	control_chan;
-	unsigned char		ht_param;
-	unsigned short	operation_mode;
-	unsigned short	stbc_param;
-	unsigned char		basic_set[16];
-};
-
-struct HT_caps_element
-{
-	union
-	{ 
-		struct 
-		{ 	
-			unsigned short	HT_caps_info;
-			unsigned char	AMPDU_para;
-			unsigned char	MCS_rate[16];
-			unsigned short	HT_ext_caps;
-			unsigned int	Beamforming_caps;
-			unsigned char	ASEL_caps;
-		} HT_cap_element;
-		unsigned char HT_cap[26];
-	};
-};
-
-struct HT_info_element
-{
-	unsigned char	primary_channel;
-	unsigned char	infos[5];
-	unsigned char	MCS_rate[16];
-};
-
-struct AC_param
-{
-	unsigned char		ACI_AIFSN;
-	unsigned char		CW;
-	unsigned short	TXOP_limit;
-};
-
-struct WMM_para_element
-{
-	unsigned char		QoS_info;
-	unsigned char		reserved;
-	struct AC_param	ac_param[4];
-};
-
-struct ADDBA_request
-{
-	unsigned char		dialog_token;
-	unsigned short	BA_para_set;
-	unsigned short	BA_timeout_value;
-	unsigned short	BA_starting_seqctrl;
-};
-
-
-#pragma pack()
-
-#endif
+#endif //#if CONFIG_RTL8712FW/PLATFORM_ECOS/PLATFORM_FREERTOS
 
 typedef enum _HT_CAP_AMPDU_FACTOR {
 	MAX_AMPDU_FACTOR_8K		= 0,
@@ -1346,6 +1511,7 @@ typedef enum _HT_CAP_AMPDU_FACTOR {
 //wext_send_mgnt bit type
 #define P2P_SEND_ACTION_AFTER_PROBE_RSP	 	1
 #define RTW_SEND_AND_WAIT_ACK 				2
+#define RTW_SEND_BY_HIGH_RATE				4 // IEEE80211_OFDM_RATE_54MB
 
 enum gen_ie_type{
 	P2PWPS_PROBE_REQ_IE = 0,

@@ -1,6 +1,5 @@
 
 #include "BLEDevice.h"
-#include "BLEScan.h"
 
 int dataCount = 0;
 BLEAdvertData foundDevice;

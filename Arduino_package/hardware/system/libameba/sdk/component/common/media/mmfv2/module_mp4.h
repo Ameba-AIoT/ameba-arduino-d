@@ -27,10 +27,10 @@
 #define CMD_MP4_STOP					MM_MODULE_CMD(0x11)
 #define CMD_MP4_GET_STATUS				MM_MODULE_CMD(0x12)
 #define CMD_MP4_RESET_FILE_INDEX		MM_MODULE_CMD(0x13)
-#define CMD_MP4_SET_STOP_CB				MM_MODULE_CMD(0x14) //Every record loop will enter the callback
-#define CMD_MP4_SET_END_CB				MM_MODULE_CMD(0x15) //Only final loop will ebter the callback
+#define CMD_MP4_SET_STOP_CB		MM_MODULE_CMD(0x14) //Every record loop will enter the callback
+#define CMD_MP4_SET_END_CB		MM_MODULE_CMD(0x15) //Only final loop will ebter the callback
 #define CMD_MP4_LOOP_MODE				MM_MODULE_CMD(0x16)
-
+#define CMD_MP4_SET_ERROR_CB            MM_MODULE_CMD(0x17)
 typedef struct mp4_param_s{
 	uint32_t width;
 	uint32_t height;

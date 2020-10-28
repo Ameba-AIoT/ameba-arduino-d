@@ -6,129 +6,309 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-BLE						KEYWORD1
-BLEAddr					KEYWORD1
-BLEAdvert				KEYWORD1
-BLEAdvertData			KEYWORD1
-BLEBatteryClient		KEYWORD1
-BLEBatteryService		KEYWORD1
-iBeacon					KEYWORD1
-altBeacon				KEYWORD1
-BLEConnect				KEYWORD1
-BLEDevice				KEYWORD1
-BLEScan					KEYWORD1
-BLEUUID					KEYWORD1
+BLE	KEYWORD1
+BLEAddr	KEYWORD1
+BLEAdvert	KEYWORD1
+BLEAdvertData	KEYWORD1
+BLEBatteryClient	KEYWORD1
+BLEBatteryService	KEYWORD1
+iBeacon	KEYWORD1
+altBeacon	KEYWORD1
+BLECharacteristic	KEYWORD1
+BLEClient	KEYWORD1
+BLEConnect	KEYWORD1
+BLERemoteCharacteristic	KEYWORD1
+BLERemoteDescriptor	KEYWORD1
+BLERemoteService	KEYWORD1
+BLEScan	KEYWORD1
+BLEService	KEYWORD1
+BLEUUID	KEYWORD1
 BLEWifiConfigService	KEYWORD1
 
 #######################################
-# Methods and Functions (KEYWORD2)
+# BLEAddr Methods (KEYWORD2) & Constants (LITERAL1)
 #######################################
 
-updateAdvertParams		KEYWORD2
-startAdv				KEYWORD2
-stopAdv					KEYWORD2
-setAdvType				KEYWORD2
-setMinInterval			KEYWORD2
-setMaxInterval			KEYWORD2
-setAdvData				KEYWORD2
-setScanRspData			KEYWORD2
+str	KEYWORD2
+data	KEYWORD2
 
-clear					KEYWORD2
-addData					KEYWORD2
-addFlags				KEYWORD2
-addPartialServices		KEYWORD2
-addCompleteServices		KEYWORD2
-addAppearance			KEYWORD2
-addShortName			KEYWORD2
-addCompleteName			KEYWORD2
-parseScanInfo			KEYWORD2
-hasFlags				KEYWORD2
-hasUUID					KEYWORD2
-hasName					KEYWORD2
-hasManufacturer			KEYWORD2
-getAdvType				KEYWORD2
-getAddrType				KEYWORD2
-getAddr					KEYWORD2
-getRSSI					KEYWORD2
-getFlags				KEYWORD2
-getServiceCount			KEYWORD2
-getServiceList			KEYWORD2
-getName					KEYWORD2
-getTxPower				KEYWORD2
-getAppearance			KEYWORD2
-getManufacturer			KEYWORD2
+#######################################
+# BLEAdvert Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+updateAdvertParams	KEYWORD2
+startAdv	KEYWORD2
+stopAdv	KEYWORD2
+setAdvType	KEYWORD2
+setMinInterval	KEYWORD2
+setMaxInterval	KEYWORD2
+setAdvData	KEYWORD2
+setScanRspData	KEYWORD2
+
+GAP_ADTYPE_ADV_IND	LITERAL1
+GAP_ADTYPE_ADV_NONCONN_IND	LITERAL1
+GAP_ADVCHAN_ALL	LITERAL1
+GAP_ADV_FILTER_ANY	LITERAL1
+
+#######################################
+# BLEAdvertData Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+clear	KEYWORD2
+addData	KEYWORD2
+addFlags	KEYWORD2
+addPartialServices	KEYWORD2
+addCompleteServices	KEYWORD2
+addAppearance	KEYWORD2
+addShortName	KEYWORD2
+addCompleteName	KEYWORD2
+parseScanInfo	KEYWORD2
+hasFlags	KEYWORD2
+hasUUID	KEYWORD2
+hasName	KEYWORD2
+hasManufacturer	KEYWORD2
+getAdvType	KEYWORD2
+getAddrType	KEYWORD2
+getAddr	KEYWORD2
+getRSSI	KEYWORD2
+getFlags	KEYWORD2
+getServiceCount	KEYWORD2
+getServiceList	KEYWORD2
+getName	KEYWORD2
+getTxPower	KEYWORD2
+getAppearance	KEYWORD2
+getManufacturer	KEYWORD2
 getManufacturerDataLength	KEYWORD2
-getManufacturerData		KEYWORD2
+getManufacturerData	KEYWORD2
 
-addClient				KEYWORD2
-discoverServices		KEYWORD2
-readLevel				KEYWORD2
-readNotificationState	KEYWORD2
-setNotificationState	KEYWORD2
-setReadCallback			KEYWORD2
-setNotificationCallback	KEYWORD2
-setDiscoveryCallback	KEYWORD2
-addService				KEYWORD2
-notifyEnabled			KEYWORD2
-setLevel				KEYWORD2
-sendNotification		KEYWORD2
-advData					KEYWORD2
+GAP_GATT_APPEARANCE_UNKNOWN	LITERAL1
+GAP_ADTYPE_FLAGS_LIMITED	LITERAL1
+GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED	LITERAL1
+T_LE_CB_DATA	LITERAL1
+T_GAP_ADV_EVT_TYPE	LITERAL1
+GAP_ADV_EVT_TYPE_UNDIRECTED	LITERAL1
+GAP_ADV_EVT_TYPE_DIRECTED	LITERAL1
+GAP_ADV_EVT_TYPE_SCANNABLE	LITERAL1
+GAP_ADV_EVT_TYPE_NON_CONNECTABLE	LITERAL1
+GAP_ADV_EVT_TYPE_SCAN_RSP	LITERAL1
 
-connect					KEYWORD2
-disconnect				KEYWORD2
-setScanInterval			KEYWORD2
-setScanWindow			KEYWORD2
-getConnInfo				KEYWORD2
-getConnAddr				KEYWORD2
-getConnId				KEYWORD2
+#######################################
+# BLEBeacon Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
 
-init					KEYWORD2
-deinit					KEYWORD2
-connected				KEYWORD2
-setDeviceName			KEYWORD2
-setDeviceAppearance		KEYWORD2
-configAdvert			KEYWORD2
-configScan				KEYWORD2
-configConnection		KEYWORD2
-setScanCallback			KEYWORD2
-beginCentral			KEYWORD2
-beginPeripheral			KEYWORD2
-end						KEYWORD2
-configServer			KEYWORD2
-configClient			KEYWORD2
-getLocalAddr			KEYWORD2
+getManufacturerId	KEYWORD2
+getUUID	KEYWORD2
+getMajor	KEYWORD2
+getMinor	KEYWORD2
+getRSSI	KEYWORD2
+getRSVD	KEYWORD2
+setManufacturerId	KEYWORD2
+setUUID	KEYWORD2
+setMajor	KEYWORD2
+setMinor	KEYWORD2
+setRSSI	KEYWORD2
+setRSVD	KEYWORD2
+getAdvData	KEYWORD2
+getScanRsp	KEYWORD2
 
-updateScanParams		KEYWORD2
-startScan				KEYWORD2
-stopScan				KEYWORD2
-setScanMode				KEYWORD2
-setScanInterval			KEYWORD2
-setScanWindow			KEYWORD2
+advDataSize	LITERAL1
+scanRspSize	LITERAL1
+
+#######################################
+# BLECharacteristic Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+setUUID	KEYWORD2
+getUUID	KEYWORD2
+setBufferLen	KEYWORD2
+getBufferLen	KEYWORD2
+setReadProperty	KEYWORD2
+setWriteProperty	KEYWORD2
+setNotifyProperty	KEYWORD2
+setIndicateProperty	KEYWORD2
+setProperties	KEYWORD2
+getProperties	KEYWORD2
+readString	KEYWORD2
+readData8	KEYWORD2
+readData16	KEYWORD2
+readData32	KEYWORD2
+writeString	KEYWORD2
+writeData8	KEYWORD2
+writeData16	KEYWORD2
+writeData32	KEYWORD2
+setData	KEYWORD2
+getData	KEYWORD2
+getDataBuff	KEYWORD2
+getDataLen	KEYWORD2
+notify	KEYWORD2
+indicate	KEYWORD2
+setUserDescriptor	KEYWORD2
+setFormatDescriptor	KEYWORD2
+setReadCallback	KEYWORD2
+setWriteCallback	KEYWORD2
+setCCCDCallback	KEYWORD2
+
+GATT_CLIENT_CHAR_CONFIG_DEFAULT	LITERAL1
+GATT_CLIENT_CHAR_CONFIG_NOTIFY	LITERAL1
+GATT_CLIENT_CHAR_CONFIG_INDICATE	LITERAL1
+GATT_CLIENT_CHAR_CONFIG_NOTIFY_INDICATE	LITERAL1
+
+#######################################
+# BLEClient Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+connected	KEYWORD2
+discoverServices	KEYWORD2
+discoveryDone	KEYWORD2
+printServices	KEYWORD2
+getService	KEYWORD2
+getConnId	KEYWORD2
+getClientId	KEYWORD2
+setDisconnectCallback	KEYWORD2
+
+T_CLIENT_ID	LITERAL1
+
+#######################################
+# BLEConnect Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+connect	KEYWORD2
+disconnect	KEYWORD2
+setScanInterval	KEYWORD2
+setScanWindow	KEYWORD2
+setConnInterval	KEYWORD2
+setConnLatency	KEYWORD2
+setConnTimeout	KEYWORD2
+updateConnParams	KEYWORD2
+getConnInfo	KEYWORD2
+getConnAddr	KEYWORD2
+getConnId	KEYWORD2
+
+T_GAP_REMOTE_ADDR_TYPE	LITERAL1
+GAP_REMOTE_ADDR_LE_PUBLIC	LITERAL1
+GAP_REMOTE_ADDR_LE_RANDOM	LITERAL1
+T_GAP_CONN_INFO	LITERAL1
+
+#######################################
+# BLEDevice Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+init	KEYWORD2
+deinit	KEYWORD2
+connected	KEYWORD2
+setDeviceName	KEYWORD2
+setDeviceAppearance	KEYWORD2
+configAdvert	KEYWORD2
+configScan	KEYWORD2
+configConnection	KEYWORD2
+setScanCallback	KEYWORD2
+beginCentral	KEYWORD2
+beginPeripheral	KEYWORD2
+end	KEYWORD2
+getLocalAddr	KEYWORD2
+configServer	KEYWORD2
+addService	KEYWORD2
+configClient	KEYWORD2
+addClient	KEYWORD2
+
+#######################################
+# BLERemoteCharacteristic Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+getDescriptor	KEYWORD2
+getUUID	KEYWORD2
+setBufferLen	KEYWORD2
+getBufferLen	KEYWORD2
+canRead	KEYWORD2
+canWrite	KEYWORD2
+canNotify	KEYWORD2
+canIndicate	KEYWORD2
+getProperties	KEYWORD2
+readString	KEYWORD2
+readData8	KEYWORD2
+readData16	KEYWORD2
+readData32	KEYWORD2
+writeString	KEYWORD2
+writeData8	KEYWORD2
+writeData16	KEYWORD2
+writeData32	KEYWORD2
+setData	KEYWORD2
+getData	KEYWORD2
+enableNotifyIndicate	KEYWORD2
+disableNotifyIndicate	KEYWORD2
+setNotifyCallback	KEYWORD2
+
+#######################################
+# BLERemoteDescriptor Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+getUUID	KEYWORD2
+setBufferLen	KEYWORD2
+getBufferLen	KEYWORD2
+readString	KEYWORD2
+readData8	KEYWORD2
+readData16	KEYWORD2
+readData32	KEYWORD2
+writeString	KEYWORD2
+writeData8	KEYWORD2
+writeData16	KEYWORD2
+writeData32	KEYWORD2
+setData	KEYWORD2
+getData	KEYWORD2
+
+#######################################
+# BLERemoteService Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+getCharacteristic	KEYWORD2
+
+#######################################
+# BLEScan Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+updateScanParams	KEYWORD2
+startScan	KEYWORD2
+stopScan	KEYWORD2
+setScanMode	KEYWORD2
+setScanInterval	KEYWORD2
+setScanWindow	KEYWORD2
 setScanDuplicateFilter	KEYWORD2
-scanInProgress			KEYWORD2
-printScanInfo			KEYWORD2
+scanInProgress	KEYWORD2
+printScanInfo	KEYWORD2
 
-str						KEYWORD2
-data					KEYWORD2
-dataNative				KEYWORD2
-length					KEYWORD2
+T_LE_CB_DATA	LITERAL1
+GAP_SCAN_MODE_ACTIVE	LITERAL1
+GAP_SCAN_MODE_PASSIVE	LITERAL1
+GAP_SCAN_FILTER_DUPLICATE_ENABLE	LITERAL1
+GAP_SCAN_FILTER_DUPLICATE_DISABLE	LITERAL1
+
+#######################################
+# BLEService Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+setUUID	KEYWORD2
+getUUID	KEYWORD2
+addCharacteristic	KEYWORD2
+getCharacteristic	KEYWORD2
+
+#######################################
+# BLEUUID Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+str	KEYWORD2
+data	KEYWORD2
+dataNative	KEYWORD2
+length	KEYWORD2
+
+#######################################
+# BLEWifiConfigService Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+begin	KEYWORD2
+end	KEYWORD2
+addService	KEYWORD2
+advData	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-
-GAP_ADTYPE_ADV_NONCONN_IND			LITERAL1
-GAP_ADTYPE_ADV_IND					LITERAL1
-GAP_BD_ADDR_LEN						LITERAL1
-GAP_REMOTE_ADDR_LE_PUBLIC			LITERAL1
-GAP_REMOTE_ADDR_LE_RANDOM			LITERAL1
-GAP_ADTYPE_FLAGS_LIMITED			LITERAL1
-GAP_ADTYPE_FLAGS_GENERAL			LITERAL1
-GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED				LITERAL1
-GAP_ADTYPE_FLAGS_SIMULTANEOUS_LE_BREDR_CONTROLLER	LITERAL1
-GAP_ADTYPE_FLAGS_SIMULTANEOUS_LE_BREDR_HOST			LITERAL1
-GAP_SCAN_MODE_ACTIVE				LITERAL1
-GAP_SCAN_MODE_PASSIVE				LITERAL1
-GAP_SCAN_FILTER_DUPLICATE_ENABLE	LITERAL1
-GAP_SCAN_FILTER_DUPLICATE_DISABLE	LITERAL1
-GAP_GATT_APPEARANCE_UNKNOWN			LITERAL1

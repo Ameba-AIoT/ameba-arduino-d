@@ -36,6 +36,7 @@ typedef enum _RATE_SECTION {
 	VHT_2SSMCS0_2SSMCS9,
 	VHT_3SSMCS0_3SSMCS9,
 	VHT_4SSMCS0_4SSMCS9,
+	RATE_SECTION_NUM,
 } RATE_SECTION;
 
 typedef enum _RF_TX_NUM {
@@ -61,9 +62,10 @@ typedef enum _REGULATION_TXPWR_LMT {
 	TXPWR_LMT_KCC = 4,
 	TXPWR_LMT_ACMA = 5,
 	TXPWR_LMT_CHILE = 6,
-	TXPWR_LMT_WW = 7, // WW13, The mininum of ETSI,MKK
-	TXPWR_LMT_GL = 8, // Global, The mininum of ETSI,MKK,FCC
-	TXPWR_LMT_MAX_REGULATION_NUM = 9
+	TXPWR_LMT_MEXICO = 7,
+	TXPWR_LMT_WW = 8, // WW13, The mininum of ETSI,MKK
+	TXPWR_LMT_GL = 9, // Global, The mininum of ETSI,MKK,FCC
+	TXPWR_LMT_MAX_REGULATION_NUM = 10
 } REGULATION_TXPWR_LMT;
 
 /*------------------------------Define structure----------------------------*/ 

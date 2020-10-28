@@ -170,17 +170,7 @@ struct security_priv
 	//WLAN_BSSID_EX sec_bss;  //for joinbss (h2c buffer) usage //YJ,del,140410
 
 	NDIS_802_11_WEP ndiswep;
-#ifdef PLATFORM_WINDOWS
-	u8 KeyMaterial[16];// variable length depending on above field.
-#endif
 
-//TODO
-#if 0	//Remove unused wpa2 data - Alex Fang
-	u8 assoc_info[600];
-	u8 szofcapability[256]; //for wpa2 usage
-	u8 oidassociation[512]; //for wpa/wpa2 usage
-	u8 authenticator_ie[256];  //store ap security information element
-#endif
 	u8 supplicant_ie[256];  //store sta security information element
 
 
@@ -194,7 +184,11 @@ struct security_priv
 	WPA_GLOBAL_INFO		wpa_global_info;
 #if defined(CONFIG_AP_MODE) && defined(CONFIG_MULTIPLE_WPA_STA)
 //	WPA_STA_INFO		wpa_sta_info[AP_STA_NUM];
+#ifdef CONFIG_WLAN_SWITCH_MODE
+	u8*					palloc_wpastainfo_buf[AP_STA_NUM];
+#else
 	u8					*palloc_wpastainfo_buf;
+#endif
 	u32					alloc_wpastainfo_size;
 	WPA_STA_INFO		*wpa_sta_info[NUM_STA-2];
 #else
@@ -422,22 +416,6 @@ int wpa_tdls_ftie_mic(u8 *kck, u8 trans_seq,
 int tdls_verify_mic(u8 *kck, u8 trans_seq, 
 						u8 *lnkid, u8 *rsnie, u8 *timeoutie, u8 *ftie);
 #endif //CONFIG_TDLS
-
-#ifdef PLATFORM_WINDOWS
-void rtw_use_tkipkey_handler (
-	IN	PVOID					SystemSpecific1,
-	IN	PVOID					FunctionContext,
-	IN	PVOID					SystemSpecific2,
-	IN	PVOID					SystemSpecific3
-	);
-#endif
-#ifdef PLATFORM_LINUX
-void rtw_use_tkipkey_handler(void* FunctionContext);
-#endif
-
-#ifdef PLATFORM_FREEBSD
-void rtw_use_tkipkey_handler(void* FunctionContext);
-#endif //PLATFORM_FREEBSD
 
 u32	rtw_init_sec_priv(_adapter *padapter);
 void	rtw_free_sec_priv(struct security_priv *psecpriv);

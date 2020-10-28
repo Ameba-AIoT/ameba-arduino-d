@@ -299,11 +299,7 @@
 #define EEPROM_Default_internalPA_SP3T_C9	0xAA
 #define EEPROM_Default_internalPA_SP3T_CC	0xAF
 #define EEPROM_Default_internalPA_SPDT_C9	0xAA
-#ifdef CONFIG_PCI_HCI
-#define EEPROM_Default_internalPA_SPDT_CC	0xA0
-#else
 #define EEPROM_Default_internalPA_SPDT_CC	0xFA
-#endif
 #define EEPROM_Default_PAType						0
 #define EEPROM_Default_LNAType						0
 
@@ -330,17 +326,6 @@
 
 
 
-#ifdef CONFIG_USB_HCI
-//should be renamed and moved to another file
-typedef	enum _BOARD_TYPE_8192CUSB{
-	BOARD_USB_DONGLE 			= 0,		// USB dongle
-	BOARD_USB_High_PA 		= 1,		// USB dongle with high power PA
-	BOARD_MINICARD		  	= 2,		// Minicard
-	BOARD_USB_SOLO 		 	= 3,		// USB solo-Slim module
-	BOARD_USB_COMBO			= 4,		// USB Combo-Slim module
-} BOARD_TYPE_8723BUSB, *PBOARD_TYPE_8723BUSB;
-
-#endif
 
 #if defined (CONFIG_PCI_HCI) || defined(CONFIG_LX_HCI)
 #define RT_BCN_INT_MASKS				(IMR_BcnInt | IMR_TBDOK | IMR_TBDER)

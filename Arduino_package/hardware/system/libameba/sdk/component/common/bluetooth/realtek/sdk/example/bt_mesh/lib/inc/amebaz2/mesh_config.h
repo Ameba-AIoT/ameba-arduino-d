@@ -44,7 +44,7 @@ BEGIN_DECLS
 #define MESH_PROVISIONING_SAMPLE_DATA           0 //!< Provisioning Protocol
 #define MESH_UNPROVISIONING_SUPPORT             0 //!< Support unprovisioning cmd in pb-gatt
 
-#if MESH_DEVICE
+#if defined(MESH_DEVICE) && MESH_DEVICE
 //#warning "current project is device lib"
 #define MESH_DATA_UART_DEBUG                    1
 #define MESH_LPN                                1 //!< low power node
@@ -56,7 +56,7 @@ BEGIN_DECLS
 #define MESH_BEARER_GATT                        1
 #endif
 
-#if MESH_PROVISIONER
+#if defined(MESH_PROVISIONER) && MESH_PROVISIONER
 //#warning "current project is provisioner lib"
 #define MESH_DATA_UART_DEBUG                    1 //!< Data uart debug
 #define MESH_FN                                 1 //!< friend relay
@@ -72,7 +72,8 @@ BEGIN_DECLS
 #define data_uart_dump(...)
 #endif
 
-#if MESH_FN && MESH_LPN
+#if ((defined(MESH_FN) && MESH_FN) && \
+    (defined(MESH_LPN) && MESH_LPN))
 //#error "Can't support both Friend Node and Low Power Node at the same time!"
 #endif
 
@@ -85,7 +86,7 @@ BEGIN_DECLS
 #define MESH_SNB_PERIOD                         10000 //!< in units of millisecond
 #define MESH_PROV_ADV_PERIOD                    3000 //!< in units of millisecond
 #define MESH_PROXY_ADV_PERIOD                   3000 //!< in units of millisecond
-#define MESH_ID_ADV_PERIOD                      3000 //!< in units of millisecond
+#define MESH_ID_ADV_PERIOD                      300 //!< in units of millisecond
 
 /** Mesh stored message parameters */
 #define MESH_NET_MSG_CACHE_SIZE                 30 //!< The number of devices to check duplicate packets
@@ -126,11 +127,12 @@ BEGIN_DECLS
 #define MESH_LPN_RX_DELAY                       10
 #define MESH_LPN_RX_WIDEN                       0
 #define MESH_LPN_FRND_OFFER_RX_DELAY            90 //!< 100ms defined by spec
-#define MESH_LPN_FRND_OFFER_TIMEOUT_PERIOD      1010 //!< in units of millisecond
 #define MESH_LPN_FRND_WAIT_PERIOD               1100 //!< offer range
 #define MESH_LPN_FRND_OFFER_CHOOSE_DELAY        400 //!< 6 times, total 1s
-#define MESH_LPN_FRND_POLL_TIMEOUT_PERIOD       300
-#define MESH_LPN_FRND_POLL_TIMES                8
+#define MESH_LPN_FRND_POLL_RETRY_INTERVAL       300
+#define MESH_LPN_FRND_POLL_RETRY_TIMES          8
+#define MESH_LPN_FRND_POLL_FAILED_TIMES         1
+#define MESH_LPN_FRND_SCAN_DELAY_TIME           0
 
 /** Remote Provisioning server parameters */
 #define MESH_RMT_PRO_SERVER_UNPRO_DEVICE_NUM    3 //!<
@@ -149,6 +151,8 @@ BEGIN_DECLS
 /** net key default value */
 #define MESH_NET_KEY                            {0x7d, 0xd7, 0x36, 0x4c, 0xd8, 0x42, 0xad, 0x18, 0xc1, 0x7c, 0x2b, 0x82, 0x0c, 0x84, 0xc3, 0xd6}
 #define MESH_NET_KEY1                           {0xef, 0xb2, 0x25, 0x5e, 0x64, 0x22, 0xd3, 0x30, 0x08, 0x8e, 0x09, 0xbb, 0x01, 0x5e, 0xd7, 0x07}
+
+#define MESH_IDENTITY_CREDIT                    2 //!< shall be >= 1 && <= mesh_node.net_key_num
 
 /** network source address default value */
 #if MESH_MUTE_MODE

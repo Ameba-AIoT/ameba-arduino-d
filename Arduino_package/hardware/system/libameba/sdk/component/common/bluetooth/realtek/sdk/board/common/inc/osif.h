@@ -15,7 +15,7 @@ extern "C" {
 #endif
 
 /* task & isr context check interface */
-static inline bool osif_task_context_check(void);
+//static inline bool osif_task_context_check(void);
 
 /* OS schedule interfaces */
 void osif_delay(uint32_t ms);

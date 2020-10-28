@@ -32,7 +32,11 @@ extern "C"
      */
 
 #ifdef HAVE_TIME_H
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>

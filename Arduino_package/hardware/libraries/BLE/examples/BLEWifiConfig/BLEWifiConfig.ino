@@ -1,8 +1,6 @@
 
 #include "BLEDevice.h"
 #include "BLEWifiConfigService.h"
-#include "BLEAdvert.h"
-#include "BLEUUID.h"
 
 BLEWifiConfigService configService;
 

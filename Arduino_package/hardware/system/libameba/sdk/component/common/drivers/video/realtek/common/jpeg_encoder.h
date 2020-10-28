@@ -5,6 +5,9 @@
 #include "encoder_buffer_handler.h"
 #include "isp_api.h"
 
+#define JPEG_ROTATE_0  0
+#define JPEG_ROTATE_90R 1
+#define JPEG_ROTATE_90L 2
 
 struct jpeg_parameter {
 	u32 width;      /* Number of pixels/line in input image         */
@@ -14,6 +17,7 @@ struct jpeg_parameter {
 	u32 start;
 	u32 ratenum;
 	u32 jpeg_full_header;
+        u32 rotation;
 };
 
 struct jpeg_context {

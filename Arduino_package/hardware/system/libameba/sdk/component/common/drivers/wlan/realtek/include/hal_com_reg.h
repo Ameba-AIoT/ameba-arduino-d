@@ -320,6 +320,7 @@
 
 #define REG_AGGLEN_LMT					0x0458
 #define REG_AMPDU_MIN_SPACE			0x045C
+#define REG_TX_HANG_CTRL				0x045E
 #define REG_WMAC_LBK_BF_HD			0x045D
 #define REG_FAST_EDCA_CTRL				0x0460
 #define REG_RD_RESP_PKT_TH				0x0463
@@ -458,12 +459,7 @@
 #define REG_CTS2TO						0x0641
 #define REG_EIFS							0x0642
 
-#define REG_BBPSF_CTRL					0x06DC
 
-#define REG_PORT_CTRL					0x076D
-#define REG_RX_NAN_ADDR_FILTER			0x07EC
-//PTA
-#define REG_BT_COEX				0x0764
 
 //RXERR_RPT
 #define RXERR_TYPE_OFDM_PPDU			0
@@ -528,12 +524,25 @@
 #define REG_BT_BREAK_TABLE				0x06C8
 #define REG_BT_COEX_TABLE_H				0x06CC
 
+#define REG_BBPSF_CTRL					0x06DC
+
+
 // Hardware Port 2
 #define REG_MACID1						0x0700
 #define REG_BSSID1						0x0708
 
+#define REG_BT_COEX							0x0764
+#define REG_WLAN_ACT_MASK_CTRL_1			0x076C
 /* port0 & port1 enable */
-//#define REG_PORT_CTRL					0x76D
+#define REG_PORT_CTRL						0x076D
+#define REG_BT_COEX_ENHANCED_INTR_CTRL		0x076E
+#define REG_BT_STAT_CTRL					0x0778
+#define REG_BT_CMD_ID						0x077C
+#define REG_BT_INT_CTRL						0x0780
+
+#define REG_BT_TDMA_TIME					0x0790
+
+#define REG_RX_NAN_ADDR_FILTER				0x07EC
 
 //-----------------------------------------------------
 //
@@ -1355,8 +1364,11 @@ Current IOREG MAP
 #define USB_SUSEN				BIT(23)
 #define RF_RL_ID					(BIT(31)|BIT(30)|BIT(29)|BIT(28))
 
-//1REG_WL_BTCOEX_CTRL
+//2 REG_WL_BTCOEX_CTRL (0x74)
 #define PTA_EN					BIT(16)
+#define BT_MODE					(BIT(17)|BIT(18))
+
+
 //-----------------------------------------------------
 //
 //	0x0100h ~ 0x01FFh	MACTOP General Configuration
@@ -1528,8 +1540,12 @@ Current IOREG MAP
 #define	RETRY_LIMIT_SHORT_SHIFT			8
 #define	RETRY_LIMIT_LONG_SHIFT			0
 
-//2 QUEUE_CTRL
+//2 QUEUE_CTRL (0x04C6)
 #define	PTA_WL_TX_EN	BIT(4)
+
+//2 TX_HANG_CTRL (0x045E)
+#define BIT_EN_GNT_BT_AWAKE BIT(3)
+
 
 //-----------------------------------------------------
 //
@@ -1572,17 +1588,17 @@ Current IOREG MAP
 #define AcmHw_ViqStatus			BIT(5)
 #define AcmHw_VoqStatus		BIT(6)
 
-//2 //REG_DUAL_TSF_RST (0x553)
+//2 REG_DUAL_TSF_RST (0x553)
 #define DUAL_TSF_RST_P2P		BIT(4)
 
 //2 REG_TBTT_HOLD_PREDICT_P1 (0x5B2)
 #define BIT_DIS_BCN_1st			BIT(5)
 
-//2 // REG_NOA_DESC_SEL (0x5CF)
+//2 REG_NOA_DESC_SEL (0x5CF)
 #define NOA_DESC_SEL_0			0
 #define NOA_DESC_SEL_1			BIT(4)
 
-//2REG_PTA_PRE_TRX_CTRL(0x5B8)
+//2 REG_PTA_PRE_TRX_CTRL(0x5B8)
 #define PTA_RXBCN_DIR	BIT(29)
 //-----------------------------------------------------
 //
@@ -1643,17 +1659,18 @@ Current IOREG MAP
 #define SCR_TXBCUSEDK			BIT(6)			// Force Tx Broadcast packets Use Default Key
 #define SCR_RXBCUSEDK			BIT(7)			// Force Rx Broadcast packets Use Default Key
 
-//2REG_BBPSF_CTRL
+//2 REG_BBPSF_CTRL
 #define BIT_BBPSF_MPDUCHKEN	BIT[5]	//{This bit is set to 1 to enable MAC to inform BB enter power saving mode as rx unmatch my MACID unicast or unmatch my BSSID Broadcast/Mutlicast packets, for non_ampdu case. Only valid when BIT_BBPSF_MHCHKEN is set 1.}						
 #define BIT_BBPSF_MHCHKEN		BIT[4]	//{This bit is set to 1 to enable MAC to inform BB enter power saving mode as rx unmatch my MACID unicast or unmatch my BSSID Broadcast/Mutlicast packets}						
 #define BIT_BBPSF_ERRCHKEN		BIT[3]	//{This bit is set to 1 to enable MAC to inform BB enter power saving mode as rx FCS error packets number is large than the FCS error packet threshold defined by BBPSF_ERRTHR.}						
 #define BIT_MASK_BBPSF_ERRTHR	0x07	//{FCS error packet threshold: 3'd0: 1 packets; 3'd1: 2 packets; 3'd2: 4 packets; 3'd3: 6 packets¡­¡­}						
 #define BIT_SHIFT_BBPSF_ERRTHR	0
 
-//1REG_BT_COEX
+//2 REG_BT_COEX (0x764)
 #define SW_CTRL_BT_BASEBAND_EN				BIT(9)
 #define SW_CTRL_BT_BASEBAND					BIT(10)
-
+#define SW_CTRL_BT_RF_EN					BIT(11)
+#define SW_CTRL_BT_RF						BIT(12)
 //-----------------------------------------------------
 //
 //  0x0300h ~ 0x03FFh   PCIe/LBus
@@ -2065,6 +2082,24 @@ Current IOREG MAP
 
 
 #define REG_BUS_MIX_CFG             0x03F8  // 4 Bytes
+
+//-----------------------------------------------------
+//
+//  0x0700h ~ 0x07FFh
+//
+//-----------------------------------------------------
+//2 REG_BT_STAT_CTRL (0x0778) 
+#define BIT_RTK_MODE_EN			BIT(0)
+
+//2 REG_BT_COEX_ENHANCED_INTR_CTRL (0x076E)
+#define BIT_WL_ACT_MASK_EN		BIT(1)
+#define BIT_WL_ACT_PINMUX		BIT(3)
+
+
+//2 REG_BT_TDMA_TIME (0x0790)
+#define BIT_BT_REPORT_SAMPLE_RATE 		(BIT(5)|BIT(4)|BIT(3)|BIT(2)|BIT(1)|BIT(0))
+
+
 
 //-----------------------------------------------------
 //

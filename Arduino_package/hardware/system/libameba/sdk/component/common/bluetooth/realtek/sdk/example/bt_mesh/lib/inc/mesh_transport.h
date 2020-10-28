@@ -244,6 +244,7 @@ typedef struct
     plt_timer_t timer; //!< used to retransimit
     uint8_t times[32]; //!< tx times of each seg
     uint32_t send; //!< need tx flag of each seg
+    uint32_t send_first; //!< need tx first time flag of each seg
     uint32_t ack; //!< seg acked info
     uint8_t seg_num;
 } trans_tx_ctx_t, *trans_tx_ctx_p;

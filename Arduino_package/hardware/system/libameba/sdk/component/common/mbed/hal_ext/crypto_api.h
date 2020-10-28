@@ -1021,6 +1021,7 @@ int crypto_chacha_poly1305_decrypt(
 
 #if (defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
 #define _ERRNO_CRYPTO_XIP_FLASH_REMAP_FAIL          -24
+#define _ERRNO_CRYPTO_RNG_RANDOM_SEED_FAIL          -30
 //AES-GHASH
 /**
  *  @brief AES-GHASH message digest algorithm.
@@ -1203,6 +1204,23 @@ int crypto_crc_cmd(const uint8_t *message, const uint32_t msglen, uint32_t *pCrc
 int crypto_crc_dma(const uint8_t *message, const uint32_t msglen, uint32_t *pCrc);
 
 #if (defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
+
+#if defined(CONFIG_BUILD_SECURE)
+int NS_ENTRY crypto_random_generate_nsc (uint8_t *rn_buf, uint32_t rn_size);
+#elif defined(CONFIG_BUILD_NONSECURE)
+int crypto_random_generate_nsc (uint8_t *rn_buf, uint32_t rn_size);
+#endif
+
+/**
+ *  @brief To generate a serial of random number.
+ *  @param[in] rn_buf The buffer to return the generated random number.
+ *  @param[in] rn_size The size, in byte, of the random number to generate.
+ *
+ *  @retval 0: SUCCESS
+ *  @retval < 0: FAIL(Refer to ERRNO)
+ */
+int crypto_random_generate (uint8_t *rn_buf, uint32_t rn_size);
+
 #if !defined(CONFIG_BUILD_NONSECURE)
 
 /** 
@@ -1229,25 +1247,13 @@ int crypto_hkdf_derive(const uint8_t *salt, size_t salt_len, const uint8_t *ikm,
  *  @param[in] seed_buf The buffer to return the generated seed.
  *  @param[in] seed_size The size, in byte, of the seed to generate.
  *
- *  @returns    void
+ *  @retval 0: SUCCESS
+ *  @retval < 0: FAIL(Refer to ERRNO)
  */
-void crypto_random_seed (uint8_t *seed_buf, uint32_t seed_size);
-
-/**
- *  @brief To generate a serial of random number.
- *  @param[in] rn_buf The buffer to return the generated random number.
- *  @param[in] rn_size The size, in byte, of the random number to generate.
- *
- *  @returns    void
- */
-void crypto_random_generate (uint8_t *rn_buf, uint32_t rn_size);
-
-#else   // else of "#if !defined(CONFIG_BUILD_NONSECURE)"
-
-#define crypto_random_generate      crypto_random_generate_nsc
+int crypto_random_seed (uint8_t *seed_buf, uint32_t seed_size);
 
 #endif  // end of else of "#if !defined(CONFIG_BUILD_NONSECURE)"
-#endif
+#endif //#if (defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
 
 ///@}
 

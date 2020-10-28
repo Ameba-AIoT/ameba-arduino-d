@@ -129,13 +129,6 @@
 
 #define CONFIG_JOINLINK    0
 
-/*For MIMO pkt decode*/
-#define CONFIG_UNSUPPORT_PLCPHDR_RPT	0
-
-#define CONFIG_EXAMPLE_CM_BACKTRACE 0
-
-#define LOW_POWER_WIFI_CONNECT	0
-
 #endif //end of #if CONFIG_WLAN
 /*******************************************************************************/
 
@@ -180,8 +173,21 @@
 #endif
 #endif
 /******************End of iNIC configurations*******************/
-/* For Amazon FreeRTOS SDK example */
-#define CONFIG_EXAMPLE_AMAZON_FREERTOS   0
+
+/**
+ * For CONFIG_LWIP_LAYER_OFF configurations
+ */
+#if defined (CONFIG_LWIP_LAYER_OFF) && CONFIG_LWIP_LAYER_OFF
+#define CONFIG_ATCMD_MP				0 //support MP AT command
+#define CONFIG_LWIP_LAYER	0
+#define CONFIG_INIT_NET		0 //init lwip layer when start up
+
+/* For Simple Link */
+#define CONFIG_INCLUDE_SIMPLE_CONFIG		0
+
+/*For fast reconnection*/
+#define CONFIG_EXAMPLE_WLAN_FAST_CONNECT	0
+#endif
 
 /* For aj_basic_example */
 #define CONFIG_EXAMPLE_AJ_BASIC          0
@@ -200,7 +206,7 @@
 
 /* For cJSON example */
 #define CONFIG_EXAMPLE_CJSON         0
-   
+
 /* For HTTP CLIENT example */
 #define CONFIG_EXAMPLE_HTTP_CLIENT  0
 
@@ -214,7 +220,7 @@
 #define CONFIG_EXAMPLE_HTTPD	0
 
 /* For MQTT example */
-#define CONFIG_EXAMPLE_MQTT				0
+#define CONFIG_EXAMPLE_MQTT		0
 
 /* for CoAP example*/
 #define CONFIG_EXAMPLE_COAP		0
@@ -222,6 +228,10 @@
 /* for lib CoAP example*/ 
 #define CONFIG_EXAMPLE_COAP_SERVER        0
 #define CONFIG_EXAMPLE_COAP_CLIENT        0
+#if CONFIG_EXAMPLE_COAP_SERVER || CONFIG_EXAMPLE_COAP_CLIENT
+#undef CONFIG_EXAMPLE_WLAN_FAST_CONNECT
+#define CONFIG_EXAMPLE_WLAN_FAST_CONNECT 0
+#endif
 
 /* For WiGadget example */
 #define CONFIG_EXAMPLE_WIGADGET			0
@@ -261,9 +271,6 @@
 
 /* For sd card ota update example */
 #define CONFIG_EXAMPLE_OTA_SDCARD    0
-#if CONFIG_EXAMPLE_OTA_SDCARD
-#define FATFS_DISK_SD 	1
-#endif
 
 /* For sdcard upload web server example */
 #define CONFIG_SDCARD_UPLOAD_HTTPD  0
@@ -288,7 +295,6 @@
 
 /* For websocket client example */
 #define CONFIG_EXAMPLE_WEBSOCKET_CLIENT 	0
-
 /* For websocket server example */
 #define CONFIG_EXAMPLE_WEBSOCKET_SERVER 	0
 
@@ -580,7 +586,13 @@ in lwip_opt.h for support uart adapter*/
 #endif
 
 #if defined(CONFIG_USBD_CDC_ACM)
+#if defined(CONFIG_USBD_CDC_ACM_TP)
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_TP     1
+#elif defined(CONFIG_USBD_CDC_ACM_RP)
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_RP     1
+#else
 #define CONFIG_EXAMPLE_USBD_CDC_ACM     1
+#endif
 #endif
 
 #if defined(CONFIG_USBD_VENDOR)
@@ -631,44 +643,10 @@ in lwip_opt.h for support uart adapter*/
 #define CONFIG_FAST_DHCP 0
 #endif
 
-/* For wlan repeater example */
-#define CONFIG_EXAMPLE_WLAN_REPEATER    0
-#if CONFIG_EXAMPLE_WLAN_REPEATER
-#define CONFIG_BRIDGE                   1
-#else
-#define CONFIG_BRIDGE                   0
-#endif
-
 // zzw arduino
 /******************  For Arduino SDK customize config   *******************/
 #ifdef ARDUINO_SDK
-
-//#undef  SUPPORT_MP_MODE
-//#define SUPPORT_MP_MODE 0
-
-//#undef  CONFIG_OTA_UPDATE
-//#define CONFIG_OTA_UPDATE 0
-
-#undef  CONFIG_INCLUDE_SIMPLE_CONFIG
-#define CONFIG_INCLUDE_SIMPLE_CONFIG 0
-
-#undef  CONFIG_ENABLE_WPS
-#define CONFIG_ENABLE_WPS 0
-
-#undef  SUPPORT_LOG_SERVICE
-#define SUPPORT_LOG_SERVICE 0
-
-//#define CONFIG_FATFS_EN	1
-//#if CONFIG_FATFS_EN
-//// fatfs version
-//#define FATFS_R_10C
-//// fatfs disk interface
-//#define FATFS_DISK_USB	0
-//#define FATFS_DISK_SD 	1
-//#endif
-
 #endif
 /****************** End of Arduino SDK customize config *******************/
-
 
 #endif

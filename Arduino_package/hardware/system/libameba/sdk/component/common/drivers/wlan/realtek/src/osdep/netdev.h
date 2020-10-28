@@ -62,11 +62,17 @@
 
 #ifdef CONFIG_DONT_CARE_TP
 #define XMIT_STACKSIZE		192 //256
+#ifndef CONFIG_IEEE80211K
 #define CMD_STACKSIZE		384 //512 
+#else
+#define CMD_STACKSIZE		640
+#endif
 #else
 #define XMIT_STACKSIZE		256
 #ifdef CONFIG_SAE_SUPPORT
 #define CMD_STACKSIZE		1024
+#elif defined(CONFIG_IEEE80211K)
+#define CMD_STACKSIZE		768 
 #else
 #define CMD_STACKSIZE		512 //1024
 #endif

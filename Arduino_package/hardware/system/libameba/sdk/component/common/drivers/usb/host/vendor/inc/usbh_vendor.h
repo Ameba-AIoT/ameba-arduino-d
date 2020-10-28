@@ -6,15 +6,17 @@
 #ifdef CONFIG_USBH_VENDOR
 
 #include "usb.h"
+#include "usbh_vendor_if.h"
 
-//#define CONFIG_USBH_VENDOR_CTRL_TEST
-//#define CONFIG_USBH_VENDOR_BULK_TEST
-#define CONFIG_USBH_VENDOR_ISO_IN_TEST
-#define CONFIG_USBH_VENDOR_ISO_OUT_TEST
+#define CONFIG_USBH_VENDOR_CTRL_TEST		0
+#define CONFIG_USBH_VENDOR_BULK_TEST		0
+#define CONFIG_USBH_VENDOR_ISO_IN_TEST		1
+#define CONFIG_USBH_VENDOR_ISO_OUT_TEST	1
 
 #define USBH_VENDOR_ISO_IN_BUF_SIZE  128
 #define USBH_VENDOR_ISO_OUT_BUF_SIZE 128
 #define USBH_VENDOR_ISO_IN_CNT       100
+#define USBH_VENDOR_ISO_OUT_CNT       100
 
 #define USBH_VENDOR_TASK_PRIORITY    2
 
@@ -46,6 +48,7 @@ struct usbtest_info {
     unsigned    iso: 1;     /* try iso in/out */
     unsigned    intr: 1;    /* try interrupt in/out */
     int         alt;
+    usbh_vendor_usr_cb_t *cb;
 };
 
 struct usbtest_dev {

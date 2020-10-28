@@ -37,6 +37,8 @@ extern "C" {
 	#include "platform_stdlib_rtl8711b.h"
 #elif defined (CONFIG_PLATFORM_8721D)
 	#include "platform_stdlib_rtl8721d.h"
+#elif defined (CONFIG_PLATFORM_AMEBAD2)
+	#include "platform_stdlib_amebad2.h"
 #elif defined(CONFIG_PLATFORM_8195BHP)
 	#include "platform_stdlib_rtl8195bhp.h"	
 #elif defined(USE_STM322xG_EVAL) || defined(USE_STM324xG_EVAL)  || defined(STM32F10X_XL) 

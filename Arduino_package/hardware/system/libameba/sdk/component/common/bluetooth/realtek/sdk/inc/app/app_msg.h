@@ -172,6 +172,7 @@ typedef enum
     IO_MSG_UPDATE_CONPARA           = 27,
     IO_MSG_WAS_RX_VALUE             = 28,
     IO_MSG_WAS_ENABLE_CCCD          = 29,
+    IO_MSG_WAS_TX_VALUE             = 30,
 } T_IO_MSG_WRISTBAND;
 
 /**  @brief IO message definition for communications between tasks*/

@@ -160,7 +160,11 @@ extern void restore_flags(void);
 //	2003/12/26. The value is reduced from 2048 to 1658 for GSPI
 //	2014/02/05. The value is 1650 for 8195A LX_BUS
 #define SKB_RESERVED_FOR_SAFETY	8//0
+#ifdef CONFIG_RTK_MESH
+#define SKB_WLAN_TX_EXTRA_LEN	(TXDESC_SIZE + WLAN_HDR_A4_QOS_LEN + WLAN_MAX_IV_LEN + WLAN_HDR_MAX_MESH_HDR_LEN +WLAN_SNAP_HEADER - WLAN_ETHHDR_LEN)
+#else
 #define SKB_WLAN_TX_EXTRA_LEN	(TXDESC_SIZE + WLAN_HDR_A4_QOS_LEN + WLAN_MAX_IV_LEN + WLAN_SNAP_HEADER - WLAN_ETHHDR_LEN)
+#endif
 #define RX_DRIVER_INFO				32
 
 #if (defined CONFIG_GSPI_HCI || defined CONFIG_SDIO_HCI)
@@ -202,7 +206,7 @@ extern void restore_flags(void);
 			#define MAX_SKB_BUF_SIZE			(HAL_INTERFACE_OVERHEAD_SKB_DATA+RX_DRIVER_INFO+\
 												((TXDESC_SIZE>RXDESC_SIZE)? TXDESC_SIZE:RXDESC_SIZE) +\
 												MAX_RX_PKT_SIZE +\
-												SKB_RESERVED_FOR_SAFETY)	// 0+32+40+1578+0 = 1650
+												SKB_RESERVED_FOR_SAFETY)	// 0+32+40+1578+8 = 1658
 		#endif
 	#endif
 #else
@@ -419,6 +423,7 @@ typedef struct {
 	unsigned int rx_busy;
 	unsigned char enable;
 	unsigned char mac[6];
+	_sema netif_rx_sema;            /* prevent race condition on .skb in rltk_netif_rx() */
 } Rltk_wlan_t;
 
 #define netdev_priv(dev)		dev->priv

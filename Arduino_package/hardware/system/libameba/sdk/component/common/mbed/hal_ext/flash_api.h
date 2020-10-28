@@ -110,6 +110,13 @@ void flash_write_protect(flash_t *obj, uint32_t protect);
 int flash_get_status(flash_t * obj);
 
 /**
+* @brief  Read Status register 2 to check flash status
+* @param  obj: Specifies the parameter of flash object.
+* @retval status: the value of status register.
+*/
+int flash_get_status2(flash_t *obj);
+
+/**
   * @brief  Set Status register to enable desired operation
   * @param  obj: Specifies the parameter of flash object.
   * @param  data: Specifies which bit users like to set.
@@ -119,6 +126,15 @@ int flash_get_status(flash_t * obj);
   *        The block protected area and the corresponding control bits are provided in the flash datasheet.
   */  
 int flash_set_status(flash_t * obj, uint32_t data);
+
+/**
+* @brief  Set Status register 2 to enable desired operation
+* @param  obj: Specifies the parameter of flash object.
+* @param  data: Specifies which bit users like to set
+   ex: if users want to set the third bit, data = 0x8. 
+* @retval   status: Success:1 or Failure: Others.
+*/
+int flash_set_status2(flash_t *obj, uint32_t data);
 
 /**
   * @brief This function aims to reset the status register, please make sure the operation is appropriate.

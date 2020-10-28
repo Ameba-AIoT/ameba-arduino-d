@@ -32,9 +32,6 @@ static bool init_wlan = false;
 //static int wifi_mode = NULL;
 static int wifi_mode = 0;
 
-// zzw
-//static rtw_network_info_t wifi = {0};
-//static rtw_ap_info_t ap = {0};
 static rtw_network_info_t wifi;
 static rtw_ap_info_t ap;
 static unsigned char password[65] = {0};
@@ -121,7 +118,9 @@ int8_t WiFiDrv::wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *pass
     wifi.ssid.len = ssid_len;
 
     wifi.security_type = RTW_SECURITY_WPA2_AES_PSK;
+
     memset(password, 0, sizeof(password));
+
     memcpy(password, passphrase, len);
     wifi.password = password;
     wifi.password_len = len;
@@ -134,7 +133,7 @@ int8_t WiFiDrv::wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *pass
 
         init_wifi_struct();
 
-        if ( dhcp_result == DHCP_ADDRESS_ASSIGNED ) {
+        if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
             return WL_SUCCESS;
         } else {
             wifi_disconnect();
@@ -150,8 +149,6 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
 {
     int ret;
     uint8_t dhcp_result;
-    int i, idx;
-    const unsigned char* k = (const unsigned char *)key;
 
     memset(wifi.bssid.octet, 0, ETH_ALEN);
     memcpy(wifi.ssid.val, ssid, ssid_len);
@@ -160,8 +157,10 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
     wifi.security_type = RTW_SECURITY_WEP_PSK;
     memset(password, 0, sizeof(password));
 
+#if 0
+    const unsigned char* k = (const unsigned char *)key;
     // convert hex sring to hex value
-    for (i = 0, idx = 0; i < len; i++) {
+    for (int i = 0,int idx = 0; i < len; i++) {
         if ((k[i] >= '0') && (k[i] <= '9')) {
             password[idx] += (k[i] - '0');
         } else if ((k[i] >= 'a') && (k[i] <= 'f')) {
@@ -180,6 +179,13 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
     wifi.password = password;
     wifi.password_len = len/2;
     wifi.key_id = key_idx;
+#else
+    memcpy(password, key, len);
+
+    wifi.password = password;
+    wifi.password_len = len;
+    wifi.key_id = key_idx;
+#endif
 
     ret = wifi_connect((char*)wifi.ssid.val, wifi.security_type, (char*)wifi.password, wifi.ssid.len, wifi.password_len, wifi.key_id, NULL);
 
@@ -188,7 +194,7 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
 
         init_wifi_struct();
 
-        if ( dhcp_result == DHCP_ADDRESS_ASSIGNED ) {
+        if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
             return WL_SUCCESS;
         } else {
             wifi_disconnect();
@@ -234,7 +240,7 @@ int8_t WiFiDrv::apSetChannel(const char *channel)
     return ret;
 }
 
-int8_t WiFiDrv::apActivate()
+int8_t WiFiDrv::apActivate(uint8_t hidden_ssid)
 {
 #if CONFIG_LWIP_LAYER
     struct ip_addr ipaddr;
@@ -271,7 +277,13 @@ int8_t WiFiDrv::apActivate()
     }
     printf("\n\rStarting AP ...");
 
-    if((ret = wifi_start_ap((char*)ap.ssid.val, ap.security_type, (char*)ap.password, ap.ssid.len, ap.password_len, ap.channel)) < 0) {
+    if (hidden_ssid == 1) {
+        ret = wifi_start_ap_with_hidden_ssid((char*)ap.ssid.val, ap.security_type, (char*)ap.password, ap.ssid.len, ap.password_len, ap.channel);
+    } else {
+        ret = wifi_start_ap((char*)ap.ssid.val, ap.security_type, (char*)ap.password, ap.ssid.len, ap.password_len, ap.channel);
+    }
+
+    if(ret < 0) {
         printf("\n\rERROR: Operation failed!");
         ret = WL_FAILURE;
         goto exit;

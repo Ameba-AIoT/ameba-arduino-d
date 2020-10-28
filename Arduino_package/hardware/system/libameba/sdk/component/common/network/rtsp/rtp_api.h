@@ -107,6 +107,24 @@ struct rtp_periodic_report_s
 	uint32_t last_timestamp;
 };
 
+struct rtp_frame_control_s
+{
+        void*    h264_ctx;
+	uint32_t drop_frame_enable;
+	uint32_t drop_frame_use_forcei;
+	uint32_t h264_change_rate_control;
+  	uint32_t drop_frame_count;
+	uint32_t send_frame_count;
+	uint32_t rtp_drop_threshold;
+	uint32_t start_drop_frame;
+	uint32_t change_rate_timer;
+	uint32_t change_rate_threshold1;
+	uint32_t change_rate_threshold2;
+	uint32_t change_rate_frequency;
+	uint32_t current_bps;
+	uint32_t packet_retry;
+};
+
 enum rtp_object_state
 {
     RTP_OBJECT_IDLE = 0,
@@ -155,5 +173,6 @@ void rtp_fill_header(rtp_hdr_t *rtphdr, int version, int padding, int extension,
 int rtp_parse_header(uint8_t *src, rtp_hdr_t *rtphdr, int is_nbo);
 void rtp_dump_header(rtp_hdr_t *rtphdr, int is_nbo);
 void rtp_report(struct stream_context *stream_ctx);
+void rtp_set_o_handler(struct rtp_object *payload, int (*codec)(struct stream_context *stream_ctx, struct rtp_object *payload));	
 
 #endif

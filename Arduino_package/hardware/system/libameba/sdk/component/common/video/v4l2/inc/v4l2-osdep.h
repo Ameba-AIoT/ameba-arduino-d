@@ -5,10 +5,9 @@
 #include "basic_types.h"
 //#include "osdep_api.h"  //deprecated use osdep_service.h instead
 #include "osdep_service.h"
-#include "usb_defs.h"
-#include "usb_errno.h"
 //#include "hal_util.h"
 #include "dlist.h"
+#include "v4l2_errno.h"
 
 #define V4L2_LAYER_DEBUG 0
 #if     V4L2_LAYER_DEBUG

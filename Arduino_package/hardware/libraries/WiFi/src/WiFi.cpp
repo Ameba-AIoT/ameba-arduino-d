@@ -184,13 +184,13 @@ int WiFiClass::hostByName(const char* aHostname, IPAddress& aResult)
     return WiFiDrv::getHostByName(aHostname, aResult);
 }
 
-int WiFiClass::apbegin(char* ssid, char* channel)
+int WiFiClass::apbegin(char* ssid, char* channel, uint8_t hidden_ssid)
 {
     uint8_t status = WL_IDLE_STATUS;
 
     if ((WiFiDrv::apSetNetwork(ssid, strlen(ssid))) != WL_FAILURE) {
         WiFiDrv::apSetChannel(channel);
-        if ((WiFiDrv::apActivate()) != WL_FAILURE) {
+        if ((WiFiDrv::apActivate(hidden_ssid)) != WL_FAILURE) {
             status = WL_CONNECTED;
         } else {
             status = WL_CONNECT_FAILED;
@@ -202,14 +202,14 @@ int WiFiClass::apbegin(char* ssid, char* channel)
     return status;
 }
 
-int WiFiClass::apbegin(char* ssid, char* password, char* channel)
+int WiFiClass::apbegin(char* ssid, char* password, char* channel, uint8_t hidden_ssid)
 {
     uint8_t status = WL_IDLE_STATUS;
 
     if ((WiFiDrv::apSetNetwork(ssid, strlen(ssid))) != WL_FAILURE) {
         if ((WiFiDrv::apSetPassphrase(password, strlen(password))) != WL_FAILURE) {
             WiFiDrv::apSetChannel(channel);
-            if (WiFiDrv::apActivate() != WL_FAILURE) {
+            if (WiFiDrv::apActivate(hidden_ssid) != WL_FAILURE) {
                 status = WL_CONNECTED;
             } else {
                 status = WL_CONNECT_FAILED;

@@ -45,6 +45,7 @@ extern "C" {
 #define AES_ENABLED        0x0004
 #define WSEC_SWFLAG        0x0008
 #define AES_CMAC_ENABLED        0x0010
+#define ENTERPRISE_ENABLED			0x0020
 
 #define SHARED_ENABLED  0x00008000
 #define WPA_SECURITY    0x00200000
@@ -120,7 +121,7 @@ enum
     RTW_NONRESIDENT                  = -42,  /**< access to nonresident overlay */
     RTW_DISABLED                     = -43   /**< Disabled in this build */
 };
-typedef unsigned long rtw_result_t;
+typedef signed long rtw_result_t;
 
 /**
   * @brief  The enumeration lists the possible security types to set when connection.\n
@@ -138,6 +139,8 @@ enum {
     RTW_SECURITY_WPA2_MIXED_PSK = ( WPA2_SECURITY | AES_ENABLED | TKIP_ENABLED ),   /**< WPA2 Security with AES & TKIP           */
     RTW_SECURITY_WPA_WPA2_MIXED = ( WPA_SECURITY  | WPA2_SECURITY ),                /**< WPA/WPA2 Security                       */
     RTW_SECURITY_WPA2_AES_CMAC = ( WPA2_SECURITY | AES_CMAC_ENABLED),                /**< WPA2 Security with AES and Management Frame Protection                 */
+    RTW_SECURITY_WPA2_ENTERPRISE = ( WPA2_SECURITY | ENTERPRISE_ENABLED ),				/**< WPA2 Security with 802.1X authentication>*/
+    RTW_SECURITY_WPA_WPA2_ENTERPRISE = ( WPA_SECURITY | WPA2_SECURITY | ENTERPRISE_ENABLED),	/** <WPA/WPA2 Security with 802.1X authentication>*/
 
     RTW_SECURITY_WPS_OPEN       = WPS_ENABLED,                                      /**< WPS with open security                  */
     RTW_SECURITY_WPS_SECURE     = (WPS_ENABLED | AES_ENABLED),                      /**< WPS with AES security                   */
@@ -437,7 +440,6 @@ typedef unsigned long rtw_link_status_t;
 enum {
     RTW_SCAN_TYPE_ACTIVE              = 0x00,  /**< Actively scan a network by sending 802.11 probe(s)         */
     RTW_SCAN_TYPE_PASSIVE             = 0x01,  /**< Passively scan a network by listening for beacons from APs */
-    RTW_SCAN_TYPE_PROHIBITED_CHANNELS = 0x04   /**< Passively scan on channels not enabled by the country code */
 };
 typedef unsigned long rtw_scan_type_t;
 
@@ -572,6 +574,22 @@ enum _WIFI_EVENT_INDICATE{
 	WIFI_EVENT_IP_CHANGED = 16,
 	WIFI_EVENT_ICV_ERROR = 17,
 	WIFI_EVENT_CHALLENGE_FAIL = 18,
+	
+	WIFI_EVENT_PATHSEL_GEN_RREQ = 59,
+	WIFI_EVENT_PATHSEL_GEN_RERR = 60,
+	WIFI_EVENT_PATHSEL_RECV_RREQ = 61,
+	WIFI_EVENT_PATHSEL_RECV_RREP = 62,
+	WIFI_EVENT_PATHSEL_RECV_RERR = 63,
+	WIFI_EVENT_PATHSEL_RECV_PANN = 65,
+	WIFI_EVENT_PATHSEL_RECV_RANN = 66,
+
+	WIFI_EVENT_PATHSEL_GEN_PREQ = 150,
+	WIFI_EVENT_PATHSEL_GEN_PERR = 151,
+	WIFI_EVENT_PATHSEL_RECV_PREQ = 152,
+	WIFI_EVENT_PATHSEL_RECV_PREP = 153,
+	WIFI_EVENT_PATHSEL_RECV_PERR = 154,
+	WIFI_EVENT_PATHSEL_RECV_GANN = 155,
+
 	WIFI_EVENT_MAX,
 };
 typedef unsigned long rtw_event_indicate_t;

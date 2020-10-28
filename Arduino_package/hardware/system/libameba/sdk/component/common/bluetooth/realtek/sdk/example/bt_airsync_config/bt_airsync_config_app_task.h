@@ -15,6 +15,12 @@
 #ifndef _BT_AIRSYNC_CONFIG_APP_TASK_H_
 #define _BT_AIRSYNC_CONFIG_APP_TASK_H_
 
+typedef struct
+{
+    uint8_t *buf;
+    uint16_t length;
+} T_BT_AIRSYNC_CONFIG_TX_DATA;
+
 void bt_airsync_config_send_msg(uint16_t sub_type);
 
 /**
@@ -28,6 +34,8 @@ void bt_airsync_config_app_task_init(void);
  * @return void
  */
 void bt_airsync_config_app_task_deinit(void);
+
+void bt_airsync_config_send_data_to_apptask(uint8_t *buf, uint16_t length);
 
 #endif
 

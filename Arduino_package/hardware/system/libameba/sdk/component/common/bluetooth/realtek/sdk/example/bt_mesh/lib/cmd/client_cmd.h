@@ -644,6 +644,54 @@ extern "C"  {
      "lxrs [dst] [xyl_x min] [xyl_x max] [xyl_y min] [xyl_y max] [ack] [app_key_index]\n\r",\
      "light xyl range set\n\r",\
      user_cmd_light_xyl_range_set\
+    },\
+    {\
+     "llcmg",\
+     "llcmg [dst] [app_key_index]\n\r",\
+     "light lc mode get\n\r",\
+     user_cmd_light_lc_mode_get\
+    },\
+    {\
+     "llcms",\
+     "llcms [dst] [mode] [app_key_index] [ack]\n\r",\
+     "light lc mode set\n\r",\
+     user_cmd_light_lc_mode_set\
+    },\
+    {\
+     "llcomg",\
+     "llcomg [dst] [app_key_index]\n\r",\
+     "light lc om get\n\r",\
+     user_cmd_light_lc_om_get\
+    },\
+    {\
+     "llcoms",\
+     "llcoms [dst] [mode] [app_key_index] [ack]\n\r",\
+     "light lc om set\n\r",\
+     user_cmd_light_lc_om_set\
+    },\
+    {\
+     "llcloog",\
+     "llcloog [dst] [app_key_index]\n\r",\
+     "light lc light on off get\n\r",\
+     user_cmd_light_lc_light_on_off_get\
+    },\
+    {\
+     "llcloos",\
+     "llcloos [dst] [on off] [ack] [app_key_index] [steps] [resolution] [delay]\n\r",\
+     "light lc light on off set\n\r",\
+     user_cmd_light_lc_light_on_off_set\
+    },\
+    {\
+     "llcpg",\
+     "llcpg [dst] [property id] [app_key_index]\n\r",\
+     "light lc property get\n\r",\
+     user_cmd_light_lc_property_get\
+    },\
+    {\
+     "llcps",\
+     "llcps [dst] [app_key_index] [ack] [property id] [property value...] \n\r",\
+     "light lc property set\n\r",\
+     user_cmd_light_lc_property_set\
     }
 /** @} */
 
@@ -778,6 +826,14 @@ user_cmd_parse_result_t user_cmd_light_xyl_default_set(user_cmd_parse_value_t *p
 user_cmd_parse_result_t user_cmd_light_xyl_range_get(user_cmd_parse_value_t *pparse_value);
 user_cmd_parse_result_t user_cmd_light_xyl_range_set(user_cmd_parse_value_t *pparse_value);
 
+user_cmd_parse_result_t user_cmd_light_lc_mode_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_mode_set(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_om_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_om_set(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_light_on_off_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_light_on_off_set(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_property_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_light_lc_property_set(user_cmd_parse_value_t *pparse_value);
 /** @} */
 /** @} */
 

@@ -33,7 +33,11 @@
 
 //TODO
 #define FAST_SURVEY_TO	(25) //Fast connection time, scan only partial channel
+#ifdef CONFIG_ENHANCE_ACTIVE_SCAN
+#define SURVEY_TO		(50)
+#else
 #define SURVEY_TO		(100) //Reduce connection time
+#endif //CONFIG_ENHANCE_ACTIVE_SCAN
 #define PASSIVE_SURVEY_TO		(110) //Passive scan should > 102.4ms
 //#define SURVEY_TO		(300) //Increase time to stay each channel - Alex Fang
 #define REAUTH_TO		(800) //(50)
@@ -153,6 +157,12 @@ typedef enum _RT_CHANNEL_DOMAIN
 	RT_CHANNEL_DOMAIN_MKK1_MKK2 = 0x37,
 	RT_CHANNEL_DOMAIN_MKK1_MKK3 = 0x38,
 	RT_CHANNEL_DOMAIN_FCC1_NCC1 = 0x39,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI1 = 0x3A,
+	RT_CHANNEL_DOMAIN_ETSI1_ACMA1 = 0x3B,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI6 = 0x3C,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI12 = 0x3D,
+	RT_CHANNEL_DOMAIN_KCC1_KCC2 = 0x3E,
+	RT_CHANNEL_DOMAIN_FCC1_FCC11 = 0x3F,
 	RT_CHANNEL_DOMAIN_FCC1_NCC2 = 0x40,
 	RT_CHANNEL_DOMAIN_GLOBAL_NULL = 0x41,
 	RT_CHANNEL_DOMAIN_ETSI1_ETSI4 = 0x42,
@@ -163,6 +173,12 @@ typedef enum _RT_CHANNEL_DOMAIN
 	RT_CHANNEL_DOMAIN_WORLD_ETSI6 = 0x47,
 	RT_CHANNEL_DOMAIN_WORLD_ETSI7 = 0x48,
 	RT_CHANNEL_DOMAIN_WORLD_ETSI8 = 0x49,
+	RT_CHANNEL_DOMAIN_IC2_IC2 = 0x4A,
+	RT_CHANNEL_DOMAIN_KCC1_KCC3 = 0x4B,
+	RT_CHANNEL_DOMAIN_FCC1_FCC15 = 0x4C,
+	RT_CHANNEL_DOMAIN_FCC2_MEX1 = 0x4D,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI22 = 0x4E,
+	RT_CHANNEL_DOMAIN_NULL_MKK9 = 0x4F,
 	RT_CHANNEL_DOMAIN_WORLD_ETSI9 = 0x50,
 	RT_CHANNEL_DOMAIN_WORLD_ETSI10 = 0x51,
 	RT_CHANNEL_DOMAIN_WORLD_ETSI11 = 0x52,
@@ -173,6 +189,12 @@ typedef enum _RT_CHANNEL_DOMAIN
 	RT_CHANNEL_DOMAIN_FCC1_FCC10 = 0x57,
 	RT_CHANNEL_DOMAIN_MKK2_MKK4 = 0x58,
 	RT_CHANNEL_DOMAIN_WORLD_ETSI14 = 0x59,
+	RT_CHANNEL_DOMAIN_NULL_FCC19 = 0x5A,
+	RT_CHANNEL_DOMAIN_NULL_FCC20 = 0x5B,
+	RT_CHANNEL_DOMAIN_NULL_FCC21 = 0x5C,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI23	= 0x5D,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI2 = 0x5E,
+	RT_CHANNEL_DOMAIN_MKK2_MKK10 = 0x5F,
 	RT_CHANNEL_DOMAIN_FCC1_FCC5 = 0x60,
 	RT_CHANNEL_DOMAIN_FCC2_FCC7 = 0x61,
 	RT_CHANNEL_DOMAIN_FCC2_FCC1 = 0x62,
@@ -199,6 +221,9 @@ typedef enum _RT_CHANNEL_DOMAIN
 	RT_CHANNEL_DOMAIN_WORLD_ETSI21 = 0x77,
 	RT_CHANNEL_DOMAIN_FCC1_FCC18 = 0x78,
 	RT_CHANNEL_DOMAIN_MKK2_MKK1 = 0x79,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI25 = 0x7A,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI24 = 0x7B,
+	RT_CHANNEL_DOMAIN_ETSI1_ETSI26 = 0x7C,
 
 	//===== Add new channel plan above this line===============//
 	RT_CHANNEL_DOMAIN_MAX,
@@ -218,6 +243,8 @@ typedef enum _RT_CHANNEL_DOMAIN_2G
 	RTW_RD_2G_FCC2 = 8,		/* US */
 	RTW_RD_2G_IC1 = 9,		/* Canada */
 	RTW_RD_2G_WORLD1 = 10,	/* Worldwide 11 */
+	RTW_RD_2G_KCC1 = 11,	/* Korea */
+	RTW_RD_2G_IC2 = 12,		/* Canada */
 	//===== Add new channel plan above this line===============//
 	RT_CHANNEL_DOMAIN_2G_MAX,
 }RT_CHANNEL_DOMAIN_2G, *PRT_CHANNEL_DOMAIN_2G;
@@ -281,7 +308,22 @@ typedef enum _RT_CHANNEL_DOMAIN_5G
 	RTW_RD_5G_ACMA1 = 54,	/* Australia, New Zealand (w/o Weather radar) (w/o Ch120~Ch128) */
 	RTW_RD_5G_WORLD1 = 55,	/* 5G Worldwide Band1&2 */
 	RTW_RD_5G_CHILE2 = 56,	/* Chile (Band2,Band3) */
-
+	RTW_RD_5G_KCC2 = 57,	/* Korea (New standard) */
+	RTW_RD_5G_KCC3 = 58,	/* Korea (2018 Dec 05 New standard, include ch144) */
+	RTW_RD_5G_MKK6 = 59,	/* Japan */
+	RTW_RD_5G_MKK7 = 60,	/* Japan */
+	RTW_RD_5G_MKK8 = 61,	/* Japan */
+	RTW_RD_5G_MEX1 = 62,	/* Mexico */
+	RTW_RD_5G_ETSI22 = 63,	/* Europe */
+	RTW_RD_5G_MKK9 = 64,	/* Japan */
+	RTW_RD_5G_FCC19 = 65,	/* FCC */
+	RTW_RD_5G_FCC20 = 66,	/* FCC w/o Band3 */
+	RTW_RD_5G_FCC21 = 67,	/* FCC */
+	RTW_RD_5G_ETSI23 = 68,	/* Indonesia */
+	RTW_RD_5G_ETSI24 = 69,	/* Indonesia */
+	RTW_RD_5G_ETSI25 = 70,	/* China */
+	RTW_RD_5G_MKK10 = 71,	/* Japan */
+	RTW_RD_5G_ETSI26 = 72,	/* Singapore */
 	//===== Add new channel plan above this line===============//
 	RT_CHANNEL_DOMAIN_5G_MAX
 }RT_CHANNEL_DOMAIN_5G, *PRT_CHANNEL_DOMAIN_5G;
@@ -382,6 +424,14 @@ enum SCAN_STATE
 	SCAN_STATE_MAX,
 };
 
+enum WIFI_INDICATE_MODE
+{
+	WIFI_INDICATE_DISABLE = 0,
+	WIFI_INDICATE_NORMAL = 1,
+	WIFI_INDICATE_WILD = 2,
+	WIFI_INDICATE_MAX,
+};
+
 struct mlme_handler {
 	unsigned int   num;
 	unsigned int (*func)(_adapter *padapter, union recv_frame *precv_frame);
@@ -399,6 +449,10 @@ struct	ss_res
 	int	channel_idx;
 	int	scan_mode;
 	NDIS_802_11_SSID ssid[RTW_SSID_SCAN_AMOUNT];
+#ifdef CONFIG_IEEE80211K
+	u32 token; 	/* 0: use to identify caller */
+	u16 duration;	/* 0: use default */
+#endif
 };
 
 //#define AP_MODE	0x0C
@@ -556,10 +610,12 @@ struct mlme_ext_info
 #define PSCAN_ENABLE          0x01 //enable for partial channel scan
 #define PSCAN_FAST_SURVEY     0x02 //set to select scan time to FAST_SURVEY_TO and resend probe request
 #define PSCAN_SIMPLE_CONFIG   0x04 //set to select scan time to FAST_SURVEY_TO and resend probe request
+#define PSCAN_PASSIVE_SCAN    0x08 //partial passive channel scan
 #define PSCAN_SET_SSID_DONE   0x80 //When receive probe response, this bit is set to 1
 
 #define PSCAN_DISABLE_MASK    0xFE //disable PSCAN_ENABLE
 #define PSCAN_CLEAR_SSID_DONE 0x7F //clear PSCAN_SET_SSID_DONE
+#define PSCAN_CLEAR_PASSIVE_SCAN 0xF7 //clear PSCAN_PASSIVE_SCAN
 #define PSCAN_RETRY_TIMES        7 //the retry times of resending probe request when PSCAN_FAST_SURVEY is set
 
 typedef struct _RT_CHANNEL_INFO
@@ -634,6 +690,11 @@ struct mlme_ext_priv
 	//_timer		ADDBA_timer;
 	u16			chan_scan_time;
 
+#ifdef CONFIG_IEEE80211R
+	_timer		ft_link_timer;
+	_timer		ft_roam_timer;
+#endif
+
 	u8	scan_abort;
 	u8	tx_rate; // TXRATE when USERATE is set.
 
@@ -683,12 +744,191 @@ struct mlme_ext_priv
 	u8 bChDeauthDisabled;
 	u8 bConcurrentFlushingSTA;
 #endif
-
-#if defined(LOW_POWER_WIFI_CONNECT) && LOW_POWER_WIFI_CONNECT
-	u16 psk_sleeptime;
-	u16 eap_sleeptime;
-	u8  eap_sleep_flag;
+#ifdef CONFIG_RTK_MESH
+	u8 mesh_enable;
+	u8 mesh_id[32];
+#ifdef CONFIG_SAE_SUPPORT
+	enum {
+		RTW_IEEE80211_MESH_SEC_NONE = 0x0,
+		RTW_IEEE80211_MESH_SEC_AUTHED = 0x1,
+		RTW_IEEE80211_MESH_SEC_SECURED = 0x2,
+	} mesh_security;
 #endif
+	struct MESH_Share meshare; 	// mesh share data
+	u16 mesh_max_neightbor;
+	s32 mesh_rssi_threshold;
+
+	u8 mesh_root_enable;
+	u8 mesh_portal_enable;
+
+	_timer mesh_expire_timer;
+	struct wlan_ethhdr_t    ethhdr;
+
+	u32 mesh_path_root_interval;
+	u32 fwded_mcast;		/* Mesh forwarded multicast frames */
+	u32 fwded_unicast;		/* Mesh forwarded unicast frames */
+	u32 fwded_frames;		/* Mesh total forwarded frames */
+	u32 dropped_frames_ttl;	/* Not transmitted since mesh_ttl == 0*/
+	u32 dropped_frames_no_route;	/* Not transmitted, no route found */
+	u32 dropped_frames_congestion;/* Not forwarded due to congestion */
+	u32 preq_id;
+	/* Time when it's ok to send next PERR */
+	unsigned long next_perr;
+	u32 mesh_sn; /* Local mesh Sequence Number */
+	unsigned long  last_sn_update;
+
+	/* protected by mesh_preq_lock*/    
+	struct mesh_rreq_retry_entry *rreq_head,*rreq_tail;
+	struct hash_table       *mesh_rreq_retry_queue;
+	/* End of protected by mesh_preq_lock*/
+
+
+	struct hash_table       *proxy_table; /* protected by mesh_proxy_lock*/
+#ifdef PU_STANDARD
+	struct hash_table       *proxyupdate_table; /* protected by mesh_proxyupdate_lock*/
+#endif
+	struct hash_table       *pathsel_table;
+	struct mpp_tb           *pann_mpp_tb;
+
+	struct MESH_FAKE_MIB_T  mesh_fake_mib;
+	unsigned char           root_mac[ETH_ALEN];       // Tree Base root MAC
+
+
+	_lock             		 mesh_path_lock;
+	_lock           		 mesh_queue_lock;
+	_lock            		 mesh_preq_lock;
+	_lock           		 mesh_proxy_lock;
+	_lock            		 mesh_proxyupdate_lock;
+
+#ifdef SMP_SYNC
+
+	int                     mesh_proxy_lock_owner;
+	int                     mesh_proxyupdate_lock_owner;
+	int                     mesh_preq_lock_owner;
+	int                     mesh_queue_lock_owner;
+	int                     mesh_path_lock_owner;
+
+	unsigned char			mesh_proxy_lock_func[50];
+	unsigned char			mesh_proxyupdate_lock_func[50];
+	unsigned char			mesh_preq_lock_func[50];
+	unsigned char			mesh_queue_lock_func[50];
+	unsigned char			mesh_path_lock_func[50];
+
+#endif
+
+	u16 seqNum;     // record for  recently sent multicast packet
+	/*
+	dev->priv->base_addr = 0 is wds
+	dev->priv->base_addr = 1 is mesh
+	We provide only one mesh device now. Although it is possible that more than one
+	mesh devices bind with one physical interface simultaneously. RTL8186 shares the
+	same MAC address with multiple virtual devices. Hence, the mesh data frame can't
+	be handled (rx) by mesh devices correctly.
+	*/
+
+	struct net_device		*mesh_dev;
+#if defined(CONFIG_RTL_MESH_SINGLE_IFACE)
+	struct rtl8192cd_priv	*mesh_priv_sc;   
+	struct rtl8192cd_priv	*mesh_priv_first;  
+#endif
+#ifdef _MESH_ACL_ENABLE_
+	struct mesh_acl_poll	*pmesh_acl_poll;
+	struct list_head		mesh_aclpolllist;	// this is for poll management
+	struct list_head		mesh_acl_list;		// this is for auth checking
+#if defined(SMP_SYNC) && (defined(CONFIG_USB_HCI) || defined(CONFIG_SDIO_HCI))
+	spinlock_t			mesh_acl_list_lock;
+#endif
+#endif
+	struct net_device_stats;
+	/*protected by mesh_queue_lock*/
+	DOT11_QUEUE2			*pathsel_queue;		// pathselection QUEUE
+	int pid_pathsel;
+
+	struct net_device_stats	mesh_stats;
+
+	u8					mesh_Version;
+	// WLAN Mesh Capability
+	s16					mesh_PeerCAP_cap;		// peer capability-Cap number (Signed!)
+	u8					mesh_PeerCAP_flags;		// peer capability-flags
+	u8					mesh_PowerSaveCAP;		// Power Save capability
+	u8					mesh_SyncCAP;			// Synchronization capability
+	u8					mesh_MDA_CAP;			// MDA capability
+	u32					mesh_ChannelPrecedence;	// Channel Precedence
+	u8					mesh_fix_channel;	// for Mesh auto channel scan used
+
+	u8					mesh_HeaderFlags;		// mesh header in mesh flags field
+
+	//for mesh channel switch
+	u8                  mesh_swchnl_channel;    //0:do not need to switch channel,  others: the channel switch procedure is ongoing
+	u8                  mesh_swchnl_offset;
+	u8                  mesh_swchnl_ttl;   
+	u8                  mesh_swchnl_flag;    
+	u16                 mesh_swchnl_reason;
+	u32                 mesh_swchnl_precedence;
+	u8                  mesh_swchnl_counter;
+
+#ifdef MESH_BOOTSEQ_AUTH
+	struct timer_list		mesh_auth_timer;		///< for unestablish (And establish to unestablish) MP mesh_auth_hdr
+
+	// mesh_auth_hdr:
+	//  It is a list structure, only stores unAuth MP entry
+	//  Each entry is a pointer pointing to an entry in "stat_info->mesh_mp_ptr"
+	//  and removed by successful "Auth" or "Expired"
+	struct list_head		mesh_auth_hdr;
+#endif
+
+	_timer mesh_peer_link_timer;	///< for unestablish (And establish to unestablish) MP mesh_unEstablish_hdr
+#ifdef CONFIG_SAE_SUPPORT
+	_timer mesh_auth_sae_timer;
+	_list mesh_unAuth_hdr;
+#endif
+	// mesh_unEstablish_hdr:
+	//  It is a list structure, only stores unEstablish (or Establish -> unEstablish [MP_HOLDING])MP entry
+	//  Each entry is a pointer pointing to an entry in "stat_info->mesh_mp_ptr"
+	//  and removed by successful "Peer link setup" or "Expired"
+	_list		mesh_unEstablish_hdr;
+
+	// mesh_mp_hdr:
+	//  It is a list of MP/MAP/MPP who has already passed "Peer link setup"
+	//  Each entry is a pointer pointing to an entry in "stat_info->mesh_mp_ptr"
+	//  Every entry is inserted by "successful peer link setup"
+	//  and removed by "Expired"
+	_list		mesh_mp_hdr;
+
+	_lock			mesh_mp_hdr_lock; // protect mesh_auth_hdr, mesh_unEstablish_hdr, mesh_mp_hdr
+
+	struct MESH_Profile		mesh_profile[1];	// Configure by WEB in the future, Maybe delete, Preservation before delete
+
+
+#ifdef MESH_BOOTSEQ_STRESS_TEST
+	unsigned long			mesh_stressTestCounter;
+#endif	// MESH_BOOTSEQ_STRESS_TEST
+
+	// Throughput statistics (sounder)
+	unsigned int			mesh_log;
+	unsigned long			log_time;
+
+#ifdef _MESH_ACL_ENABLE_
+	unsigned char			meshAclCacheAddr[MACADDRLEN];
+	unsigned char			meshAclCacheMode;
+#endif
+
+#ifdef CONFIG_RTK_VLAN_SUPPORT
+	struct vlan_info mesh_vlan;
+#endif
+
+#if defined(RTL_MESH_TXCACHE)
+	struct mesh_txcache_t mesh_txcache;
+#endif
+
+#ifdef MESH_USE_METRICOP
+	u32                          toMeshMetricAuto; // timeout, check mesh_fake_mib for further description
+#endif
+
+#ifdef CONFIG_SAE_SUPPORT
+	struct ampe_config ampe_conf;
+#endif
+#endif // CONFIG_RTK_MESH
 };
 
 #define CAC_TIME_MS (60*1000)
@@ -870,17 +1110,9 @@ unsigned int setup_beacon_frame(_adapter *padapter, unsigned char *beacon_frame)
 void update_mgnt_tx_rate(_adapter *padapter, u8 rate);
 void update_mgntframe_attrib(_adapter *padapter, struct pkt_attrib *pattrib);
 void update_mgntframe_attrib_addr(_adapter *padapter, struct xmit_frame *pmgntframe);
-void dump_mgntframe(_adapter *padapter, struct xmit_frame *pmgntframe);
+int dump_mgntframe(_adapter *padapter, struct xmit_frame *pmgntframe);
 s32 dump_mgntframe_and_wait(_adapter *padapter, struct xmit_frame *pmgntframe, int timeout_ms);
 
-#ifdef CONFIG_P2P
-void issue_probersp_p2p(_adapter *padapter, unsigned char *da);
-void issue_p2p_provision_request( _adapter *padapter, u8* pssid, u8 ussidlen, u8* pdev_raddr);
-void issue_p2p_GO_request(_adapter *padapter, u8* raddr);
-void issue_probereq_p2p(_adapter *padapter);
-void issue_p2p_invitation_response(_adapter *padapter, u8* raddr, u8 dialogToken, u8 success);
-void issue_p2p_invitation_request(_adapter *padapter, u8* raddr );
-#endif //CONFIG_P2P
 void issue_beacon(_adapter *padapter);
 void issue_probersp(_adapter *padapter, unsigned char *da, u8 is_valid_p2p_probereq);
 void issue_assocreq(_adapter *padapter);
@@ -893,6 +1125,8 @@ void issue_probereq(_adapter *padapter, NDIS_802_11_SSID *pssid, u8 blnbc);
 void issue_nulldata(_adapter *padapter, unsigned int power_mode);
 void issue_qos_nulldata(_adapter *padapter, unsigned char *da, u16 tid);
 void issue_deauth(_adapter *padapter, unsigned char *da, u32 reason);
+/* Get "Buffer Size" for ADDBA_RESP*/
+u16 rtw_rx_ampdu_size(_adapter *padapter);
 void issue_action_BA(_adapter *padapter, unsigned char *raddr, unsigned char action, unsigned short status);
 #ifdef CONFIG_IEEE80211W
 void issue_action_SA_Query(_adapter *padapter, unsigned char *raddr, unsigned char action, unsigned short tid, u8 key_type);
@@ -925,6 +1159,9 @@ unsigned int OnAction_public(_adapter *padapter, union recv_frame *precv_frame);
 unsigned int OnAction_ht(_adapter *padapter, union recv_frame *precv_frame);
 #ifdef CONFIG_IEEE80211W
 unsigned int OnAction_sa_query(_adapter *padapter, union recv_frame *precv_frame);
+#endif
+#ifdef CONFIG_RTW_WNM
+unsigned int OnAction_wnm(_adapter *adapter, union recv_frame *precv_frame);
 #endif
 unsigned int OnAction_wmm(_adapter *padapter, union recv_frame *precv_frame);
 unsigned int OnAction_p2p(_adapter *padapter, union recv_frame *precv_frame);
@@ -959,13 +1196,6 @@ void sa_query_timer_hdl(struct sta_info *psta);
 		rtw_set_timer(&(mlmeext)->link_timer, (ms)); \
 	} while(0)
 
-//TODO
-#if 0
-extern int cckrates_included(unsigned char *rate, int ratelen);
-extern int cckratesonly_included(unsigned char *rate, int ratelen);
-extern void process_addba_req(_adapter *padapter, u8 *paddba_req, u8 *addr);
-#endif
-
 extern void update_TSF(struct mlme_ext_priv *pmlmeext, u8 *pframe, uint len);
 extern void correct_TSF(_adapter *padapter, struct mlme_ext_priv *pmlmeext);
 
@@ -985,18 +1215,6 @@ struct cmd_hdl {
 	uint	parmsize;
 	u8 (*h2cfuns)(struct _ADAPTER *padapter, u8 *pbuf);	
 };
-
-//TODO
-#if 0
-
-u8 read_macreg_hdl(_adapter *padapter, u8 *pbuf);
-u8 write_macreg_hdl(_adapter *padapter, u8 *pbuf);
-u8 read_bbreg_hdl(_adapter *padapter, u8 *pbuf);
-u8 write_bbreg_hdl(_adapter *padapter, u8 *pbuf);
-u8 read_rfreg_hdl(_adapter *padapter, u8 *pbuf);
-u8 write_rfreg_hdl(_adapter *padapter, u8 *pbuf);
-
-#endif	//#if 0
 
 u8 NULL_hdl(_adapter *padapter, u8 *pbuf);
 u8 join_cmd_hdl(_adapter *padapter, u8 *pbuf);
@@ -1112,9 +1330,10 @@ const struct cmd_hdl wlancmds[] =
 //TODO
 //	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), tdls_hdl) /*62*/
 	GEN_MLME_EXT_HANDLER(sizeof(struct TDLSoption_param), NULL) /*62*/
-#ifdef CONFIG_P2P_NEW
+
 	GEN_MLME_EXT_HANDLER(0, rtw_p2p_cmd_hdl) /*63*/
-#endif
+
+	GEN_MLME_EXT_HANDLER(0, rtw_rm_post_event_hdl)/*64*/
 };
 
 #endif

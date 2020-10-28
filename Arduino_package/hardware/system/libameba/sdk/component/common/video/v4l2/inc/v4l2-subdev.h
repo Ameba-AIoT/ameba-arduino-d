@@ -209,12 +209,12 @@ struct v4l2_subdev_tuner_ops {
 	Used to slave an audio processor to the video decoder, ensuring that
 	audio and video remain synchronized. Usual values for the frequency
 	are 48000, 44100 or 32000 Hz. If the frequency is not supported, then
-	-EINVAL is returned.
+	-V4L2_EINVAL is returned.
 
    s_i2s_clock_freq: sets I2S speed in bps. This is used to provide a standard
 	way to select I2S clock used by driving digital audio streams at some
 	board designs. Usual values for the frequency are 1024000 and 2048000.
-	If the frequency is not supported, then -EINVAL is returned.
+	If the frequency is not supported, then -V4L2_EINVAL is returned.
 
    s_routing: used to define the input and/or output pins of an audio chip,
 	and any additional configuration data.
@@ -275,7 +275,7 @@ struct v4l2_mbus_frame_desc {
    s_crystal_freq: sets the frequency of the crystal used to generate the
 	clocks in Hz. An extra flags field allows device specific configuration
 	regarding clock frequency dividers, etc. If not used, then set flags
-	to 0. If the frequency is not supported, then -EINVAL is returned.
+	to 0. If the frequency is not supported, then -V4L2_EINVAL is returned.
 
    g_input_status: get input status. Same as the status field in the v4l2_input
 	struct.
@@ -378,7 +378,7 @@ struct v4l2_subdev_video_ops {
 
    g_vbi_data: used to obtain the sliced VBI packet from a readback register.
 	Not all video decoders support this. If no data is available because
-	the readback register contains invalid or erroneous data -EIO is
+	the readback register contains invalid or erroneous data -V4L2_EIO is
 	returned. Note that you must fill in the 'id' member and the 'field'
 	member (to determine whether CC data from the first or second field
 	should be obtained).
@@ -686,12 +686,12 @@ void v4l2_subdev_init(struct v4l2_subdev *sd,
    Example: err = v4l2_subdev_call(sd, core, s_std, norm);
  */
 #define v4l2_subdev_call(sd, o, f, args...)				\
-	(!(sd) ? -ENODEV : (((sd)->ops->o && (sd)->ops->o->f) ?	\
+	(!(sd) ? -V4L2_ENODEV : (((sd)->ops->o && (sd)->ops->o->f) ?	\
 		(sd)->ops->o->f((sd) , ##args) : -ENOIOCTLCMD))
 
 /* Send a notification to v4l2_device. */
 #define v4l2_subdev_notify(sd, notification, arg)			   \
-	((!(sd) || !(sd)->v4l2_dev || !(sd)->v4l2_dev->notify) ? -ENODEV : \
+	((!(sd) || !(sd)->v4l2_dev || !(sd)->v4l2_dev->notify) ? -V4L2_ENODEV : \
 	 (sd)->v4l2_dev->notify((sd), (notification), (arg)))
 
 #define v4l2_subdev_has_op(sd, o, f) \

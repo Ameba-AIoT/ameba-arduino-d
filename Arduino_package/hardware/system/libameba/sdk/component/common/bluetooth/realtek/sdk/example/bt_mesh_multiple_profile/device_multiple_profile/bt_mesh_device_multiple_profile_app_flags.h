@@ -15,7 +15,8 @@
 #ifndef _BT_MESH_DEVICE_MULTIPLE_PROFILE_APP_FLAGS_H_
 #define _BT_MESH_DEVICE_MULTIPLE_PROFILE_APP_FLAGS_H_
 
-#include "mesh_config.h"
+#include "platform_opts_bt.h"
+
 #include <app_common_flags.h>
 
 /**
@@ -33,13 +34,34 @@
  *============================================================================*/
 
 #if defined(CONFIG_BT_MESH_SCATTERNET) && CONFIG_BT_MESH_SCATTERNET
-/** @brief  Config APP LE link number */
+#if defined(CONFIG_PLATFORM_8721D)
+#define BLE_SCATTERNET_APP_MAX_LINKS  4
+#define BLE_SCATTERNET_PERIPHERAL_APP_MAX_LINKS   1 //for max slave link num
+#define BLE_SCATTERNET_CENTRAL_APP_MAX_LINKS      3 //for max master link num
+#elif defined(CONFIG_PLATFORM_8710C)
 #define BLE_SCATTERNET_APP_MAX_LINKS  2
-//for amebaD/amebz2 support the max number of master or slave is 1
-#define  BLE_SCATTERNET_PERIPHERAL_APP_MAX_LINKS   1 //for max link slave num
-#define  BLE_SCATTERNET_CENTRAL_APP_MAX_LINKS      1 //for max link master num
+#define BLE_SCATTERNET_PERIPHERAL_APP_MAX_LINKS   1 //for max slave link num
+#define BLE_SCATTERNET_CENTRAL_APP_MAX_LINKS      1 //for max master link num
+#endif
 /** @brief  Config the discovery table number of gcs_client */
 #define BLE_SCATTERNET_APP_MAX_DISCOV_TABLE_NUM 40
+#elif defined(CONFIG_BT_MESH_CENTRAL) && CONFIG_BT_MESH_CENTRAL
+/** @brief  Config APP LE link number */
+#if defined(CONFIG_PLATFORM_8721D)
+#define BLE_CENTRAL_APP_MAX_LINKS  3
+#elif defined(CONFIG_PLATFORM_8710C)
+#define BLE_CENTRAL_APP_MAX_LINKS  1
+#endif
+/** @brief  Config the discovery table number of gcs_client */
+#define BLE_CENTRAL_APP_MAX_DISCOV_TABLE_NUM 40
+#else
+/** @brief  Config APP LE link number */
+#define APP_MAX_LINKS  1
+#endif
+
+/** @brief  Config airplane mode support: 0-Not built in, 1-built in, use user command to set*/
+#define F_BT_AIRPLANE_MODE_SUPPORT          0
+/** @brief  Config device name characteristic and appearance characteristic property: 0-Not writeable, 1-writeable, save to flash*/
 #define F_BT_GAPS_CHAR_WRITEABLE            1
 /** @brief  Config set physical: 0-Not built in, 1-built in, use user command to set*/
 #if defined(CONFIG_PLATFORM_8721D)
@@ -48,17 +70,4 @@
 #define F_BT_LE_5_0_SET_PHY_SUPPORT         0
 #endif
 
-#else
-/** @brief  Config APP LE link number */
-#define APP_MAX_LINKS  1
-/** @brief  Config airplane mode support: 0-Not built in, 1-built in, use user command to set*/
-#define F_BT_AIRPLANE_MODE_SUPPORT          0
-/** @brief  Config device name characteristic and appearance characteristic property: 0-Not writeable, 1-writeable, save to flash*/
-#define F_BT_GAPS_CHAR_WRITEABLE            0
-/** @brief  Config set physical: 0-Not built in, 1-built in, use user command to set*/
-#define F_BT_LE_5_0_SET_PHY_SUPPORT         0
-
-/** @} */
-/** @} */
-#endif
 #endif

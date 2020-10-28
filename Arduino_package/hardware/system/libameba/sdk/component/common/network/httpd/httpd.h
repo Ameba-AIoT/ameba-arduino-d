@@ -126,6 +126,13 @@ void httpd_clear_page_callbacks(void);
 void httpd_setup_debug(uint8_t debug);
 
 /**
+ * @brief     This function is used to setup httpd server priority.
+ * @param[in] priority: the default priority is defined to 1
+ * @return    None
+ */
+void httpd_setup_priority(uint8_t priority);
+
+/**
  * @brief     This function is used to setup connection idle timeout for server.
  * @param[in] idle_timeout: timeout in seconds
  * @return    None

@@ -24,8 +24,9 @@ struct uvc_format{
 	int state;
         int isp_format;//1:YUV420 2:YUV422 3:Bayer
         int ldc;//0:Disable 1:Enable
-		int bayer_type;
+	int bayer_type;
 	_sema uvcd_change_sema;
+        int init;//It only support whether the uvc is first init 0:Not initialized 1: Initialized
 };
 
 

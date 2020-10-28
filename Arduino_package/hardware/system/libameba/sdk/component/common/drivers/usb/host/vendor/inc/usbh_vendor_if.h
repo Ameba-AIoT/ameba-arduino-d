@@ -5,7 +5,12 @@
 
 #ifdef CONFIG_USBH_VENDOR
 
-int usbh_vendor_init(void);
+typedef struct {
+    int(* attach)(void);
+    void(* detach)(void);
+} usbh_vendor_usr_cb_t;
+
+int usbh_vendor_init(usbh_vendor_usr_cb_t *cb);
 void usbh_vendor_deinit(void);
 
 #endif // CONFIG_USBH_VENDOR

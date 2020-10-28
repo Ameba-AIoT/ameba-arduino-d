@@ -28,7 +28,7 @@ BEGIN_DECLS
 /** @defgroup Mesh_Service_Exported_Macros Exported Macros
   * @{
   */
-#if MESH_PROVISIONER
+#if defined(MESH_PROVISIONER) && MESH_PROVISIONER
 #define MESH_GATT_SERVER_COUNT                              0
 #else
 #if MESH_DEVICE_PROV_PROXY_SERVER_COEXIST
@@ -38,7 +38,7 @@ BEGIN_DECLS
 #endif
 #endif
 
-#if MESH_PROVISIONER
+#if defined(MESH_PROVISIONER) && MESH_PROVISIONER
 #define MESH_GATT_CLIENT_COUNT                              2
 #else
 #define MESH_GATT_CLIENT_COUNT                              1 //!< or 0 ?

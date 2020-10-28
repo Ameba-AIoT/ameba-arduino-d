@@ -3,9 +3,11 @@
 
 #include <platform_opts.h>
     
-#ifdef CONFIG_USBH_UVC
+#if defined(CONFIG_USBH_UVC) || defined(REFER_USBH_UVC)
 
 #include "uvcvideo.h"
+
+#define RTS5876  1
 
 enum uvc_format_type {
     UVC_FORMAT_MJPEG = 0,
@@ -56,6 +58,11 @@ struct uvc_buf_context {
     u32 timestamp;       //timestamp
 };
 
+struct uvc_usr_cb_t{
+    void(* attach)(void);
+    void(* detach)(void);
+};
+
 #if UVC_BUF_DYNAMIC
 int uvc_stream_init(int buf_num, int buf_size);
 #else
@@ -77,7 +84,7 @@ int is_pure_thru_on(void);  //return 1 if pure throughput test mode is on otherw
 void uvc_pure_thru_on(void); //turn on pure uvc throughput test mode (i.e. no decoding is involved)
 void uvc_dec_thru_on(void); //turn on uvc throughput test mode with uvc payload decoding
 void uvc_thru_off(void);    //turn off uvc throughput log service
-
+void uvc_register_usr_cb(struct uvc_usr_cb_t *cb);
 #endif // CONFIG_USBH_UVC
 
 #endif // _UVC_INTF_H_

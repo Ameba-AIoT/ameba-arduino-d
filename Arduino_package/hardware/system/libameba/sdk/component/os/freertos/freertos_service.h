@@ -20,7 +20,7 @@
 extern VOID RtlUdelayOS(u32 us);
 #elif defined(CONFIG_PLATFORM_8711B)
 #include "platform/platform_stdlib.h"
-#elif defined(CONFIG_PLATFORM_8721D)
+#elif defined(CONFIG_PLATFORM_8721D) || (defined CONFIG_PLATFORM_AMEBAD2)
 #include "platform/platform_stdlib.h"
 #elif defined(CONFIG_HARDWARE_8821C)
 #include "basic_types.h"
@@ -41,7 +41,7 @@ extern VOID RtlUdelayOS(u32 us);
 
 #if (defined CONFIG_GSPI_HCI || defined CONFIG_SDIO_HCI) || defined(CONFIG_LX_HCI)
 /* For SPI interface transfer and us delay implementation */
-#if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) && !defined(CONFIG_PLATFORM_8721D)  && !defined(CONFIG_PLATFORM_8195BHP) && !defined(CONFIG_PLATFORM_8710C)
+#if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) && !defined(CONFIG_PLATFORM_8721D)  && !defined(CONFIG_PLATFORM_8195BHP) && !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2) 
 #include <rtwlan_bsp.h>	
 #endif
 #endif
@@ -78,7 +78,7 @@ typedef	struct sk_buff		_pkt;
 typedef unsigned char		_buffer;
 typedef unsigned int        systime;
 
-#ifndef __LIST_H
+#if !defined(__LIST_H) && !defined(__LIST_H__) 
 #warning "DLIST_NOT_DEFINE!!!!!!"
 struct list_head {
 	struct list_head *next, *prev;
@@ -243,7 +243,7 @@ extern void	rtw_list_delete(_list *plist);
 
 extern int rtw_if_wifi_thread(char *name);
 
-#if (defined CONFIG_PLATFORM_8711B) || (defined CONFIG_PLATFORM_8721D)
+#if (defined CONFIG_PLATFORM_8711B) || (defined CONFIG_PLATFORM_8721D)|| (defined CONFIG_PLATFORM_AMEBAD2)
 extern u32 random_seed;
 #endif
 

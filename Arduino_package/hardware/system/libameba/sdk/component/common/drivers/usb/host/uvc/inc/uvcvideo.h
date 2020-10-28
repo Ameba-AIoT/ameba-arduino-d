@@ -3,7 +3,7 @@
 
 #include <platform_opts.h>
     
-#ifdef CONFIG_USBH_UVC
+#if defined(CONFIG_USBH_UVC) || defined(REFER_USBH_UVC)
 
 #include "usb.h"
 #include "video.h"
@@ -123,7 +123,7 @@
 #define UVC_MAX_STATUS_SIZE             16
 
 //modified by Ian
-#define UVC_REQBUF_SIZE                 150000U
+#define UVC_REQBUF_SIZE                 200000U
 #define UVC_BUF_DYNAMIC                 0
 #define UVC_USE_DMA                     0
 

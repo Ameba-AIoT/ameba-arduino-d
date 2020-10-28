@@ -214,6 +214,14 @@ void serial_pinout_tx(PinName tx);
   */
 void serial_set_flow_control(serial_t *obj, FlowControl type, PinName rxflow, PinName txflow);
 
+/**
+  * @brief  controls the RTS signal.
+  * @param  obj: uart object define in application software.
+  * @param  rts_state: RTS signal control value.
+  * @retval   none
+  */
+void serial_rts_control(serial_t *obj, BOOLEAN rts_state);
+
 ///@}
 
 /*\@}*/

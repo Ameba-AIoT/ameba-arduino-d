@@ -225,7 +225,7 @@ struct vb2_buffer {
  *			of buffers, that are being allocated. When called from
  *			VIDIOC_CREATE_BUFS, fmt != NULL and it describes the
  *			target frame format (if the format isn't valid the
- *			callback must return -EINVAL). In this case *num_buffers
+ *			callback must return -V4L2_EINVAL). In this case *num_buffers
  *			are being allocated additionally to q->num_buffers.
  * @wait_prepare:	release any locks taken while calling vb2 functions;
  *			it is called before an ioctl needs to wait for a new
@@ -288,6 +288,7 @@ struct vb2_ops {
 	int (*stop_streaming)(struct vb2_queue *q);
 
 	void (*buf_queue)(struct vb2_buffer *vb);
+	int (*get_connect_status)(void);
 };
 
 struct v4l2_fh;

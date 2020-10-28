@@ -59,12 +59,6 @@ extern "C"{
 extern "C"{
 #endif // __cplusplus
 
-#if 0
-#define portOutputRegister(P) ( (volatile uint32_t *)( 0x40001000 + (P) * 0x0C ) )
-#define portInputRegister(P)  ( (volatile uint32_t *)( 0x40001050 + (P) * 4 ) )
-#define portModeRegister(P)   ( (volatile uint32_t *)( 0x40001004 + (P) * 0x0C ) )
-#endif
-
 #define portOutputRegister(P) ((volatile uint32_t *)(0x48014000 + (P) * 0x400))
 #define portInputRegister(P)  ((volatile uint32_t *)(0x48014050 + (P) * 0x400))
 #define portModeRegister(P)   ((volatile uint32_t *)(0x48014004 + (P) * 0x400))
@@ -76,7 +70,6 @@ extern "C"{
  * Use this function along with J-LINK or other debug tool
  **/
 extern void wait_for_debug(void);
-
 
 #ifdef __cplusplus
 }

@@ -1136,7 +1136,7 @@ struct usbd_uvc_buffer *uvc_video_out_stream_queue(struct uvc_dev *uvc_ctx);
 void uvc_video_put_in_stream_queue(struct usbd_uvc_buffer *payload, struct uvc_dev *uvc_ctx);
 void uvc_video_put_out_stream_queue(struct usbd_uvc_buffer *payload, struct uvc_dev *uvc_ctx);
 void uvc_events_process(struct uvc_dev *dev,struct uvc_req_data *uvc_event);
-
 void composite_setup_complete_1();
+int set_uvc_string(char *product_name,char *serial_name,unsigned short bcdDevice);
 
 #endif

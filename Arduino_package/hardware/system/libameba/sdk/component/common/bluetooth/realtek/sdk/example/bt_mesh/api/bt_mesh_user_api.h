@@ -13,11 +13,11 @@
 #ifndef _BT_MESH_USER_API_H_
 #define _BT_MESH_USER_API_H_
 
-#include "mesh_data_uart.h"
 #include "mesh_user_cmd_parse.h"
 #include "provisioner_cmd.h"
 #include "device_cmd.h"
 #include "osdep_service.h"
+#include "mesh_data_uart.h"
 #include "app_msg.h"
 #include "mesh_config.h"
 

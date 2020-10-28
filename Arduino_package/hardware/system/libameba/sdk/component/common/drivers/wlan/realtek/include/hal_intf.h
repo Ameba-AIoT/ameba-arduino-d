@@ -217,6 +217,7 @@ typedef enum _HAL_DEF_VARIABLE{
 	HAL_DEF_TX_PAGE_BOUNDARY,
 	HAL_DEF_MACID_SLEEP, // Support for MACID sleep
 	HAL_DEF_DBG_RX_INFO_DUMP,
+	HAL_DEF_MAX_AMPDU_BUF_SIZE,
 }HAL_DEF_VARIABLE;
 
 typedef enum _HAL_ODM_VARIABLE{
@@ -378,15 +379,6 @@ struct hal_ops {
 	BOOLEAN	(*Efuse_PgPacketWrite_BT)(_adapter *padapter, u8 offset, u8 word_en, u8 *data, BOOLEAN bPseudoTest);
 #endif
 	
-#ifdef DBG_CONFIG_ERROR_DETECT
-	void (*sreset_init_value)(_adapter *padapter);
-	void (*sreset_reset_value)(_adapter *padapter);		
-	void (*silentreset)(_adapter *padapter);
-	void (*sreset_xmit_status_check)(_adapter *padapter);
-	void (*sreset_linked_status_check) (_adapter *padapter);
-	u8 (*sreset_get_wifi_status)(_adapter *padapter);
-#endif
-
 #ifdef CONFIG_IOL
 	int (*IOL_exec_cmds_sync)(_adapter *padapter, struct xmit_frame *xmit_frame, u32 max_wating_ms);
 #endif
@@ -762,15 +754,6 @@ void	rtw_hal_antdiv_rssi_compared(_adapter *padapter, WLAN_BSSID_EX *dst, WLAN_B
 
 #ifdef CONFIG_HOSTAPD_MLME
 s32	rtw_hal_hostap_mgnt_xmit_entry(_adapter *padapter, _pkt *pkt);
-#endif
-
-#ifdef DBG_CONFIG_ERROR_DETECT
-void rtw_hal_sreset_init(_adapter *padapter);
-void rtw_hal_sreset_reset(_adapter *padapter);	
-void rtw_hal_sreset_reset_value(_adapter *padapter);
-void rtw_hal_sreset_xmit_status_check(_adapter *padapter);
-void rtw_hal_sreset_linked_status_check (_adapter *padapter);
-u8   rtw_hal_sreset_get_wifi_status(_adapter *padapter);
 #endif
 
 #ifdef CONFIG_IOL

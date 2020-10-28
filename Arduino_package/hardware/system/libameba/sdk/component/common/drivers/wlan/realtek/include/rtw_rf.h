@@ -133,19 +133,6 @@ typedef enum _RF90_RADIO_PATH{
 #define HAL_PRIME_CHNL_OFFSET_LOWER	1
 #define HAL_PRIME_CHNL_OFFSET_UPPER	2
 
-// Represent Channel Width in HT Capabilities
-//
-#if 0 //move to rtw_sta_info.h
-typedef enum _CHANNEL_WIDTH{
-	CHANNEL_WIDTH_20 = 0,
-	CHANNEL_WIDTH_40 = 1,
-	CHANNEL_WIDTH_80 = 2,
-	CHANNEL_WIDTH_160 = 3,
-	CHANNEL_WIDTH_80_80 = 4,
-	CHANNEL_WIDTH_MAX = 5,
-}CHANNEL_WIDTH, *PCHANNEL_WIDTH;
-#endif
-
 //
 // Represent Extention Channel Offset in HT Capabilities
 // This is available only in 40Mhz mode.
@@ -184,19 +171,6 @@ extern const u8 _rf_type_to_rf_rx_cnt[];
 #define rf_type_to_rf_rx_cnt(rf_type) (RF_TYPE_VALID(rf_type) ? _rf_type_to_rf_rx_cnt[rf_type] : 0)
 #endif
 
-/* 2007/11/15 MH Define different RF type. */
-#if 0 //move to rtw_sta_info.h
-typedef	enum _RT_RF_TYPE_DEFINITION
-{
-	RF_1T2R = 0,
-	RF_2T4R = 1,
-	RF_2T2R = 2,
-	RF_1T1R = 3,
-	RF_2T2R_GREEN = 4,
-	RF_819X_MAX_TYPE = 5,
-}RT_RF_TYPE_DEF_E;
-#endif
-
 #define BB_GAIN_2G 0
 #if SUPPORT_5G_CHANNEL
 #define BB_GAIN_5GLB1 1
@@ -221,7 +195,12 @@ u32 rtw_freq2ch(u32 freq);
 #define rtw_is_same_band(a, b) \
 	((rtw_is_2g_ch(a) && rtw_is_2g_ch(b)) \
 	|| (rtw_is_5g_ch(a) && rtw_is_5g_ch(b)))
-	
+
+#define rtw_is_5g_band1(ch) ((ch) >= 36 && (ch) <= 48)
+#define rtw_is_5g_band2(ch) ((ch) >= 52 && (ch) <= 64)
+#define rtw_is_5g_band3(ch) ((ch) >= 100 && (ch) <= 144)
+#define rtw_is_5g_band4(ch) ((ch) >= 149 && (ch) <= 177)
+
 u8 rtw_is_dfs_range(u32 hi, u32 lo);
 u8 rtw_is_dfs_ch(u8 ch);
 u8 rtw_is_dfs_chbw(u8 ch, u8 bw, u8 offset);

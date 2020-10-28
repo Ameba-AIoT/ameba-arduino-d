@@ -130,6 +130,10 @@ struct us_data {
 	void			*extra;		 /* Any extra data          */
 };
 
+struct us_usr_cb {
+	void(* attach)(void);
+	void(* detach)(void);
+};
 /* Convert between us_data and the corresponding Scsi_Host */
 //static inline struct Scsi_Host *us_to_host(struct us_data *us) {
 //	return container_of((void *) us, struct Scsi_Host, hostdata);
@@ -169,6 +173,7 @@ extern int usb_stor_probe1(struct us_data *us,
 		struct us_unusual_dev *unusual_dev);
 extern int usb_stor_probe2(struct us_data *us);
 extern void usb_stor_disconnect(struct usb_interface *intf);
+extern void usb_msc_register_usr_cb(struct us_usr_cb *cb);
 
 extern void usb_stor_adjust_quirks(struct usb_device *dev,
 		unsigned long *fflags);

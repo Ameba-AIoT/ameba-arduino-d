@@ -50,16 +50,13 @@ T_APP_RESULT BLEWifiConfigService::serviceCallbackDefault(T_SERVER_ID service_id
         switch (p_simp_cb_data->msg_type) {
 
             case SERVICE_CALLBACK_TYPE_READ_CHAR_VALUE: {
-				uint8_t *read_buf = NULL;
-				uint32_t read_buf_len = 0;
-				// Customized command:
-				// Handle your own Read Request here
-				// Prepare your own read_buf & read_buf_len
-				// Otherwise, use BC_handle_read_request to get read response from BT Config
-				BC_handle_read_request(&read_buf, &read_buf_len, p_simp_cb_data->msg_data.read_offset);
-				if(read_buf != NULL) {
-					bt_config_service_set_parameter(BTCONFIG_SERVICE_PARAM_V1_READ_CHAR_VAL, read_buf_len, read_buf);
-				}
+                uint8_t *read_buf = NULL;
+                uint32_t read_buf_len = 0;
+                // Otherwise, use BC_handle_read_request to get read response from BT Config
+                BC_handle_read_request(&read_buf, &read_buf_len, p_simp_cb_data->msg_data.read_offset);
+                if(read_buf != NULL) {
+                    bt_config_service_set_parameter(BTCONFIG_SERVICE_PARAM_V1_READ_CHAR_VAL, read_buf_len, read_buf);
+                }
                 if (BTDEBUG) printf("BTCONFIG read char value\r\n");
                 break;
             }
@@ -67,11 +64,8 @@ T_APP_RESULT BLEWifiConfigService::serviceCallbackDefault(T_SERVER_ID service_id
         case SERVICE_CALLBACK_TYPE_WRITE_CHAR_VALUE: {
             switch (p_simp_cb_data->msg_data.write.opcode) {
                 case BTCONFIG_WRITE_V1: {
-					// Customized command:
-					// Parse data first. (p_simp_cb_data->msg_data.write.p_value, p_simp_cb_data->msg_data.write.len)
-					// If it's a customized command, handle it here (call customized function to do specific actions)
-					// Otherwise, use BC_send_cmd to send data (BT Config command) to BT Config
-					BC_send_cmd( p_simp_cb_data->msg_data.write.p_value,  p_simp_cb_data->msg_data.write.len);
+                    // Otherwise, use BC_send_cmd to send data (BT Config command) to BT Config
+                    BC_send_cmd( p_simp_cb_data->msg_data.write.p_value,  p_simp_cb_data->msg_data.write.len);
                     if (BTDEBUG) printf("BTCONFIG write char value\r\n");
                     break;
                 }

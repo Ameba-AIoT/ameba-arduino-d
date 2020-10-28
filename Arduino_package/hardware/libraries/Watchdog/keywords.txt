@@ -1,0 +1,23 @@
+#######################################
+# Syntax Coloring Map for Analog
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AmebaWatchdog	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+InitWatchdog    KEYWORD2
+StartWatchdog   KEYWORD2
+StopWatchdog    KEYWORD2
+RefreshWatchdog KEYWORD2
+InitWatchdogIRQ KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################

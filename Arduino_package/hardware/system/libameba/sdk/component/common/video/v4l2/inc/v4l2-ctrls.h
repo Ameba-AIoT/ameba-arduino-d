@@ -664,7 +664,7 @@ int v4l2_ctrl_subscribe_event(struct v4l2_fh *fh,
 /* Can be used as a poll function that just polls for control events. */
 //unsigned int v4l2_ctrl_poll(struct file *file, struct poll_table_struct *wait);
 
-/* Helpers for ioctl_ops. If hdl == NULL then they will all return -EINVAL. */
+/* Helpers for ioctl_ops. If hdl == NULL then they will all return -V4L2_EINVAL. */
 int v4l2_queryctrl(struct v4l2_ctrl_handler *hdl, struct v4l2_queryctrl *qc);
 int v4l2_querymenu(struct v4l2_ctrl_handler *hdl, struct v4l2_querymenu *qm);
 int v4l2_g_ctrl(struct v4l2_ctrl_handler *hdl, struct v4l2_control *ctrl);
@@ -676,7 +676,7 @@ int v4l2_s_ext_ctrls(struct v4l2_fh *fh, struct v4l2_ctrl_handler *hdl,
 						struct v4l2_ext_controls *c);
 
 /* Helpers for subdevices. If the associated ctrl_handler == NULL then they
-   will all return -EINVAL. */
+   will all return -V4L2_EINVAL. */
 int v4l2_subdev_queryctrl(struct v4l2_subdev *sd, struct v4l2_queryctrl *qc);
 int v4l2_subdev_querymenu(struct v4l2_subdev *sd, struct v4l2_querymenu *qm);
 int v4l2_subdev_g_ext_ctrls(struct v4l2_subdev *sd, struct v4l2_ext_controls *cs);

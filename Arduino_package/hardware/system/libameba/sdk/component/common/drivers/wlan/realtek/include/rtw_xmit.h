@@ -61,8 +61,6 @@
 #endif	//#ifdef PLATFORM_ECOS || defined(PLATFORM_FREERTOS)
 #endif	//#ifdef CONFIG_TX_AGGREGATION
 
-#elif defined(CONFIG_USB_HCI) || defined(CONFIG_PCI_HCI)
-	#errof "Undefined bus interface for MAX_XMITBUF_SZ"
 #endif	//interface define. SDIO/GSPI/LXbus/PCI/USB
 
 
@@ -87,15 +85,13 @@
 #elif defined(CONFIG_LX_HCI) || defined(CONFIG_AXI_HCI)
 #define NR_XMITBUFF	(8)
 
-#elif defined(CONFIG_USB_HCI) || defined(CONFIG_PCI_HCI)
-	#errof "Undefined bus interface for MAX_XMITBUF_SZ"
 #endif //interface define
 
 
 /*--------------------------------------------------------------*/
 /*  Define XMITBUF_ALIGN_SZ										*/
 /*--------------------------------------------------------------*/
-#if defined(PLATFORM_OS_CE) || defined(PLATFORM_ECOS) || defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS)
+#if defined(PLATFORM_ECOS) || defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS)
 #define XMITBUF_ALIGN_SZ 4
 #else
 #if defined(CONFIG_PCI_HCI) || defined(CONFIG_LX_HCI) || defined(CONFIG_AXI_HCI)
@@ -231,11 +227,6 @@ do {\
 
 #endif
 
-#ifdef CONFIG_USB_HCI
-#define PACKET_OFFSET_SZ (8)
-#define TXDESC_OFFSET (TXDESC_SIZE + PACKET_OFFSET_SZ)
-#endif
-
 #if defined(CONFIG_PCI_HCI) || defined(CONFIG_LX_HCI) || defined(CONFIG_AXI_HCI)
 #if  defined(CONFIG_RTL8195A) || defined(CONFIG_RTL8711B) || defined(CONFIG_RTL8721D) || defined(CONFIG_RTL8195B) || defined(CONFIG_RTL8710C) // buffer descriptor architecture
 #define TXDESC_OFFSET TXDESC_SIZE
@@ -246,6 +237,10 @@ do {\
 #endif
 
 #define TX_FRAGMENTATION_THRESHOLD 			2346
+
+#ifdef TX_SHORTCUT
+#define TX_SC_ENTRY_NUM 	4
+#endif
 
 union Keytype {
         u8   skey[16];
@@ -283,27 +278,6 @@ struct tx_desc{
 	unsigned int txdw6;
 
 	unsigned int txdw7;
-#ifdef CONFIG_PCI_HCI
-	unsigned int txdw8;
-
-	unsigned int txdw9;
-
-	unsigned int txdw10;
-
-	unsigned int txdw11;
-
-	// 2008/05/15 MH Because PCIE HW memory R/W 4K limit. And now,  our descriptor
-	// size is 40 bytes. If you use more than 102 descriptor( 103*40>4096), HW will execute
-	// memoryR/W CRC error. And then all DMA fetch will fail. We must decrease descriptor
-	// number or enlarge descriptor size as 64 bytes.
-	unsigned int txdw12;
-
-	unsigned int txdw13;
-
-	unsigned int txdw14;
-
-	unsigned int txdw15;
-#endif
 #if defined(CONFIG_LX_HCI)||defined(CONFIG_RTL8188F) ||defined(CONFIG_RTL8192E) ||defined(CONFIG_RTL8723D) ||defined(CONFIG_RTL8821C) ||defined(CONFIG_RTL8195B) || defined(CONFIG_RTL8710C)
     unsigned int txdw8;
 
@@ -354,58 +328,6 @@ struct	hw_xmit	{
 	int	accnt;
 };
 
-#if 0
-struct pkt_attrib
-{
-	u8	type;
-	u8	subtype;
-	u8	bswenc;
-	u8	dhcp_pkt;
-	u16	ether_type;
-	int	pktlen;		//the original 802.3 pkt raw_data len (not include ether_hdr data)
-	int	pkt_hdrlen;	//the original 802.3 pkt header len
-	int	hdrlen;		//the WLAN Header Len
-	int	nr_frags;
-	int	last_txcmdsz;
-	int	encrypt;	//when 0 indicate no encrypt. when non-zero, indicate the encrypt algorith
-	u8	iv[8];
-	int	iv_len;
-	u8	icv[8];
-	int	icv_len;
-	int	priority;
-	int	ack_policy;
-	int	mac_id;
-	int	vcs_mode;	//virtual carrier sense method
-
-	u8 	dst[ETH_ALEN];
-	u8	src[ETH_ALEN];
-	u8	ta[ETH_ALEN];
-	u8 	ra[ETH_ALEN];
-
-	u8	key_idx;
-
-	u8	qos_en;
-	u8	ht_en;
-	u8	raid;//rate adpative id
-	u8	bwmode;
-	u8	ch_offset;//PRIME_CHNL_OFFSET
-	u8	sgi;//short GI
-	u8	ampdu_en;//tx ampdu enable
-	u8	mdata;//more data bit
-	u8	eosp;
-
-	u8	pctrl;//per packet txdesc control enable
-	u8	triggered;//for ap mode handling Power Saving sta
-
-	u32	qsel;
-	u16	seqnum;
-
-	struct sta_info * psta;
-#ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
-	u8	hw_tcp_csum;
-#endif
-};
-#else
 //reduce size
 struct pkt_attrib
 {
@@ -469,24 +391,16 @@ struct pkt_attrib
 	u16	sw_define;
 	u8	raw;
 #endif
-};
+#ifdef CONFIG_RTK_MESH
+	u8	is_11s;			// for transmitting 11s data frame (to rewrite 4 addresses)
+	u8	nhop_11s[ETH_ALEN]; // to record "da" in start_xmit //#JZDBG this looks like "ta"
+	u8	prehop_11s[ETH_ALEN];
 #endif
-
-#ifdef PLATFORM_FREEBSD
-#define ETH_ALEN	6		/* Octets in one ethernet addr	 */
-#define ETH_HLEN	14		/* Total octets in header.	 */
-#define ETH_P_IP	0x0800		/* Internet Protocol packet	*/
-
-/*struct rtw_ieee80211_hdr {
-	uint16_t frame_control;
-	uint16_t duration_id;
-	u8 addr1[6];
-	u8 addr2[6];
-	u8 addr3[6];
-	uint16_t seq_ctrl;
-	u8 addr4[6];
-} ;*/
-#endif //PLATFORM_FREEBSD
+#ifdef TX_SHORTCUT
+	u8 sc_entry_id;
+	u8 ether_hdr[14];
+#endif
+};
 
 #define WLANHDR_OFFSET	64
 
@@ -513,9 +427,6 @@ struct  submit_ctx{
 	u32 submit_time; /* */
 	u32 timeout_ms; /* <0: not synchronous, 0: wait forever, >0: up to ms waiting */
 	int status; /* status for operation */
-#ifdef PLATFORM_LINUX
-	struct completion done;
-#endif
 };
 
 enum {
@@ -564,30 +475,6 @@ struct xmit_buf
 
 	struct submit_ctx *sctx;
 
-#ifdef CONFIG_USB_HCI
-
-	//u32 sz[8];
-	u32	ff_hwaddr;
-
-#if defined(PLATFORM_OS_XP)||defined(PLATFORM_LINUX) || defined(PLATFORM_FREEBSD)
-	PURB	pxmit_urb[8];
-	dma_addr_t dma_transfer_addr;	/* (in) dma addr for transfer_buffer */
-#endif
-
-#ifdef PLATFORM_OS_XP
-	PIRP		pxmit_irp[8];
-#endif
-
-#ifdef PLATFORM_OS_CE
-	USB_TRANSFER	usb_transfer_write_port;
-#endif
-
-	u8 bpending[8];
-
-	sint last[8];
-
-#endif
-
 #if defined(CONFIG_SDIO_HCI) || defined(CONFIG_GSPI_HCI)
 	u8 *phead;
 	u8 *pdata;
@@ -596,11 +483,6 @@ struct xmit_buf
 	u32 ff_hwaddr;
 	u8	pg_num;	
 	u8	agg_num;
-#ifdef PLATFORM_OS_XP
-	PMDL pxmitbuf_mdl;
-	PIRP  pxmitbuf_irp;
-	PSDBUS_REQUEST_PACKET pxmitbuf_sdrp;
-#endif
 #endif
 
 #if defined(DBG_XMIT_BUF )|| defined(DBG_XMIT_BUF_EXT)
@@ -635,17 +517,6 @@ struct xmit_frame
 	u8	agg_num;
 #endif
 
-#ifdef CONFIG_USB_HCI
-#ifdef CONFIG_USB_TX_AGGREGATION
-	u8	agg_num;
-#endif
-	s8	pkt_offset;
-#ifdef CONFIG_RTL8192D
-	u8	EMPktNum;
-	u16	EMPktLen[5];//The max value by HW
-#endif
-#endif
-
 #if defined(CONFIG_LX_HCI) || defined(CONFIG_AXI_HCI)
 	u32 TxDexAddr;    
 	u32 HdrLen;    
@@ -658,6 +529,15 @@ struct xmit_frame
 #endif
 #ifdef CONFIG_XMIT_ACK
 	u8 ack_report;
+#endif
+#ifdef CONFIG_RTK_MESH
+	//unsigned char		is_11s;			// for transmitting 11s data frame (to rewrite 4 addresses)
+	//unsigned char		nhop_11s[ETH_ALEN]; // to record "da" in start_xmit
+	//unsigned char		prehop_11s[ETH_ALEN];
+	struct  rtw_ieee80211s_hdr mesh_header;
+#endif
+#ifdef TX_SHORTCUT
+	int tx_shortcut_idx;
 #endif
 };
 
@@ -682,7 +562,7 @@ struct sta_xmit_priv
 	_list 	legacy_dz;
 	_list  apsd;
 
-	u16 txseq_tid[16];
+	u16 txseq_tid[MAXTID];
 
 	//uint	sta_tx_bytes;
 	//u64	sta_tx_pkts;
@@ -754,36 +634,11 @@ struct	xmit_priv	{
 	struct hw_xmit *hwxmits;
 	u8	hwxmit_entry;
 
-#ifdef CONFIG_USB_HCI
-	_sema	tx_retevt;//all tx return event;
-	u8		txirp_cnt;//
-
-#ifdef PLATFORM_OS_CE
-	USB_TRANSFER	usb_transfer_write_port;
-//	USB_TRANSFER	usb_transfer_write_mem;
-#endif
-#ifdef PLATFORM_LINUX
-	struct tasklet_struct xmit_tasklet;
-#endif
-#ifdef PLATFORM_FREEBSD
-	struct task xmit_tasklet;
-#endif
-	//per AC pending irp
-	int beq_cnt;
-	int bkq_cnt;
-	int viq_cnt;
-	int voq_cnt;
-
-#endif
-
 #if defined(CONFIG_PCI_HCI) || defined(CONFIG_LX_HCI) || defined(CONFIG_AXI_HCI)
 	// Tx
 	struct rtw_tx_ring	tx_ring[PCI_MAX_TX_QUEUE_COUNT];
 	int	txringcount[PCI_MAX_TX_QUEUE_COUNT];
 	u8 	beaconDMAing;		//flag of indicating beacon is transmiting to HW by DMA
-#ifdef PLATFORM_LINUX
-	struct tasklet_struct xmit_tasklet;
-#endif
 #endif
 
 	_queue free_xmitbuf_queue;
@@ -811,21 +666,14 @@ struct	xmit_priv	{
 	#endif
 };
 
+extern struct xmit_buf *rtw_alloc_xmitbuf_ext(struct xmit_priv *pxmitpriv, u32 size);
 #ifdef CONFIG_TRACE_SKB
-extern struct xmit_buf *_rtw_alloc_xmitbuf_ext(struct xmit_priv *pxmitpriv, u32 size);
-
-//extern struct xmit_frame *_rtw_alloc_xmitframe(struct xmit_priv *pxmitpriv);
-//extern s32 _rtw_free_xmitframe(struct xmit_priv *pxmitpriv, struct xmit_frame *pxmitframe);
-//extern void _rtw_free_xmitframe_queue(struct xmit_priv *pxmitpriv, _queue *pframequeue);
-
-#define rtw_alloc_xmitbuf_ext(pxmitpriv, pxmitbuf, size) \
+#define __rtw_alloc_xmitbuf_ext(pxmitpriv, pxmitbuf, size) \
 	(\
-		pxmitbuf = _rtw_alloc_xmitbuf_ext(pxmitpriv, size),\
+		pxmitbuf = rtw_alloc_xmitbuf_ext(pxmitpriv, size),\
 		pxmitbuf ? set_skb_list_flag(pxmitbuf->pkt, SKBLIST_XMITEXTBUF):0,\
 		pxmitbuf\
 	)
-#else
-extern struct xmit_buf *rtw_alloc_xmitbuf_ext(struct xmit_priv *pxmitpriv, u32 size);
 #endif
 extern s32 rtw_free_xmitbuf_ext(struct xmit_priv *pxmitpriv, struct xmit_buf *pxmitbuf);
 
@@ -901,6 +749,13 @@ extern u32 ffaddr2deviceId(struct dvobj_priv *pdvobj, u32 addr);
 #ifdef CONFIG_IEEE80211W
 extern s32 rtw_mgmt_xmitframe_coalesce(_adapter *padapter, _pkt *pkt, struct xmit_frame *pxmitframe);
 #endif
+
+#ifdef TX_SHORTCUT
+void rtw_free_tx_sc_entrys(ADAPTER *Adapter, struct sta_info *pstat);
+int rtw_get_tx_sc_index(struct sta_info *pstat, unsigned char *hdr);
+int rtw_get_tx_sc_free_entry(struct sta_info *pstat, unsigned char *hdr);
+#endif
+
 extern unsigned int nr_xmitframe;
 extern unsigned int nr_xmitbuff;
 #endif	//_RTL871X_XMIT_H_

@@ -17,6 +17,7 @@
 
 #include <trace_app.h>
 #include <bt_flags.h>
+
 #include <app_common_flags.h>
 
 /** @defgroup  CENTRAL_CLIENT_Config Central Client App Configuration
@@ -28,10 +29,15 @@
  *============================================================================*/
 
 /** @brief  Config APP LE link number */
+#if defined(CONFIG_PLATFORM_8721D)
+#define BLE_SCATTERNET_APP_MAX_LINKS  4
+#define BLE_SCATTERNET_PERIPHERAL_APP_MAX_LINKS   1 //for max slave link num
+#define BLE_SCATTERNET_CENTRAL_APP_MAX_LINKS      3 //for max master link num
+#elif defined(CONFIG_PLATFORM_8710C)
 #define BLE_SCATTERNET_APP_MAX_LINKS  2
-//for amebaD/amebz2 support the max number of master or slave is 1
-#define  BLE_SCATTERNET_PERIPHERAL_APP_MAX_LINKS   1 //for max link slave num
-#define  BLE_SCATTERNET_CENTRAL_APP_MAX_LINKS      1 //for max link master num
+#define BLE_SCATTERNET_PERIPHERAL_APP_MAX_LINKS   1 //for max slave link num
+#define BLE_SCATTERNET_CENTRAL_APP_MAX_LINKS      1 //for max master link num
+#endif
 
 /** @brief  Config the discovery table number of gcs_client */
 #define BLE_SCATTERNET_APP_MAX_DISCOV_TABLE_NUM 40

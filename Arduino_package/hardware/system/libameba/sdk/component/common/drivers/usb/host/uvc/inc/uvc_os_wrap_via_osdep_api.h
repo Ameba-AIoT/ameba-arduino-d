@@ -3,12 +3,11 @@
 
 #include <platform_opts.h>
     
-#ifdef CONFIG_USBH_UVC
+#if defined(CONFIG_USBH_UVC) || defined(REFER_USBH_UVC)
 
 #include "platform/platform_stdlib.h"
 #include "basic_types.h"
 #include "osdep_service.h"
-#include "usb.h"
 #include "dlist.h"
 
 #define USBH_UVC_DEBUG  0

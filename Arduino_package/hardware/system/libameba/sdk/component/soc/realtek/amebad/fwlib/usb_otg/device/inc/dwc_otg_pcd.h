@@ -151,6 +151,7 @@ struct dwc_otg_pcd {
     unsigned ep0_pending: 1;
     /** Indicates when SET CONFIGURATION Request is in process */
     unsigned request_config: 1;
+    unsigned is_selfpowered:1;
     /** The state of the Remote Wakeup Enable. */
     unsigned remote_wakeup_enable: 1;
     /** The state of the B-Device HNP Enable. */

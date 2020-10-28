@@ -11,8 +11,4 @@
 #pragma pack(1)
 #endif
 
-#if defined(PLATFORM_WINDOWS)
-#pragma pack(push)
-#pragma pack(1)
-#endif
 
