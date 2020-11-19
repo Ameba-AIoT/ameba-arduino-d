@@ -1,21 +1,21 @@
-#include "Arduino.h"
+#include <Arduino.h>
 #include "IRDevice.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#include "basic_types.h"
+#include "hal_platform.h"
 #include "ir_nec_protocol.h"
 #include "rtl8721d_pinmux.h"
-#include "hal_platform.h"
-#include "basic_types.h"
 
 #ifdef __cplusplus
 }
 #endif
 
-static IR_InitTypeDef IR_InitStruct;   // Structure to store configuration information
-static IR_DataTypeDef IR_DataStruct;   // Structure to store encoded data
+static IR_InitTypeDef IR_InitStruct;  // Structure to store configuration information
+static IR_DataTypeDef IR_DataStruct;  // Structure to store encoded data
 xSemaphoreHandle IR_Recv_end_sema = NULL;
 
 void IR_rx_recv_raw(void) {
@@ -171,11 +171,10 @@ void IRDevice::begin(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode, u
         _mode = irMode;
         _frequency = freq;
     }
-
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
     IR_StructInit(&IR_InitStruct);
     IR_InitStruct.IR_Mode = _mode;
-    IR_InitStruct.IR_Freq = _frequency;            //Hz
+    IR_InitStruct.IR_Freq = _frequency;  //Hz
     IR_Init(IR_DEV, &IR_InitStruct);
 }
 
@@ -198,79 +197,61 @@ void IRDevice::end() {
 * @ LSB is sent first !
 */
 const IR_ProtocolTypeDef NEC_PROTOCOL =
-	{
-		38000,										  /* Carrier freqency */
-		2,											  /* headerLen */
-		{PULSE_HIGH | 9000, PULSE_LOW | (4500 - 26)}, /* headerBuf unit: us*/
-		{PULSE_HIGH | 560, PULSE_LOW | (560 - 26)},	  /* log0Buf */
-		{PULSE_HIGH | 560, PULSE_LOW | (1690 - 26)},  /* log1Buf */
-		PULSE_HIGH | 560,							  /* stopBuf */
-		30											  /* tolerance percentage is 10% */
+    {
+        38000,                                        /* Carrier freqency */
+        2,                                            /* headerLen */
+        {PULSE_HIGH | 9000, PULSE_LOW | (4500 - 26)}, /* headerBuf unit: us*/
+        {PULSE_HIGH | 560, PULSE_LOW | (560 - 26)},   /* log0Buf */
+        {PULSE_HIGH | 560, PULSE_LOW | (1690 - 26)},  /* log1Buf */
+        PULSE_HIGH | 560,                             /* stopBuf */
+        30                                            /* tolerance percentage is 10% */
 };
 
-static IR_DataType ConvertToCarrierCycle(uint32_t time, uint32_t freq)
-{
-	return ((time & PULSE_HIGH) | ((time & IR_DATA_MSK) * freq / 1000000));
+static IR_DataType ConvertToCarrierCycle(uint32_t time, uint32_t freq) {
+    return ((time & PULSE_HIGH) | ((time & IR_DATA_MSK) * freq / 1000000));
 }
 
 void IRDevice::send(const unsigned int buf[], uint16_t len) {
     u32 tx_count = 0;
     const u8 tx_thres = 1;
-    uint16_t index = 0;
-	uint16_t bufLen = 0;
-	uint32_t Log1[MAX_LOG_WAVFORM_SIZE];
-	uint32_t Log0[MAX_LOG_WAVFORM_SIZE];
-	uint32_t inputTime = 0;
-    IR_ProtocolTypeDef *IR_Protocol = (IR_ProtocolTypeDef *)(&NEC_PROTOCOL);
-    
+    uint16_t bufLen = 0;
+    uint32_t inputTime = 0;
+
     IR_DataStruct.carrierFreq = IR_InitStruct.IR_Freq;
     IR_DataStruct.codeLen = len;
 
-    for (index = 0; index < MAX_LOG_WAVFORM_SIZE; index++) 
-	{
-		Log0[index] = ConvertToCarrierCycle(IR_Protocol->log0Buf[index], IR_DataStruct.carrierFreq);
-		Log1[index] = ConvertToCarrierCycle(IR_Protocol->log1Buf[index], IR_DataStruct.carrierFreq);
-	}
+    for (unsigned int i = 1; i <= IR_DataStruct.codeLen; i++) {
+        IR_DataStruct.irBuf[i] = buf[i - 1];
 
-    for (unsigned int i = 1; i <= IR_DataStruct.codeLen; i++)
-	{
-		IR_DataStruct.irBuf[i] = buf[i - 1];
-
-		if (i & 1 == 1) 
-		{
-			inputTime = IR_DataStruct.irBuf[i] | PULSE_HIGH;
-			IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
-		}
-		else 
-		{
-			inputTime = (IR_DataStruct.irBuf[i] - 26) | PULSE_LOW; 
-			IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
-		}
-		bufLen += MAX_LOG_WAVFORM_SIZE;
-	}
+        if ((i & 1) == 1) {
+            inputTime = IR_DataStruct.irBuf[i] | PULSE_HIGH;
+            IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
+        } else {
+            inputTime = (IR_DataStruct.irBuf[i] - 26) | PULSE_LOW;
+            IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
+        }
+        bufLen += MAX_LOG_WAVFORM_SIZE;
+    }
     bufLen++;
-	IR_DataStruct.bufLen = bufLen;
+    IR_DataStruct.bufLen = bufLen;
 
-    IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE); 
+    IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE);
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
 
     tx_count += IR_TX_FIFO_SIZE;
-   
+
     while ((IR_DataStruct.bufLen - tx_count) > 0) {
-        // while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
-        //     taskYIELD();
-        // }
         if ((IR_DataStruct.bufLen - tx_count) > tx_thres) {
             IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), tx_thres, FALSE);
             tx_count += tx_thres;
-            
+
         } else {
             IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), (IR_DataStruct.bufLen - tx_count), TRUE);
             tx_count = IR_DataStruct.bufLen;
         }
     }
 
-    vTaskDelay((200 / portTICK_RATE_MS));     
+    vTaskDelay((200 / portTICK_RATE_MS));
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
 }
 
@@ -283,27 +264,27 @@ void IRDevice::beginNEC(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode
     IR_StructInit(&IR_InitStruct);
 
     if (irMode == IR_MODE_TX) {
-        _frequency = 38000;         // Tx mode frequency corresponds to IR carrier frequency
+        _frequency = 38000;  // Tx mode frequency corresponds to IR carrier frequency
         _mode = irMode;
-    } else if (irMode = IR_MODE_RX) {
-        _frequency = 10000000;      // Rx mode frequency corresponds to Ameba sampling frequency
+    } else if (irMode == IR_MODE_RX) {
+        _frequency = 10000000;  // Rx mode frequency corresponds to Ameba sampling frequency
         _mode = irMode;
         IR_InitStruct.IR_RxFIFOThrLevel = 2;
         if (IR_RX_INVERTED) {
-            IR_InitStruct.IR_RxCntThrType = IR_RX_COUNT_HIGH_LEVEL;     //the idle level of receiving waveform is high
+            IR_InitStruct.IR_RxCntThrType = IR_RX_COUNT_HIGH_LEVEL;  //the idle level of receiving waveform is high
         } else {
-            IR_InitStruct.IR_RxCntThrType = IR_RX_COUNT_LOW_LEVEL;      //the idle level of receiving waveform is low
+            IR_InitStruct.IR_RxCntThrType = IR_RX_COUNT_LOW_LEVEL;  //the idle level of receiving waveform is low
         }
-        IR_InitStruct.IR_RxCntThr = 0xa1644; // 66.1ms at 10MHz	if(IR_Recv_end_sema == NULL) {
+        IR_InitStruct.IR_RxCntThr = 0xa1644;  // 66.1ms at 10MHz	if(IR_Recv_end_sema == NULL) {
         vSemaphoreCreateBinary(IR_Recv_end_sema);
-        xSemaphoreTake(IR_Recv_end_sema, 1/portTICK_RATE_MS);
+        xSemaphoreTake(IR_Recv_end_sema, 1 / portTICK_RATE_MS);
     } else {
         printf("Invalid IR mode!\r\n");
         return;
     }
 
     IR_InitStruct.IR_Mode = _mode;
-    IR_InitStruct.IR_Freq = _frequency; //Hz
+    IR_InitStruct.IR_Freq = _frequency;  //Hz
     IR_Init(IR_DEV, &IR_InitStruct);
 }
 
@@ -317,7 +298,7 @@ void IRDevice::sendNEC(uint8_t adr, uint8_t cmd) {
     data[2] = cmd;
     data[3] = ~cmd;
 
-    IR_NECEncode( IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
+    IR_NECEncode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
 
     IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE);
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
@@ -336,15 +317,15 @@ void IRDevice::sendNEC(uint8_t adr, uint8_t cmd) {
         }
     }
 
-    vTaskDelay((200 / portTICK_RATE_MS));      // delay for IR to finish sending
+    vTaskDelay((200 / portTICK_RATE_MS));  // delay for IR to finish sending
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
 }
 
-uint8_t IRDevice::recvNEC(uint8_t& adr, uint8_t& cmd, uint32_t timeout) {
+uint8_t IRDevice::recvNEC(uint8_t &adr, uint8_t &cmd, uint32_t timeout) {
     adr = 0;
     cmd = 0;
     uint8_t data[4] = {0, 0, 0, 0};
-    uint8_t result;
+    // uint8_t result;
     uint8_t data_received = 0;
 
     IR_DataStruct.bufLen = 0;
@@ -362,11 +343,11 @@ uint8_t IRDevice::recvNEC(uint8_t& adr, uint8_t& cmd, uint32_t timeout) {
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
 
     // Wait for a valid transmission up to timeout period
-    if (xSemaphoreTake(IR_Recv_end_sema, (timeout/portTICK_RATE_MS))) {
+    if (xSemaphoreTake(IR_Recv_end_sema, (timeout / portTICK_RATE_MS))) {
         if (IR_RX_INVERTED) {
             InvertPulse(IR_DataStruct.irBuf, IR_DataStruct.bufLen);
         }
-        result = IR_NECDecode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
+        // result = IR_NECDecode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
         adr = data[0];
         cmd = data[2];
         //printf("result %d RX %2x%2x\n",result, adr, cmd);
@@ -384,6 +365,90 @@ uint8_t IRDevice::recvNEC(uint8_t& adr, uint8_t& cmd, uint32_t timeout) {
     InterruptUnRegister(IR_IRQ);
 
     return (data_received);
+}
+
+/*!
+* @ brief:Sony protocol structure.
+* @ note: Store parameters of Sony protocol.
+* @ Carrier frequency = 40,000Hz
+* @ duty factor = 1/2
+* @ first pulse : 2400 ms 600 ms
+* @ Command (7 bits) 
+* @ Address (5 bits) 
+* @ LSB is sent first !
+*/
+const IR_ProtocolTypeDef_Sony SONY_PROTOCOL =
+    {
+        40000,                                      /* Carrier freqency */
+        2,                                          /* headerLen */
+        {PULSE_HIGH | 2400, PULSE_LOW | (600 / 5)}, /* headerBuf unit: us*/
+        {PULSE_HIGH | 600, PULSE_LOW | 600},        /* log0Buf */
+        {PULSE_HIGH | 1200, PULSE_LOW | 600},       /* log1Buf */
+};
+
+/**
+ * @brief:This fucntion is meant to send IR signal with Sony protocol.
+ * @param data: Sony IR data 
+ * @param len: number of bits containted in the data
+ * @return The function returns nothing
+*/
+void IRDevice::sendSONY(unsigned long data, uint16_t len) {
+    u32 tx_count = 0;
+    const u8 tx_thres = 1;
+    uint16_t index = 0;
+    uint16_t bufLen = 0;
+    uint32_t Log1[MAX_LOG_WAVFORM_SIZE];
+    uint32_t Log0[MAX_LOG_WAVFORM_SIZE];
+    int nbits = len;
+    IR_ProtocolTypeDef *IR_Protocol = (IR_ProtocolTypeDef *)(&SONY_PROTOCOL);
+
+    IR_DataStruct.carrierFreq = IR_InitStruct.IR_Freq;
+    IR_DataStruct.codeLen = len;
+
+    /* Encoding logical 1 and logical 0 */
+    for (index = 0; index < MAX_LOG_WAVFORM_SIZE; index++) {
+        Log0[index] = ConvertToCarrierCycle(IR_Protocol->log0Buf[index], IR_DataStruct.carrierFreq);
+        Log1[index] = ConvertToCarrierCycle(IR_Protocol->log1Buf[index], IR_DataStruct.carrierFreq);
+    }
+
+    /* Encoding header */
+    for (index = 0; index < 2; index++) {
+        IR_DataStruct.irBuf[index] = ConvertToCarrierCycle(IR_Protocol->headerBuf[index],
+                                                           IR_DataStruct.carrierFreq);
+        bufLen++;
+    }
+
+    /* Encoding address & device */
+    for (unsigned long mask = 1UL << (nbits - 1); mask; mask >>= 1) {
+        if (data & mask) {
+            IR_DataStruct.irBuf[bufLen] = Log1[1];
+            IR_DataStruct.irBuf[bufLen + 1] = Log1[0];
+        } else {
+            IR_DataStruct.irBuf[bufLen] = Log0[1];
+            IR_DataStruct.irBuf[bufLen + 1] = Log0[0];
+        }
+        bufLen += MAX_LOG_WAVFORM_SIZE;
+    }
+    bufLen++;
+    IR_DataStruct.bufLen = bufLen;
+
+    IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE);
+    IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
+    tx_count += IR_DataStruct.bufLen;
+    while ((IR_DataStruct.bufLen - tx_count) > 0) {
+        while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
+            taskYIELD();
+        }
+        if ((IR_DataStruct.bufLen - tx_count) > tx_thres) {
+            IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), tx_thres, FALSE);
+            tx_count += tx_thres;
+        } else {
+            IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), (IR_DataStruct.bufLen - tx_count), TRUE);
+            tx_count = IR_DataStruct.bufLen;
+        }
+    }
+    vTaskDelay((40 / portTICK_RATE_MS));
+    IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
 }
 
 void IRDevice::InvertPulse(IR_DataType *pBuf, uint16_t len) {

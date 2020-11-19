@@ -228,4 +228,31 @@ int WiFiClass::disablePowerSave()
     return WiFiDrv::disablePowerSave();
 }
 
+void WiFiClass::config(IPAddress local_ip) {
+    WiFiDrv::config(1, local_ip, IPAddress(0, 0, 0, 0), IPAddress(0, 0, 0, 0));
+}
+
+void WiFiClass::config(IPAddress local_ip, IPAddress dns_server) {
+    setDNS(dns_server);
+    config(local_ip);
+}
+
+void WiFiClass::config(IPAddress local_ip, IPAddress dns_server, IPAddress gateway) {
+    setDNS(dns_server);
+    WiFiDrv::config(2, local_ip, gateway, IPAddress(0, 0, 0, 0));
+}
+
+void WiFiClass::config(IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet) {
+    setDNS(dns_server);
+    WiFiDrv::config(3, local_ip, gateway, subnet);
+}
+
+void WiFiClass::setDNS(IPAddress dns_server1) {
+    WiFiDrv::setDNS(1, dns_server1, IPAddress(0, 0, 0, 0));
+}
+
+void WiFiClass::setDNS(IPAddress dns_server1, IPAddress dns_server2) {
+    WiFiDrv::setDNS(2, dns_server1, dns_server2);
+}
+
 WiFiClass WiFi;

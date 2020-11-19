@@ -12,7 +12,7 @@ extern "C" {
 class SSLDrv
 {
     public:
-        int startClient(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key);
+        int startClient(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey);
         void stopClient(sslclient_context *ssl_client);
         bool getData(sslclient_context *ssl_client, uint8_t *data, uint8_t peek=0);
         int getDataBuf(sslclient_context *ssl_client, uint8_t *_data, uint16_t _dataLen);

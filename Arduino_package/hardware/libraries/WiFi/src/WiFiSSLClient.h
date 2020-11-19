@@ -29,9 +29,12 @@ class WiFiSSLClient : public Client {
 
         void setRootCA(unsigned char *rootCA);
         void setClientCertificate(unsigned char *client_ca, unsigned char *private_key);
+        void setPreSharedKey(unsigned char *pskIdent, unsigned char *psKey);  // psKey expressed as hexadecimal string
 
-        int connect(IPAddress ip, uint16_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key);
         int connect(const char *host, uint16_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key);
+        int connect(IPAddress ip, uint16_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key);
+        int connect(const char *host, uint16_t port, unsigned char* pskIdent, unsigned char* psKey);
+        int connect(IPAddress ip, uint16_t port, unsigned char* pskIdent, unsigned char* psKey);
 
         using Print::write;
         int setRecvTimeout(int timeout);
@@ -45,6 +48,8 @@ class WiFiSSLClient : public Client {
         unsigned char *_rootCABuff;
         unsigned char *_cli_cert;
         unsigned char *_cli_key;
+        unsigned char *_psKey;
+        unsigned char *_pskIdent;
 };
 
 #endif

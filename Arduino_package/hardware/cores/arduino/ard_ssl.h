@@ -11,7 +11,7 @@ typedef struct {
     mbedtls_ssl_config *conf;
 } sslclient_context;
 
-int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key);
+int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey);
 
 void stop_ssl_socket(sslclient_context *ssl_client);
 

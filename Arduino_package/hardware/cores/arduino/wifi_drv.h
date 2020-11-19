@@ -54,6 +54,16 @@ class WiFiDrv
 
         static rtw_result_t wifidrv_scan_result_handler( rtw_scan_handler_result_t* malloced_scan_result );
 
+        static IPAddress _arduinoIpAddr;
+        static IPAddress _arduinoGwAddr;
+        static IPAddress _arduinoNetmaskAddr;
+        static IPAddress _arduinoApIpAddr;
+        static IPAddress _arduinoApGwAddr;
+        static IPAddress _arduinoApNetmaskAddr;
+        static IPAddress _arduinoDns1;
+        static IPAddress _arduinoDns2;
+        static bool _useStaticIp;
+
     public:
         /*
          * Driver initialization
@@ -106,7 +116,7 @@ class WiFiDrv
          * param gateway:   Static gateway configuration
          * param subnet:    Static subnet mask configuration
          */
-        static void config(uint8_t validParams, uint32_t local_ip, uint32_t gateway, uint32_t subnet);
+        static void config(uint8_t validParams, IPAddress local_ip, IPAddress gateway, IPAddress subnet);
 
         /* Set DNS ip configuration
          *
@@ -116,7 +126,7 @@ class WiFiDrv
          * param dns_server1: Static DNS server1 configuration
          * param dns_server2: Static DNS server2 configuration
          */
-        static void setDNS(uint8_t validParams, uint32_t dns_server1, uint32_t dns_server2);
+        static void setDNS(uint8_t validParams, IPAddress dns_server1, IPAddress dns_server2);
 
         /*
          * Disconnect from the network

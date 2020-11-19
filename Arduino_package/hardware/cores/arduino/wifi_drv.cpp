@@ -18,7 +18,7 @@ extern "C" {
 #include "lwip/api.h"
 #include <dhcp/dhcps.h>
 
-extern struct netif xnetif[NET_IF_NUM]; 
+extern struct netif xnetif[NET_IF_NUM];
 }
 #endif
 
@@ -37,6 +37,16 @@ static rtw_ap_info_t ap;
 static unsigned char password[65] = {0};
 
 rtw_wifi_setting_t WiFiDrv::wifi_setting;
+
+IPAddress WiFiDrv::_arduinoIpAddr = IPAddress(192, 168, 1, 80);
+IPAddress WiFiDrv::_arduinoGwAddr = IPAddress(192, 168, 1, 1);
+IPAddress WiFiDrv::_arduinoNetmaskAddr = IPAddress(255, 255, 255, 0);
+IPAddress WiFiDrv::_arduinoApIpAddr = IPAddress(192, 168, 1, 1);
+IPAddress WiFiDrv::_arduinoApGwAddr = IPAddress(192, 168, 1, 1);
+IPAddress WiFiDrv::_arduinoApNetmaskAddr = IPAddress(255, 255, 255, 0);
+IPAddress WiFiDrv::_arduinoDns1;
+IPAddress WiFiDrv::_arduinoDns2;
+bool WiFiDrv::_useStaticIp = false;
 
 static void init_wifi_struct(void)
 {
@@ -92,15 +102,26 @@ int8_t WiFiDrv::wifiSetNetwork(char* ssid, uint8_t ssid_len)
     ret = wifi_connect((char*)wifi.ssid.val, wifi.security_type, (char*)wifi.password, wifi.ssid.len, wifi.password_len, wifi.key_id, NULL);
 
     if (ret == RTW_SUCCESS) {
-        dhcp_result = LwIP_DHCP(0, DHCP_START);
-
         init_wifi_struct();
 
-        if ( dhcp_result == DHCP_ADDRESS_ASSIGNED ) {
+        if (_useStaticIp) {
+            struct ip_addr ipaddr;
+            struct ip_addr netmask;
+            struct ip_addr gw;
+            struct netif * pnetif = &xnetif[0];
+            IP4_ADDR(&ipaddr, _arduinoIpAddr[0], _arduinoIpAddr[1], _arduinoIpAddr[2], _arduinoIpAddr[3]);
+            IP4_ADDR(&netmask, _arduinoNetmaskAddr[0], _arduinoNetmaskAddr[1], _arduinoNetmaskAddr[2], _arduinoNetmaskAddr[3]);
+            IP4_ADDR(&gw, _arduinoGwAddr[0], _arduinoGwAddr[1], _arduinoGwAddr[2], _arduinoGwAddr[3]);
+            netif_set_addr(pnetif, &ipaddr, &netmask,&gw);
             return WL_SUCCESS;
         } else {
-            wifi_disconnect();
-            return WL_FAILURE;
+            dhcp_result = LwIP_DHCP(0, DHCP_START);
+            if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
+                return WL_SUCCESS;
+            } else {
+                wifi_disconnect();
+                return WL_FAILURE;
+            }
         }
     } else {
         init_wifi_struct();
@@ -129,15 +150,26 @@ int8_t WiFiDrv::wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *pass
     ret = wifi_connect((char*)wifi.ssid.val, wifi.security_type, (char*)wifi.password, wifi.ssid.len, wifi.password_len, wifi.key_id, NULL);
 
     if (ret == RTW_SUCCESS) {
-        dhcp_result = LwIP_DHCP(0, DHCP_START);
-
         init_wifi_struct();
 
-        if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
+        if (_useStaticIp) {
+            struct ip_addr ipaddr;
+            struct ip_addr netmask;
+            struct ip_addr gw;
+            struct netif * pnetif = &xnetif[0];
+            IP4_ADDR(&ipaddr, _arduinoIpAddr[0], _arduinoIpAddr[1], _arduinoIpAddr[2], _arduinoIpAddr[3]);
+            IP4_ADDR(&netmask, _arduinoNetmaskAddr[0], _arduinoNetmaskAddr[1], _arduinoNetmaskAddr[2], _arduinoNetmaskAddr[3]);
+            IP4_ADDR(&gw, _arduinoGwAddr[0], _arduinoGwAddr[1], _arduinoGwAddr[2], _arduinoGwAddr[3]);
+            netif_set_addr(pnetif, &ipaddr, &netmask,&gw);
             return WL_SUCCESS;
         } else {
-            wifi_disconnect();
-            return WL_FAILURE;
+            dhcp_result = LwIP_DHCP(0, DHCP_START);
+            if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
+                return WL_SUCCESS;
+            } else {
+                wifi_disconnect();
+                return WL_FAILURE;
+            }
         }
     } else {
         init_wifi_struct();
@@ -190,15 +222,26 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
     ret = wifi_connect((char*)wifi.ssid.val, wifi.security_type, (char*)wifi.password, wifi.ssid.len, wifi.password_len, wifi.key_id, NULL);
 
     if (ret == RTW_SUCCESS) {
-        dhcp_result = LwIP_DHCP(0, DHCP_START);
-
         init_wifi_struct();
 
-        if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
+        if (_useStaticIp) {
+            struct ip_addr ipaddr;
+            struct ip_addr netmask;
+            struct ip_addr gw;
+            struct netif * pnetif = &xnetif[0];
+            IP4_ADDR(&ipaddr, _arduinoIpAddr[0], _arduinoIpAddr[1], _arduinoIpAddr[2], _arduinoIpAddr[3]);
+            IP4_ADDR(&netmask, _arduinoNetmaskAddr[0], _arduinoNetmaskAddr[1], _arduinoNetmaskAddr[2], _arduinoNetmaskAddr[3]);
+            IP4_ADDR(&gw, _arduinoGwAddr[0], _arduinoGwAddr[1], _arduinoGwAddr[2], _arduinoGwAddr[3]);
+            netif_set_addr(pnetif, &ipaddr, &netmask,&gw);
             return WL_SUCCESS;
         } else {
-            wifi_disconnect();
-            return WL_FAILURE;
+            dhcp_result = LwIP_DHCP(0, DHCP_START);
+            if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
+                return WL_SUCCESS;
+            } else {
+                wifi_disconnect();
+                return WL_FAILURE;
+            }
         }
     } else {
         init_wifi_struct();
@@ -263,9 +306,9 @@ int8_t WiFiDrv::apActivate(uint8_t hidden_ssid)
 
 #if CONFIG_LWIP_LAYER
     dhcps_deinit();
-    IP4_ADDR(&ipaddr, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
-    IP4_ADDR(&netmask, NETMASK_ADDR0, NETMASK_ADDR1 , NETMASK_ADDR2, NETMASK_ADDR3);
-    IP4_ADDR(&gw, GW_ADDR0, GW_ADDR1, GW_ADDR2, GW_ADDR3);
+    IP4_ADDR(&ipaddr, _arduinoApIpAddr[0], _arduinoApIpAddr[1], _arduinoApIpAddr[2], _arduinoApIpAddr[3]);
+    IP4_ADDR(&netmask, _arduinoApNetmaskAddr[0], _arduinoApNetmaskAddr[1], _arduinoApNetmaskAddr[2], _arduinoApNetmaskAddr[3]);
+    IP4_ADDR(&gw, _arduinoApGwAddr[0], _arduinoApGwAddr[1], _arduinoApGwAddr[2], _arduinoApGwAddr[3]);
     netif_set_addr(pnetif, &ipaddr, &netmask,&gw);
 #endif
     wifi_off();
@@ -492,3 +535,43 @@ int WiFiDrv::disablePowerSave()
 {
     return wifi_disable_powersave();
 }
+
+void WiFiDrv::config(uint8_t validParams, IPAddress local_ip, IPAddress gateway, IPAddress subnet) {
+
+    if (validParams == 1) {
+        _arduinoIpAddr = local_ip;
+        _arduinoApIpAddr = local_ip;
+    } else if (validParams == 2) {
+        _arduinoIpAddr = local_ip;
+        _arduinoGwAddr = gateway;
+        _arduinoApIpAddr = local_ip;
+        _arduinoApGwAddr = gateway;
+    } else if (validParams == 3) {
+        _arduinoIpAddr = local_ip;
+        _arduinoGwAddr = gateway;
+        _arduinoNetmaskAddr = subnet;
+        _arduinoApIpAddr = local_ip;
+        _arduinoApGwAddr = gateway;
+        _arduinoApNetmaskAddr = subnet;
+    } else {
+        return;
+    }
+
+    _useStaticIp = true;
+}
+
+void WiFiDrv::setDNS(uint8_t validParams, IPAddress dns_server1, IPAddress dns_server2) {
+    struct ip_addr dns;
+
+    if (validParams == 1) {
+        _arduinoDns1 = dns_server1;
+    } else if (validParams == 2) {
+        _arduinoDns1 = dns_server1;
+        _arduinoDns2 = dns_server2;
+    } else {
+        return;
+    }
+    IP4_ADDR(&dns, _arduinoDns1[0], _arduinoDns1[1], _arduinoDns1[2], _arduinoDns1[3]);
+    LwIP_SetDNS(&dns);
+}
+
