@@ -88,7 +88,7 @@ void loop() {
 
 #define BUFSIZE 16
 
-char *hostname = "192.168.1.213";
+const char *hostname = "192.168.1.213";
 int portno = 5001;
 
 int main(int argc, char **argv) {

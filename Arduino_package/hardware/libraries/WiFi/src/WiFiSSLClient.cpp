@@ -21,6 +21,7 @@ WiFiSSLClient::WiFiSSLClient() {
     _cli_key = NULL;
     _psKey = NULL;
     _pskIdent = NULL;
+    _sni_hostname = NULL;
 }
 
 WiFiSSLClient::WiFiSSLClient(uint8_t sock) {
@@ -40,6 +41,7 @@ WiFiSSLClient::WiFiSSLClient(uint8_t sock) {
     _cli_key = NULL;
     _psKey = NULL;
     _pskIdent = NULL;
+    _sni_hostname = NULL;
 }
 
 uint8_t WiFiSSLClient::connected() {
@@ -162,6 +164,11 @@ int WiFiSSLClient::connect(IPAddress ip, uint16_t port) {
 }
 
 int WiFiSSLClient::connect(const char *host, uint16_t port) {
+
+    if (_sni_hostname == NULL) {
+        _sni_hostname = (char*)host;
+    }
+
     if (_psKey != NULL && _pskIdent != NULL)
         return connect(host, port, _pskIdent, _psKey);
     return connect(host, port, _rootCABuff, _cli_cert, _cli_key);
@@ -169,6 +176,10 @@ int WiFiSSLClient::connect(const char *host, uint16_t port) {
 
 int WiFiSSLClient::connect(const char* host, uint16_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key) {
     IPAddress remote_addr;
+
+    if (_sni_hostname == NULL) {
+        _sni_hostname = (char*)host;
+    }
 
     if (WiFi.hostByName(host, remote_addr)) {
         return connect(remote_addr, port, rootCABuff, cli_cert, cli_key);
@@ -179,7 +190,7 @@ int WiFiSSLClient::connect(const char* host, uint16_t port, unsigned char* rootC
 int WiFiSSLClient::connect(IPAddress ip, uint16_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key) {
     int ret = 0;
 
-    ret = ssldrv.startClient(&sslclient, ip, port, rootCABuff, cli_cert, cli_key, NULL, NULL);
+    ret = ssldrv.startClient(&sslclient, ip, port, rootCABuff, cli_cert, cli_key, NULL, NULL, _sni_hostname);
 
     if (ret < 0) {
         _is_connected = false;
@@ -194,6 +205,10 @@ int WiFiSSLClient::connect(IPAddress ip, uint16_t port, unsigned char* rootCABuf
 int WiFiSSLClient::connect(const char *host, uint16_t port, unsigned char* pskIdent, unsigned char* psKey) {
     IPAddress remote_addr;
 
+    if (_sni_hostname == NULL) {
+        _sni_hostname = (char*)host;
+    }
+
     if (WiFi.hostByName(host, remote_addr)) {
         return connect(remote_addr, port, pskIdent, psKey);
     }
@@ -203,7 +218,7 @@ int WiFiSSLClient::connect(const char *host, uint16_t port, unsigned char* pskId
 int WiFiSSLClient::connect(IPAddress ip, uint16_t port, unsigned char* pskIdent, unsigned char* psKey) {
     int ret = 0;
 
-    ret = ssldrv.startClient(&sslclient, ip, port, NULL, NULL, NULL, pskIdent, psKey);
+    ret = ssldrv.startClient(&sslclient, ip, port, NULL, NULL, NULL, pskIdent, psKey, _sni_hostname);
 
     if (ret < 0) {
         _is_connected = false;

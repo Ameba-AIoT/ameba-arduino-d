@@ -109,7 +109,7 @@ void handle_data(char *buf) {
 
 #define BUFSIZE 1024
 
-char *hostname = "192.168.1.212";
+const char *hostname = "192.168.1.212";
 int portno = 5001;
 
 long base_current_time = 0;

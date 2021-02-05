@@ -98,7 +98,7 @@ static void my_debug(void *ctx, int level, const char *file, int line, const cha
     printf("%s:%04d: |%d| %s", basename, line, level, str );
 }
 
-int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey)
+int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey, char* SNI_hostname)
 {
     int ret = 0;
     //int timeout;
@@ -176,7 +176,7 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
                 // Configure mbedTLS to use certificate authentication method
                 cacert = (mbedtls_x509_crt *) mbedtls_calloc( sizeof(mbedtls_x509_crt), 1);
                 mbedtls_x509_crt_init(cacert);
-                if (mbedtls_x509_crt_parse(cacert, rootCABuff, strlen((char*)rootCABuff)+1) != 0) {
+                if (mbedtls_x509_crt_parse(cacert, rootCABuff, (strlen((char*)rootCABuff)) + 1) != 0) {
                     printf("ERROR: mbedtls x509 crt parse failed! \r\n");
                     ret = -1;
                     break;
@@ -267,14 +267,16 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
             }
             mbedtls_ssl_set_bio(ssl_client->ssl, &ssl_client->socket, mbedtls_net_send, mbedtls_net_recv, NULL);
 
+            mbedtls_ssl_set_hostname(ssl_client->ssl, SNI_hostname);
+
             ret = mbedtls_ssl_handshake(ssl_client->ssl);
             if (ret < 0) {
                 printf("ERROR: mbedtls ssl handshake failed: -0x%04X \r\n", -ret);
                 ret = -1;
             } else { 
                 if (ARDUINO_MBEDTLS_DEBUG_LEVEL > 0) {
-					printf("mbedTLS SSL handshake success \r\n");
-				}
+                    printf("mbedTLS SSL handshake success \r\n");
+                }
             }
             //mbedtls_debug_set_threshold(ARDUINO_MBEDTLS_DEBUG_LEVEL);
         }

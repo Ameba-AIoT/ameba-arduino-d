@@ -9,7 +9,7 @@
 #include <WiFiUdp.h>
 
 int status = WL_IDLE_STATUS;
-char ssid[] = "mynetwork";      //  your network SSID (name)
+char ssid[] = "mynetwork";      // your network SSID (name)
 char pass[] = "mypassword";     // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;               // your network key Index number (needed only for WEP)
 
@@ -116,7 +116,11 @@ int main(int argc, char **argv) {
     int sockfd, optval;
 
     struct sockaddr_in serveraddr, clientaddr;
+#if __CYGWIN__
     int clientaddr_len = sizeof(clientaddr);
+#else
+	unsigned int clientaddr_len = sizeof(clientaddr);
+#endif
 
     struct hostent *hostp;
     char *hostaddrp;

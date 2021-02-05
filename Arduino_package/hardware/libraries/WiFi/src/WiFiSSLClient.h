@@ -50,6 +50,7 @@ class WiFiSSLClient : public Client {
         unsigned char *_cli_key;
         unsigned char *_psKey;
         unsigned char *_pskIdent;
+        char *_sni_hostname;
 };
 
 #endif
