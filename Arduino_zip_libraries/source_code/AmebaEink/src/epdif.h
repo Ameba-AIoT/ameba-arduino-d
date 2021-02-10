@@ -4,12 +4,25 @@
 #include <Arduino.h>
 
 // Pin definition
+#if defined(BOARD_RTL8722D)
 #define BUSY_Pin 8
 #define RES_Pin 9
 #define DC_Pin 10
 #define CS_Pin 11
 #define SCK_Pin 12
 #define SDI_Pin 13
+
+#elif defined(BOARD_RTL8722DM_MINI)
+#define BUSY_Pin 21
+#define RES_Pin 20
+#define DC_Pin 12
+#define CS_Pin 9
+#define SCK_Pin 10
+#define SDI_Pin 11
+
+#else
+#error chack the borad supported
+#endif
 
 #define EPD_W21_MOSI_0 digitalWrite(SDI_Pin, LOW)
 #define EPD_W21_MOSI_1 digitalWrite(SDI_Pin, HIGH)

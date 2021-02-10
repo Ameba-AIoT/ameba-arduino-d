@@ -508,6 +508,33 @@
         },
 		{
           "name": "ameba_d_tools",
+          "version": "1.0.5",
+          "systems": [
+            {
+              "host": "i686-mingw32",
+              "archiveFileName": "ameba_d_tools_windows-1.0.5.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_windows-1.0.5.tar.gz",
+              "checksum": "SHA-256:573a9f15c15f836f324cf56b88ba3e1abc0b2f10eb2cdde00d605f7f1d314694",
+              "size": "7381238"
+            },
+            {
+              "host": "x86_64-pc-linux-gnu",
+              "archiveFileName": "ameba_d_tools_linux-1.0.5.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_linux-1.0.5.tar.gz",
+              "checksum": "SHA-256:5bb57ffff6cdf75c0951ddcc4e23f14bf8f8445f88ec2697fa8350d97f2c6b72",
+              "size": "2526007"
+            },
+            {
+              "host": "x86_64-apple-darwin",
+              "archiveFileName": "ameba_d_tools_macos-1.0.5.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_macos-1.0.5.tar.gz",
+              "checksum": "SHA-256:1ae558ed2c3f9d7f79a244f5006f7616949a216af46854ec4e6a30a4521b4542",
+              "size": "661518"
+            }
+          ]
+        },
+		{
+          "name": "ameba_d_tools",
           "version": "1.0.4",
           "systems": [
             {

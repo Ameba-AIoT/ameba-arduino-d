@@ -20,18 +20,45 @@ i686-w64-mingw32-g++.exe -o upload_image_tool_windows.exe upload_image_tool_wind
 
 #include <windows.h>
 
+#include <thread>
+//#include <mutex>
+
 using namespace std;
 
+//mutex mu;
+int check_image_upload = 0;
+
+void image_tool_thread(char* t1_com) {
+	stringstream t1_cmdss;
+	string t1_cmd;
+	t1_cmdss.clear();
+	t1_cmdss << ".\\tools\\windows\\image_tool\\amebad_image_tool.exe " << t1_com;
+	getline(t1_cmdss, t1_cmd);
+	system(t1_cmd.c_str());
+//	mu.lock();
+	check_image_upload = 100;
+//	mu.unlock();
+}
+
+void image_tool_progress() {
+	cout << "Uploading." << flush;
+	while (1) {
+		Sleep(500);
+//		mu.lock();
+		if (check_image_upload != 0) {
+			break;
+		} else {
+			cout << "." << flush;
+		}
+//		mu.unlock();
+	}
+	cout << "    Upload Image done. " << endl;
+}
+
+
 int main(int argc, char *argv[]) {
-
 	string cmd;
-	stringstream cmdss;
-
 	chdir(argv[1]);
-
-	cmd = "copy tools\\windows\\image_tool\\imgtool_flashloader_amebad.bin .\\";
-	cout << cmd << endl;
-	system(cmd.c_str());
 
 	cmd = "Please enter the upload mode (wait 5s)";
 	cout << cmd << endl;
@@ -42,15 +69,13 @@ int main(int argc, char *argv[]) {
 		cout << "    0" << cmd << endl;
 	}
 
-	cmdss.clear();
-	cmdss << ".\\tools\\windows\\image_tool\\amebad_image_tool.exe " << argv[2];
-	getline(cmdss, cmd);
-	//cout << cmd << endl;
-	system(cmd.c_str());
+	thread t2(image_tool_progress);
+	thread t1(image_tool_thread, argv[2]);
 
-	printf("\r\n");
-	cmd = "    Upload Image done. ";
-	cout << cmd << endl;
+//	t2.detach();
+//	t1.detach();
+	t2.join();
+	t1.join();
 
 	return 0;
 }

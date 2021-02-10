@@ -63,6 +63,11 @@ int main(int argc, char *argv[]) {
     cout << cmd << endl;
     system(cmd.c_str());
 
+    // copy the "imgtool_flashloader_amebad.bin" to current directory
+    cmd = "cp tools/linux/image_tool/imgtool_flashloader_amebad.bin ./";
+    cout << cmd << endl;
+    system(cmd.c_str());
+
     // 3. generate information files
     path_arm_none_eabi_gcc.assign(argv[3]);
 
@@ -442,6 +447,7 @@ int main(int argc, char *argv[]) {
     }
 
     check_powersavemode = 0;
+
     cmd = "cp bsp/image/km0_boot_all.bin ./";
     cout << cmd << endl;
     system(cmd.c_str());

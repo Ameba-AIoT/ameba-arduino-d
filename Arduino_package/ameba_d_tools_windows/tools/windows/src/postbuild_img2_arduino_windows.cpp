@@ -84,6 +84,10 @@ int main(int argc, char *argv[]) {
     cout << cmd << endl;
     system(cmd.c_str());
 
+    cmd = "copy tools\\windows\\image_tool\\imgtool_flashloader_amebad.bin .\\";
+    cout << cmd << endl;
+    system(cmd.c_str());
+
     // 3. generate information files
     path_arm_none_eabi_gcc.assign(argv[3]);
     replaceAll(path_arm_none_eabi_gcc, "/", "\\");

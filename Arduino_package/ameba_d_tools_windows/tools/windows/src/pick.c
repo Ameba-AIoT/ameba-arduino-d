@@ -25,8 +25,7 @@ gcc -o tools/macos/pick tools/macos/src/pick.c
 
 unsigned int image_header[8] = {0,0,0,0,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF};
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 	int arg_num = 5;
 	unsigned int is_raw = 0;
 
