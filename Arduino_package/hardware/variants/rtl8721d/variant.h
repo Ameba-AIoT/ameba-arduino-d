@@ -42,18 +42,28 @@ extern "C"{
 //#define FEATURE_DAC
 
 /* Analog pin mapping */
-#define A0                            0 //PB_4    3.3V
-#define A1                            1 //PB_5    3.3V
-#define A2                            2 //PB_6    3.3V
-#define A3                            3 //PB_7    3.3V
-#define A4                            4 //PB_1    3.3V
-#define A5                            5 //PB_2    3.3V
-#define A6                            6 //PB_3    3.3V
+#define A0                            0 //PB_4    3.3V    CH0
+#define A1                            1 //PB_5    3.3V    CH1
+#define A2                            2 //PB_6    3.3V    CH2
+#define A3                            3 //PB_7    3.3V    CH3
+#define A4                            4 //PB_1    3.3V    CH4
+#define A5                            5 //PB_2    3.3V    CH5
+#define A6                            6 //PB_3    3.3V    CH6
 
 /* DAC pin mapping */
 //#define DAC0    AD_3
 
 #define SS                            10
+
+#define LOG_UART_MODIFIABLE_BAUD_RATE           1
+#define SERIAL_ONE_UART_MODIFIABLE_BAUD_RATE    1
+#define SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE    1
+#define UART2_TX    PA_7
+#define UART2_RX    PA_8
+#define UART0_TX    PA_21    //PB_19
+#define UART0_RX    PA_22    //PB_18
+#define UART3_TX    PA_26    //PB_1
+#define UART3_RX    PA_25    //PB_2
 
 #ifdef __cplusplus
 extern "C"{

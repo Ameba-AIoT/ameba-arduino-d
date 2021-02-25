@@ -44,7 +44,7 @@ SoftwareSerial mySerial(17, 5); // RX, TX
 #define TFT_DC          2
 #define TFT_CS          10
 
-#elif defined(BOARD_RTL8721D)
+#elif defined(BOARD_RTL8722D)
 // RTL8722DM -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
 SoftwareSerial mySerial(0, 1); // RX, TX
 

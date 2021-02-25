@@ -293,6 +293,7 @@ void trans_handle_timeout(uint8_t type, void *pctx);
 bool trans_handle_ping_pong_msg(mesh_msg_p pmesh_msg);
 mesh_msg_send_cause_t trans_hb(uint16_t dst, uint16_t net_key_index, uint8_t init_ttl,
                                mesh_features_t features);
+void trans_rx_ctx_clear(void);
 ///@endcond
 
 /**

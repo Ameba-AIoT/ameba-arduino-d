@@ -142,12 +142,5 @@ void tone(uint32_t ulPin, unsigned int frequency, unsigned long duration = 0);
 
 #endif
 
-//
-// custom defined
-//
-
-//#include "Thread.h"
-//#include "DAC1.h"
-
 
 #endif // Arduino_h

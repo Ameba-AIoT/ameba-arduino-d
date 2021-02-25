@@ -102,11 +102,11 @@ typedef struct
   */
 typedef struct
 {
-	update_file_hdr	FileHdr;			/*!< Specifies the firmware file header. */
+	update_file_hdr	FileHdr;	/*!< Specifies the firmware file header. */
 	update_file_img_hdr	FileImgHdr[MAX_IMG_NUM];	/*!< Specifies the target OTA image firmware file header. */
-	u8 Sign[MAX_IMG_NUM][9];			/*!< Specifies the signature of target image. */
-	u8 ValidImgCnt;						/*!< Specifies valid image number in file. */
-}update_ota_target_hdr;
+	u8 Sign[MAX_IMG_NUM][9];	/*!< Specifies the signature of target image. */
+	u8 ValidImgCnt;	/*!< Specifies valid image number in file. */
+} update_ota_target_hdr;
 
 
 /* Exported constants --------------------------------------------------------*/

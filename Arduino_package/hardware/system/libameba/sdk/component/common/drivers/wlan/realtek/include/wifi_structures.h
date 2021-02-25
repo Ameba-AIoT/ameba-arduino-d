@@ -272,6 +272,12 @@ typedef struct wowlan_pattern {
 	unsigned char mask[5];
 } wowlan_pattern_t;
 
+struct psk_info {
+	unsigned char index;
+	unsigned char *psk_essid;
+	unsigned char *psk_passphrase;
+	unsigned char *wpa_global_PSK;
+};
 
 #ifdef	__cplusplus
 }

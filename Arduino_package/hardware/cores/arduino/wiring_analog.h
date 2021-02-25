@@ -45,7 +45,7 @@ extern void analogReference(eAnalogReference ulMode);
  * \param ulPin
  * \param ulValue
  */
-extern void analogWrite(uint32_t ulPin, uint32_t ulValue);
+extern void analogWrite(uint32_t ulPin, int32_t ulValue);
 
 /*
  * \brief Reads the value from the specified analog pin.

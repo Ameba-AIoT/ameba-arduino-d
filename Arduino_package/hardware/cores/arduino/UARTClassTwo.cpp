@@ -23,7 +23,7 @@
 #include <string.h>
 #include "UARTClassTwo.h"
 
-#define SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE 1
+//#define SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE 1
 
 #ifdef __cplusplus
 extern "C" {
@@ -93,15 +93,18 @@ void UARTClassTwo::IrqHandler(void)
 void UARTClassTwo::begin(const uint32_t dwBaudRate)
 {
     // UART2
-    //serial_init(&uart_obj, PA_7, PA_8);
+    //serial_init(&log_uart_obj, PA_7, PA_8);
+    //serial_init(&log_uart_obj, UART2_TX, UART2_RX);
 
     // UART3
     //serial_init(&uart_obj, PB_1, PB_2);
-    serial_init(&uart_obj, PA_26, PA_25);
+    //serial_init(&uart_obj, PA_26, PA_25);
+    serial_init(&uart_obj, UART3_TX, UART3_RX);
 
     // UART0
     //serial_init(&uart_obj, PB_19, PB_18);
     //serial_init(&uart_obj, PA_21, PA_22);
+    //serial_init(&uart_obj, UART0_TX, UART0_RX);
 
     serial_format(&uart_obj, 8, ParityNone, 1);
 

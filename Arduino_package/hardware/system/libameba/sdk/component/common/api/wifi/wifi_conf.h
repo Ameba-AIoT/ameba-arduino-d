@@ -82,6 +82,21 @@
 #define PSCAN_FAST_SURVEY 0x02 //set to select scan time to FAST_SURVEY_TO, otherwise SURVEY_TO
 #define PSCAN_SIMPLE_CONFIG   0x04 //set to select scan time to FAST_SURVEY_TO and resend probe request
 
+#ifndef WLAN0_NAME
+  #define WLAN0_NAME		"wlan0"
+#endif
+#ifndef WLAN1_NAME
+  #define WLAN1_NAME		"wlan1"
+#endif
+
+#ifndef NET_IF_NUM
+#ifdef CONFIG_CONCURRENT_MODE
+#define NET_IF_NUM 2
+#else
+#define NET_IF_NUM 1
+#endif
+#endif
+
 typedef enum _WL_BAND_TYPE{
 	WL_BAND_2_4G = 0,		
 	WL_BAND_5G,
@@ -239,6 +254,16 @@ int wifi_is_connected_to_ap(void);
   */
 int wifi_is_up(rtw_interface_t interface);
 
+/**
+  * @brief  Check if the specified wlan_idx is running.
+  * @param[in]  wlan_idx: can be set as WLAN0_IDX or WLAN1_IDX. 
+  * @return  If the function succeeds, the return value is 1. Otherwise, return 0.
+  * @note    For STA mode, only use WLAN0_IDX
+  * 		 For AP mode, only use WLAN0_IDX
+  * 		 For CONCURRENT mode, use WLAN0_IDX for sta and WLAN1_IDX for ap
+  */
+int wifi_is_running(unsigned char wlan_idx);
+
 /** Determines if a particular interface is ready to transceive ethernet packets
  *
  * @param     Radio interface to check, options are 
@@ -286,22 +311,13 @@ int wifi_resume_powersave(void);
  */
 int wifi_disable_powersave(void);
 
-/** Gets the tx power in index units
- *
- * @param dbm : The variable to receive the tx power in index.
- *
- * @return  RTW_SUCCESS : if successful
- *          RTW_ERROR   : if not successful
- */
-int wifi_get_txpower(int *poweridx);
-
 /**
- * @brief  Set the tx power in index units.
- * @param[in] poweridx: The desired tx power in index.
- * @return  RTW_SUCCESS: if tx power is successfully set
- * @return  RTW_ERROR: if tx power is not successfully set
+ * @brief Get enctryption ccmp key used by wifi(sta mode only)
+ * @param[out] UncstKey: the location where the CCMP TK will be stored
+ * @return  RTW_SUCCESS: The result is successfully got.
+ * @return  RTW_ERROR: The result is not successfully got(other sec_type/non-associated/no sec)
  */
-int wifi_set_txpower(int poweridx);
+int wifi_get_ccmp_tk(unsigned char *uncst_key);
 
 /**
  * @brief  Get the associated clients with SoftAP.
@@ -328,6 +344,30 @@ int wifi_get_ap_bssid(unsigned char *bssid);
  * @return  RTW_ERROR: The result is not successfully got.
  */
 int wifi_get_ap_info(rtw_bss_info_t * ap_info, rtw_security_t* security);
+
+/**
+ * @brief  Get bssid of connected AP for STA mode or bssid of current AP which already started
+ * @param[in]  ifname: the wlan interface name, can be WLAN0_NAME or WLAN1_NAME.
+ * @param[out]  bssid: Point to the result of the ssid that will be get.
+ * @return  RTW_SUCCESS or RTW_ERROR.
+ */
+int wifi_get_bssid(const char *ifname, unsigned char *bssid);
+
+/**
+ * @brief  Get ssid of connected AP for STA mode or ssid of current AP which already started
+ * @param[in]  ifname: the wlan interface name, can be WLAN0_NAME or WLAN1_NAME.
+ * @param[out]  ssid: Point to the result of the ssid that will be get.
+ * @return  ssid length or RTW_ERROR.
+ */
+int wifi_get_ssid(const char *ifname, unsigned char *ssid);
+
+/**
+ * @brief set max number of station for AP mode(AP mode only)
+ * @param[in] ap_sta_num: max number of station which will set
+ * @return  RTW_SUCCESS: The result is successfully got.
+ * @return  RTW_ERROR: The result is not successfully got(other sec_type/non-associated/no sec)
+ */
+int wifi_set_max_sta_num(unsigned char ap_sta_num);
 
 /**
  * @brief  Set the country code to driver to determine the channel set.
@@ -474,6 +514,14 @@ int wifi_off(void);
  * @return  RTW_ERROR:      if the WiFi swithc mdoe not successful.
  */
 int wifi_set_mode(rtw_mode_t mode);
+
+/**
+ * @brief  Get current WiFi mode
+ * @param[in]  ifname: the wlan interface name, can be WLAN0_NAME or WLAN1_NAME.
+ * @param[out]  MODE: Point to the result of the mode that will be get.
+ * @return  RTW_SUCCESS or RTW_ERROR.
+ */
+int wifi_get_mode(const char *ifname, int * mode);
 
 /**
  * Turn off the Wi-Fi device
@@ -703,6 +751,12 @@ int wifi_scan_networks_mcc(rtw_scan_result_handler_t results_handler, void* user
 int wifi_scan_networks_with_ssid(int (results_handler)(char*, int, char *, void *), void* user_data, int scan_buflen, char* ssid, int ssid_len);
 
 /**
+ * @brief  unregister _wifi_scan_each_report_hdl and _wifi_scan_done_hdl
+ * @return  None
+ */
+void wifi_scan_unreg_event_handler(void);
+
+/**
 * @brief  Set the channel used to be partial scanned.
 * @param[in]  channel_list: An array stores the channel list.
 * @param[in]  pscan_config: the pscan_config of the channel set.
@@ -728,6 +782,13 @@ int wifi_get_setting(const char *ifname,rtw_wifi_setting_t *pSetting);
  * @return  RTW_SUCCESS or RTW_ERROR.
  */
 int wifi_show_setting(const char *ifname,rtw_wifi_setting_t *pSetting);
+
+/**
+ * @brief  Show the TX and RX statistic information.
+ * @param[in]  idx: the wlan interface index, can be 0 or 1.
+ * @return  NULL.
+ */
+void wifi_show_statistic(unsigned char idx);
 
 /**
  * @brief  
@@ -845,6 +906,24 @@ int wifi_set_autoreconnect(__u8 mode);
 int wifi_get_autoreconnect(__u8 *mode);
 
 /**
+ * @brief	Set psk related info,including ssid, passphrase, psk. 
+ * @param[in]  psk_data: pointer to the structure that will restore psk related info.(@ref struct psk_info}
+ * @return  NULL.
+ * @note  can be used to restore psk related info to driver when fast connect
+ */
+void wifi_psk_info_set(struct psk_info * psk_data);
+
+/**
+ * @brief	Get psk related info,including ssid, passphrase, psk. 
+ * @param[in]  psk_data: pointer to the structure that will restore psk related info.(@ref struct psk_info}
+ * @return  NULL.
+ * @note  can be used to get current psk related info after connected to AP successfully，and may write these info 
+ *		  to flash for fast connect next time
+ */
+void wifi_psk_info_get(struct psk_info * psk_data);
+
+
+/**
   * @brief  Present the device disconnect reason while connecting.
   * @param  None
   * @return  @ref rtw_connect_error_flag_t
@@ -856,6 +935,22 @@ int wifi_get_autoreconnect(__u8 *mode);
   *			- 5: RTW_UNKNOWN (initial status)
   */
 int wifi_get_last_error(void);
+
+/**
+ * @brief Set ble scan duty when coex.
+ * @param[in] duty: the desired scan duty for ble 
+ * @return 1: if the scan duty is successfully set 
+ * @return -1 if the scan duty is not successfully set.
+ */
+int wifi_btcoex_set_ble_scan_duty(u8 duty);
+
+/**
+  * @brief  check whether current wifi driver is mp or not.
+  * @param  None
+  * @return  1: is mp
+  *			 0: not mp
+  */
+u8 wifi_driver_is_mp(void);
 
 
 #ifdef CONFIG_CUSTOM_IE
@@ -1021,6 +1116,39 @@ int wifi_get_antenna_info(unsigned char *antenna);
   */
 void wifi_set_indicate_mgnt(int enable);
 
+/**
+ * @brief send management frame 
+ * @param[in] ifname: the wlan interface name, can be WLAN0_NAME or WLAN1_NAME
+ * @param[in] buf: the pointer to buf which store the management frame
+ * @param[in] buf_len: the length of buf
+ * @param[in] flags: 
+  *		0: default
+  *		1: P2P_SEND_ACTION_AFTER_PROBE_RSP
+  *		2: means RTW_SEND_AND_WAIT_ACK
+  *		4: means RTW_SEND_BY_HIGH_RATE
+ * @return  RTW_ERROR or RTW SUCCESS
+ */
+int wifi_send_mgnt(const char *ifname, char *buf, u16 buf_len, u16 flags);
+
+/**
+ * @brief  initialize mac address filter list
+ * @return  RTW_SUCCESS or RTW_ERROR.
+ */
+int wifi_init_mac_filter(void);
+
+/**
+ * @brief  add mac address to mac filter list，then this address will be rejected during authentication
+ * @param[in]  hwaddr: the mac address which will be added to mac filter list.
+ * @return  RTW_SUCCESS or RTW_ERROR.
+ */
+int wifi_add_mac_filter(unsigned char* hwaddr);
+
+/**
+ * @brief  delete mac address from mac filter list
+ * @param[in]  hwaddr: the mac address which will be deleted from mac filter list.
+ * @return  RTW_SUCCESS or RTW_ERROR.
+ */
+int wifi_del_mac_filter(unsigned char* hwaddr);
 
 /**
  * @brief  Get the information of MP driver
@@ -1087,8 +1215,6 @@ void wifi_set_ap_polling_sta(__u8 enabled);
  * @return  0 if success, otherwise return -1
  */
 int mailbox_to_wifi(u8 *data, u8 len);
-#else
-#define mailbox_to_wifi(data, len)
 #endif
 
 #ifdef CONFIG_WOWLAN_TCP_KEEP_ALIVE
@@ -1134,6 +1260,27 @@ extern u32 rtw_get_tsf(u32 Port);
  */
 WL_BAND_TYPE wifi_get_band_type(void);
 
+#ifdef CONFIG_RTK_MESH
+/**
+ * @brief  print current mac filter list
+ * @return  RTW_SUCCESS or RTW_ERROR
+ */
+int wifi_list_mac_filter(void);
+
+/**
+ * @brief  print current mesh ID
+ * @param[out]  mesh_id : point to the mesh ID that will get
+ * @return  RTW_SUCCESS
+ */
+int wifi_get_mesh_id(unsigned char * mesh_id);
+
+/**
+ * @brief  set mesh RSSI threshold
+ * @param[out]  rssi : the mesh RSSI threshold value that will set
+ * @return  RTW_SUCCESS
+ */
+int wifi_set_mesh_rssi_threshold(const char *ifname, s32 rssi);
+#endif
 
 #ifdef __cplusplus
   }

@@ -75,7 +75,7 @@ void SPIClass::endTransaction(void)
 
 void SPIClass::begin(void)
 {
-    if (pinMOSI == 11) {
+    if ((pinMOSI == 11) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == 21) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
@@ -83,7 +83,7 @@ void SPIClass::begin(void)
         printf("spi_init: error, wrong spi_idx \r\n");
         return;
     }
-    
+
     spi_init(
         (spi_t *)pSpiMaster, 
         (PinName)g_APinDescription[pinMOSI].pinname, 
@@ -97,7 +97,7 @@ void SPIClass::begin(void)
 
 void SPIClass::begin(int ss)
 {
-    if (pinMOSI == 11) {
+    if ((pinMOSI == 11) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == 21) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
@@ -267,5 +267,13 @@ void SPIClass::setDefaultFrequency(int _frequency)
     defaultFrequency = _frequency;
 }
 
+#if defined(BOARD_RTL8722D)
 SPIClass SPI((void *)(&spi_obj0), 11, 12, 13, 10);
 SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
+
+#elif defined(BOARD_RTL8722DM_MINI)
+SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
+
+#else
+#error chack the borad supported
+#endif

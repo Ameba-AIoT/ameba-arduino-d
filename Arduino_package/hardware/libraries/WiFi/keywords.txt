@@ -38,22 +38,20 @@ localIP	KEYWORD2
 subnetMask	KEYWORD2
 gatewayIP	KEYWORD2
 SSID	KEYWORD2
-BSSID		KEYWORD2
+BSSID	KEYWORD2
 RSSI	KEYWORD2
 encryptionType	KEYWORD2
 getResult	KEYWORD2
 getSocket	KEYWORD2
 WiFiClient	KEYWORD2	WiFiClient
 WiFiServer	KEYWORD2	WiFiServer
-WiFiUDP		KEYWORD2	WiFiUDPConstructor
+WiFiUDP	KEYWORD2	WiFiUDPConstructor
 beginPacket	KEYWORD2
 endPacket	KEYWORD2
 parsePacket	KEYWORD2
 remoteIP	KEYWORD2
 remotePort	KEYWORD2
 
-
 #######################################
 # Constants (LITERAL1)
 #######################################
-

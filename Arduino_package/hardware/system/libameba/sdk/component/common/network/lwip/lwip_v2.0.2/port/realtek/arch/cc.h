@@ -100,7 +100,7 @@ typedef int sys_prot_t;
 
 #define LWIP_NO_STDINT_H 1
 
-#if (defined (CONFIG_PLATFORM_8710C)||defined(CONFIG_PLATFORM_8721D)) && defined (__GNUC__) && (__GNUC__ >= 6)
+#if (defined (CONFIG_PLATFORM_8710C)||defined(CONFIG_PLATFORM_8721D) ||defined(CONFIG_PLATFORM_AMEBAD2)) && defined (__GNUC__) && (__GNUC__ >= 6)
 #define LWIP_TIMEVAL_PRIVATE 0
 #define IN_ADDR_T_DEFINED 1
 #endif

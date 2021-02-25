@@ -37,7 +37,9 @@ struct eth_drv_sg {
 #define MAX_ETH_DRV_SG		32
 #define MAX_ETH_MSG			1540
 #else
+#if CONFIG_LWIP_LAYER
 #include "ethernetif.h"  // moved to ethernetif.h by jimmy 12/2/2015
+#endif
 #endif
 //----- ------------------------------------------------------------------
 // Wlan Interface Provided
@@ -49,8 +51,10 @@ struct sk_buff * rltk_wlan_get_recv_skb(int idx);
 struct sk_buff * rltk_wlan_alloc_skb(unsigned int total_len);
 void rltk_wlan_set_netif_info(int idx_wlan, void * dev, unsigned char * dev_addr);
 void rltk_wlan_send_skb(int idx, struct sk_buff *skb);	//struct sk_buff as defined above comment line
+#if CONFIG_LWIP_LAYER
 int rltk_wlan_send(int idx, struct eth_drv_sg *sg_list, int sg_len, int total_len);
 void rltk_wlan_recv(int idx, struct eth_drv_sg *sg_list, int sg_len);
+#endif
 unsigned char rltk_wlan_running(unsigned char idx);		// interface is up. 0: interface is down
 
 #if defined(CONFIG_MBED_ENABLED)

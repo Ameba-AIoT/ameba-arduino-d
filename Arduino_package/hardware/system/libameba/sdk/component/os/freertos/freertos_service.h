@@ -15,7 +15,7 @@
 // --------------------------------------------
 //	Platform dependent include file
 // --------------------------------------------
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8735B)
 #include "platform/platform_stdlib.h"
 extern VOID RtlUdelayOS(u32 us);
 #elif defined(CONFIG_PLATFORM_8711B)
@@ -41,11 +41,16 @@ extern VOID RtlUdelayOS(u32 us);
 
 #if (defined CONFIG_GSPI_HCI || defined CONFIG_SDIO_HCI) || defined(CONFIG_LX_HCI)
 /* For SPI interface transfer and us delay implementation */
-#if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) && !defined(CONFIG_PLATFORM_8721D)  && !defined(CONFIG_PLATFORM_8195BHP) && !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2) 
+#if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) && !defined(CONFIG_PLATFORM_8721D)  && !defined(CONFIG_PLATFORM_8195BHP) && !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2) && !defined(CONFIG_PLATFORM_8735B) 
 #include <rtwlan_bsp.h>	
 #endif
 #endif
 
+
+#if defined(CONFIG_PLATFORM_8735B)
+// experimental feature, use stdatomic to replace customized defined atomic
+#define STDATOMIC
+#endif
 
 // --------------------------------------------
 //	Platform dependent type define
@@ -98,11 +103,49 @@ typedef void*			    _thread_hdl_;
 typedef void			    thread_return;
 typedef void*			    thread_context;
 
-#if !defined(CONFIG_PLATFORM_8710C) 
-typedef struct { volatile int counter; } atomic_t;
+#if defined(STDATOMIC)
+	#include <stdatomic.h>
+	#define ATOMIC_T atomic_int
+	#define atomic_t atomic_int
+	
+	#undef atomic_read
+	#define atomic_read(v)  atomic_load(v)
+	#undef atomic_set
+	#define atomic_set(v,i) atomic_store(v, i)
+#else
+	/* old implement */
+	#if !defined(CONFIG_PLATFORM_8710C) 
+	typedef struct { volatile int counter; } atomic_t;
+	#endif
+
+	#define ATOMIC_T atomic_t
+	
+	//----- ------------------------------------------------------------------
+	// Atomic Operation
+	//----- ------------------------------------------------------------------
+
+	/*
+	 * atomic_read - read atomic variable
+	 * @v: pointer of type atomic_t
+	 *
+	 * Atomically reads the value of @v.  Note that the guaranteed
+	 * useful range of an atomic_t is only 24 bits.
+	 */
+	#undef atomic_read
+	#define atomic_read(v)  ((v)->counter)
+
+	/*
+	 * atomic_set - set atomic variable
+	 * @v: pointer of type atomic_t
+	 * @i: required value
+	 *
+	 * Atomically sets the value of @v to @i.  Note that the guaranteed
+	 * useful range of an atomic_t is only 24 bits.
+	 */
+	#undef atomic_set
+	#define atomic_set(v,i) ((v)->counter = (i))	
 #endif
 
-#define ATOMIC_T atomic_t
 #define HZ configTICK_RATE_HZ
 
 #define   KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))
@@ -190,30 +233,7 @@ void cli(void);
 							printf("\n\r%s, Assert(" #x ") failed on line %d in file %s", msg, __LINE__, __FILE__); \
 					} while(0)
 
-//----- ------------------------------------------------------------------
-// Atomic Operation
-//----- ------------------------------------------------------------------
 
-/*
- * atomic_read - read atomic variable
- * @v: pointer of type atomic_t
- *
- * Atomically reads the value of @v.  Note that the guaranteed
- * useful range of an atomic_t is only 24 bits.
- */
-#undef atomic_read
-#define atomic_read(v)  ((v)->counter)
-
-/*
- * atomic_set - set atomic variable
- * @v: pointer of type atomic_t
- * @i: required value
- *
- * Atomically sets the value of @v to @i.  Note that the guaranteed
- * useful range of an atomic_t is only 24 bits.
- */
-#undef atomic_set
-#define atomic_set(v,i) ((v)->counter = (i))
 
  /*
   *      These inlines deal with timer wrapping correctly. You are 

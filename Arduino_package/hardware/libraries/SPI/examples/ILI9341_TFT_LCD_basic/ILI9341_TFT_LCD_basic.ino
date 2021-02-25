@@ -21,7 +21,7 @@
 #define TFT_RESET       5
 #define TFT_DC          2
 #define TFT_CS          10
-#elif defined(BOARD_RTL8721D)
+#elif defined(BOARD_RTL8722D)
 #define TFT_RESET       8
 #define TFT_DC          9
 #define TFT_CS          10

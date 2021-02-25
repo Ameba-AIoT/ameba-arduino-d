@@ -22,3 +22,6 @@ void bt_coex_handle_specific_evt(uint8_t *p, uint8_t len);
 
 void bt_coex_init(void);
 
+unsigned int send_coex_mailbox_to_wifi_from_BtAPP(uint8_t state);
+
+

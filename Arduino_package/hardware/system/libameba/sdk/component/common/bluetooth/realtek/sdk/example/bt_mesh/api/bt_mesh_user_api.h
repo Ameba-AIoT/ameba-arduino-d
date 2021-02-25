@@ -17,6 +17,8 @@
 #include "provisioner_cmd.h"
 #include "device_cmd.h"
 #include "osdep_service.h"
+#include "os_task.h"
+#include "platform_os.h"
 #include "mesh_data_uart.h"
 #include "app_msg.h"
 #include "mesh_config.h"
@@ -68,7 +70,7 @@ typedef enum
 
 /** @brief Indicate the sync mode of user api */
 typedef enum {
-	USER_API_ASYNCH ,
+    USER_API_ASYNCH ,
     USER_API_SYNCH ,
     USER_API_CMDLINE ,
     USER_API_DEFAULT_MODE
@@ -76,10 +78,10 @@ typedef enum {
 
 /** @brief Param string cmd to mesh code */
 typedef struct _mesh_cmd_entry {
-	char                      *pcommand;
+    char                      *pcommand;
     char                      *poption;
     char                      *phelp;
-	uint16_t                  meshCode;
+    uint16_t                  meshCode;
 } mesh_cmd_entry;
 
 /** @brief bt mesh command private struct */
@@ -89,8 +91,10 @@ typedef struct meshCmdModInfo
     uint8_t                   meshMode;                 //!< Indicate currently mesh mode(provisioner/device).
     uint8_t                   cmdListNum;               //!< user command num included in .meshCmdList.
     uint8_t                   meshCmdEnable;            //!< user command enable flag.
-    _mutex                    cmdMutex;                 //!< mesh command private struct mutex.
-    _sema                     meshThreadSema;           //!< sema for cmd thread according to current meshMode.
+    void                      *cmdMutex;                 //!< mesh command private struct mutex.
+    void                      *ppvalueMutex;             //!< pparseValue mutex.
+    void                      *cmdItemsMutex;            //!< meshCmdItem_s mutex.
+    void                      *meshThreadSema;           //!< sema for cmd thread according to current meshMode.
 } CMD_MOD_INFO_S;
 
 /** @brief bt mesh cmd thread private struct */
@@ -108,8 +112,8 @@ struct meshUserItem
 {
     uint8_t                   userCmdResult;            //!< indicate results of command to upper layer.
     uint8_t                   userApiMode;              //!< 2: cmd line mode 1: sync mode 0: async mode.
-    _sema                     userSema;                 //!< sema for sync mode.
-    _sema                     cmdLineSema;              //!< sema for command line mode.
+    void                      *userSema;                 //!< sema for sync mode.
+    void                      *cmdLineSema;              //!< sema for command line mode.
     user_cmd_parse_value_t    *pparseValue;             //!< pointer of parameter array.
     void                      *userParam;               //!< pointer of user parameter.
 };
@@ -136,6 +140,14 @@ typedef struct meshCmdIndicationPriv
     uint32_t                  userApiMode;              //!< 2: cmd line mode 1: sync mode 0: async mode.
     uint32_t                  startTime;                //!< record the start time for mesh code in process.
 } INDICATION_ITEM;
+
+/** @brief bt mesh task private struct */
+struct mesh_task_struct {
+    void                      *task;	/* I: workqueue thread */
+    void                      *wakeup_sema;    /* for internal use only */
+    void                      *terminate_sema; /* for internal use only */
+    u32                       blocked;          /* for internal use only */
+};
 
 /**
   * @brief call back handler of bt mesh io msg
@@ -279,6 +291,18 @@ extern char *user_cmd_find_end_of_word(char *buffer);
  * @return
 */
 void bt_mesh_param_user_cmd(unsigned int argc, char **argv);
+
+#if (defined(CONFIG_BT_MESH_PROVISIONER) && CONFIG_BT_MESH_PROVISIONER || \
+    defined(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE) && CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE)
+/**
+ * @brief  pram mesh ota user cmd.
+ *
+ * @param[in] argc
+ * @param[in] argv
+ * @return
+*/
+void bt_mesh_dfu_param_user_cmd(unsigned int argc, char **argv);
+#endif
 
 #endif
 

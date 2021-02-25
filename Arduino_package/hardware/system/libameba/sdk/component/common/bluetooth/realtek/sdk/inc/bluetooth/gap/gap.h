@@ -142,6 +142,7 @@ typedef enum
     GAP_REMOTE_ADDR_LE_PUBLIC_IDENTITY = 0x02, /**< LE Public identity address type. */
     GAP_REMOTE_ADDR_LE_RANDOM_IDENTITY = 0x03, /**< LE Random identity address type. */
 #endif
+    GAP_REMOTE_ADDR_LE_ANONYMOUS       = 0xff, /**< LE anonymous device address type. */
 } T_GAP_REMOTE_ADDR_TYPE;
 
 /** @brief GAP Cause List */

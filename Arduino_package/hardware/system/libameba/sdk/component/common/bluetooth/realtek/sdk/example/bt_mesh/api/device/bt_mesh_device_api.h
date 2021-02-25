@@ -14,35 +14,35 @@
 #define _BT_MESH_DEV_API_H_
 
 #include "bt_mesh_user_api.h"
-#include "osdep_service.h"
-#include "platform_os.h"
 
 #define BT_MESH_DEV_CMD_RETRY_COUNT 2
 
 /** @brief bt mesh device command table */
 enum bt_mesh_device_cmd
 {
-    GEN_MESH_CODE(_node_reset) ,	/*0*/
- 	GEN_MESH_CODE(_prov_capa_set) , 
+  GEN_MESH_CODE(_node_reset) ,	/*0*/
+  GEN_MESH_CODE(_prov_capa_set) , 
 #if MESH_LPN
- 	GEN_MESH_CODE(_lpn_init) , 
-	GEN_MESH_CODE(_lpn_req) , 
-	GEN_MESH_CODE(_lpn_sub) ,  
-	GEN_MESH_CODE(_lpn_clear) , /*5*/
+  GEN_MESH_CODE(_lpn_init) , 
+  GEN_MESH_CODE(_lpn_deinit) ,
+  GEN_MESH_CODE(_lpn_req) , 
+  GEN_MESH_CODE(_lpn_sub) ,  
+  GEN_MESH_CODE(_lpn_clear) , /*5*/
 #endif
 #if MESH_FN
-	GEN_MESH_CODE(_fn_init) ,
+  GEN_MESH_CODE(_fn_init) ,
+  GEN_MESH_CODE(_fn_deinit) ,
 #endif
-    GEN_MESH_CODE(_data_transmission_notify) ,
-    GEN_MESH_CODE(_generic_on_off_publish) ,
-    GEN_MESH_CODE(_datatrans_write) ,
-    GEN_MESH_CODE(_datatrans_read) ,
-    GEN_MESH_CODE(_connect) ,
- 	GEN_MESH_CODE(_disconnect) ,
-    GEN_MESH_CODE(_list) ,
-    GEN_MESH_CODE(_dev_info_show) ,
-	
-	MAX_MESH_DEVICE_CMD
+  GEN_MESH_CODE(_data_transmission_notify) ,
+  GEN_MESH_CODE(_generic_on_off_publish) ,
+  GEN_MESH_CODE(_datatrans_write) ,
+  GEN_MESH_CODE(_datatrans_read) ,
+  GEN_MESH_CODE(_connect) ,
+  GEN_MESH_CODE(_disconnect) ,
+  GEN_MESH_CODE(_list) ,
+  GEN_MESH_CODE(_dev_info_show) ,
+
+  MAX_MESH_DEVICE_CMD
 };
 
 /**

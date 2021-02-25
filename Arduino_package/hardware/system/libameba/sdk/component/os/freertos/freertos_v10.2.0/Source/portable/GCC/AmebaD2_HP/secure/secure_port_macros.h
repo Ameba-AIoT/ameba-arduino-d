@@ -38,9 +38,9 @@
  * @brief Macro to declare a function as non-secure callable.
  */
 #if defined( __IAR_SYSTEMS_ICC__ )
-	#define secureportNON_SECURE_CALLABLE			__cmse_nonsecure_entry
+#define secureportNON_SECURE_CALLABLE			__cmse_nonsecure_entry _Pragma( STRINGIFY(location=".image3.nsc_entry.text"))
 #else
-	#define secureportNON_SECURE_CALLABLE			__attribute__((cmse_nonsecure_entry))
+#define secureportNON_SECURE_CALLABLE			__attribute__((cmse_nonsecure_entry)) __attribute__((__section__(".image3.nsc_entry.text")))
 #endif
 
 /**

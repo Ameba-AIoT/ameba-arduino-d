@@ -2,6 +2,15 @@
 /*
  * Release Note
  */
+	v1.0.1.130
+	2021/02/04
+	1. Open secure context.
+	
+	v1.0.1.114
+	2020/11/24
+	GCID de656b864581c204, PGCID fb86dce1907a0251
+	1. Fix a bug of pairing distrbution check.
+	
 	v1.0.1.96
 	2020/08/27
 	GCID b41ecd11f85d38ba, PGCID facb7c3890b577aa

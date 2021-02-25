@@ -21,7 +21,7 @@ extern "C" {
 
 
 /* platform related settings */
-#if (defined(CONFIG_PLATFORM_8195A)|| defined(CONFIG_PLATFORM_8711B)|| defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C))
+#if (defined(CONFIG_PLATFORM_8195A)|| defined(CONFIG_PLATFORM_8711B)|| defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8721D))
 #undef u32
 #undef s32
 #undef u8

@@ -23,6 +23,9 @@ extern "C"  {
 #include "mesh_data_uart.h"
 #include "mesh_user_cmd_parse.h"
 #include "mesh_api.h"
+#include "blob_transfer.h"
+#include "firmware_update.h"
+#include "firmware_distribution.h"
 
 /****************************************************************************************************************
 * exported variables other .c files may use all defined here.
@@ -692,6 +695,216 @@ extern "C"  {
      "llcps [dst] [app_key_index] [ack] [property id] [property value...] \n\r",\
      "light lc property set\n\r",\
      user_cmd_light_lc_property_set\
+    },\
+    {\
+     "prbg",\
+     "prbg [dst]\n\r",\
+     "Private beacon get\n\r",\
+     user_cmd_private_beacon_get\
+    },\
+    {\
+     "prbs",\
+     "prbs [dst] [enable/disable] [random_update_interval]\n\r",\
+     "Private beacon set\n\r",\
+     user_cmd_private_beacon_set\
+    },\
+    {\
+     "pgpg",\
+     "pgpg [dst]\n\r",\
+     "Private gatt proxy get\n\r",\
+     user_cmd_private_gatt_proxy_get\
+    },\
+    {\
+     "pgps",\
+     "pgps [dst] [state]\n\r",\
+     "Private gatt proxy set\n\r",\
+     user_cmd_private_gatt_proxy_set\
+    },\
+    {\
+     "pnig",\
+     "pnig [dst] [net_key_index]\n\r",\
+     "Private node identity get\n\r",\
+     user_cmd_private_node_identity_get\
+    },\
+    {\
+     "pnis",\
+     "pnis [dst] [net_key_index] [state]\n\r",\
+     "Private node identity set\n\r",\
+     user_cmd_private_node_identity_set\
+    },\
+    {\
+     "btg",\
+     "btg [dst] [app_key_index]\n\r",\
+     "blob transfer get\n\r",\
+     user_cmd_blob_transfer_get\
+    },\
+    {\
+     "bts",\
+     "bts [dst] [app_key_index] [mode] [object id] [object size] [block size log] [client mtu size]\n\r",\
+     "blob transfer start\n\r",\
+     user_cmd_blob_transfer_start\
+    },\
+    {\
+     "btc",\
+     "btc [dst] [app_key_index] [object id]\n\r",\
+     "blob transfer cancel\n\r",\
+     user_cmd_blob_transfer_cancel\
+    },\
+    {\
+     "bbg",\
+     "bbg [dst] [app_key_index]\n\r",\
+     "blob block get\n\r",\
+     user_cmd_blob_block_get\
+    },\
+    {\
+     "bbs",\
+     "bbs [dst] [app_key_index] [block num] [chunk size]\n\r",\
+     "blob block start\n\r",\
+     user_cmd_blob_block_start\
+    },\
+    {\
+     "bct",\
+     "bct [dst] [app_key_index] [chunk num] [chunk size]\n\r",\
+     "blob chunk transfer\n\r",\
+     user_cmd_blob_chunk_transfer\
+    },\
+    {\
+     "big",\
+     "big [dst] [app_key_index]\n\r",\
+     "blob information get\n\r",\
+     user_cmd_blob_info_get\
+    },\
+    {\
+     "fuig",\
+     "fuig [dst] [app_key_index] [first_index] [entries_limit]\n\r",\
+     "firmware update information get\n\r",\
+     user_cmd_fw_update_info_get\
+    },\
+    {\
+     "fumc",\
+     "fumc [dst] [app_key_index] [fw_image_idx] [fw_metadata] [metadata len]\n\r",\
+     "firmware update metadata check\n\r",\
+     user_cmd_fw_update_metadata_check\
+    },\
+    {\
+     "fug",\
+     "fug [dst] [app_key_index]\n\r",\
+     "firmware update get\n\r",\
+     user_cmd_fw_update_get\
+    },\
+    {\
+     "fus",\
+     "fus [dst] [app_key_index] [update ttl] [update timeout base] [blob id] [fw image idx] [fw metadata] [metadata len]\n\r",\
+     "firmware update start\n\r",\
+     user_cmd_fw_update_start\
+    },\
+    {\
+     "fuc",\
+     "fuc [dst] [app_key_index]\n\r",\
+     "firmware update cancel\n\r",\
+     user_cmd_fw_update_cancel\
+    },\
+    {\
+     "fua",\
+     "fua [dst] [app_key_index]\n\r",\
+     "firmware update apply\n\r",\
+     user_cmd_fw_update_apply\
+    },\
+    {\
+     "fdra",\
+     "fdra [dst] [app_key_index] [address] [update fw index]\n\r",\
+     "firmware distribution receivers add\n\r",\
+     user_cmd_fw_dist_recvs_add\
+    },\
+    {\
+     "fdrda",\
+     "fdrda [dst] [app_key_index]\n\r",\
+     "firmware distribution receivers delete all\n\r",\
+     user_cmd_fw_dist_recvs_delete_all\
+    },\
+    {\
+     "fdrg",\
+     "fdrg [dst] [app_key_index] [first_index] [entries_limit]\n\r",\
+     "firmware distribution receivers get\n\r",\
+     user_cmd_fw_dist_recvs_get\
+    },\
+    {\
+     "fdcg",\
+     "fdcg [dst] [app_key_index]\n\r",\
+     "firmware distribution capabilites get\n\r",\
+     user_cmd_fw_dist_caps_get\
+    },\
+    {\
+     "fdg",\
+     "fdg [dst] [app_key_index]\n\r",\
+     "firmware distribution get\n\r",\
+     user_cmd_fw_dist_get\
+    },\
+    {\
+     "fds",\
+     "fds [dst] [app_key_index] [dist_app_key_index] [dist_ttl] [dist_timeout_base] [dist_transfer_mode] [update_policy] [dist_fw_image_idx] [dist_multicast_addr] [dist_dst_len]\n\r",\
+     "firmware distribution start\n\r",\
+     user_cmd_fw_dist_start\
+    },\
+    {\
+     "fdc",\
+     "fdc [dst] [app_key_index]\n\r",\
+     "firmware distribution cancel\n\r",\
+     user_cmd_fw_dist_cancel\
+    },\
+    {\
+     "fda",\
+     "fua [dst] [app_key_index]\n\r",\
+     "firmware distribution apply\n\r",\
+     user_cmd_fw_dist_apply\
+    },\
+    {\
+     "fdug",\
+     "fdug [dst] [app_key_index]\n\r",\
+     "firmware distribution upload get\n\r",\
+     user_cmd_fw_dist_upload_get\
+    },\
+    {\
+     "fdus",\
+     "fdus [dst] [app_key_index] [upload_ttl] [upload_timeout_base] [blob_id] [upload_fw_size] [metadata] [metadata_len] [fw_id] [fw_id_len]\n\r",\
+     "firmware distribution upload start\n\r",\
+     user_cmd_user_cmd_fw_dist_upload_start\
+    },\
+    {\
+     "fduos",\
+     "fduos [dst] [app_key_index] [upload_uri] [upload_uri_len] [fw_id] [fw_id_len]\n\r",\
+     "firmware distribution upload oob start\n\r",\
+     user_cmd_fw_dist_upload_oob_start\
+    },\
+    {\
+     "fduc",\
+     "fduc [dst] [app_key_index]\n\r",\
+     "firmware distribution upload cancel\n\r",\
+     user_cmd_fw_dist_upload_cancel\
+    },\
+    {\
+     "fdfg",\
+     "fdfg [dst] [app_key_index] [fw_id] [fw_id_len]\n\r",\
+     "firmware distribution firmware get\n\r",\
+     user_cmd_fw_dist_fw_get\
+    },\
+    {\
+     "fdgbi",\
+     "fdgbi [dst] [app_key_index] [dist_fw_image_index]\n\r",\
+     "firmware distribution get by index\n\r",\
+     user_cmd_fw_dist_fw_get_by_index\
+    },\
+    {\
+     "fdfd",\
+     "fdfd [dst] [app_key_index] [fw_id] [fw_id_len]\n\r",\
+     "firmware distribution firmware delete\n\r",\
+     user_cmd_fw_dist_fw_delete\
+    },\
+    {\
+     "fdfda",\
+     "fdfda [dst] [app_key_index]\n\r",\
+     "firmware distribution firmware delete all\n\r",\
+     user_cmd_fw_dist_fw_delete_all\
     }
 /** @} */
 
@@ -834,6 +1047,48 @@ user_cmd_parse_result_t user_cmd_light_lc_light_on_off_get(user_cmd_parse_value_
 user_cmd_parse_result_t user_cmd_light_lc_light_on_off_set(user_cmd_parse_value_t *pparse_value);
 user_cmd_parse_result_t user_cmd_light_lc_property_get(user_cmd_parse_value_t *pparse_value);
 user_cmd_parse_result_t user_cmd_light_lc_property_set(user_cmd_parse_value_t *pparse_value);
+
+user_cmd_parse_result_t user_cmd_private_beacon_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_private_beacon_set(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_private_gatt_proxy_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_private_gatt_proxy_set(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_private_node_identity_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_private_node_identity_set(user_cmd_parse_value_t *pparse_value);
+
+user_cmd_parse_result_t user_cmd_blob_transfer_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_blob_transfer_start(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_blob_transfer_cancel(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_blob_block_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_blob_block_start(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_blob_chunk_transfer(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_blob_info_get(user_cmd_parse_value_t *pparse_value);
+
+user_cmd_parse_result_t user_cmd_fw_update_info_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_update_metadata_check(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_update_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_update_start(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_update_cancel(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_update_apply(user_cmd_parse_value_t *pparse_value);
+
+user_cmd_parse_result_t user_cmd_fw_dist_recvs_add(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_recvs_delete_all(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_recvs_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_caps_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_start(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_cancel(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_apply(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_upload_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_user_cmd_fw_dist_upload_start(user_cmd_parse_value_t
+                                                               *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_upload_oob_start(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_upload_cancel(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_fw_get(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_fw_get_by_index(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_fw_delete(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fw_dist_fw_delete_all(user_cmd_parse_value_t *pparse_value);
+
+
 /** @} */
 /** @} */
 

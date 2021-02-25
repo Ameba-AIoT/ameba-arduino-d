@@ -184,6 +184,12 @@ extern "C"  {
      user_cmd_fn_init\
     },\
     {\
+     "fndeinit",\
+     "fndeinit\n\r",\
+     "friend node deinit\n\r",\
+     user_cmd_fn_deinit\
+    },\
+    {\
      "hbpub",\
      "hbpub [dst] [count] [period]\n\r",\
      "Publish heartbeat\n\r",\
@@ -254,6 +260,7 @@ user_cmd_parse_result_t user_cmd_time(user_cmd_parse_value_t *pparse_value);
 user_cmd_parse_result_t user_cmd_adv_power_set(user_cmd_parse_value_t *pparse_value);
 
 user_cmd_parse_result_t user_cmd_fn_init(user_cmd_parse_value_t *pparse_value);
+user_cmd_parse_result_t user_cmd_fn_deinit(user_cmd_parse_value_t *pparse_value);
 
 user_cmd_parse_result_t user_cmd_hb_pub(user_cmd_parse_value_t *pparse_value);
 user_cmd_parse_result_t user_cmd_hb_sub(user_cmd_parse_value_t *pparse_value);

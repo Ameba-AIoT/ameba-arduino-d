@@ -158,7 +158,7 @@ GATT_CLIENT_CHAR_CONFIG_NOTIFY_INDICATE	LITERAL1
 #######################################
 
 connected	KEYWORD2
-discoverServices	KEYWORD2
+discoverService	KEYWORD2
 discoveryDone	KEYWORD2
 printServices	KEYWORD2
 getService	KEYWORD2

@@ -47,7 +47,14 @@ const unsigned char LUT_DATA_part[] PROGMEM = {
     0x00, 0x00, 0x13, 0x14, 0x44, 0x12,
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-EpdIf::EpdIf(){};
+EpdIf::EpdIf(int BUSY_Pin, int RES_Pin, int DC_Pin, int CS_Pin, int SCK_Pin, int SDI_Pin) {
+    _BUSY_Pin = BUSY_Pin;
+    _RES_Pin = RES_Pin;
+    _DC_Pin = DC_Pin;
+    _CS_Pin = CS_Pin;
+    _SCK_Pin = SCK_Pin;
+    _SDI_Pin = SDI_Pin;
+};
 
 EpdIf::~EpdIf(){};
 
@@ -94,16 +101,16 @@ void EpdIf::SpiTransfer(unsigned char value) {
     unsigned char i;
     SpiDelay(1);
     for (i = 0; i < 8; i++) {
-        EPD_W21_CLK_0;
+        EPD_W21_CLK_0();
         SpiDelay(1);
         if (value & 0x80)
-            EPD_W21_MOSI_1;
+            EPD_W21_MOSI_1();
         else
-            EPD_W21_MOSI_0;
+            EPD_W21_MOSI_0();
         value = (value << 1);
         SpiDelay(1);
         driver_delay_us(1);
-        EPD_W21_CLK_1;
+        EPD_W21_CLK_1();
         SpiDelay(1);
     }
 
@@ -117,10 +124,10 @@ void EpdIf::SpiTransfer(unsigned char value) {
 */
 void EpdIf::SendCommand(unsigned char command) {
     SpiDelay(1);
-    EPD_W21_DC_0;  // set DC pin to LOW
-    EPD_W21_CS_0;
+    EPD_W21_DC_0();  // set DC pin to LOW
+    EPD_W21_CS_0();
     SpiTransfer(command);
-    EPD_W21_CS_1;
+    EPD_W21_CS_1();
 }
 
 /**
@@ -128,10 +135,10 @@ void EpdIf::SendCommand(unsigned char command) {
 */
 void EpdIf::SendData(unsigned char command) {
     SpiDelay(1);
-    EPD_W21_DC_1;  // command write
-    EPD_W21_CS_0;
+    EPD_W21_DC_1();  // command write
+    EPD_W21_CS_0();
     SpiTransfer(command);
-    EPD_W21_CS_1;
+    EPD_W21_CS_1();
 }
 
 /**
@@ -139,7 +146,7 @@ void EpdIf::SendData(unsigned char command) {
 */
 void EpdIf::EPD_Busy(void) {
     while (1) {  //=1 BUSY
-        if (isEPD_W21_BUSY == 0) break;
+        if (isEPD_W21_BUSY() == 0) break;
     }
 }
 
@@ -149,9 +156,9 @@ void EpdIf::EPD_Busy(void) {
             see Epd::Sleep();
 */
 void EpdIf::EPD_Reset(void) {
-    EPD_W21_RST_0;  // module reset
+    EPD_W21_RST_0();  // module reset
     delay(1);
-    EPD_W21_RST_1;
+    EPD_W21_RST_1();
     delay(1);
 }
 
@@ -187,9 +194,9 @@ void EpdIf::EPD_UpdateDisplay(void) {
     @brief: basic function for hardware initialization
 */
 void EpdIf::EPD_Init(void) {
-    EPD_W21_RST_0;  // Module reset
+    EPD_W21_RST_0();  // Module reset
     delay(1);       //At least 10ms delay
-    EPD_W21_RST_1;
+    EPD_W21_RST_1();
     delay(1);  //At least 10ms delay
 
     SendCommand(DRIVER_OUTPUT_CONTROL);
@@ -232,9 +239,9 @@ void EpdIf::EPD_Init(void) {
 }
 
 void EpdIf::EPD_InitText(void) {
-    EPD_W21_RST_0;  // Module reset
+    EPD_W21_RST_0();  // Module reset
     delay(1);       //At least 10ms delay
-    EPD_W21_RST_1;
+    EPD_W21_RST_1();
     delay(1);  //At least 10ms delay
 
     SendCommand(DRIVER_OUTPUT_CONTROL);
@@ -540,5 +547,4 @@ void EpdIf::SetLUT(const unsigned char *wave_data) {
     for (int i = 0; i < 30; i++)
         SendData(pgm_read_byte(&wave_data[i]));
 }
-
 //////////////////END ////////////////////

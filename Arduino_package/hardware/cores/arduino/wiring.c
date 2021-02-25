@@ -25,21 +25,19 @@ extern "C" {
 #include "cmsis_os.h"
 
 #ifndef portNVIC_SYSTICK_CURRENT_VALUE_REG
-#define portNVIC_SYSTICK_CURRENT_VALUE_REG	( * ( ( volatile uint32_t * ) 0xe000e018 ) )
+#define portNVIC_SYSTICK_CURRENT_VALUE_REG  ( * ( ( volatile uint32_t * ) 0xe000e018 ) )
 #endif
 
 extern uint32_t xTaskGetTickCount(void);
 extern uint32_t xTaskGetTickCountFromISR(void);
 
-static __inline uint32_t __get_ipsr__(void)
-{
+static __inline uint32_t __get_ipsr__(void) {
     //volatile uint32_t __regIPSR     __asm("ipsr");
     static uint32_t __regIPSR     __asm("ipsr");
-    return(__regIPSR);
+    return (__regIPSR);
 }
 
-void delay(uint32_t ms)
-{
+void delay(uint32_t ms) {
     osStatus ret;
 
     ret = osDelay(ms);
@@ -58,6 +56,10 @@ void delayMicroseconds(uint32_t us)
     dfactor = 10 * us - 10 + (40 * us / 100);
 #elif defined(BOARD_RTL8195A)
     dfactor = 20 * us - 10 + (81 * us / 100);
+#elif defined(BOARD_RTL8722D)
+    dfactor = 20 * us - 10 + (81 * us / 100);
+#elif defined(BOARD_RTL8722DM_MINI)
+    dfactor = 20 * us - 10 + (81 * us / 100);
 #else
     dfactor = 20 * us - 10 + (81 * us / 100);
 #endif
@@ -66,7 +68,7 @@ void delayMicroseconds(uint32_t us)
         t0 = micros();
         do {
             tn = micros();
-        } while (tn >= t0 && tn < (t0 + us - 1));
+        } while ((tn >= t0) && (tn < (t0 + us - 1)));
     } else {
         for (i = 0; i < dfactor; i++) {
             asm("nop");
@@ -74,13 +76,11 @@ void delayMicroseconds(uint32_t us)
     }
 }
 
-uint32_t millis(void)
-{
+uint32_t millis(void) {
     return (__get_ipsr__() == 0) ? xTaskGetTickCount() : xTaskGetTickCountFromISR();
 }
 
-uint32_t micros(void)
-{
+uint32_t micros(void) {
     uint32_t tick1, tick2;
     uint32_t us;
     uint32_t tick_per_us;
@@ -91,8 +91,10 @@ uint32_t micros(void)
     tick_per_us = 166666;
 #elif defined(BOARD_RTL8722D)
     tick_per_us = 200000;
+#elif defined(BOARD_RTL8722DM_MINI)
+    tick_per_us = 200000;
 #else
-    tick_per_us = 166666;
+    tick_per_us = 200000;
 #endif
 
     if (__get_ipsr__() == 0) {

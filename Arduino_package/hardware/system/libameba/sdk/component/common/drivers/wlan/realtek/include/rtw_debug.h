@@ -171,16 +171,12 @@ extern u16 GlobalDebugLevel;
 
 #undef	_dbgdump
 
-#ifdef PLATFORM_ECOS
-	#define _dbgdump	diag_printf
-#elif defined(PLATFORM_FREERTOS) || defined(PLATFORM_CMSIS_RTOS) || defined(PLATFORM_CUSTOMER_RTOS)
 	#define _dbgdump_nr	printf("\n\r"); printf
 	#define _dbgdump	printf
-#endif
 
 #if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) \
 	&& !defined(CONFIG_PLATFORM_8721D) && !defined(CONFIG_PLATFORM_8195B) \
-	&& !defined(CONFIG_PLATFORM_8710C)
+	&& !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2)
 #define DRIVER_PREFIX	"RTL871X: "
 #endif
 

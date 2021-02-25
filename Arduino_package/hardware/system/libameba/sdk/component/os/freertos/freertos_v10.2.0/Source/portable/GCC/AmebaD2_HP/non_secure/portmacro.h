@@ -108,6 +108,9 @@ extern void vPortExitCritical( void ) /* PRIVILEGED_FUNCTION */;
 
 extern uint32_t ulSetInterruptMaskFromISR( void ) /* __attribute__(( naked )) PRIVILEGED_FUNCTION */;
 extern void vClearInterruptMaskFromISR( uint32_t ulMask ) /* __attribute__(( naked )) PRIVILEGED_FUNCTION */;
+extern uint32_t ulPortSetInterruptMask( void );
+extern void vPortClearInterruptMask( uint32_t ulNewMaskValue );
+
 
 #if( configENABLE_TRUSTZONE == 1 )
 	extern void vPortAllocateSecureContext( uint32_t ulSecureStackSize );
@@ -221,8 +224,8 @@ typedef struct MPU_SETTINGS
  */
 #define portSET_INTERRUPT_MASK_FROM_ISR()					ulSetInterruptMaskFromISR()
 #define portCLEAR_INTERRUPT_MASK_FROM_ISR(x)				vClearInterruptMaskFromISR( x )
-#define portDISABLE_INTERRUPTS()							__asm volatile ( " cpsid i " ::: "memory" )
-#define portENABLE_INTERRUPTS()								__asm volatile ( " cpsie i " ::: "memory" )
+#define portDISABLE_INTERRUPTS()							ulPortSetInterruptMask()	//__asm volatile ( " cpsid i " ::: "memory" )
+#define portENABLE_INTERRUPTS()								vPortClearInterruptMask(0)	//__asm volatile ( " cpsie i " ::: "memory" )
 #define portENTER_CRITICAL()								vPortEnterCritical()
 #define portEXIT_CRITICAL()									vPortExitCritical()
 /*-----------------------------------------------------------*/

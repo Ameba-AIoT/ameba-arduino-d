@@ -105,14 +105,23 @@ typedef struct
     };
 } _PACKED_ proxy_cfg_msg_t, *proxy_cfg_msg_p;
 
-#define MESH_PROXY_PROTOCOL_ALL_CTX_ID          0xff
+#define MESH_PROXY_PROTOCOL_ALL_CTX_ID          0xFF
+#define MESH_PROXY_PROTOCOL_RSVD_CTX_ID         0xFE
 typedef bool (*proxy_send_sar_pf)(gap_sched_link_t link, uint8_t *pvalue, uint16_t len);
 typedef bool (*proxy_receive_cb_pf)(uint8_t ctx_id, proxy_pdu_type_t type, uint8_t *pvalue,
                                     uint16_t len);
 
+typedef enum
+{
+    PROXY_CTX_TYPE_INVALID,
+    PROXY_CTX_TYPE_PROV,
+    PROXY_CTX_TYPE_PROXY,
+} proxy_ctx_type_t;
+
 typedef struct
 {
-    uint8_t ctx_id;
+    proxy_ctx_type_t ctx_type;
+    bool data_out_cccd_enabled;
     gap_sched_link_t link;
     uint16_t net_key_index;
     uint16_t rx_len;
@@ -139,12 +148,19 @@ bool proxy_cfg_handle_msg(uint8_t ctx_id, uint8_t *pvalue, uint16_t len);
 void proxy_ctx_init(uint8_t proxy_count);
 void proxy_ctx_deinit(void);
 
-uint8_t proxy_ctx_allocate(proxy_send_sar_pf proxy_send_sar, proxy_receive_cb_pf proxy_receive_cb);
+uint8_t proxy_ctx_allocate(proxy_send_sar_pf proxy_send_sar, proxy_receive_cb_pf proxy_receive_cb,
+                           proxy_ctx_type_t ctx_type);
 bool proxy_ctx_set_filter_type(uint8_t ctx_id, proxy_cfg_filter_type_t filter_type);
 bool proxy_ctx_set_cb(uint8_t ctx_id, proxy_send_sar_pf proxy_send_sar,
                       proxy_receive_cb_pf proxy_receive_cb);
 bool proxy_ctx_set_link(uint8_t ctx_id, gap_sched_link_t link_id);
 gap_sched_link_t proxy_ctx_get_link(uint8_t ctx_id);
+bool proxy_ctx_enable_data_out_cccd(uint8_t ctx_id, bool enable);
+bool proxy_ctx_is_data_out_cccd_enabled(uint8_t ctx_id);
+uint8_t proxy_ctx_id_get(gap_sched_link_t link, proxy_ctx_type_t ctx_type);
+void proxy_ctx_disconnect_all(proxy_ctx_type_t ctx_type);
+uint8_t proxy_ctx_active_count(proxy_ctx_type_t ctx_type);
+uint8_t proxy_ctx_idle_count(void);
 bool proxy_ctx_free(uint8_t ctx_id);
 
 void proxy_filter_free(uint8_t ctx_id);

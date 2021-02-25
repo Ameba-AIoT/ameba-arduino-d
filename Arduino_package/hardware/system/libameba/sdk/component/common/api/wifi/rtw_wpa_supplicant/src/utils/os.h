@@ -476,7 +476,7 @@ int os_snprintf(char *str, size_t size, const char *format, ...);
 
 #else /* OS_NO_C_LIB_DEFINES */
 
-#if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) && !defined(CONFIG_PLATFORM_8721D)
+#if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) && !defined(CONFIG_PLATFORM_8721D) && !defined(CONFIG_PLATFORM_AMEBAD2)
 #ifdef CONFIG_MEM_MONITOR
 	u8* os_malloc(u32 sz);
 	void os_mfree(u8 *pbuf, u32 sz);

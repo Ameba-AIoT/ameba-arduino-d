@@ -211,6 +211,7 @@ typedef struct _gap_sched_task_t
     gap_sched_adv_type_t adv_type;
     uint8_t adv_len;
     uint8_t adv_data[31];
+    uint32_t last_adv_time;
 } gap_sched_task_t, *gap_sched_task_p;
 
 #define GAP_SCHED_LINK_INVALID     0xff

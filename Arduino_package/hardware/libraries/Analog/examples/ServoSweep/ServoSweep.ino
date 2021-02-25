@@ -25,7 +25,7 @@ void setup() {
 #elif defined(BOARD_RTL8710)
     // attaches the servo on pin 13 to the servo object
     myservo.attach(13);
-#elif defined(BOARD_RTL8721D)
+#elif defined(BOARD_RTL8722D)
     // attaches the servo on pin 8 to the servo object
     myservo.attach(8);
 #else

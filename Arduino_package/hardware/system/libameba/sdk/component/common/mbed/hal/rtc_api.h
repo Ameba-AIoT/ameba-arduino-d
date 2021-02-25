@@ -52,7 +52,8 @@ extern "C" {
 #if (defined(CONFIG_PLATFORM_8711B) && (CONFIG_PLATFORM_8711B == 1)) || \
 	(defined(CONFIG_PLATFORM_8195BLP) && (CONFIG_PLATFORM_8195BLP == 1)) || \
 	(defined(CONFIG_PLATFORM_8721D) && (CONFIG_PLATFORM_8721D == 1)) || \
-	(defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
+	(defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1)) || \
+	(defined(CONFIG_PLATFORM_AMEBAD2) && (CONFIG_PLATFORM_AMEBAD2 == 1))
 ///@name AmebaZ and AmebaPro and AmebaD and AmebaZ2
 ///@{
 typedef void (*alarm_irq_handler)(void);
@@ -111,7 +112,8 @@ void rtc_write(time_t t);
 #if (defined(CONFIG_PLATFORM_8711B) && (CONFIG_PLATFORM_8711B == 1)) || \
 	(defined(CONFIG_PLATFORM_8195BLP) && (CONFIG_PLATFORM_8195BLP == 1)) || \
 	(defined(CONFIG_PLATFORM_8721D) && (CONFIG_PLATFORM_8721D == 1)) || \
-	(defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1))
+	(defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1)) || \
+	(defined(CONFIG_PLATFORM_AMEBAD2) && (CONFIG_PLATFORM_AMEBAD2 == 1))
 
 ///@name AmebaZ and AmebaPro
 ///@{

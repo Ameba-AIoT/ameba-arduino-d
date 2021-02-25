@@ -7,6 +7,10 @@
 #include "rtl8721d.h"
 #endif
 
+#ifdef CONFIG_PLATFORM_AMEBAD2
+#include "ameba.h"
+#endif
+
 struct WIFI_TIME {
 	//	RX related
 	u32 rx_mpdu_time;

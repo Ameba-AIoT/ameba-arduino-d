@@ -1,5 +1,5 @@
 #######################################
-# Syntax Coloring Map for Analog
+# Syntax Coloring Map for Watchdog
 #######################################
 
 #######################################
@@ -12,11 +12,11 @@ AmebaWatchdog	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-InitWatchdog    KEYWORD2
-StartWatchdog   KEYWORD2
-StopWatchdog    KEYWORD2
-RefreshWatchdog KEYWORD2
-InitWatchdogIRQ KEYWORD2
+InitWatchdog	KEYWORD2
+StartWatchdog	KEYWORD2
+StopWatchdog	KEYWORD2
+RefreshWatchdog	KEYWORD2
+InitWatchdogIRQ	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

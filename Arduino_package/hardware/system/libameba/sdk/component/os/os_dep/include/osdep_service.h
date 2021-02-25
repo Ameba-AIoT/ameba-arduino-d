@@ -41,7 +41,7 @@ extern "C" {
 	#define USE_MUTEX_FOR_SPINLOCK	1
 #endif
 
-#if (CONFIG_PLATFORM_AMEBA_X == 1)
+#if defined(CONFIG_PLATFORM_AMEBA_X) && (CONFIG_PLATFORM_AMEBA_X == 1)
 	#define CONFIG_MEM_MONITOR	MEM_MONITOR_SIMPLE
 #else
 	#define CONFIG_MEM_MONITOR	MEM_MONITOR_SIMPLE
@@ -74,19 +74,19 @@ extern "C" {
 
 #include <stdio.h>
 
-#if defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8195BHP)
+#if defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8735B)
 #include <platform_conf.h>
 #include <basic_types.h>
 #if (CONFIG_CMSIS_FREERTOS_EN==1)
 #define PLATFORM_FREERTOS 1
 #endif
 #else
-#if (CONFIG_PLATFORM_AMEBA_X == 1)
+#if defined(CONFIG_PLATFORM_AMEBA_X) && (CONFIG_PLATFORM_AMEBA_X == 1)
 #include "platform_autoconf.h"
 #endif
 #endif
 
-#if (CONFIG_PLATFORM_AMEBA_X == 0)
+#if defined(CONFIG_PLATFORM_AMEBA_X) && (CONFIG_PLATFORM_AMEBA_X == 0)
 #ifndef SUCCESS
 #define SUCCESS	0
 #endif

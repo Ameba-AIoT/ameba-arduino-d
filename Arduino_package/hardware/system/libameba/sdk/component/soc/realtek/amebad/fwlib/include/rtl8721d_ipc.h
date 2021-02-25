@@ -72,6 +72,7 @@ void IPC_INTUserHandler(u8 IPC_ChNum, VOID *IrqHandler, VOID *IrqData);
 #define IPC_INT_CHAN_WIFI_FW					1	/*!<  KM0 <--  KM4 FW INFO*/
 #define IPC_INT_CHAN_FLASHPG_REQ				2	/*!<  KM0 <-->  KM4 Flash Program REQUEST*/
 #define IPC_INT_KM4_TICKLESS_INDICATION		3	/*!<  KM0 <--  KM4 tickless indicate */
+#define IPC_INT_CHAN_WIFI_TRAN					4	/*!<  KM0 <--  KM4 WIFI INFO*/
 /** @} */
 
 /**************************************************************************//**

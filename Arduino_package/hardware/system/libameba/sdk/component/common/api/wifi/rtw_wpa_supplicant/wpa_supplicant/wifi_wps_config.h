@@ -76,6 +76,7 @@ void cmd_ap_wps(int argc, char **argv);
 extern int wpas_wps_enrollee_init_probe_ie(u16 config_methods);
 extern int wpas_wps_enrollee_init_assoc_ie(void);
 extern void wpas_wps_deinit(void);
+extern int wpas_wps_init(const char* ifname);
 extern unsigned int wps_generate_pin(void);
 extern unsigned int wps_pin_valid(unsigned int pin);
 

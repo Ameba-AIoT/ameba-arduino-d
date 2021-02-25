@@ -36,6 +36,7 @@ BLEAdvertData BLEWifiConfigService::advData() {
     BLE.getLocalAddr(btaddr);
     sprintf(device_name, "Ameba_%2X%2X%2X",btaddr[2],btaddr[1],btaddr[0]);
 
+    _advData.clear();
     _advData.addFlags(GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED);
     _advData.addCompleteServices(BLEUUID("FF01"));
     _advData.addCompleteName((char *)device_name);

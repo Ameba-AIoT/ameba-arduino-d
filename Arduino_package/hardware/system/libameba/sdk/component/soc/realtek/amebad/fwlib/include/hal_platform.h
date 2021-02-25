@@ -1530,7 +1530,7 @@ typedef struct {
  * @defgroup AmebaD_Peripheral_Declaration  AmebaD HS/LP Peripheral Declarations
  * @{
  *****************************************************************************/
-
+// zzw arduino
 #ifdef __cplusplus
 #if __cplusplus
 

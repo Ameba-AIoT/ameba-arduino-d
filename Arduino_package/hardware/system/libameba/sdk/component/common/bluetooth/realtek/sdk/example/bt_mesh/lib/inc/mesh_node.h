@@ -71,6 +71,10 @@ typedef struct
     uint16_t prov_interval; //!< unit: 100 millisecond, 0: use stack default value
     uint16_t proxy_interval; //!< unit: 100 millisecond, 0: use stack default value
     uint16_t identity_interval; //!< unit: 100 millisecond, 0: use stack default value
+#if MESH_PRB
+    uint16_t prb_interval; //!< unit: 100 millisecond, 0: use stack default value
+    uint32_t prb_random_update_interval; //!< unit: 100 millisecond, 0: use stack default value
+#endif
 } mesh_node_cfg_t, *mesh_node_cfg_p;
 
 typedef struct
@@ -98,7 +102,10 @@ typedef struct
     uint32_t flash: 1; //!< enable/disable flash storage
     uint32_t flash_rpl: 1; //!< rpl has an cascade flash storage control above flash bit
 
-    uint32_t rfu: 14;
+    uint32_t prb : 1; //!< state can be changed by private beacon set
+    uint32_t private_proxy: 2; //!< Mesh Private Proxy
+
+    uint32_t rfu: 11;
 } mesh_node_features_t;
 
 /** @defgroup Mesh_Address Mesh Address
@@ -298,12 +305,19 @@ typedef struct
     uint8_t net_id[8];
     uint8_t beacon_key[MESH_COMMON_KEY_SIZE];
     uint8_t identity_key[MESH_COMMON_KEY_SIZE];
+#if MESH_PRB
+    /** keys used in prb */
+    uint8_t private_beacon_key[MESH_COMMON_KEY_SIZE];
+#endif
 } net_key_t, *net_key_p;
 
 typedef struct
 {
     mesh_key_state_t key_state;
     uint8_t identity; //!< Binding with GATT Proxy state
+#if MESH_PRB
+    uint8_t private_identity; //!< Binding with GATT Pirvate Proxy state
+#endif
     uint16_t net_key_index_g; //!< index of global NetKey list, bit15 represent wheather it is a frnd key
     net_key_p pnet_key[2];
 } net_key_list_t, *net_key_list_p;
@@ -418,12 +432,18 @@ typedef struct
     uint16_t proxy_interval; //!< 100ms
     uint16_t identity_interval; //!< 100ms
     uint16_t identity_credit; //!< identity times in each interval
+#if MESH_PRB
+    uint16_t prb_interval; //!< unit: 100 millisecond, 0: use stack default value
+    uint32_t prb_random_update_interval; //!< unit: 1 second, 0: use stack default value
+    uint16_t private_proxy_interval; //!< 100ms
+    uint16_t private_identity_interval; //!< 100ms
+#endif
     uint16_t unicast_addr;
     plt_list_t element_queue; //!< @ref mesh_element_t
     uint8_t model_num;
     uint8_t sub_addr_num; //!< per model
-    uint8_t *compo_data[1];
-    uint16_t compo_data_size[1];
+    uint8_t *compo_data[3]; //!< 0: page 0, 1: page 1, 2: page 128
+    uint16_t compo_data_size[3];
     /** element attention */
     plt_timer_t attn_timer;
     uint32_t attn_interval; //!< ms, range of 10ms ~ 1000ms
@@ -484,6 +504,21 @@ typedef struct
     uint8_t adv_bearer: 1; //!< default on
     uint8_t node_uncheck_group_addr: 1; //!< default off
     uint8_t check_reprov: 1; //!< default off
+
+    /* configurable parameters */
+#if MESH_PARAM_CONFIGURABLE
+    uint16_t inner_msg_num;
+    uint32_t pb_generic_timeout;
+    uint32_t pb_adv_link_idle_timeout;
+    uint16_t pb_adv_retry_period;
+    uint32_t prov_timeout;
+    uint32_t proxy_sar_timeout;
+    uint8_t proxy_sar_buffer_len;
+    uint8_t frnd_queue_min_ttl;
+    uint8_t frnd_sub_list_size;
+    uint16_t frnd_timeout_period;
+    uint16_t seq_num_step;
+#endif
 } mesh_node_t, *mesh_node_p;
 
 extern mesh_node_t mesh_node;
@@ -640,6 +675,9 @@ void mesh_key_refresh(uint8_t key_refresh, uint16_t net_key_index);
   * @retval false: fail
   */
 bool compo_data_page0_gen(compo_data_page0_header_p pcompo_data_page0_header);
+bool compo_data_page128_gen(compo_data_page0_header_t *pcompo_data_page0_header);
+bool compo_data_page128_valid(void);
+bool compo_data_page128_to_page0(void);
 
 /** @brief
   * @{
@@ -861,6 +899,7 @@ bool mesh_model_sub_check(mesh_model_p pmodel, uint16_t addr);
   * @return the realistic count of group addresses subscribed
   */
 uint16_t mesh_model_sub_dump(mesh_model_p pmodel, uint16_t addr[], uint16_t max_count);
+uint16_t mesh_model_sub_dump_internal(mesh_model_p pmodel, uint16_t addr[], uint16_t max_count);
 
 /**
   * @brief subscribe many group addresses of the model

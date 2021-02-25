@@ -56,6 +56,8 @@ a lot of data that needs to be copied, this should be set high. */
     #define MEM_SIZE                (23*1024)
 #elif defined(CONFIG_PLATFORM_8721D)
     #define MEM_SIZE                (7*1024)
+#elif defined(CONFIG_PLATFORM_AMEBAD2)
+    #define MEM_SIZE                (7*1024)
 #elif defined(ENABLE_AMAZON_COMMON)
     #define MEM_SIZE                (10*1024)
 #else
@@ -144,6 +146,8 @@ a lot of data that needs to be copied, this should be set high. */
 #ifdef CONFIG_HIGH_TP_TEST
     #define TCP_WND                 (8*TCP_MSS)
 #elif defined(CONFIG_PLATFORM_8721D)
+    #define TCP_WND                 (5*TCP_MSS)
+#elif defined(CONFIG_PLATFORM_AMEBAD2)
     #define TCP_WND                 (5*TCP_MSS)
 #elif defined(ENABLE_AMAZON_COMMON)
     #define TCP_WND                 (4*TCP_MSS)

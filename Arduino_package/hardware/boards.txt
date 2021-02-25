@@ -13,6 +13,6 @@ ameba_rtl8721d.build.f_cpu=200000000L
 ameba_rtl8721d.build.usb_product="RTL8722DM/RTL8722CSM"
 ameba_rtl8721d.build.board=AMEBA
 ameba_rtl8721d.build.core=arduino
-ameba_rtl8721d.build.extra_flags=-mthumb -DBOARD_RTL8721D {build.usb_flags}
+ameba_rtl8721d.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722D {build.usb_flags}
 ameba_rtl8721d.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
 ameba_rtl8721d.build.variant=rtl8721d

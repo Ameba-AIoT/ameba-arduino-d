@@ -52,6 +52,7 @@ plt_mutex_t plt_mutex_create(void);
   */
 #define RAM_TYPE_DATA_OFF                                           RAM_TYPE_DATA_ON
 #define plt_malloc(size, ram_type)                                  os_mem_alloc(ram_type, size)
+#define plt_zalloc(size, ram_type)                                  os_mem_zalloc(ram_type, size)
 #define plt_free(p, ram_type)                                       os_mem_free(p)
 /** @} */
 

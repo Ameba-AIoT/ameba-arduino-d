@@ -55,18 +55,6 @@ typedef struct
     uint8_t      bd_type;              /**< remote BD type*/
 } T_DEV_INFO;
 /** @} */
-/** @addtogroup  SCATTERNET_RANDOM
-    * @{
-    */
-#if F_BT_LE_USE_STATIC_RANDOM_ADDR
-typedef struct
-{
-    uint8_t      is_exist;
-    uint8_t      reserved;         /**< remote BD type*/
-    uint8_t      bd_addr[GAP_BD_ADDR_LEN];  /**< remote BD */
-} T_APP_STATIC_RANDOM_ADDR;
-#endif
-/** @} */
 /*============================================================================*
  *                              Variables
  *============================================================================*/
@@ -83,8 +71,4 @@ extern uint8_t dev_list_count;
 bool link_mgr_add_device(uint8_t *bd_addr, uint8_t bd_type);
 void link_mgr_clear_device_list(void);
 
-#if F_BT_LE_USE_STATIC_RANDOM_ADDR
-uint32_t app_save_static_random_address(T_APP_STATIC_RANDOM_ADDR *p_addr);
-uint32_t app_load_static_random_address(T_APP_STATIC_RANDOM_ADDR *p_addr);
-#endif
 #endif

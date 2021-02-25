@@ -42,6 +42,8 @@ TwoWire::TwoWire (uint32_t dwSDAPin, uint32_t dwSCLPin) {
 
     if ((dwSDAPin == PA_26) && (dwSCLPin == PA_25)) {
         this->pI2C = (void *)&i2cwire0;
+    } else if ((dwSDAPin == PB_0) && (dwSCLPin == PA_31)) {
+        this->pI2C = (void *)&i2cwire0;
     } else if ((dwSDAPin == PB_6) && (dwSCLPin == PB_5)) {
         this->pI2C = (void *)&i2cwire1;
     } else {
@@ -256,8 +258,7 @@ void TwoWire::onRequest (void(*function)(void)) {
 //#else
 //#endif
 
-#if defined(BOARD_RTL8721D)
-
+#if defined(BOARD_RTL8722D)
 // SDA SCL
 // HW: I2C0
 TwoWire Wire  = TwoWire(PA_26, PA_25);
@@ -265,4 +266,11 @@ TwoWire Wire  = TwoWire(PA_26, PA_25);
 // HW: I2C1
 TwoWire Wire1 = TwoWire(PB_6, PB_5);
 
+#elif defined(BOARD_RTL8722DM_MINI)
+// SDA SCL
+// HW: I2C0
+TwoWire Wire  = TwoWire(PB_0, PA_31);
+//TwoWire Wire  = TwoWire(PB_6, PB_5);
+#else
+#error chack the borad supported
 #endif

@@ -370,6 +370,7 @@ typedef union
 } prov_cb_data_t;
 
 typedef bool (*prov_cb_pf)(prov_cb_type_t cb_type, prov_cb_data_t cb_data);
+typedef bool (*prov_send_t)(uint8_t *pdata, uint16_t len);
 
 typedef struct
 {
@@ -379,6 +380,7 @@ typedef struct
     prov_cb_pf pf_prov_cb;
     plt_timer_t timer;
     prov_ctx_tmp_p pctx_tmp;
+    prov_send_t prov_send;
 } prov_ctx_t, *prov_ctx_p;
 
 extern prov_ctx_t prov_ctx;
@@ -409,6 +411,9 @@ void prov_data_keys_gen(uint8_t random_provisioner[16], uint8_t random_device[16
 bool prov_data_crypto(uint8_t dev_key[16], uint8_t data[38], bool encrypt_decrypt);
 void prov_handle_disconnect(void);
 void prov_handle_timeout(void);
+void prov_set_send_cb(prov_send_t pcb);
+uint16_t prov_dev_key_idx(uint16_t addr);
+bool prov_replace(uint16_t old_idx, uint16_t new_idx);
 ///@endcond
 
 /**

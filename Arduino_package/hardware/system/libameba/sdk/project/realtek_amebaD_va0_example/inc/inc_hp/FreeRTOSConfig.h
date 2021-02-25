@@ -144,7 +144,7 @@ extern uint32_t SystemCoreClock;
 #define INCLUDE_xTaskResumeFromISR						0
 #define INCLUDE_xTaskGetCurrentTaskHandle				1
 #define INCLUDE_xTaskGetSchedulerState					0
-#define INCLUDE_xSemaphoreGetMutexHolder				0
+#define INCLUDE_xSemaphoreGetMutexHolder				1
 #define INCLUDE_xTimerPendFunctionCall					1
 
 /* This demo makes use of one or more example stats formatting functions.  These

@@ -38,7 +38,6 @@ void initVariant() { }
  * \brief handle sketch
  */
 
-// zzw 
 //void main_task(void const *arg)
 void main_task(void)
 {

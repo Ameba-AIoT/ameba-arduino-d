@@ -38,6 +38,7 @@
 #include "friendship_lpn.h"
 #include "provision_adv.h"
 #include "mesh_flash.h"
+#include "private_beacon_model.h"
 
 BEGIN_DECLS
 END_DECLS

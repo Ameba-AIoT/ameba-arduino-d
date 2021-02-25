@@ -51,6 +51,8 @@ struct http_response {
 	size_t version_len;              /*!< HTTP version data length */
 	uint8_t *status;                 /*!< Pointer to HTTP status code in the parsed HTTP header string */
 	size_t status_len;               /*!< HTTP status code data length */
+	uint8_t *location;               /*!< Pointer to HTTP location in the parsed HTTP header string */
+	size_t location_len;             /*!< HTTP location data length */
 	uint8_t *content_type;           /*!< Pointer to Content-Type header field in the parsed HTTP header string */
 	size_t content_type_len;         /*!< Content-Type header field data length */
 	size_t content_len;              /*!< Value of Content-Length header field parsed in HTTP header string */
@@ -216,9 +218,9 @@ int httpc_response_read_header(struct httpc_conn *conn);
 int httpc_response_read_data(struct httpc_conn *conn, uint8_t *data, size_t data_len);
 
 /**
- * @brief      This function is used to get a header field from HTTP header of connection context.
+ * @brief      This function is used to get a header field(case-insensitive) from HTTP header of connection context.
  * @param[in]  conn: pointer to connection context
- * @param[in]  field: header field string to search
+ * @param[in]  field: header field string to search(case-insensitive)
  * @param[out] value: search result stored in memory allocated
  * @return    0 : if found
  * @return    -1 : if not found

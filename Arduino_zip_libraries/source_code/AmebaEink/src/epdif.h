@@ -4,25 +4,13 @@
 #include <Arduino.h>
 
 // Pin definition
-#if defined(BOARD_RTL8722D)
-#define BUSY_Pin 8
-#define RES_Pin 9
-#define DC_Pin 10
-#define CS_Pin 11
-#define SCK_Pin 12
-#define SDI_Pin 13
-
-#elif defined(BOARD_RTL8722DM_MINI)
-#define BUSY_Pin 21
-#define RES_Pin 20
-#define DC_Pin 12
-#define CS_Pin 9
-#define SCK_Pin 10
-#define SDI_Pin 11
-
-#else
-#error chack the borad supported
-#endif
+#if 0
+#define BUSY_Pin    EPD_BUSY_Pin
+#define RES_Pin     EPD_RES_Pin
+#define DC_Pin      EPD_SPI_CS_Pin
+#define CS_Pin      EPD_SPI_MOSI_Pin
+#define SCK_Pin     EPD_SPI_MISO_Pin
+#define SDI_Pin     EPD_SPI_CLK_Pin
 
 #define EPD_W21_MOSI_0 digitalWrite(SDI_Pin, LOW)
 #define EPD_W21_MOSI_1 digitalWrite(SDI_Pin, HIGH)
@@ -35,6 +23,7 @@
 #define EPD_W21_RST_0 digitalWrite(RES_Pin, LOW)
 #define EPD_W21_RST_1 digitalWrite(RES_Pin, HIGH)
 #define isEPD_W21_BUSY digitalRead(BUSY_Pin)
+#endif
 
 #define MONOMSB_MODE 1
 #define MONOLSB_MODE 2
@@ -66,7 +55,7 @@
 
 class EpdIf {
 public:
-    EpdIf(void);
+    EpdIf(int BUSY_Pin, int RES_Pin, int DC_Pin, int CS_Pin, int SCK_Pin, int SDI_Pin);
     ~EpdIf(void);
     void EPD_Dis_Part(
         unsigned int x_start,
@@ -106,5 +95,23 @@ private:
     void EPD_InitText(void);
     void EPD_Part_Init(void);
     void SetLUT(const unsigned char* lut);
+
+    int _BUSY_Pin;
+    int _RES_Pin;
+    int _DC_Pin;
+    int _CS_Pin;
+    int _SCK_Pin;
+    int _SDI_Pin;
+    void EPD_W21_MOSI_0 (void) { digitalWrite(_SDI_Pin, LOW); }
+    void EPD_W21_MOSI_1 (void) { digitalWrite(_SDI_Pin, HIGH); }
+    void EPD_W21_CLK_0 (void) { digitalWrite(_SCK_Pin, LOW); }
+    void EPD_W21_CLK_1 (void) { digitalWrite(_SCK_Pin, HIGH); }
+    void EPD_W21_CS_0 (void) { digitalWrite(_CS_Pin, LOW); }
+    void EPD_W21_CS_1 (void) { digitalWrite(_CS_Pin, HIGH); }
+    void EPD_W21_DC_0 (void) { digitalWrite(_DC_Pin, LOW); }
+    void EPD_W21_DC_1 (void) { digitalWrite(_DC_Pin, HIGH); }
+    void EPD_W21_RST_0 (void) { digitalWrite(_RES_Pin, LOW); }
+    void EPD_W21_RST_1 (void) { digitalWrite(_RES_Pin, HIGH); }
+    int isEPD_W21_BUSY (void) { return digitalRead(_BUSY_Pin); }
 };
 #endif
