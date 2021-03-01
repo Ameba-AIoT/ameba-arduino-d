@@ -18,8 +18,8 @@
           "help": {
             "online": "https://www.amebaiot.com/"
           },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8-build20210205.tar.gz",
-          "archiveFileName": "ameba_d-3.0.8-build20210205.tar.gz",
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8-build20210226.tar.gz",
+          "archiveFileName": "ameba_d-3.0.8-build20210226.tar.gz",
           "checksum": "SHA-256:2b5f45d5a6c285fedec678e5cc0f94f56e8d8982ff0be7454e7a8b09e046872d",
           "size": "36217984",
           "boards": [
