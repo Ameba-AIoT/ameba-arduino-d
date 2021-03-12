@@ -20,8 +20,8 @@
           },
           "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.7-v03.tar.gz",
           "archiveFileName": "ameba_d-3.0.7-v03.tar.gz",
-          "checksum": "SHA-256:7436a68da51cd978d50919954ad8cdc4f870f74a3e5707a4f59a8403368ee228",
-          "size": "21263528",
+          "checksum": "SHA-256:dcded960bc3cb4418927a2b09e79d70c41ada743cdadc21f7dca94567d74a208",
+          "size": "21372592",
           "boards": [
             {"name": "RTL8722DM"},
             {"name": "RTL8722CSM"}
