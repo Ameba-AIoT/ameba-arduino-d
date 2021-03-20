@@ -173,9 +173,11 @@ size_t UARTClassOne::write(const uint8_t uc_data)
     serial_putc(&uart_obj, (int)(uc_data));
     return 1;
 }
-
+#ifndef BOARD_RTL8720DN_BW16
 UARTClassOne Serial1(UART0_IRQ, &rx_buffer1);
-
 bool Serial1_available() {
     return Serial1.available() > 0;
 }
+#else
+//Not available
+#endif
