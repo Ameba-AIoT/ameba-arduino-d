@@ -411,6 +411,14 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #define MEMP_NUM_SYS_TIMEOUT            13
 #endif
 
+#ifndef CONFIG_EXAMPLE_COAP_SERVER
+#define CONFIG_EXAMPLE_COAP_SERVER 0
+#endif
+
+#ifndef CONFIG_EXAMPLE_COAP_CLIENT
+#define CONFIG_EXAMPLE_COAP_CLIENT 0
+#endif
+
 /*CONFIG_LIBCOAP_ON is defined to 1 in the lib_coap project options preprocessor defined symbol
  *CONFIG_EXAMPLE_COAP_SERVER and CONFIG_EXAMPLE_COAP_CLIENT is defined in platform_opts.h
  */

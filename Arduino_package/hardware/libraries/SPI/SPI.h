@@ -113,7 +113,7 @@ extern SPIClass SPI1;
 #elif defined(BOARD_RTL8722DM_MINI)
 extern SPIClass SPI;
 #else
-#error chack the borad supported
+#error check the board supported
 #endif
 
 #endif

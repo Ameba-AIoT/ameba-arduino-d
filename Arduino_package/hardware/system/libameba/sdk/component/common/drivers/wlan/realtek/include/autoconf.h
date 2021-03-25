@@ -24,7 +24,7 @@
  */
 #include "platform_opts.h"
 
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_AMEBAD2)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_AMEBAD2) || defined(CONFIG_PLATFORM_8735B)
 #ifndef CONFIG_PLATFORM_AMEBA_X
 #define CONFIG_PLATFORM_AMEBA_X 1
 #endif
@@ -33,7 +33,7 @@
 #endif
 
 #if (CONFIG_PLATFORM_AMEBA_X == 1)
-#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
+#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8735B)
 	#define CONFIG_AXI_HCI
 	#else
 	#define CONFIG_LX_HCI
@@ -52,7 +52,7 @@
 #endif // #if (CONFIG_PLATFORM_AMEBA_X == 1)
 
 
-#if defined(CONFIG_HARDWARE_8188F) || defined(CONFIG_HARDWARE_8192E)|| defined(CONFIG_HARDWARE_8723D) || defined(CONFIG_HARDWARE_8821C) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_HARDWARE_8188E) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_AMEBAD2)
+#if defined(CONFIG_HARDWARE_8188F) || defined(CONFIG_HARDWARE_8192E)|| defined(CONFIG_HARDWARE_8723D) || defined(CONFIG_HARDWARE_8821C) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_HARDWARE_8188E) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_AMEBAD2) || defined(CONFIG_PLATFORM_8735B)
 #define CONFIG_FW_C2H_PKT
 #define PHYDM_LINUX_CODING_STYLE 1
 #else
@@ -113,6 +113,9 @@
 //#define CONFIG_MEMORY_ACCESS_ALIGNED
 
 #define CONFIG_POWER_SAVING
+#ifdef CONFIG_INIC_IPC_TODO
+#undef CONFIG_POWER_SAVING
+#endif
 #ifdef CONFIG_POWER_SAVING
 	#define CONFIG_IPS
 	#define CONFIG_LPS
@@ -273,7 +276,7 @@
 #ifdef CONFIG_CONCURRENT_MODE
 //#define CONFIG_MCC_MODE
 //#define CONFIG_STA_MODE_SCAN_UNDER_AP_MODE
-  #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8721D)
+  #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8735B)
     #define CONFIG_RUNTIME_PORT_SWITCH
   #endif
   #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
@@ -528,6 +531,7 @@ extern unsigned int g_ap_sta_num;
 		#define DBG_DM_DIG 0			// DebugComponents: bit0
 		//#define CONFIG_SUPPORT_DYNAMIC_TXPWR   //rtw_phydm_fill_desc_dpt todo
 		#if (CONFIG_INIC_EN == 1)
+			#ifndef CONFIG_INIC_IPC
 			#undef CONFIG_PROMISC
 			#undef CONFIG_WPS
 			#undef CONFIG_AP_MODE
@@ -538,6 +542,7 @@ extern unsigned int g_ap_sta_num;
 			//#undef SUPPORT_SCAN_BUF
 			#undef CONFIG_CONCURRENT_MODE
 			#undef CONFIG_AUTO_RECONNECT
+			#endif
 		#endif
 		//#define CONFIG_WIFI_MESH	0	
 	#endif
@@ -604,6 +609,84 @@ extern unsigned int g_ap_sta_num;
 		#define RTW_HALMAC_LTE_COEX 0
 
 		#define CONFIG_MAC_LOOPBACK_DRIVER_RTL8195B 0
+	#endif
+	#if defined(CONFIG_PLATFORM_8735B)
+		#define CONFIG_RTL8735B
+		#undef CONFIG_EAP
+		#undef CONFIG_ADAPTOR_INFO_CACHING_FLASH
+		#define CONFIG_ADAPTOR_INFO_CACHING_FLASH 0
+		#undef CHECK_FLASH_VALID_MASK
+		#define CHECK_FLASH_VALID_MASK				0
+		#undef CHECK_EFUSE_VALID_MASK
+		#define CHECK_EFUSE_VALID_MASK				0
+		#undef CONFIG_RW_PHYSICAL_EFUSE
+		#define CONFIG_RW_PHYSICAL_EFUSE			1	// efuse_get realraw
+		#undef NOT_SUPPORT_5G
+		#undef NOT_SUPPORT_VHT
+//		#undef NOT_SUPPORT_40M
+//		#undef NOT_SUPPORT_80M
+		#undef DBG
+		#define DBG 1
+		#ifdef CONFIG_POWER_SAVING
+			#define CONFIG_LPS_LCLK
+			#ifdef CONFIG_LPS_LCLK
+				#define CONFIG_DETECT_CPWM_BY_POLLING
+				#define LPS_RPWM_WAIT_MS 300
+			#endif
+			#define CONFIG_LPS_PG
+		#endif
+		#define CONFIG_80211AC_VHT
+		#undef CONFIG_IPS
+		#define CONFIG_NO_FW
+//		#define CONFIG_EX_FW_BIN
+		//#define CONFIG_WOWLAN
+		//#define CONFIG_WOWLAN_HW_CAM
+		//#define CONFIG_WOWLAN_CUSTOM_PATTERN
+		#ifdef CONFIG_WOWLAN
+			#define CONFIG_WOWLAN_TCP_KEEP_ALIVE
+		#endif
+		#define LOAD_FW_HEADER_FROM_DRIVER
+		#define FW_IQK
+//		#define RTW_IQK_FW_OFFLOAD
+		#define CONFIG_PHY_CAPABILITY_QUERY
+		#define CONFIG_ISR_THREAD_MODE_INTERRUPT	/* Wlan IRQ Interrupt  Mode*/
+//		#define CONFIG_WLAN_RF_CNTL
+		#undef SUPPORT_5G_CHANNEL
+		#define SUPPORT_5G_CHANNEL	1
+		#define CONFIG_DFS
+		#ifdef CONFIG_DFS
+			#define CONFIG_DFS_ACTION
+		#endif
+			
+		#define DBG_DM_DIG 0			// DebugComponents: bit0
+//		#define CONFIG_DEBUG
+
+		#define RTW_HALMAC		/* Use HALMAC architecture */
+		#define RTW_HALMAC_MU_BF	0
+		#define RTW_HALMAC_SU_BF	0
+		#define RTW_HALMAC_BT_COEX	0
+		#define RTW_HALMAC_DUMP_INFO  0
+		#define RTW_HALMAC_TXBF		0
+		#define RTW_HALMAC_FW_OFFLOAD  0
+		#define RTW_HALMAC_PHYSICAL_EFUSE  0
+		#define RTW_HALMAC_SIZE_OPTIMIZATION 1
+		#define RTW_HALMAC_SDIO_CIA_READ 0
+		#define RTW_HALMAC_LTE_COEX 0
+
+		#define CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B 0
+		//#define CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C 1 // 1: HAL+MAC LOOPBACK, 2: HAL+MAC+BB LOOPBACK 3: DRV+HAL+MAC LOOPBACK
+		#if defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 3)
+		#define CONFIG_MAC_LOOPBACK_DRIVER_AMEBA
+		#endif
+
+		// TODO: remove
+		#undef CONFIG_PROMISC
+		#undef CONFIG_PMKSA_CACHING
+		#undef CONFIG_IEEE80211W
+		#undef CONFIG_SAE_SUPPORT
+		#define CONFIG_NO_PHYDM
+		#define CONFIG_NO_EFUSE
+		#define CONFIG_WLAN_TODO
 	#endif
 	#if defined(CONFIG_PLATFORM_8710C)
 		#ifndef CONFIG_RTL8710C 
@@ -742,6 +825,9 @@ extern unsigned int g_ap_sta_num;
 #elif defined(CONFIG_PLATFORM_8195BHP)
 #undef RTL8195B_SUPPORT
 #define RTL8195B_SUPPORT 1
+#elif defined(CONFIG_PLATFORM_8735B)
+#undef RTL8735B_SUPPORT
+#define RTL8735B_SUPPORT 1
 #elif defined(CONFIG_PLATFORM_8710C)
 #undef RTL8710C_SUPPORT
 #define RTL8710C_SUPPORT 1
@@ -834,7 +920,8 @@ extern unsigned int g_ap_sta_num;
 	#endif
 #endif
 #if (defined(CONFIG_FPGA) && !defined(CONFIG_PLATFORM_8710C))\
-	|| (defined(CONFIG_PLATFORM_8710C) && defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 1))
+	|| (defined(CONFIG_PLATFORM_8710C) && defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 1)) \
+	|| (defined(CONFIG_PLATFORM_8735B) && defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B) && ((CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 1) || (CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 2)))
 	//Enable mac loopback for test mode (Ameba)
 	#ifdef CONFIG_WIFI_NORMAL
 		#define CONFIG_TWO_MAC_DRIVER // for test mode
@@ -860,10 +947,11 @@ extern unsigned int g_ap_sta_num;
 	#define CONFIG_WLAN_HAL_RX_TASK
 	#define CONFIG_MAC_LOOPBACK_DRIVER_AMEBA 1
 	#define HAL_MAC_ENABLE 1
-	#if !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2)
+	#if !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2) && !defined(CONFIG_PLATFORM_8735B)
 	#define CONFIG_TWO_MAC_TEST_MODE 
 	#endif
-	#if defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 2)
+	#if (defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 2)) \
+	|| (defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 2))
 	// Enable BB loopback test
 	#define HAL_BB_ENABLE 1
 	#define HAL_RF_ENABLE 1
@@ -898,7 +986,9 @@ extern unsigned int g_ap_sta_num;
 #undef RX_AGGREGATION
 //#define RX_AGGREGATION 1
 #undef NOT_SUPPORT_40M
+#ifndef CONFIG_INIC_IPC
 #undef CONFIG_CONCURRENT_MODE
+#endif
 #endif
 
 #if defined(CONFIG_HARDWARE_8821C)

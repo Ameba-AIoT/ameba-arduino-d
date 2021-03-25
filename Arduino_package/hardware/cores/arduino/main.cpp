@@ -37,6 +37,18 @@ void initVariant() { }
 /*
  * \brief handle sketch
  */
+#if defined(Arduino_STD_PRINTF)
+// Redirect regular printf output to UART
+int _write(int file, char *ptr, unsigned int len){
+    (void)file;
+    unsigned int i;
+    for(i = 0; i < len; i++){
+        while (!UART_Writable((UART_TypeDef*)UART2_DEV));
+        UART_CharPut((UART_TypeDef*)UART2_DEV, ptr[i]);
+    }
+    return i;
+}
+#endif
 
 //void main_task(void const *arg)
 void main_task(void)

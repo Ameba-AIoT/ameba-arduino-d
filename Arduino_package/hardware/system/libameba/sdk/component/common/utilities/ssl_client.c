@@ -388,7 +388,8 @@ static void ssl_client(void *param)
 	mbedtls_ssl_conf_rng(&conf, my_random, NULL);
 	mbedtls_ssl_conf_dbg(&conf, my_debug, NULL);
 
-	if(ret = mbedtls_ssl_conf_max_frag_len(&conf, MBEDTLS_SSL_MAX_FRAG_LEN_4096) < 0) {
+	ret = mbedtls_ssl_conf_max_frag_len(&conf, MBEDTLS_SSL_MAX_FRAG_LEN_4096);
+	if (ret < 0) {
 		printf(" failed\n\r  ! mbedtls_ssl_conf_max_frag_len %d\n", ret);
 		goto exit;
 	}

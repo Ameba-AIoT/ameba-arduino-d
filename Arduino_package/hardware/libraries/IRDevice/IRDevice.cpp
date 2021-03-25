@@ -232,6 +232,7 @@ void IRDevice::send(const unsigned int buf[], uint16_t len) {
         }
         bufLen += MAX_LOG_WAVFORM_SIZE;
     }
+
     bufLen++;
     IR_DataStruct.bufLen = bufLen;
 
@@ -241,10 +242,12 @@ void IRDevice::send(const unsigned int buf[], uint16_t len) {
     tx_count += IR_TX_FIFO_SIZE;
 
     while ((IR_DataStruct.bufLen - tx_count) > 0) {
+        while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
+            taskYIELD();
+        }
         if ((IR_DataStruct.bufLen - tx_count) > tx_thres) {
             IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), tx_thres, FALSE);
             tx_count += tx_thres;
-
         } else {
             IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), (IR_DataStruct.bufLen - tx_count), TRUE);
             tx_count = IR_DataStruct.bufLen;
