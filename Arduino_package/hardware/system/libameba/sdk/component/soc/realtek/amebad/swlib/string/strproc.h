@@ -69,7 +69,6 @@ static inline char _tolower(const char c)
 {
 //zzw arduino
     return (c | 0x20);
-//    return c | 0x20;
 }
 #endif
 
@@ -78,7 +77,6 @@ static inline int isodigit(const char c)
 {
 //zzw arduino
     return (c >= '0' && c <= '7');
-//    return c >= '0' && c <= '7';
 }
 
 #endif

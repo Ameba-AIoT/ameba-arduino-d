@@ -89,6 +89,11 @@
 #define SRAM_NOCACHE_DATA_SECTION		\
 	SRAM_BD_DATA_SECTION
 
+#if defined(CONFIG_INIC_IPC_TODO) && CONFIG_INIC_IPC_TODO
+#define SRAM_LWIP_DATA_SECTION                        \
+        SECTION(".lwipsram.data") 
+#endif
+
 #define SRAM_BF_DATA_SECTION                        \
         SECTION(".bfsram.data")
 

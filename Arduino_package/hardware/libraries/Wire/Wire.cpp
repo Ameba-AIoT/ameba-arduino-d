@@ -89,6 +89,10 @@ void TwoWire::begin (int address) {
     begin((uint8_t)address);
 }
 
+void TwoWire::end() {
+    i2c_reset((i2c_t *)this->pI2C);
+}
+
 void TwoWire::setClock(uint32_t frequency) {
     twiClock = frequency;
     i2c_frequency(((i2c_t *)this->pI2C), this->twiClock);
@@ -133,7 +137,11 @@ void TwoWire::beginTransmission (uint8_t address) {
     status = MASTER_SEND;
 
     // save address of target and empty buffer
-    txAddress = address;
+    if (txAddress != address) {
+        txAddress = address;
+        // If target address changes, wait for 50us to avoid losing next data packet, tested ok down to 10us
+        DelayUs(50);
+    }
     txBufferLength = 0;
 }
 
@@ -277,5 +285,5 @@ TwoWire Wire  = TwoWire(PB_0, PA_31);
 TwoWire Wire  = TwoWire(PA_26, PA_25);
 
 #else
-#error chack the borad supported
+#error check the board supported
 #endif

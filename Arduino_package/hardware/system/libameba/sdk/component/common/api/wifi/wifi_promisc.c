@@ -22,6 +22,12 @@ extern void _promisc_filter_by_ap_and_phone_mac(u8 enable, void *ap_mac, void *p
 extern int _promisc_recv_lens_func(void *padapter, u8 *payload, u8 plen);
 extern int _promisc_filter_with_len(u16 len);
 extern int _promisc_filter_retransmit_plcp_pkt(u8 enable, u8 filter_interval_ms);
+extern int _promisc_set_mgntframe(u8 enable);
+extern int _promisc_get_chnl_by_bssid(u8 *bssid);
+extern void _promisc_update_candi_ap_rssi_avg(s8 rssi, u8 cnt);
+extern void _promisc_stop_tx_beacn(void);
+extern void _promisc_resume_tx_beacn(void);
+extern void _promisc_issue_probersp(unsigned char *da);
 // Add extra interfaces to make release sdk able to determine promisc API linking
 void promisc_deinit(void *padapter)
 {
@@ -120,6 +126,48 @@ void promisc_filter_by_ap_and_phone_mac(u8 enable, void *ap_mac, void *phone_mac
 {
 #ifdef CONFIG_PROMISC
 	_promisc_filter_by_ap_and_phone_mac(enable, ap_mac, phone_mac);
+#endif
+}
+
+int promisc_set_mgntframe(u8 enable)
+{
+#ifdef CONFIG_PROMISC
+	_promisc_set_mgntframe(enable);
+#endif
+}
+
+int promisc_get_chnl_by_bssid(u8 *bssid)
+{
+#ifdef CONFIG_PROMISC
+	_promisc_get_chnl_by_bssid(bssid);
+#endif
+}
+
+void promisc_update_candi_ap_rssi_avg(s8 rssi, u8 cnt)
+{
+#ifdef CONFIG_PROMISC
+	_promisc_update_candi_ap_rssi_avg(rssi, cnt);
+#endif
+}
+
+void promisc_stop_tx_beacn(void)
+{
+#ifdef CONFIG_PROMISC
+	_promisc_stop_tx_beacn();
+#endif
+}
+
+void promisc_resume_tx_beacn(void)
+{
+#ifdef CONFIG_PROMISC
+	_promisc_resume_tx_beacn();
+#endif
+}
+
+void promisc_issue_probersp(unsigned char *da)
+{
+#ifdef CONFIG_PROMISC
+		_promisc_issue_probersp(da);
 #endif
 }
 

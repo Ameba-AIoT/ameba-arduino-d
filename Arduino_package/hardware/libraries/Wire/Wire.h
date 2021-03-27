@@ -31,6 +31,7 @@ class TwoWire : public Stream {
         void begin();
         void begin(uint8_t);
         void begin(int);
+        void end();
         void setClock(uint32_t);
         void beginTransmission(uint8_t);
         void beginTransmission(int);

@@ -117,6 +117,9 @@
 
 #define CONFIG_JOINLINK    0
 
+/* for cm_backtrace example */
+#define CONFIG_EXAMPLE_CM_BACKTRACE 0
+
 #endif //end of #if CONFIG_WLAN
 /*******************************************************************************/
 
@@ -562,6 +565,10 @@ in lwip_opt.h for support uart adapter*/
 
 #if defined(CONFIG_USBD_VENDOR)
 #define CONFIG_EXAMPLE_USBD_VENDOR      1
+#endif
+
+#if defined(CONFIG_USBD_HID)
+#define CONFIG_EXAMPLE_USBD_HID         1
 #endif
 
 #if defined(CONFIG_USBH_MSC)

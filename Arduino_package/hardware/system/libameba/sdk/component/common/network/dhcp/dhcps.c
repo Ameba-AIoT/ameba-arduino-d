@@ -704,9 +704,11 @@ uint8_t dhcps_handle_state_machine_change(uint8_t option_message_type)
 			}
 			#endif
 			#if 1
-			void * temp_repo = dhcp_message_repository->ciaddr;
+			//void * temp_repo = dhcp_message_repository->ciaddr;
+			uint32_t temp_repo;
+			memcpy(&temp_repo, dhcp_message_repository->ciaddr, sizeof(uint32_t));
 			void * temp_ip = &client_request_ip;
-			if(((*(uint32_t *) (temp_repo)) != 0) && ((*(uint32_t *) (temp_ip)) == 0)) {
+			if((temp_repo != 0) && ((*(uint32_t *) (temp_ip)) == 0)) {
 			memcpy(&client_request_ip, dhcp_message_repository->ciaddr, sizeof(client_request_ip));
 			}
 			#endif

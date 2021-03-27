@@ -52,6 +52,7 @@ int eap_start(char *method);
 
 void set_eap_phase(unsigned char is_trigger_eap){
 	eap_phase = is_trigger_eap;
+	wifi_set_eap_phase(is_trigger_eap);
 }
 
 int get_eap_phase(void){
