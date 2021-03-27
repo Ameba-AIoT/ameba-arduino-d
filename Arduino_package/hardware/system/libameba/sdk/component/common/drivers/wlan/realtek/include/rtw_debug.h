@@ -175,9 +175,12 @@ extern u16 GlobalDebugLevel;
 	#define _dbgdump	printf
 
 #if !defined(CONFIG_PLATFORM_8195A) && !defined(CONFIG_PLATFORM_8711B) \
-	&& !defined(CONFIG_PLATFORM_8721D) && !defined(CONFIG_PLATFORM_8195B) \
-	&& !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2)
+	&& !defined(CONFIG_PLATFORM_8721D) && !defined(CONFIG_PLATFORM_8195BHP) \
+	&& !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2) \
+	&& !defined(CONFIG_PLATFORM_8735B)
 #define DRIVER_PREFIX	"RTL871X: "
+#else
+#include <diag.h> // for DRIVER_PREFIX
 #endif
 
 #if 	defined (_dbgdump)

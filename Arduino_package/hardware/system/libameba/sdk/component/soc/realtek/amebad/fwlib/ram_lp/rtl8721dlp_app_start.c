@@ -434,13 +434,18 @@ void app_start(void)
 	}
 
 	/* configure FreeRTOS interrupt and heap region */
+#ifndef CONFIG_INIC_IPC
 	os_heap_init();
+#endif
 	__NVIC_SetVector(SVCall_IRQn, (u32)vPortSVCHandler);
 	__NVIC_SetVector(PendSV_IRQn, (u32)xPortPendSVHandler);
 	__NVIC_SetVector(SysTick_IRQn, (u32)xPortSysTickHandler); 
 
 	mpu_init();
 	app_mpu_nocache_init();
+#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
+	DCache_Disable();
+#endif
 
 	main();
 }

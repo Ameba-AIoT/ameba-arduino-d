@@ -387,7 +387,7 @@ DaemonTaskMessage_t xMessage;
 	configASSERT( xTimer );
 
 	// Added by Realtek to prevent timer thread blocked
-	if( ( xTaskGetCurrentTaskHandle() == ( void * ) xTimerTaskHandle ) && ( ( xCommandID == tmrCOMMAND_STOP ) || ( xCommandID == tmrCOMMAND_CHANGE_PERIOD ) || ( xCommandID == tmrCOMMAND_DELETE ) ) )
+	if( ( xTaskGetCurrentTaskHandle() == ( void * ) xTimerTaskHandle ) && ( ( xCommandID == tmrCOMMAND_STOP ) || ( xCommandID == tmrCOMMAND_CHANGE_PERIOD ) ) )
 	{
 		prvProcessCommands( xTimer, xCommandID, xOptionalValue );
 		return pdPASS;

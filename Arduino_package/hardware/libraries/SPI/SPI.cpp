@@ -80,7 +80,7 @@ void SPIClass::begin(void)
     #else
     if ((pinMOSI == 11) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == 21) {
+    } else if ((pinMOSI == 21) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");

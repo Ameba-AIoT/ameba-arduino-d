@@ -57,6 +57,10 @@ extern u32 _ntohl(u32 n);
 #define SC_SOFTAP_EN      0 // disable softAP mode for iNIC applications
 #endif
 
+#if SC_SOFTAP_EN
+#define SOFTAP_SSID_LEN		33
+#endif
+
 #if CONFIG_WLAN
 #if (CONFIG_INCLUDE_SIMPLE_CONFIG)
 #include "wifi/wifi_conf.h"
@@ -190,13 +194,13 @@ RTW_PACK_STRUCT_END
 #include "pack_end.h"
 #endif
 
-static void set_device_name(char *device_name)
+static void set_device_name(char *device_name, int max_size)
 {
 	int pos = 0;
 	memcpy(device_name, "ameba_", 6);
 	for(int i = 0; i < 3; i++)
 	{
-		sprintf(device_name + 6 + pos, "%02x", xnetif[0].hwaddr[i + 3]);
+		snprintf(device_name + 6 + pos, max_size-6-pos,"%02x", xnetif[0].hwaddr[i + 3]);
 		pos += 2;
 		if(i != 2)
 			device_name[6 + pos++] = ':';
@@ -271,7 +275,7 @@ void SC_scan_thread(void *para)
 				ack_msg.device_type = 0;
 				ack_msg.device_ip = xnetif[0].ip_addr.addr;
 				memset(ack_msg.device_name, 0, 64);
-				set_device_name((char*)ack_msg.device_name);
+				set_device_name((char*)ack_msg.device_name, sizeof(ack_msg.device_name));
 				// set the device_name to: ameba_xxxxxx(last 3 bytes of MAC)				
 				ack_msg.pin_enabled = pin_enable;
 				for(int i = 0; i < 3;i++)
@@ -533,7 +537,7 @@ static int SC_softAP_find_ap_from_scan_buf(char*buf, int buflen, char *target_ss
 		if((ssid_len == strlen(target_ssid))
 			&& (!memcmp(ssid, target_ssid, ssid_len)))
 		{
-			strcpy((char*)pwifi->ssid, target_ssid);
+			strncpy((char*)pwifi->ssid, target_ssid, sizeof(pwifi->ssid));
 			// channel offset = 13
 			pwifi->channel = *(buf + plen + 13);
 			// security_mode offset = 11
@@ -715,7 +719,7 @@ ssid_set_done:
 				pwd[i] = (u8)p[i];
 			pwd[5] = '\0';
 			memset(backup_sc_ctx->password, 0, 65);
-			strcpy((char*)backup_sc_ctx->password, (char*)pwd);
+			strncpy((char*)backup_sc_ctx->password, (char*)pwd, sizeof(backup_sc_ctx->password));
 			wifi->password_len = 5;
 		}else if(wifi->password_len == 26){
 			u32 p[13] = {0};
@@ -727,7 +731,7 @@ ssid_set_done:
 				pwd[i] = (u8)p[i];
 			pwd[13] = '\0';
 			memset(backup_sc_ctx->password, 0, 64);
-			strcpy((char*)backup_sc_ctx->password, (char*)pwd);
+			strncpy((char*)backup_sc_ctx->password, (char*)pwd, sizeof(backup_sc_ctx->password));
 			wifi->password_len = 13;
 		}
 	}
@@ -851,7 +855,7 @@ enum sc_result SC_parse_scan_result_and_connect(scan_buf_arg* scan_buf, rtw_netw
 							pwd[i] = (u8)p[i];
 						pwd[5] = '\0';
 						memset(backup_sc_ctx->password, 0, 65);
-						strcpy((char*)backup_sc_ctx->password, (char*)pwd);
+						strncpy((char*)backup_sc_ctx->password, (char*)pwd, sizeof(backup_sc_ctx->password));
 						wifi->password_len = 5;
 					}else if(wifi->password_len == 26){
 						u32 p[13] = {0};
@@ -863,7 +867,7 @@ enum sc_result SC_parse_scan_result_and_connect(scan_buf_arg* scan_buf, rtw_netw
 							pwd[i] = (u8)p[i];
 						pwd[13] = '\0';
 						memset(backup_sc_ctx->password, 0, 64);
-						strcpy((char*)backup_sc_ctx->password, (char*)pwd);
+						strncpy((char*)backup_sc_ctx->password, (char*)pwd, sizeof(backup_sc_ctx->password));
 						wifi->password_len = 13;
 					}
 				}
@@ -1384,10 +1388,10 @@ static void simpleConfig_get_softAP_profile(unsigned char *SimpleConfig_SSID, un
     
     MAC_sum_complement = -(mac_addr[3] + mac_addr[4] + mac_addr[5]);
 	if(strlen((char const*)softap_prefix) > 0)
-    	sprintf((char*)SimpleConfig_SSID, "%s-%02X%02X%02X00%02X",
-            softap_prefix, mac_addr[3], mac_addr[4], mac_addr[5], (MAC_sum_complement & 0xff));
-	else	
-		sprintf((char*)SimpleConfig_SSID, "@RSC-%02X%02X%02X00%02X",
+		snprintf((char*)SimpleConfig_SSID, SOFTAP_SSID_LEN, "%s-%02X%02X%02X00%02X",
+			softap_prefix, mac_addr[3], mac_addr[4], mac_addr[5], (MAC_sum_complement & 0xff));
+	else
+		snprintf((char*)SimpleConfig_SSID, SOFTAP_SSID_LEN, "@RSC-%02X%02X%02X00%02X",
 			mac_addr[3], mac_addr[4], mac_addr[5], (MAC_sum_complement & 0xff));
 
     memcpy(SimpleConfig_password, "12345678", 8);
@@ -1425,7 +1429,7 @@ static void simple_config_kick_STA(void)
 	    unsigned char *pmac = client_info.mac_list[client_idx].octet;
 	    printf("kick out sta: %02x:%02x:%02x:%02x:%02x:%02x\n",
 	            pmac[0],pmac[1],pmac[2],pmac[3],pmac[4],pmac[5]);
-        wext_del_station("wlan0", pmac);
+        wifi_del_station("wlan0", pmac);
         ++client_idx;
 	}
 	return;
@@ -1502,8 +1506,8 @@ static int simple_config_softap_config(void)
                         char softAP_ack_content[17];
                         //printf("softAP mode simpleConfig success, send response\n");
                     	// ack content: MAC address in string mode
-                    	sprintf(softAP_ack_content, "%02x:%02x:%02x:%02x:%02x:%02x",
-                    	        mac_addr[0], mac_addr[1], mac_addr[2], 
+                    	snprintf(softAP_ack_content, sizeof(softAP_ack_content), "%02x:%02x:%02x:%02x:%02x:%02x",
+                    	        mac_addr[0], mac_addr[1], mac_addr[2],
                     	        mac_addr[3], mac_addr[4], mac_addr[5]);
 
                         if(send(client_fd, softAP_ack_content, sizeof(softAP_ack_content), 0) <= 0)
@@ -1921,7 +1925,7 @@ enum sc_result simple_config_test(rtw_network_info_t *wifi)
     channel_set[1] = 6;
     channel_set[2] = 11;
 
-	auto_chl = wext_get_auto_chl("wlan0", channel_set, sizeof(channel_set)/sizeof(channel_set[0]));
+	auto_chl = wifi_get_auto_chl("wlan0", channel_set, sizeof(channel_set)/sizeof(channel_set[0]));
 
 	if(auto_chl <= 0)
 	{

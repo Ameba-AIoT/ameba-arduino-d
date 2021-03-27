@@ -8,9 +8,10 @@
 #include <stdio.h>
 #include <freertos_pmu.h>
 //#include <tcm_heap.h>
-#include <cmsis.h>
+//#include <cmsis.h>
 
 #if defined(CONFIG_PLATFORM_8710C)
+#include <cmsis.h>
 #include "rtl8710c_freertos_pmu.h"
 #endif
 

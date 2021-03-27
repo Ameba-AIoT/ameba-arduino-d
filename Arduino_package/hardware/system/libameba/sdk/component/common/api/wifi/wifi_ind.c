@@ -25,7 +25,7 @@ static rtw_worker_thread_t          wifi_worker_thread;
 
 //----------------------------------------------------------------------------//
 #if CONFIG_WIFI_IND_USE_THREAD
-static rtw_result_t rtw_send_event_to_worker(int event_cmd, char *buf, int buf_len, int flags)
+rtw_result_t rtw_send_event_to_worker(int event_cmd, char *buf, int buf_len, int flags)
 {
 	rtw_event_message_t message;
 	int i;
@@ -64,7 +64,7 @@ static rtw_result_t rtw_send_event_to_worker(int event_cmd, char *buf, int buf_l
 	return ret;
 }
 #else
-static rtw_result_t rtw_indicate_event_handle(int event_cmd, char *buf, int buf_len, int flags)
+rtw_result_t rtw_indicate_event_handle(int event_cmd, char *buf, int buf_len, int flags)
 {
 	rtw_event_handler_t handle = NULL;
 	int i;
@@ -214,6 +214,10 @@ void wifi_indication( rtw_event_indicate_t event, char *buf, int buf_len, int fl
 	rtw_send_event_to_worker(event, buf, buf_len, flags);
 #else
 	rtw_indicate_event_handle(event, buf, buf_len, flags);
+#endif
+
+#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
+	inic_ipc_wifi_event_indicate(event, buf, buf_len, flags);
 #endif
 }
 

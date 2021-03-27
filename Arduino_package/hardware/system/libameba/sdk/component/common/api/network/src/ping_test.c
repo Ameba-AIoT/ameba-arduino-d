@@ -287,12 +287,12 @@ void do_ping_test(char *ip, int size, int count, int interval)
 	if(ip == NULL){
 		host = pvPortMalloc(strlen(PING_IP) + 1);
 		memset(host, 0, (strlen(PING_IP) + 1));
-		strcpy(host, PING_IP);
+		strncpy(host, PING_IP, (strlen(PING_IP) + 1));
 	}
 	else{
 		host = pvPortMalloc(strlen(ip) + 1);
 		memset(host, 0, (strlen(ip) + 1));
-		strcpy(host, ip);
+		strncpy(host, ip, (strlen(PING_IP) + 1));
 	}
 
 	ping_call = 0;

@@ -115,7 +115,7 @@ extern SPIClass SPI;
 #elif defined(BOARD_RTL8720DN_BW16)
 extern SPIClass SPI;
 #else
-#error chack the borad supported
+#error check the board supported
 #endif
 
 #endif

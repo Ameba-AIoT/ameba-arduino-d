@@ -10,22 +10,57 @@
       },
 
       "platforms": [
-        {
+		    {
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
           "architecture": "AmebaD",
-          "version": "3.0.8-build20210320",
+          "version": "3.0.8-build20210327",
           "category": "Contributed",
           "help": {
             "online": "https://www.amebaiot.com/"
           },
           "url": "https://github.com/happyme531/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8-build20210320.tar.gz",
-          "archiveFileName": "ameba_d-3.0.8-build20210320.tar.gz",
-          "checksum": "SHA-256:a15bd6e00761d83a3d91a5f70dd83ee094bc71501521aa4a9b774947e96f121d",
-          "size": "40433188",
+          "archiveFileName": "ameba_d-3.0.8-build20210327.tar.gz",
+          "checksum": "SHA-256:7577991b73b1f0315350c91637113137c9984797c6acef1d56f0ce87ffd0df86",
+          "size": "51462419",
+          "boards": [
+            {
+              "name": "RTL8722DM"
+            },
+            {
+              "name": "RTL8722CSM"
+            },
+            {
+              "name": "RTL8720DN"
+            }
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.4"
+            }
+          ]
+        },
+        {
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "architecture": "AmebaD",
+          "version": "3.0.8-build20210325",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8-build20210325.tar.gz",
+          "archiveFileName": "ameba_d-3.0.8-build20210325.tar.gz",
+          "checksum": "SHA-256:c62374e2572acc8a368edf072792135a063eb6e1fc9de416eee17b61a49ff1fd",
+          "size": "36584160",
           "boards": [
             {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8720DN"}
+            {"name": "RTL8722CSM"}
           ],
           "toolsDependencies": [
             {

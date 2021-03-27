@@ -513,8 +513,12 @@ void rtw_free_sema(_sema *sema)
 
 
 //#if defined(__GNUC__)
-#include <cmsis.h>
+//#include <cmsis.h>
 //#endif
+
+#if defined(CONFIG_PLATFORM_8710C)
+#include <cmsis.h>
+#endif
 
 int rtw_in_interrupt(void)
 {

@@ -315,6 +315,7 @@ int wifi_get_ap_info(rtw_bss_info_t * ap_info, rtw_security_t* security)
 	const char * ifname = WLAN0_NAME;
 	int ret = 0;
 	char buf[24];
+	int tmp = 0;
 
 	if(wifi_mode == RTW_MODE_STA_AP) {
 		ifname = WLAN1_NAME;
@@ -326,7 +327,8 @@ int wifi_get_ap_info(rtw_bss_info_t * ap_info, rtw_security_t* security)
 
 	snprintf(buf, 24, "get_security");
 	ret = wext_private_command_with_retval(ifname, buf, buf, 24);
-	sscanf(buf, "%d", security);
+	sscanf(buf, "%d", tmp);
+	*security = tmp;
 
 	return ret;
 }
@@ -514,6 +516,10 @@ int wifi_set_pmk_cache_enable(unsigned char value)
 #endif
 }
 
+int wifi_get_enc_ext(const char *ifname, __u16 *alg, __u8 *key_idx, __u8 *passphrase)
+{
+	return wext_get_enc_ext(ifname, alg, key_idx, passphrase);
+}
 //----------------------------------------------------------------------------//
 int wifi_get_setting(const char *ifname, rtw_wifi_setting_t *pSetting)
 {
@@ -670,6 +676,43 @@ int wifi_get_network_mode(rtw_network_mode_t *pmode)
 int wifi_set_wps_phase(unsigned char is_trigger_wps)
 {
 	return rltk_wlan_set_wps_phase(is_trigger_wps);
+}
+
+int wifi_set_gen_ie(const char * ifname, char * buf, __u16 buf_len, __u16 flags)
+{
+	return wext_set_gen_ie(ifname, buf, buf_len, flags);
+}
+
+int wifi_set_eap_phase(unsigned char is_trigger_eap)
+{
+#ifdef CONFIG_EAP
+	return rltk_wlan_set_eap_phase(is_trigger_eap);
+#else
+	return -1;
+#endif
+}
+
+unsigned char wifi_get_eap_phase(void)
+{
+#ifdef CONFIG_EAP
+	return rltk_wlan_get_eap_phase();
+#else
+	return 0;
+#endif
+}
+
+int wifi_set_eap_method(unsigned char eap_method)
+{
+#ifdef CONFIG_EAP
+	return rltk_wlan_set_eap_method(eap_method);
+#else
+	return -1;
+#endif
+}
+
+int wifi_send_eapol(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
+{
+	return wext_send_eapol(ifname, buf, buf_len, flags);
 }
 
 int wifi_restart_ap(
@@ -863,7 +906,7 @@ int wifi_config_autoreconnect(__u8 mode, __u8 retry_times, __u16 timeout)
 		p_wlan_autoreconnect_hdl = wifi_autoreconnect_hdl;
 	return wext_set_autoreconnect(WLAN0_NAME, mode, retry_times, timeout);
 #else
-	return 0;
+	return -1;
 #endif
 }
 
@@ -873,7 +916,7 @@ int wifi_set_autoreconnect(__u8 mode)
 	p_wlan_autoreconnect_hdl = wifi_autoreconnect_hdl;
 	return wifi_config_autoreconnect(mode, AUTO_RECONNECT_COUNT, AUTO_RECONNECT_INTERVAL);//default retry 8 times, timeout 5 seconds
 #else
-	return 0;
+	return -1;
 #endif
 }
 
@@ -1078,6 +1121,16 @@ WL_BAND_TYPE wifi_get_band_type(void)
 	} else {
 		return WL_BAND_2_4G_5G_BOTH;
 	}
+}
+
+int wifi_get_auto_chl(const char *ifname, unsigned char *channel_set, unsigned char channel_num)
+{
+	return wext_get_auto_chl(ifname, channel_set, channel_num);
+}
+
+int wifi_del_station(const char *ifname, unsigned char* hwaddr)
+{
+	return wext_del_station(ifname, hwaddr);
 }
 
 #if defined( CONFIG_ENABLE_AP_POLLING_CLIENT_ALIVE )&&( CONFIG_ENABLE_AP_POLLING_CLIENT_ALIVE == 1 )

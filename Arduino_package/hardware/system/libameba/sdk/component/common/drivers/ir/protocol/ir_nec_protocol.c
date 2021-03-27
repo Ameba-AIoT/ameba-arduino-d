@@ -280,8 +280,8 @@ static IR_RETURN_Type NEC_DecodePacket(IR_DataTypeDef *IR_DataStruct,
 			/* Whether the data type match */
 			if (CheckCarrierType(IR_DataStruct->irBuf[index]) != CheckCarrierType(
 					IR_Protocol->headerBuf[header_index])) {
-				//DBG_8195A("header type: %d \n", (IR_DataStruct->irBuf[index]) & PULSE_HIGH);
-				//DBG_8195A("header value: %d \n", (IR_DataStruct->irBuf[index]) & IR_DATA_MSK);
+				//printf("header type: %d \n", (IR_DataStruct->irBuf[index]) & PULSE_HIGH);
+				//printf("header value: %d \n", (IR_DataStruct->irBuf[index]) & IR_DATA_MSK);
 				return IR_HEARDE_TYPE_ERROR;
 			}
 
@@ -290,6 +290,7 @@ static IR_RETURN_Type NEC_DecodePacket(IR_DataTypeDef *IR_DataStruct,
 			theoreticalTime = GetData(IR_Protocol->headerBuf[header_index]);
 			toleranceValue = (theoreticalTime * (IR_Protocol->tolerancePrecent)) / 100;
 			if (ABS_TIME(actualTime, theoreticalTime) > toleranceValue) {
+				//printf("[IR_HEADER_DATA_ERROR] actual %x; theory %x; tolerance %x\n", actualTime, theoreticalTime, ABS_TIME(actualTime, theoreticalTime));
 				return IR_HEADER_DATA_ERROR;
 			}
 			header_index++;
@@ -308,6 +309,7 @@ static IR_RETURN_Type NEC_DecodePacket(IR_DataTypeDef *IR_DataStruct,
 			data |= 0 << bitPos;
 			index += MAX_LOG_WAVFORM_SIZE;
 		} else {
+			//printf("[IR_DATA_ERROR]\n");
 			return IR_DATA_ERROR;
 		}
 

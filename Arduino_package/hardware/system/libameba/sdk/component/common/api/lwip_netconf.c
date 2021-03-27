@@ -97,7 +97,7 @@
 /* Private variables ---------------------------------------------------------*/
 #ifdef CONFIG_INIC_IPC
 #include "inic_ipc.h"
-rtw_mode_t wifi_mode = RTW_MODE_STA;
+extern rtw_mode_t wifi_mode;
 #endif
 
 struct netif xnetif[NET_IF_NUM]; /* network interface structure */

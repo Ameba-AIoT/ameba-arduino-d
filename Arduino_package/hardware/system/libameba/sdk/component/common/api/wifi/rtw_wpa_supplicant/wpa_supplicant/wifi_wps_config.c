@@ -310,7 +310,7 @@ static void wps_config_wifi_setting(rtw_network_info_t *wifi, struct dev_credent
 {
 	printf("\r\nwps_config_wifi_setting\n");
 	//memcpy((void *)wifi->ssid, (void *)dev_cred->ssid, dev_cred->ssid_len); 
-	strcpy((char*)wifi->ssid.val, (char*)&dev_cred->ssid[0]);
+	strncpy((char*)wifi->ssid.val, (char*)&dev_cred->ssid[0], sizeof(wifi->ssid.val));
 	printf("\r\nwps_wifi.ssid = %s\n", wifi->ssid.val);
 	wifi->ssid.len = dev_cred->ssid_len;
 	printf("\r\nwps_wifi.ssid_len = %d\n", wifi->ssid.len);
@@ -574,7 +574,7 @@ static void update_discovered_ssids(char *ssid)
 			if(strlen(discovery_ssid) == 0) {
 				discovered_ssids[i] = malloc(strlen(ssid) + 1);
 				strcpy(discovered_ssids[i], ssid);
-				strcpy(discovery_ssid, ssid);
+				strncpy(discovery_ssid, ssid, sizeof(discovery_ssid));
 				break;
 			}
 		}
@@ -846,7 +846,7 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 	if(wps_config == WPS_CONFIG_DISPLAY
 		|| wps_config == WPS_CONFIG_KEYPAD) {
 		if(pin)
-			strcpy(wps_pin_code, pin);
+			strncpy(wps_pin_code, pin, sizeof(wps_pin_code));
 		else{
 			printf("\n\rWPS: PIN is NULL. Not triger WPS.\n");
 			return -1;
@@ -1098,7 +1098,7 @@ void wifi_start_ap_wps_thread(u16 config_methods, char *pin)
 	if(config_methods == WPS_CONFIG_DISPLAY
 		|| config_methods == WPS_CONFIG_KEYPAD) {
 		if(pin)
-			strcpy(wps_pin_code, pin);
+			strncpy(wps_pin_code, pin, sizeof(wps_pin_code));
 		else{
 			printf("\n\rWPS-AP: PIN is NULL. Not triger WPS.\n");
 			return;
@@ -1164,7 +1164,7 @@ void cmd_wps(int argc, char **argv)
 			if(argc == 2){
 				char device_pin[10];
 				pin_val = wps_generate_pin();
-				sprintf(device_pin, "%08d", pin_val);
+				snprintf(device_pin, sizeof(device_pin),"%08d", pin_val);
 				/* Display PIN 3 times to prevent to be overwritten by logs from other tasks */
 				printf("\n\rWPS: Start WPS PIN Display. PIN: [%s]\n\r", device_pin);
 				printf("\n\rWPS: Start WPS PIN Display. PIN: [%s]\n\r", device_pin);

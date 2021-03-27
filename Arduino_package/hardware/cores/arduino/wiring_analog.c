@@ -125,7 +125,7 @@ uint32_t analogRead(uint32_t ulPin) {
     }
 #ifndef BOARD_RTL8720DN_BW16
     switch (ulPin) {
-        case A0:
+        case 0:
             if (g_adc_enabled[0] == false)
             {
                 analogin_init(&adc0, AD_0);
@@ -133,7 +133,7 @@ uint32_t analogRead(uint32_t ulPin) {
             }
             ret = analogin_read_u16(&adc0);
             break;
-        case A1:
+        case 1:
             if (g_adc_enabled[1] == false)
             {
                 analogin_init(&adc1, AD_1);
@@ -141,7 +141,7 @@ uint32_t analogRead(uint32_t ulPin) {
             }
             ret = analogin_read_u16(&adc1);
             break;
-        case A2:
+        case 2:
             if (g_adc_enabled[2] == false)
             {
                 analogin_init(&adc2, AD_2);
@@ -149,7 +149,7 @@ uint32_t analogRead(uint32_t ulPin) {
             }
             ret = analogin_read_u16(&adc2);
             break;
-        case A3:
+        case 3:
             if (g_adc_enabled[3] == false)
             {
                 analogin_init(&adc3, AD_3);
@@ -157,7 +157,7 @@ uint32_t analogRead(uint32_t ulPin) {
             }
             ret = analogin_read_u16(&adc3);
             break;
-        case A4:
+        case 4:
             if (g_adc_enabled[4] == false)
             {
                 analogin_init(&adc4, AD_4);
@@ -165,7 +165,7 @@ uint32_t analogRead(uint32_t ulPin) {
             }
             ret = analogin_read_u16(&adc4);
             break;
-        case A5:
+        case 5:
             if (g_adc_enabled[5] == false)
             {
                 analogin_init(&adc5, AD_5);
@@ -173,7 +173,7 @@ uint32_t analogRead(uint32_t ulPin) {
             }
             ret = analogin_read_u16(&adc5);
             break;
-        case A6:
+        case 6:
             if (g_adc_enabled[6] == false)
             {
                 analogin_init(&adc6, AD_6);

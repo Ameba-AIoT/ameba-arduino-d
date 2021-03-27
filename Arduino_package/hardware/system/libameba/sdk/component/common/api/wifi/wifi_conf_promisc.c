@@ -56,7 +56,7 @@ void wifi_enter_promisc_mode(){
 		rtw_msleep_os(20);
 		wifi_on(RTW_MODE_PROMISC);
 	}else{
-		wext_get_mode(WLAN0_NAME, &mode);
+		wifi_get_mode(WLAN0_NAME, &mode);
 
 		switch(mode) {
 			case IW_MODE_MASTER:    //In AP mode
