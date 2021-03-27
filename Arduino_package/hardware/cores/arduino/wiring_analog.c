@@ -123,7 +123,7 @@ uint32_t analogRead(uint32_t ulPin) {
             _gain = 0x2F12;
         }
     }
-#ifndef BOARD_RTL8720DN_BW16
+
     switch (ulPin) {
         case 0:
             if (g_adc_enabled[0] == false)
@@ -185,37 +185,6 @@ uint32_t analogRead(uint32_t ulPin) {
             printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
             return 0;
     }
-#else
-    switch (ulPin) {
-        case A0:
-            if (g_adc_enabled[4] == false)
-            {
-                analogin_init(&adc4, AD_4);
-                g_adc_enabled[4] = true;
-            }
-            ret = analogin_read_u16(&adc4);
-            break;
-        case A1:
-            if (g_adc_enabled[5] == false)
-            {
-                analogin_init(&adc5, AD_5);
-                g_adc_enabled[5] = true;
-            }
-            ret = analogin_read_u16(&adc5);
-            break;
-        case A2:
-            if (g_adc_enabled[6] == false)
-            {
-                analogin_init(&adc6, AD_6);
-                g_adc_enabled[6] = true;
-            }
-            ret = analogin_read_u16(&adc6);
-            break;
-        default:
-            printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
-            return 0;
-    }
-#endif
     if (ret < 0xfa) {
         mv = 0;     // Ignore persistent low voltage measurement error
     } else {
