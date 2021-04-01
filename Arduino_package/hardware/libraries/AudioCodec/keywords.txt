@@ -1,0 +1,91 @@
+#######################################
+# Syntax Coloring Map AudioCodec
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+Codec	KEYWORD1
+FFT	KEYWORD1
+PlaybackWav	KEYWORD1
+RecordWav	KEYWORD1
+
+#######################################
+# AudioCodec Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+begin	KEYWORD2
+end	KEYWORD2
+getBufferPageSize	KEYWORD2
+setSampleRate	KEYWORD2
+setBitDepth	KEYWORD2
+setChannelCount	KEYWORD2
+setInputMicType	KEYWORD2
+setInputLRMux	KEYWORD2
+setDMicBoost	KEYWORD2
+setAMicBoost	KEYWORD2
+setADCGain	KEYWORD2
+muteInput	KEYWORD2
+setOutputVolume	KEYWORD2
+muteOutput	KEYWORD2
+writeAvaliable	KEYWORD2
+writeDataPage	KEYWORD2
+readAvaliable	KEYWORD2
+readDataPage	KEYWORD2
+setWriteCallback	KEYWORD2
+setReadCallback	KEYWORD2
+
+CH_MONO	LITERAL1
+CH_STEREO	LITERAL1
+RX_CH_LR	LITERAL1
+RX_CH_RL	LITERAL1
+RX_CH_LL	LITERAL1
+RX_CH_RR	LITERAL1
+ANALOGMIC	LITERAL1
+PDMMIC	LITERAL1
+
+#######################################
+# FFT Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+setWindow	KEYWORD2
+calculate	KEYWORD2
+getFrequencyBins	KEYWORD2
+getFFTSize	KEYWORD2
+
+NONE	LITERAL1
+HANN	LITERAL1
+HAMMING	LITERAL1
+
+#######################################
+# PlaybackWav Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+openFile	KEYWORD2
+closeFile	KEYWORD2
+fileOpened	KEYWORD2
+getSampleRate	KEYWORD2
+getChannelCount	KEYWORD2
+getBitDepth	KEYWORD2
+getLengthMillis	KEYWORD2
+getPositionMillis	KEYWORD2
+setPositionMillis	KEYWORD2
+millisToBytes	KEYWORD2
+bytesToMillis	KEYWORD2
+readAudioData	KEYWORD2
+
+#######################################
+# RecordWav Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+openFile	KEYWORD2
+closeFile	KEYWORD2
+fileOpened	KEYWORD2
+setSampleRate	KEYWORD2
+setChannelCount	KEYWORD2
+setBitDepth	KEYWORD2
+getLengthMillis	KEYWORD2
+millisToBytes	KEYWORD2
+bytesToMillis	KEYWORD2
+writeAudioData	KEYWORD2
