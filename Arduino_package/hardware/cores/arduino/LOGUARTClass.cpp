@@ -172,15 +172,15 @@ size_t LOGUARTClass::write(const uint8_t uc_data)
     serial_putc(&log_uart_obj, ((int)uc_data));
     return 1;
 }
-#ifndef BOARD_RTL8720DN_BW16
-LOGUARTClass Serial(UART_LOG_IRQ, &rx_buffer0);
-bool Serial_available() {
-    return Serial.available() > 0;
-}
-#else
+
+#if defined(BOARD_RTL8720DN_BW16)
 LOGUARTClass Serial1(UART_LOG_IRQ, &rx_buffer0);
 bool Serial1_available() {
     return Serial1.available() > 0;
 }
+#else
+LOGUARTClass Serial(UART_LOG_IRQ, &rx_buffer0);
+bool Serial_available() {
+    return Serial.available() > 0;
+}
 #endif
-

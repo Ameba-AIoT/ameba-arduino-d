@@ -279,6 +279,7 @@ TwoWire Wire1 = TwoWire(PB_6, PB_5);
 // HW: I2C0
 TwoWire Wire  = TwoWire(PB_0, PA_31);
 //TwoWire Wire  = TwoWire(PB_6, PB_5);
+
 #elif defined(BOARD_RTL8720DN_BW16)
 // SDA SCL
 // HW: I2C0
