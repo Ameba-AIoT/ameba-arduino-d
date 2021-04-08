@@ -19,7 +19,7 @@
 #define EPD_SPI_CLK_Pin     11
 
 #else
-#error chack the borad supported
+#error chack the board supported
 #endif
 
 EpdIf EPD(EPD_BUSY_Pin, EPD_RES_Pin, EPD_SPI_CS_Pin, EPD_SPI_MOSI_Pin, EPD_SPI_MISO_Pin, EPD_SPI_CLK_Pin);

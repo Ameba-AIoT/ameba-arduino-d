@@ -185,7 +185,6 @@ uint32_t analogRead(uint32_t ulPin) {
             printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
             return 0;
     }
-
     if (ret < 0xfa) {
         mv = 0;     // Ignore persistent low voltage measurement error
     } else {

@@ -11,6 +11,10 @@ extern "C" {
 }
 #endif
 
+#if defined(BOARD_RTL8720DN_BW16)
+#error RTL8720DN do not support SDIO. Please use SPI interface for SD card.
+#endif
+
 #define TEST_SIZE   (512)
 
 char WRBuf[TEST_SIZE];

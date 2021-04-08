@@ -75,14 +75,18 @@ void SPIClass::endTransaction(void)
 
 void SPIClass::begin(void)
 {
-    if (pinMOSI == 11) {
+    #if defined(BOARD_RTL8720DN_BW16)
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1; //no choice
+    #else
+    if ((pinMOSI == 11) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if ((pinMOSI == 21) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
-        printf("spi_init: error, wrong spi_idx \r\n");
+        printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
+    #endif
 
     spi_init(
         (spi_t *)pSpiMaster, 
@@ -97,6 +101,9 @@ void SPIClass::begin(void)
 
 void SPIClass::begin(int ss)
 {
+    #if defined(BOARD_RTL8720DN_BW16)
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1; //no choice
+    #else
     if ((pinMOSI == 11) || (pinMOSI == 9)) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == 21) {
@@ -105,7 +112,7 @@ void SPIClass::begin(int ss)
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
-
+    #endif
     spi_init(
         (spi_t *)pSpiMaster, 
         (PinName)g_APinDescription[pinMOSI].pinname, 
@@ -273,6 +280,9 @@ SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
 
 #elif defined(BOARD_RTL8722DM_MINI)
 SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
+
+#elif defined(BOARD_RTL8720DN_BW16)
+SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
 
 #else
 #error chack the borad supported
