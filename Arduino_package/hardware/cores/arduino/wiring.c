@@ -60,6 +60,8 @@ void delayMicroseconds(uint32_t us)
     dfactor = 20 * us - 10 + (81 * us / 100);
 #elif defined(BOARD_RTL8722DM_MINI)
     dfactor = 20 * us - 10 + (81 * us / 100);
+#elif defined(BOARD_RTL8720DN_BW16)
+    dfactor = 20 * us - 10 + (81 * us / 100);
 #else
     dfactor = 20 * us - 10 + (81 * us / 100);
 #endif
@@ -92,6 +94,8 @@ uint32_t micros(void) {
 #elif defined(BOARD_RTL8722D)
     tick_per_us = 200000;
 #elif defined(BOARD_RTL8722DM_MINI)
+    tick_per_us = 200000;
+#elif defined(BOARD_RTL8720DN_BW16)
     tick_per_us = 200000;
 #else
     tick_per_us = 200000;

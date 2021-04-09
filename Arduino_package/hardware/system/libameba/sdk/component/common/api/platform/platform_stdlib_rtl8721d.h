@@ -91,7 +91,11 @@
 	
 	//extern int _sscanf_patch(const char *buf, const char *fmt, ...);
 	//#define sscanf					_sscanf_patch
-	
+
+#if defined(ARDUINO_SDK)
+	#undef strnlen
+	#define strnlen					_strnlen
+#endif
 
 #endif	// defined (__IARSTDLIB__)
 

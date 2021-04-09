@@ -23,7 +23,7 @@
 #define EPD_SPI_CLK_Pin     11
 
 #else
-#error chack the borad supported
+#error chack the board supported
 #endif
 
 #define COLORED           0

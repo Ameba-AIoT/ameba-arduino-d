@@ -1,5 +1,9 @@
 #include "AudioCodec.h"
 
+#if defined(BOARD_RTL8720DN_BW16)
+#error Sorry, RTL8720DN do not support AudioCodec.
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -589,4 +593,3 @@ void AudioCodec::rxCompleteHandler(void* DMAinfo) {
         _pReadCB();
     }
 }
-
