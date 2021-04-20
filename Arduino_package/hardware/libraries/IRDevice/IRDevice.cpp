@@ -134,7 +134,7 @@ IRDevice::IRDevice() {
 
 void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
     if (receivePin == 3) {
-        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
+        Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
     } else if (receivePin == 8) {
         Pinmux_Config(_PB_22, PINMUX_FUNCTION_IR);
     } else if (receivePin == 17) {
@@ -145,7 +145,7 @@ void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
     }
 
     if (transmitPin == 6) {
-        Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
+        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
     } else if (transmitPin == 9) {
         Pinmux_Config(_PB_23, PINMUX_FUNCTION_IR);
     } else if (transmitPin == 16) {
@@ -284,9 +284,6 @@ void IRDevice::sendNEC(uint8_t adr, uint8_t cmd) {
 
     tx_count += IR_TX_FIFO_SIZE;
     while ((IR_DataStruct.bufLen - tx_count) > 0) {
-        printf("current data len: %d\r\n",(IR_DataStruct.bufLen - tx_count));
-        printf("current free len: %d\r\n", IR_GetTxFIFOFreeLen(IR_DEV));
-        printf("000\r\n");
         while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
             taskYIELD();
         }

@@ -8,7 +8,6 @@
 float sine_buffer[SAMPLECOUNT] = {0};
 float fft_buffer[SAMPLECOUNT/2] = {0};
 uint16_t freq_bins[SAMPLECOUNT/2] = {0};
-char strbuffer[50];
 
 FFT testfft;
 
@@ -29,8 +28,9 @@ void setup() {
     testfft.getFrequencyBins(freq_bins, SAMPLECOUNT, SAMPLERATE);
 
     for (i = 0; i < (SAMPLECOUNT/2); i++) {
-      sprintf(strbuffer, " %d Hz : %f \n", freq_bins[i], fft_buffer[i]);
-      Serial.print(strbuffer);
+        Serial.print(freq_bins[i]);
+        Serial.print(" Hz : ");
+        Serial.println(fft_buffer[i]);
     }
 }
 

@@ -251,20 +251,20 @@ typedef struct _tone_argument {
     uint32_t timer_id;
 }tone_argument;
 
-void _tone_timer_handler(void const *argument) {
-    tone_argument *arg = (tone_argument *)argument;
-
-    //uint32_t ulPin = (uint32_t)argument;
-
+void _tone_timer_handler(void const* argument) {
+    // passed in value is a double pointer to a tone_argument struct
+    tone_argument** pptimer = (tone_argument**) argument;
+    tone_argument* arg = *pptimer;
+    // Stop the currently playing tone and delete the timer
     noTone(arg->ulPin);
-
     os_timer_delete_arduino(arg->timer_id);
-
-    free((tone_argument *)arg);
+    // Set to NULL, and free the previously assigned memory
+    *pptimer = NULL;
+    free(arg);
 }
 
 void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration) {
-    //pwmout_t *obj;
+    static tone_argument* ptimer = NULL;
     if ((g_APinDescription[ulPin].ulPinAttribute & PIO_PWM) != PIO_PWM) {
         return;
     }
@@ -276,25 +276,39 @@ void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration) {
         gpio_pin_struct[ulPin] = malloc(sizeof(pwmout_t));
         pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
         pwmout_init(obj, g_APinDescription[ulPin].pinname);
-        pwmout_period(obj, 1.0/frequency);
-        pwmout_pulsewidth(obj, 1.0/(frequency * 2));
+        if (frequency == 0) {
+            pwmout_pulsewidth(obj, 0);
+        } else {
+            pwmout_period(obj, 1.0/frequency);
+            pwmout_pulsewidth(obj, 1.0/(frequency * 2));
+        }
         g_APinDescription[ulPin].ulPinType = PIO_PWM;
         g_APinDescription[ulPin].ulPinMode = PWM_MODE_ENABLED;
     } else {
         // There is already a PWM configured
         pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
-        pwmout_period(obj, 1.0/frequency);
-        pwmout_pulsewidth(obj, 1.0/(frequency * 2));
+        if (frequency == 0) {
+            pwmout_pulsewidth(obj, 0);
+        } else {
+            pwmout_period(obj, 1.0/frequency);
+            pwmout_pulsewidth(obj, 1.0/(frequency * 2));
+        }
         if (g_APinDescription[ulPin].ulPinMode == PWM_MODE_DISABLED) {
             pwmout_free(obj);
         }
     }
 
     if (duration > 0) {
-        tone_argument *arg = (tone_argument *)(malloc(sizeof(tone_argument)));
-
+        // If a tone timer already exists, assume new tone command to refresh timer, stop and delete old timer
+        if (ptimer != NULL) {
+            os_timer_delete_arduino(ptimer->timer_id);
+            free(ptimer);
+            ptimer = NULL;
+        }
+        tone_argument* arg = (tone_argument *)(malloc(sizeof(tone_argument)));
         arg->ulPin = ulPin;
-        arg->timer_id = os_timer_create_arduino(_tone_timer_handler, 0, arg);
+        arg->timer_id = os_timer_create_arduino(_tone_timer_handler, 0, &ptimer);
+        ptimer = arg;
         os_timer_start_arduino(arg->timer_id, duration);
     }
     delay(5);

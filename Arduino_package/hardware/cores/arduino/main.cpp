@@ -75,6 +75,11 @@ int main(void)
 
     initVariant();
 
+//For all amebad boards, Analog pin needs to pull none. GPIO_PuPd_NOPULL/GPIO_PuPd_DOWN/GPIO_PuPd_UP
+    PAD_PullCtrl(_PB_1, GPIO_PuPd_NOPULL);
+    PAD_PullCtrl(_PB_2, GPIO_PuPd_NOPULL);
+    PAD_PullCtrl(_PB_3, GPIO_PuPd_NOPULL);
+
     osThreadDef(main_task, osPriorityRealtime, 1, MAIN_THREAD_STACK_SIZE);
     main_tid = osThreadCreate(osThread(main_task), NULL);
 
