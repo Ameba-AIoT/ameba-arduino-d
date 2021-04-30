@@ -10,6 +10,7 @@
  */
 
 #include "SPI.h"
+#include "Arduino.h"
 
 #ifdef __cplusplus
 extern "C" {
