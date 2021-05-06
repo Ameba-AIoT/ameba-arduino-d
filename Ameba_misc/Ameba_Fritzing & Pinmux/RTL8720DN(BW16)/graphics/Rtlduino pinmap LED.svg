@@ -144,11 +144,11 @@
      inkscape:snap-to-guides="true"
      inkscape:snap-object-midpoints="true"
      inkscape:snap-others="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1017"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1301"
+     inkscape:window-height="1040"
+     inkscape:window-x="331"
+     inkscape:window-y="48"
+     inkscape:window-maximized="0"
      inkscape:pagecheckerboard="false"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -1914,7 +1914,7 @@
        y="85.74247" />
     <text
        xml:space="preserve"
-       style="font-size:2px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       style="font-size:2px;line-height:1.25;font-family:sans-serif;word-spacing:0px;fill:#0000ff;stroke-width:0.264583"
        x="75.5644"
        y="87.550499"
        id="text1182"><tspan
@@ -1922,7 +1922,7 @@
          id="tspan1180"
          x="75.5644"
          y="87.550499"
-         style="font-size:2px;fill:#008000;stroke-width:0.264583">Green LED</tspan></text>
+         style="font-size:2px;fill:#0000ff;stroke-width:0.264583">Blue LED</tspan></text>
     <rect
        style="opacity:0.998;fill:#00ffff;fill-opacity:1;stroke-width:0.827288;paint-order:markers fill stroke"
        id="rect1184"
@@ -1932,7 +1932,7 @@
        y="88.282471" />
     <text
        xml:space="preserve"
-       style="font-size:2px;line-height:1.25;font-family:sans-serif;word-spacing:0px;stroke-width:0.264583"
+       style="font-size:2px;line-height:1.25;font-family:sans-serif;word-spacing:0px;fill:#008000;stroke-width:0.264583"
        x="75.5644"
        y="90.0905"
        id="text1188"><tspan
@@ -1940,7 +1940,7 @@
          id="tspan1186"
          x="75.5644"
          y="90.0905"
-         style="font-size:2px;fill:#000080;stroke-width:0.264583">Blue LED</tspan></text>
+         style="font-size:2px;fill:#008000;stroke-width:0.264583">Green LED</tspan></text>
     <rect
        style="opacity:0.998;fill:#00ffff;fill-opacity:1;stroke-width:0.827288;paint-order:markers fill stroke"
        id="rect1190"
