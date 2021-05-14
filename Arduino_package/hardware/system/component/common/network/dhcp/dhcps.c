@@ -1,8 +1,7 @@
 
 #include "dhcps.h"
 #include "tcpip.h"
-#include "wifi_constants.h"
-extern rtw_mode_t wifi_mode;
+
 //static struct dhcp_server_state dhcp_server_state_machine;
 static uint8_t dhcp_server_state_machine = DHCP_SERVER_STATE_IDLE;
 /* recorded the client MAC addr(default sudo mac) */
@@ -704,11 +703,9 @@ uint8_t dhcps_handle_state_machine_change(uint8_t option_message_type)
 			}
 			#endif
 			#if 1
-			//void * temp_repo = dhcp_message_repository->ciaddr;
-			uint32_t temp_repo;
-			memcpy(&temp_repo, dhcp_message_repository->ciaddr, sizeof(uint32_t));
+			void * temp_repo = dhcp_message_repository->ciaddr;
 			void * temp_ip = &client_request_ip;
-			if((temp_repo != 0) && ((*(uint32_t *) (temp_ip)) == 0)) {
+			if(((*(uint32_t *) (temp_repo)) != 0) && ((*(uint32_t *) (temp_ip)) == 0)) {
 			memcpy(&client_request_ip, dhcp_message_repository->ciaddr, sizeof(client_request_ip));
 			}
 			#endif
@@ -863,11 +860,6 @@ struct pbuf *udp_packet_buffer, struct ip_addr *sender_addr, uint16_t sender_por
 		return;  
 	}
 	if (sender_port == DHCP_CLIENT_PORT) {
-		if(netif_get_idx(ip_current_input_netif()) == 0 && wifi_mode == RTW_MODE_STA_AP)
-		{
-			pbuf_free(udp_packet_buffer);
-			return;
-		}
 		total_length_of_packet_buffer = udp_packet_buffer->tot_len;
 		if (udp_packet_buffer->next != NULL) {
 			merged_packet_buffer = pbuf_coalesce(udp_packet_buffer,

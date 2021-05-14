@@ -169,12 +169,58 @@ int efuse_otp_chk(u8 len, u8 *buf)
 }
 
 /** 
-  * @}
+  * @brief  read logical efuse
+  * @param  addr: Specified the address to be read.
+  * @param  size: Specifies the data length to be read.
+  * @param  *pbuf: Pointer to the read out data buffer.
+  * @retval   status: Success:0 or Failure: -1.
   */
-  
+int efuse_logical_read(u16 addr, u16 size, u8 *pbuf)
+{
+    if(addr + size > EFUSE_MAP_LEN_8711B)
+        return -1;
+
+    int ret = -1;
+    u8 *tmp_buf = NULL;
+
+    tmp_buf = (u8 *)rtw_malloc(EFUSE_MAP_LEN_8711B);
+    if(NULL == tmp_buf){
+        DBG_8195A("memory error!\n");
+    }
+    else{
+        _memset(tmp_buf, 0, EFUSE_MAP_LEN_8711B);
+        
+        if(1 == EFUSE_LogicalMap_Read(tmp_buf)){
+            for(u16 i = 0; i < size; i++)
+                pbuf[i] = tmp_buf[i+addr];
+            ret =  0;
+        }
+
+        rtw_mfree(tmp_buf, EFUSE_MAP_LEN_8711B);
+    }
+    
+    return ret;
+}
+
 /** 
-  * @}
+  * @brief  write logical efuse
+  * @param  addr: Specified the address to be write.
+  * @param  size: Specifies the data length to be write.
+  * @param  *pbuf: Pointer to the write data buffer.
+  * @retval   status: Success:0 or Failure: -1.
   */
+
+int efuse_logical_write(u16 addr, u16 size, u8 *data)
+{
+    if(addr + size > EFUSE_MAP_LEN_8711B)
+        return -1;
+    
+    if(1 == EFUSE_LMAP_WRITE((u32)addr, (u32)size, data)){
+        return 0;
+    }
+
+    return -1;
+}
 
 /** 
   * @}

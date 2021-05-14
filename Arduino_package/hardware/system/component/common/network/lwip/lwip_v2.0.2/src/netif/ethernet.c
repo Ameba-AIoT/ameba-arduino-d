@@ -73,6 +73,7 @@ void rarp_retrieve_hook_callback(void (*callback)(u8_t *, u8_t *)) {
 static void
 etharp_rarp_input(struct netif *netif, struct eth_addr *ethaddr, struct pbuf *p)
 {
+	(void) ethaddr;
 	struct etharp_hdr *hdr;
 	struct eth_hdr *ethhdr;
 //#if LWIP_AUTOIP

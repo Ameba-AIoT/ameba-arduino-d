@@ -189,7 +189,7 @@ VOID shell_init_ram(VOID)
 	vSemaphoreCreateBinary(shell_sema);
 	xSemaphoreTake(shell_sema, 1/portTICK_RATE_MS);
 
-	if (pdTRUE != xTaskCreate( shell_task_ram, "LOGUART_TASK", 1024*2, 
+	if (pdTRUE != xTaskCreate( shell_task_ram, "LOGUART_TASK", 1024, 
 		NULL, tskIDLE_PRIORITY + 5 , NULL))
 	{
 		DiagPrintf("Create Log UART Task Err!!\n");
@@ -209,10 +209,12 @@ void shell_switch_ipc_int(VOID *Data, u32 IrqStatus, u32 ChanNum)
 
 	if (CpuId == 1) {
 		DBG_8195A("KM4 shell\n");
+		NVIC_ClearPendingIRQ(UART_LOG_IRQ);
 		InterruptEn(UART_LOG_IRQ, 10);
 		pmu_set_sysactive_time(1000);
 	} else {
 		DBG_8195A("KM0 shell\n");
+		NVIC_ClearPendingIRQ(UART_LOG_IRQ_LP);
 		InterruptEn(UART_LOG_IRQ_LP, 10);
 	}
 }

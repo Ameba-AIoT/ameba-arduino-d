@@ -228,21 +228,24 @@ typedef struct rtw_rx_info {
 	unsigned short length;	// length without FCS
 	unsigned char filter;		// 1: HT-20 2T and not LDPC pkt; 2: HT-40 2T and not LDPC pkt; 3: LDPC pkt
 	signed char rssi;	// -128~-1
-	unsigned short channel;	// channel whick this pkt in
+	unsigned short channel;	// channel which this pkt in
 	unsigned char agg:1;		// aggregation pkt or not. If an AMPDU contains only one MPDU then above 'length' is the antual pkt length without FCS, buuut if it contains multiple MPDUs then above 'length' is useless because it cannot tell how many MPDUs are contained and how long is each MPDU.
 	unsigned char mcs:7;		// mcs index
 }rtw_rx_info_t;
+
 
 struct rtw_plcp_info {
 	struct rtw_plcp_info *prev;
 	struct rtw_plcp_info *next;
 	rtw_rx_info_t rtw_plcp_info;
+
 };
 
 struct rtw_rx_buffer {
 	struct rtw_plcp_info *head;
 	struct rtw_plcp_info *tail;
 };
+
 #endif
 
 typedef struct {
@@ -272,12 +275,6 @@ typedef struct wowlan_pattern {
 	unsigned char mask[5];
 } wowlan_pattern_t;
 
-struct psk_info {
-	unsigned char index;
-	unsigned char *psk_essid;
-	unsigned char *psk_passphrase;
-	unsigned char *wpa_global_PSK;
-};
 
 #ifdef	__cplusplus
 }

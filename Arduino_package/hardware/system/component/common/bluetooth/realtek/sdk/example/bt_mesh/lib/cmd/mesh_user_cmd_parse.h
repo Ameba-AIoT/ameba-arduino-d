@@ -20,7 +20,6 @@ extern "C" {
 #endif      /* __cplusplus */
 
 #include "platform_misc.h"
-#include <platform_opts_bt.h>
 
 /****************************************************************************************************************
 * macros that other .c files may use all defined here
@@ -38,13 +37,7 @@ extern "C" {
 
 /** @brief  command parse related macros. */
 #define USER_CMD_MAX_COMMAND_LINE        70           /* max. length of command line in bytes */
-
-#if defined(CONFIG_BT_MESH_TEST) && CONFIG_BT_MESH_TEST
-#define USER_CMD_MAX_PARAMETERS          80           /* max. number of parameters that the parser will scan */
-#else 
-#define USER_CMD_MAX_PARAMETERS          20           /* max. number of parameters that the parser will scan */
-#endif
-  
+#define USER_CMD_MAX_PARAMETERS          25           /* max. number of parameters that the parser will scan */
 #define USER_CMD_MAX_HISTORY_LINE        3
 /** @} */
 

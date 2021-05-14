@@ -432,9 +432,6 @@ const char* tcp_debug_state_str(enum tcp_state s);
 
 /* for compatibility with older implementation */
 #define tcp_new_ip6() tcp_new_ip_type(IPADDR_TYPE_V6)
-#ifdef LWIP_HOOK_TCP_ISN
-void tcp_isn_init(void);
-#endif
 
 #ifdef __cplusplus
 }

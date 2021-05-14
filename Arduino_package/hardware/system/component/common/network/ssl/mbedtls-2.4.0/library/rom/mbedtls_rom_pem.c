@@ -51,11 +51,13 @@
 #pragma GCC diagnostic ignored "-Wint-conversion"
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
 
 #if defined(MBEDTLS_PEM_PARSE_C)
+SSL_ROM_TEXT_SECTION
 void mbedtls_pem_init( mbedtls_pem_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_pem_context ) );
@@ -66,6 +68,7 @@ void mbedtls_pem_init( mbedtls_pem_context *ctx )
 /*
  * Read a 16-byte hex string and convert it to binary
  */
+SSL_ROM_TEXT_SECTION
 static int pem_get_iv( const unsigned char *s, unsigned char *iv,
                        size_t iv_len )
 {
@@ -88,6 +91,7 @@ static int pem_get_iv( const unsigned char *s, unsigned char *iv,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 static void pem_pbkdf1( unsigned char *key, size_t keylen,
                         unsigned char *iv,
                         const unsigned char *pwd, size_t pwdlen )
@@ -140,6 +144,7 @@ static void pem_pbkdf1( unsigned char *key, size_t keylen,
 /*
  * Decrypt with DES-CBC, using PBKDF1 for key derivation
  */
+SSL_ROM_TEXT_SECTION
 static void pem_des_decrypt( unsigned char des_iv[8],
                                unsigned char *buf, size_t buflen,
                                const unsigned char *pwd, size_t pwdlen )
@@ -162,6 +167,7 @@ static void pem_des_decrypt( unsigned char des_iv[8],
 /*
  * Decrypt with 3DES-CBC, using PBKDF1 for key derivation
  */
+SSL_ROM_TEXT_SECTION
 static void pem_des3_decrypt( unsigned char des3_iv[8],
                                unsigned char *buf, size_t buflen,
                                const unsigned char *pwd, size_t pwdlen )
@@ -186,6 +192,7 @@ static void pem_des3_decrypt( unsigned char des3_iv[8],
 /*
  * Decrypt with AES-XXX-CBC, using PBKDF1 for key derivation
  */
+SSL_ROM_TEXT_SECTION
 static void pem_aes_decrypt( unsigned char aes_iv[16], unsigned int keylen,
                                unsigned char *buf, size_t buflen,
                                const unsigned char *pwd, size_t pwdlen )
@@ -209,6 +216,7 @@ static void pem_aes_decrypt( unsigned char aes_iv[16], unsigned int keylen,
 #endif /* MBEDTLS_MD5_C && MBEDTLS_CIPHER_MODE_CBC &&
           ( MBEDTLS_AES_C || MBEDTLS_DES_C ) */
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_pem_read_buffer( mbedtls_pem_context *ctx, const char *header, const char *footer,
                      const unsigned char *data, const unsigned char *pwd,
                      size_t pwdlen, size_t *use_len )
@@ -389,6 +397,7 @@ int mbedtls_pem_read_buffer( mbedtls_pem_context *ctx, const char *header, const
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_pem_free( mbedtls_pem_context *ctx )
 {
     mbedtls_free( ctx->buf );
@@ -399,6 +408,7 @@ void mbedtls_pem_free( mbedtls_pem_context *ctx )
 #endif /* MBEDTLS_PEM_PARSE_C */
 
 #if defined(MBEDTLS_PEM_WRITE_C)
+SSL_ROM_TEXT_SECTION
 int mbedtls_pem_write_buffer( const char *header, const char *footer,
                       const unsigned char *der_data, size_t der_len,
                       unsigned char *buf, size_t buf_len, size_t *olen )

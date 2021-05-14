@@ -50,6 +50,7 @@
 #endif /* MBEDTLS_SELF_TEST */
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -57,6 +58,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * CTR_DRBG context initialization
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ctr_drbg_init( mbedtls_ctr_drbg_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_ctr_drbg_context ) );
@@ -70,6 +72,7 @@ void mbedtls_ctr_drbg_init( mbedtls_ctr_drbg_context *ctx )
  * Non-public function wrapped by mbedtls_ctr_drbg_seed(). Necessary to allow
  * NIST tests to succeed (which require known length fixed entropy)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_seed_entropy_len(
                    mbedtls_ctr_drbg_context *ctx,
                    int (*f_entropy)(void *, unsigned char *, size_t),
@@ -102,6 +105,7 @@ int mbedtls_ctr_drbg_seed_entropy_len(
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_seed( mbedtls_ctr_drbg_context *ctx,
                    int (*f_entropy)(void *, unsigned char *, size_t),
                    void *p_entropy,
@@ -112,6 +116,7 @@ int mbedtls_ctr_drbg_seed( mbedtls_ctr_drbg_context *ctx,
                                        MBEDTLS_CTR_DRBG_ENTROPY_LEN ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_ctr_drbg_free( mbedtls_ctr_drbg_context *ctx )
 {
     if( ctx == NULL )
@@ -124,21 +129,25 @@ void mbedtls_ctr_drbg_free( mbedtls_ctr_drbg_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_ctr_drbg_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_ctr_drbg_set_prediction_resistance( mbedtls_ctr_drbg_context *ctx, int resistance )
 {
     ctx->prediction_resistance = resistance;
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_ctr_drbg_set_entropy_len( mbedtls_ctr_drbg_context *ctx, size_t len )
 {
     ctx->entropy_len = len;
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_ctr_drbg_set_reseed_interval( mbedtls_ctr_drbg_context *ctx, int interval )
 {
     ctx->reseed_interval = interval;
 }
 
+SSL_ROM_TEXT_SECTION
 static int block_cipher_df( unsigned char *output,
                             const unsigned char *data, size_t data_len )
 {
@@ -229,6 +238,7 @@ static int block_cipher_df( unsigned char *output,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 static int ctr_drbg_update_internal( mbedtls_ctr_drbg_context *ctx,
                               const unsigned char data[MBEDTLS_CTR_DRBG_SEEDLEN] )
 {
@@ -267,6 +277,7 @@ static int ctr_drbg_update_internal( mbedtls_ctr_drbg_context *ctx,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_ctr_drbg_update( mbedtls_ctr_drbg_context *ctx,
                       const unsigned char *additional, size_t add_len )
 {
@@ -284,6 +295,7 @@ void mbedtls_ctr_drbg_update( mbedtls_ctr_drbg_context *ctx,
     }
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_reseed( mbedtls_ctr_drbg_context *ctx,
                      const unsigned char *additional, size_t len )
 {
@@ -329,6 +341,7 @@ int mbedtls_ctr_drbg_reseed( mbedtls_ctr_drbg_context *ctx,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_random_with_add( void *p_rng,
                               unsigned char *output, size_t output_len,
                               const unsigned char *additional, size_t add_len )
@@ -395,6 +408,7 @@ int mbedtls_ctr_drbg_random_with_add( void *p_rng,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_random( void *p_rng, unsigned char *output, size_t output_len )
 {
     int ret;
@@ -416,6 +430,7 @@ int mbedtls_ctr_drbg_random( void *p_rng, unsigned char *output, size_t output_l
 }
 
 #if defined(MBEDTLS_FS_IO)
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_write_seed_file( mbedtls_ctr_drbg_context *ctx, const char *path )
 {
     int ret = MBEDTLS_ERR_CTR_DRBG_FILE_IO_ERROR;
@@ -441,6 +456,7 @@ exit:
     return( ret );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_ctr_drbg_update_seed_file( mbedtls_ctr_drbg_context *ctx, const char *path )
 {
     FILE *f;

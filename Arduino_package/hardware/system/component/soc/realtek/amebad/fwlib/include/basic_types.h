@@ -68,8 +68,10 @@ typedef unsigned int	        uint;
 typedef	signed int		        sint;
 
 #ifdef __ICCARM__
+#if (__VER__ < 8040000)
 typedef signed long long        __int64_t;
 typedef unsigned long long      __uint64_t;
+#endif
 #endif
 
 #define s8                      int8_t

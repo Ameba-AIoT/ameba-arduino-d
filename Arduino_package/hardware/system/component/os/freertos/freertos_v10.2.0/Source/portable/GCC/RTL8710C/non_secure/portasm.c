@@ -379,19 +379,3 @@ void vPortFreeSecureContext( uint32_t *pulTCB ) /* __attribute__ (( naked )) PRI
 	);
 }
 /*-----------------------------------------------------------*/
-
-int vPortDoSecCall( uint32_t ulR0, uint32_t ulR1, uint32_t ulR2, uint32_t ulR3  ) /* __attribute__ (( naked )) PRIVILEGED_FUNCTION */
-{
-	__asm volatile
-	(
-	"	mov r12, r0										\n" /* function pointer want to jump. */
-	"	mov r0, r1										\n" /* lst argument. */
-	"	mov r1, r2										\n" /* 2nd argument. */
-	"	mov r2, r3										\n" /* 3rd argument. */
-	"	bx r12											\n" /* Do function call. */
-	);
-	
-	/* should not going here, will return to next line of vPortDoSecCall in caller by function in r12(r0)*/
-	return 0;
-}
-/*-----------------------------------------------------------*/

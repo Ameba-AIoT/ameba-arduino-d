@@ -23,11 +23,17 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-sign"
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC diagnostic ignored "-Wint-conversion"
+
+#define memset _memset
+#define strcmp _strcmp
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
@@ -55,6 +61,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -62,6 +69,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * Reminder: update profiles in x509_crt.c when adding a new hash!
  */
+SSL_ROM_DATA_SECTION
 static const int supported_digests[] = {
 
 #if defined(MBEDTLS_SHA512_C)
@@ -97,11 +105,13 @@ static const int supported_digests[] = {
         MBEDTLS_MD_NONE
 };
 
+SSL_ROM_TEXT_SECTION
 const int *mbedtls_md_list( void )
 {
     return( supported_digests );
 }
 
+SSL_ROM_TEXT_SECTION
 const mbedtls_md_info_t *mbedtls_md_info_from_string( const char *md_name )
 {
     if( NULL == md_name )
@@ -143,6 +153,7 @@ const mbedtls_md_info_t *mbedtls_md_info_from_string( const char *md_name )
     return( NULL );
 }
 
+SSL_ROM_TEXT_SECTION
 const mbedtls_md_info_t *mbedtls_md_info_from_type( mbedtls_md_type_t md_type )
 {
     switch( md_type )
@@ -184,11 +195,13 @@ const mbedtls_md_info_t *mbedtls_md_info_from_type( mbedtls_md_type_t md_type )
     }
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_md_init( mbedtls_md_context_t *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_md_context_t ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_md_free( mbedtls_md_context_t *ctx )
 {
     if( ctx == NULL || ctx->md_info == NULL )
@@ -206,6 +219,7 @@ void mbedtls_md_free( mbedtls_md_context_t *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_md_context_t ) );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_clone( mbedtls_md_context_t *dst,
                       const mbedtls_md_context_t *src )
 {
@@ -222,12 +236,14 @@ int mbedtls_md_clone( mbedtls_md_context_t *dst,
 }
 
 #if ! defined(MBEDTLS_DEPRECATED_REMOVED)
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_init_ctx( mbedtls_md_context_t *ctx, const mbedtls_md_info_t *md_info )
 {
     return mbedtls_md_setup( ctx, md_info, 1 );
 }
 #endif
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_setup( mbedtls_md_context_t *ctx, const mbedtls_md_info_t *md_info, int hmac )
 {
     if( md_info == NULL || ctx == NULL )
@@ -251,6 +267,7 @@ int mbedtls_md_setup( mbedtls_md_context_t *ctx, const mbedtls_md_info_t *md_inf
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_starts( mbedtls_md_context_t *ctx )
 {
     if( ctx == NULL || ctx->md_info == NULL )
@@ -261,6 +278,7 @@ int mbedtls_md_starts( mbedtls_md_context_t *ctx )
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_update( mbedtls_md_context_t *ctx, const unsigned char *input, size_t ilen )
 {
     if( ctx == NULL || ctx->md_info == NULL )
@@ -271,6 +289,7 @@ int mbedtls_md_update( mbedtls_md_context_t *ctx, const unsigned char *input, si
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_finish( mbedtls_md_context_t *ctx, unsigned char *output )
 {
     if( ctx == NULL || ctx->md_info == NULL )
@@ -281,6 +300,7 @@ int mbedtls_md_finish( mbedtls_md_context_t *ctx, unsigned char *output )
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md( const mbedtls_md_info_t *md_info, const unsigned char *input, size_t ilen,
             unsigned char *output )
 {
@@ -333,6 +353,7 @@ cleanup:
 }
 #endif /* MBEDTLS_FS_IO */
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_hmac_starts( mbedtls_md_context_t *ctx, const unsigned char *key, size_t keylen )
 {
     unsigned char sum[MBEDTLS_MD_MAX_SIZE];
@@ -372,6 +393,7 @@ int mbedtls_md_hmac_starts( mbedtls_md_context_t *ctx, const unsigned char *key,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_hmac_update( mbedtls_md_context_t *ctx, const unsigned char *input, size_t ilen )
 {
     if( ctx == NULL || ctx->md_info == NULL || ctx->hmac_ctx == NULL )
@@ -382,6 +404,7 @@ int mbedtls_md_hmac_update( mbedtls_md_context_t *ctx, const unsigned char *inpu
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_hmac_finish( mbedtls_md_context_t *ctx, unsigned char *output )
 {
     unsigned char tmp[MBEDTLS_MD_MAX_SIZE];
@@ -401,6 +424,7 @@ int mbedtls_md_hmac_finish( mbedtls_md_context_t *ctx, unsigned char *output )
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_hmac_reset( mbedtls_md_context_t *ctx )
 {
     unsigned char *ipad;
@@ -416,6 +440,7 @@ int mbedtls_md_hmac_reset( mbedtls_md_context_t *ctx )
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_hmac( const mbedtls_md_info_t *md_info, const unsigned char *key, size_t keylen,
                 const unsigned char *input, size_t ilen,
                 unsigned char *output )
@@ -440,6 +465,7 @@ int mbedtls_md_hmac( const mbedtls_md_info_t *md_info, const unsigned char *key,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_md_process( mbedtls_md_context_t *ctx, const unsigned char *data )
 {
     if( ctx == NULL || ctx->md_info == NULL )
@@ -450,6 +476,7 @@ int mbedtls_md_process( mbedtls_md_context_t *ctx, const unsigned char *data )
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 unsigned char mbedtls_md_get_size( const mbedtls_md_info_t *md_info )
 {
     if( md_info == NULL )
@@ -458,6 +485,7 @@ unsigned char mbedtls_md_get_size( const mbedtls_md_info_t *md_info )
     return md_info->size;
 }
 
+SSL_ROM_TEXT_SECTION
 mbedtls_md_type_t mbedtls_md_get_type( const mbedtls_md_info_t *md_info )
 {
     if( md_info == NULL )
@@ -466,6 +494,7 @@ mbedtls_md_type_t mbedtls_md_get_type( const mbedtls_md_info_t *md_info )
     return md_info->type;
 }
 
+SSL_ROM_TEXT_SECTION
 const char *mbedtls_md_get_name( const mbedtls_md_info_t *md_info )
 {
     if( md_info == NULL )

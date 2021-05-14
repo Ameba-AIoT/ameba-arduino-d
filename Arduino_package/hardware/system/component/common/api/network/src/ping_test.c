@@ -19,13 +19,9 @@
 
 static unsigned short ping_seq = 0;
 static int infinite_loop, ping_count, data_size, ping_interval, ping_call;
-static int ping_total_time = 0, ping_received_count = 0;
-static unsigned char g_ping_terminate = 0;
-xTaskHandle g_ping_task = NULL;
-unsigned char *ping_buf= NULL;
-unsigned char  *reply_buf = NULL;
-int ping_socket;
 
+
+static int ping_total_time = 0, ping_received_count = 0;
 
 static void generate_ping_echo(unsigned char *buf, int size)
 {
@@ -49,13 +45,12 @@ static void generate_ping_echo(unsigned char *buf, int size)
 
 void ping_test(void *param)
 {
-	int i;
-	//int ping_socket;
+	int i, ping_socket;
 	int pint_timeout = PING_TO;
 	struct sockaddr_in to_addr, from_addr;
 	int from_addr_len = sizeof(struct sockaddr);
 	int ping_size, reply_size;
-	//unsigned char *ping_buf, *reply_buf;
+	unsigned char *ping_buf, *reply_buf;
 	unsigned int ping_time, reply_time;
 	struct ip_hdr *iphdr;
 	struct icmp_echo_hdr *pecho;
@@ -63,7 +58,6 @@ void ping_test(void *param)
 	struct hostent *server_host;
 	char *host = param;
 
-	vTaskDelay(100);//wait log service thread done
 	ping_total_time = 0;
 	ping_received_count = 0;
 	
@@ -90,7 +84,7 @@ void ping_test(void *param)
 
 	printf("\n\r[%s] PING %s %d(%d) bytes of data\n", __FUNCTION__, host, data_size, sizeof(struct ip_hdr) + sizeof(struct icmp_echo_hdr) + data_size);			
 
-	for(i = 0; ((i < ping_count) || (infinite_loop == 1)) && (!g_ping_terminate); i ++) {
+	for(i = 0; (i < ping_count) || (infinite_loop == 1); i ++) {
 		ping_socket = socket(AF_INET, SOCK_RAW, IP_PROTO_ICMP);
 #if defined(LWIP_SO_SNDRCVTIMEO_NONSTANDARD) && (LWIP_SO_SNDRCVTIMEO_NONSTANDARD == 0)	// lwip 1.5.0
 		struct timeval timeout;
@@ -140,25 +134,15 @@ void ping_test(void *param)
 		close(ping_socket);
 		vTaskDelay(ping_interval * configTICK_RATE_HZ);
 	}
-	if(g_ping_terminate){
-		printf("\n[%s] ping test terminate!\n",__FUNCTION__);
-		ping_count = i;
-	}
-	if(ping_count == 0){
-		printf("\n\rNumber of echo requests to send cannot be zero\n\r");
-	}
-	else{
-		printf("\n\r[%s] %d packets transmitted, %d received, %d%% packet loss, average %d ms", __FUNCTION__, ping_count, ping_received_count, (ping_count-ping_received_count)*100/ping_count, ping_received_count ? ping_total_time/ping_received_count : 0);
-		printf("\n\r[%s] min: %d ms, max: %d ms\n\r", __FUNCTION__, min_time, max_time);
-	}
+
+	printf("\n\r[%s] %d packets transmitted, %d received, %d%% packet loss, average %d ms", __FUNCTION__, ping_count, ping_received_count, (ping_count-ping_received_count)*100/ping_count, ping_received_count ? ping_total_time/ping_received_count : 0);
+	printf("\n\r[%s] min: %d ms, max: %d ms\n\r", __FUNCTION__, min_time, max_time);
 	vPortFree(ping_buf);
 	vPortFree(reply_buf);
 	vPortFree(host);
 
-	if(!ping_call){
-		g_ping_task = NULL;
+	if(!ping_call)
 		vTaskDelete(NULL);
-	}
 }
 
 void do_ping_call(char *ip, int loop, int count)
@@ -185,55 +169,25 @@ void cmd_ping(int argc, char **argv)
 {
     int argv_count = 2;
 	char * host;
-	g_ping_terminate = 0;
 
     if(argc < 2)
         goto Exit;
 
+    //ping cmd default value
+    infinite_loop = 0;
+    ping_count    = 4;
+    data_size     = 32;
+    ping_interval = 1;
+    ping_call     = 1;
+    ping_seq      = 0;
+
     while(argv_count<=argc){
         //first operation
         if(argv_count == 2){
-            if(strcmp(argv[argv_count-1], "stop") == 0){
-                if(argc == 2){
-                    g_ping_terminate = 1;
-                    //vTaskDelay(100);
-                    if(g_ping_task){
-                        if(ping_socket >= 0){
-                        	close(ping_socket);
-                        }
-                        if(ping_buf){
-                        	vPortFree(ping_buf);
-                        	ping_buf = NULL;
-                        }
-                        if(reply_buf){
-                            vPortFree(reply_buf);
-                            reply_buf = NULL;
-                        }
-                    }
-                    return;
-                }
-                else 
-                    goto Exit;
-            }
-            else {
-                if(g_ping_task){
-                    printf("\n\rPing: Ping task is already running.\n");
-                    return;
-                }
-                else{
-                    //ping cmd default value
-                    infinite_loop = 0;
-                    ping_count    = 4;
-                    data_size     = 32;
-                    ping_interval = 1;
-                    ping_call     = 0;
-                    ping_seq      = 0;
-                    host = pvPortMalloc(strlen(argv[argv_count-1]) + 1);
-                    memset(host, 0, (strlen(argv[argv_count-1]) + 1));
-                    strncpy(host, argv[argv_count-1], strlen(argv[argv_count-1]));
-                    argv_count++;
-                }
-            }
+            host = pvPortMalloc(strlen(argv[argv_count-1]) + 1);
+            memset(host, 0, (strlen(argv[argv_count-1]) + 1));
+            strncpy(host, argv[argv_count-1], strlen(argv[argv_count-1]));
+            argv_count++;
         }
         else{
             if(strcmp(argv[argv_count-1], "-t") == 0){
@@ -258,18 +212,14 @@ void cmd_ping(int argc, char **argv)
         }
     }
 
-    if(g_ping_task == NULL){
-        if(xTaskCreate(ping_test, (char const*)((const signed char*)"ping_test"), STACKSIZE, host, tskIDLE_PRIORITY + 1 + PRIORITIE_OFFSET, &g_ping_task) != pdPASS)
-            printf("\n\r Ping ERROR: Create ping task failed.");
-    }
+    ping_test(host);
 
     return;
 
 Exit:
     printf("\n\r[ATWI] Usage: ATWI=[host],[options]\n");
-    printf("\n\r       stop      Terminate ping \n");
-    printf("  \r     -t    #   Ping the specified host until stopped\n");
-    printf("  \r     -n   #   Number of echo requests to send (default 4 times)\n");
+    printf("\n\r     -t        Ping the specified host until stopped\n");
+    printf("  \r     -n    #   Number of echo requests to send (default 4 times)\n");
     printf("  \r     -l    #   Send buffer size (default 32 bytes)\n");
     printf("\n\r   Example:\n");
     printf("  \r     ATWI=192.168.1.2,-n,100,-l,5000\n");

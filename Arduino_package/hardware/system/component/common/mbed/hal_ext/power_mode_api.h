@@ -74,8 +74,8 @@
 ///@{
 
 enum {
-    AON_128K = 0,    // AON CLK 128kHz
-    AON_100K = 1,    // AON CLK 100kHz
+    AON_128K = CLK_128K,    // AON CLK 128kHz
+    AON_100K = CLK_100K,    // AON CLK 100kHz
 };
 
 /** 
@@ -166,16 +166,6 @@ void DeepSleep (u8  Option, u64 SDuration, u8 Memsel, u8 Clock);
  *  @returns void
  */
 void DeepSleep_RTC (u8 Option, u8 Memsel);
-
-/**
- *  @brief   Set BOD level
- *
- *  @param   bod_lvl: BOD level, max value is 7,
- *                               min value is 0.
- *  @return  void
- *
- */
-void BOD_Level_Setting (int bod_lvl);
 
 ///@}
 

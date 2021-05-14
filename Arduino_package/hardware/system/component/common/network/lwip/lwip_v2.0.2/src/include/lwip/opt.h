@@ -2444,8 +2444,6 @@
 #ifdef __DOXYGEN__
 #define LWIP_HOOK_TCP_ISN(local_ip, local_port, remote_ip, remote_port)
 #endif
-//#include <tcp_isn.h>
-//#define LWIP_HOOK_TCP_ISN(local_ip, local_port, remote_ip, remote_port) lwip_hook_tcp_isn(local_ip, local_port, remote_ip, remote_port)
 
 /**
  * LWIP_HOOK_IP4_INPUT(pbuf, input_netif):

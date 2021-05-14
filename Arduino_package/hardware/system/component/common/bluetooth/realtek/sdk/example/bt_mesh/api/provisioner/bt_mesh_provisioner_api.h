@@ -14,6 +14,8 @@
 #define _BT_MESH_PROV_API_H_
 
 #include "bt_mesh_user_api.h"
+#include "osdep_service.h"
+#include "platform_os.h"
 
 #define BT_MESH_PROV_CMD_RETRY_COUNT 2
 
@@ -21,7 +23,7 @@
 enum bt_mesh_provisioner_cmd
 {
 	GEN_MESH_CODE(_pb_adv_con) ,	/*0*/
- 	GEN_MESH_CODE(_prov) ,  
+ 	GEN_MESH_CODE(_prov) ,
  	GEN_MESH_CODE(_prov_stop) ,
  	GEN_MESH_CODE(_app_key_add) , 
 	GEN_MESH_CODE(_model_app_bind) , 
@@ -95,12 +97,7 @@ enum bt_mesh_provisioner_cmd
 	GEN_MESH_CODE(_scheduler_get) ,
 	GEN_MESH_CODE(_scheduler_action_get) ,
 	GEN_MESH_CODE(_scheduler_action_set) ,
-	GEN_MESH_CODE(_rmt_prov_client_scan_start) ,
-	GEN_MESH_CODE(_rmt_prov_client_link_open_prov) ,
-	GEN_MESH_CODE(_rmt_prov_client_close) ,
-	GEN_MESH_CODE(_fw_update_info_get) ,
-	GEN_MESH_CODE(_fw_update_start) ,
-	GEN_MESH_CODE(_fw_update_cancel) ,
+
 	MAX_MESH_PROVISIONER_CMD
 };
 

@@ -19,6 +19,11 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memcpy _memcpy
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -39,6 +44,7 @@
 #define mbedtls_free       free
 #endif
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_len( unsigned char **p, unsigned char *start, size_t len )
 {
     if( len < 0x80 )
@@ -99,6 +105,7 @@ int mbedtls_asn1_write_len( unsigned char **p, unsigned char *start, size_t len 
     return( MBEDTLS_ERR_ASN1_INVALID_LENGTH );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_tag( unsigned char **p, unsigned char *start, unsigned char tag )
 {
     if( *p - start < 1 )
@@ -109,6 +116,7 @@ int mbedtls_asn1_write_tag( unsigned char **p, unsigned char *start, unsigned ch
     return( 1 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_raw_buffer( unsigned char **p, unsigned char *start,
                            const unsigned char *buf, size_t size )
 {
@@ -125,6 +133,7 @@ int mbedtls_asn1_write_raw_buffer( unsigned char **p, unsigned char *start,
 }
 
 #if defined(MBEDTLS_BIGNUM_C)
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_mpi( unsigned char **p, unsigned char *start, const mbedtls_mpi *X )
 {
     int ret;
@@ -162,6 +171,7 @@ cleanup:
 }
 #endif /* MBEDTLS_BIGNUM_C */
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_null( unsigned char **p, unsigned char *start )
 {
     int ret;
@@ -175,6 +185,7 @@ int mbedtls_asn1_write_null( unsigned char **p, unsigned char *start )
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_oid( unsigned char **p, unsigned char *start,
                     const char *oid, size_t oid_len )
 {
@@ -189,6 +200,7 @@ int mbedtls_asn1_write_oid( unsigned char **p, unsigned char *start,
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_algorithm_identifier( unsigned char **p, unsigned char *start,
                                      const char *oid, size_t oid_len,
                                      size_t par_len )
@@ -210,6 +222,7 @@ int mbedtls_asn1_write_algorithm_identifier( unsigned char **p, unsigned char *s
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_bool( unsigned char **p, unsigned char *start, int boolean )
 {
     int ret;
@@ -227,6 +240,7 @@ int mbedtls_asn1_write_bool( unsigned char **p, unsigned char *start, int boolea
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_int( unsigned char **p, unsigned char *start, int val )
 {
     int ret;
@@ -257,6 +271,7 @@ int mbedtls_asn1_write_int( unsigned char **p, unsigned char *start, int val )
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_printable_string( unsigned char **p, unsigned char *start,
                                  const char *text, size_t text_len )
 {
@@ -272,6 +287,7 @@ int mbedtls_asn1_write_printable_string( unsigned char **p, unsigned char *start
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_ia5_string( unsigned char **p, unsigned char *start,
                            const char *text, size_t text_len )
 {
@@ -287,6 +303,7 @@ int mbedtls_asn1_write_ia5_string( unsigned char **p, unsigned char *start,
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_bitstring( unsigned char **p, unsigned char *start,
                           const unsigned char *buf, size_t bits )
 {
@@ -314,6 +331,7 @@ int mbedtls_asn1_write_bitstring( unsigned char **p, unsigned char *start,
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_write_octet_string( unsigned char **p, unsigned char *start,
                              const unsigned char *buf, size_t size )
 {
@@ -328,6 +346,7 @@ int mbedtls_asn1_write_octet_string( unsigned char **p, unsigned char *start,
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 mbedtls_asn1_named_data *mbedtls_asn1_store_named_data( mbedtls_asn1_named_data **head,
                                         const char *oid, size_t oid_len,
                                         const unsigned char *val,

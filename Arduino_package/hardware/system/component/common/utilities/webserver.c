@@ -450,7 +450,7 @@ static void LoadWifiSetting(void)
 {
     const char *ifname = WLAN0_NAME;
 
-    if(wifi_is_running(WLAN1_IDX))
+    if(rltk_wlan_running(WLAN1_IDX))
     {//STA_AP_MODE
     	ifname = WLAN1_NAME;
     }

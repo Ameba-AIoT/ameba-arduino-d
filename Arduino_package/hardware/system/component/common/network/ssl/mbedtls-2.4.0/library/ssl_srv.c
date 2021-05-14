@@ -2678,7 +2678,7 @@ static int ssl_write_server_key_exchange( mbedtls_ssl_context *ssl )
     defined(MBEDTLS_KEY_EXCHANGE_ECJPAKE_ENABLED)
     unsigned char *p = ssl->out_msg + 4;
     unsigned char *dig_signed = p;
-    size_t dig_signed_len = 0, len;
+    size_t dig_signed_len = 0, len=0;
     ((void) dig_signed);
     ((void) dig_signed_len);
     ((void) len);

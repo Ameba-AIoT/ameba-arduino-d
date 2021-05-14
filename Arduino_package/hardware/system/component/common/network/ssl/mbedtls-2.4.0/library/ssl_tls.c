@@ -864,20 +864,7 @@ int mbedtls_ssl_derive_keys( mbedtls_ssl_context *ssl )
         rtl_crypto_hmac_sha1_start(mac_dec, transform->maclen);
 #else
         mbedtls_md_hmac_starts( &transform->md_ctx_enc, mac_enc, transform->maclen );
-
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-        int is_sha256 = 0;
-        if(transform->md_ctx_dec.md_info == mbedtls_md_info_from_type(MBEDTLS_MD_SHA256)) {
-            is_sha256 = 1;
-            ((mbedtls_sha256_context *) transform->md_ctx_dec.md_ctx)->ssl_hmac = 1;
-            device_mutex_lock(RT_DEV_LOCK_CRYPTO);
-        }
-#endif
         mbedtls_md_hmac_starts( &transform->md_ctx_dec, mac_dec, transform->maclen );
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-        if(is_sha256)
-            device_mutex_unlock(RT_DEV_LOCK_CRYPTO);
-#endif
 #endif
     }
     else
@@ -2012,13 +1999,6 @@ static int ssl_decrypt_buf( mbedtls_ssl_context *ssl )
 
             extra_run &= correct * 0xFF;
 
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-            int is_sha256 = 0;
-            if(ssl->transform_in->md_ctx_dec.md_info == mbedtls_md_info_from_type(MBEDTLS_MD_SHA256)) {
-                is_sha256 = 1;
-                device_mutex_lock(RT_DEV_LOCK_CRYPTO);
-            }
-#endif
             mbedtls_md_hmac_update( &ssl->transform_in->md_ctx_dec, ssl->in_ctr, 8 );
             mbedtls_md_hmac_update( &ssl->transform_in->md_ctx_dec, ssl->in_hdr, 3 );
             mbedtls_md_hmac_update( &ssl->transform_in->md_ctx_dec, ssl->in_len, 2 );
@@ -2030,15 +2010,7 @@ static int ssl_decrypt_buf( mbedtls_ssl_context *ssl )
             for( j = 0; j < extra_run + 1; j++ )
                 mbedtls_md_process( &ssl->transform_in->md_ctx_dec, ssl->in_msg );
 
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-            if(is_sha256)
-                ((mbedtls_sha256_context *) ssl->transform_in->md_ctx_dec.md_ctx)->ssl_hmac = 1;
-#endif
             mbedtls_md_hmac_reset( &ssl->transform_in->md_ctx_dec );
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-            if(is_sha256)
-                device_mutex_unlock(RT_DEV_LOCK_CRYPTO);
-#endif
         }
         else
 #endif /* MBEDTLS_SSL_PROTO_TLS1 || MBEDTLS_SSL_PROTO_TLS1_1 || \

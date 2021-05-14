@@ -1220,21 +1220,8 @@ dhcp_renew(struct netif *netif)
     dhcp_option_trailer(dhcp);
 
     pbuf_realloc(dhcp->p_out, sizeof(struct dhcp_msg) - DHCP_OPTIONS_LEN + dhcp->options_out_len);
-/* Added by Realtek start*/
-#if CONFIG_FAST_DHCP
-    if(ip_addr_isany(&(dhcp->server_ip_addr)))
-    {
-        udp_sendto_if(dhcp_pcb, dhcp->p_out, IP_ADDR_BROADCAST, DHCP_SERVER_PORT, netif);
-    }
-    else
-    {
-        udp_sendto_if(dhcp_pcb, dhcp->p_out, &dhcp->server_ip_addr, DHCP_SERVER_PORT, netif);
-    }
-/* Added by Realtek end*/
-#else    
+
     udp_sendto_if(dhcp_pcb, dhcp->p_out, &dhcp->server_ip_addr, DHCP_SERVER_PORT, netif);
-#endif    
-    
     dhcp_delete_msg(dhcp);
 
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_STATE, ("dhcp_renew: RENEWING\n"));
@@ -1329,14 +1316,6 @@ dhcp_reboot(struct netif *netif)
     for (i = 0; i < LWIP_ARRAYSIZE(dhcp_discover_request_options); i++) {
       dhcp_option_byte(dhcp, dhcp_discover_request_options[i]);
     }
-
-#ifdef CONFIG_FAST_DHCP
-	if((ip_addr_isany(&(dhcp->server_ip_addr))) || (netif->flags) & NETIF_FLAG_BROADCAST)
-    {
-	  dhcp_option(dhcp, DHCP_OPTION_SERVER_ID, 4);
-	  dhcp_option_long(dhcp, lwip_ntohl(ip4_addr_get_u32(ip_2_ip4(&dhcp->server_ip_addr))));
-    }
-#endif    
 
 #if LWIP_NETIF_HOSTNAME
     dhcp_option_hostname(dhcp, netif);

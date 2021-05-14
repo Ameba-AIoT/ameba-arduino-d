@@ -700,20 +700,18 @@ void * tls_init(const struct tls_config *conf)
 {
 	/* To avoid gcc warnings */
 	( void ) conf;
-
+	
 	struct eap_tls *tls_context;
 
 	mbedtls_platform_set_calloc_free(my_calloc, vPortFree);
 
 	tls_context = os_zalloc(sizeof(struct eap_tls));
-	if(tls_context == NULL)
-		return NULL;
 
 	tls_context->ssl = os_zalloc(sizeof(mbedtls_ssl_context));
 	tls_context->conf = os_zalloc(sizeof(mbedtls_ssl_config));
 	tls_context->fd = os_zalloc(sizeof(mbedtls_net_context));
 
-	if((tls_context->ssl == NULL)||(tls_context->conf == NULL)||(tls_context->fd == NULL))
+	if((tls_context == NULL)||(tls_context->ssl == NULL)||(tls_context->conf == NULL)||(tls_context->fd == NULL))
 		return NULL;
 
 	mbedtls_net_init(tls_context->fd);

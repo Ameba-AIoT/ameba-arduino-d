@@ -58,6 +58,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -65,6 +66,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * helper to validate the mbedtls_mpi size and import it
  */
+SSL_ROM_TEXT_SECTION
 static int dhm_read_bignum( mbedtls_mpi *X,
                             unsigned char **p,
                             const unsigned char *end )
@@ -97,6 +99,7 @@ static int dhm_read_bignum( mbedtls_mpi *X,
  *  http://www.cl.cam.ac.uk/~rja14/Papers/psandqs.pdf
  *  http://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2005-2643
  */
+SSL_ROM_TEXT_SECTION
 static int dhm_check_range( const mbedtls_mpi *param, const mbedtls_mpi *P )
 {
     mbedtls_mpi L, U;
@@ -118,6 +121,7 @@ cleanup:
     return( ret );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_dhm_init( mbedtls_dhm_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_dhm_context ) );
@@ -126,6 +130,7 @@ void mbedtls_dhm_init( mbedtls_dhm_context *ctx )
 /*
  * Parse the ServerKeyExchange parameters
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_read_params( mbedtls_dhm_context *ctx,
                      unsigned char **p,
                      const unsigned char *end )
@@ -148,6 +153,7 @@ int mbedtls_dhm_read_params( mbedtls_dhm_context *ctx,
 /*
  * Setup and write the ServerKeyExchange parameters
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_make_params( mbedtls_dhm_context *ctx, int x_size,
                      unsigned char *output, size_t *olen,
                      int (*f_rng)(void *, unsigned char *, size_t),
@@ -216,6 +222,7 @@ cleanup:
 /*
  * Import the peer's public value G^Y
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_read_public( mbedtls_dhm_context *ctx,
                      const unsigned char *input, size_t ilen )
 {
@@ -233,6 +240,7 @@ int mbedtls_dhm_read_public( mbedtls_dhm_context *ctx,
 /*
  * Create own private value X and export G^X
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_make_public( mbedtls_dhm_context *ctx, int x_size,
                      unsigned char *output, size_t olen,
                      int (*f_rng)(void *, unsigned char *, size_t),
@@ -283,6 +291,7 @@ cleanup:
  *  DSS, and other systems. In : Advances in Cryptology-CRYPTO'96. Springer
  *  Berlin Heidelberg, 1996. p. 104-113.
  */
+SSL_ROM_TEXT_SECTION
 static int dhm_update_blinding( mbedtls_dhm_context *ctx,
                     int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
@@ -345,6 +354,7 @@ cleanup:
 /*
  * Derive and export the shared secret (G^Y)^X mod P
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_calc_secret( mbedtls_dhm_context *ctx,
                      unsigned char *output, size_t output_size, size_t *olen,
                      int (*f_rng)(void *, unsigned char *, size_t),
@@ -398,6 +408,7 @@ cleanup:
 /*
  * Free the components of a DHM key
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_dhm_free( mbedtls_dhm_context *ctx )
 {
     mbedtls_mpi_free( &ctx->pX); mbedtls_mpi_free( &ctx->Vf ); mbedtls_mpi_free( &ctx->Vi );
@@ -412,6 +423,7 @@ void mbedtls_dhm_free( mbedtls_dhm_context *ctx )
 /*
  * Parse DHM parameters
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_parse_dhm( mbedtls_dhm_context *dhm, const unsigned char *dhmin,
                    size_t dhminlen )
 {
@@ -514,6 +526,7 @@ exit:
  * A terminating null byte is always appended. It is included in the announced
  * length only if the data looks like it is PEM encoded.
  */
+SSL_ROM_TEXT_SECTION
 static int load_file( const char *path, unsigned char **buf, size_t *n )
 {
     FILE *f;
@@ -559,6 +572,7 @@ static int load_file( const char *path, unsigned char **buf, size_t *n )
 /*
  * Load and parse DHM parameters
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_dhm_parse_dhmfile( mbedtls_dhm_context *dhm, const char *path )
 {
     int ret;

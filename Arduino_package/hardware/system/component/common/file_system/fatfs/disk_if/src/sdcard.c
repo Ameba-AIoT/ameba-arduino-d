@@ -32,7 +32,7 @@ DSTATUS interpret_sd_status(SD_RESULT result){
 }
 
 DRESULT interpret_sd_result(SD_RESULT result){
-	DRESULT ret = 0;
+	DRESULT ret = RES_OK;
 	if(result == SD_OK)
 		ret = RES_OK;
 	else if(result == SD_PROTECTED)
@@ -94,7 +94,7 @@ DRESULT SD_disk_write(const BYTE *buff, DWORD sector, unsigned int count){
 #if _USE_IOCTL == 1
 DRESULT SD_disk_ioctl (BYTE cmd, void* buff){
 	DRESULT res = RES_ERROR;
-	SD_RESULT result;
+	SD_RESULT result=SD_OK;
 
 	switch(cmd){
 		/* Generic command (used by FatFs) */
@@ -105,7 +105,7 @@ DRESULT SD_disk_ioctl (BYTE cmd, void* buff){
 			res = interpret_sd_result(result);
 			break;
 		case GET_SECTOR_COUNT:	/* Get media size (for only f_mkfs()) */
-			result = SD_GetCapacity((unsigned long*) buff);
+			result = SD_GetCapacity((u32*) buff);
 			res = interpret_sd_result(result);
 			break;
 		/* for case _MAX_SS != _MIN_SS */

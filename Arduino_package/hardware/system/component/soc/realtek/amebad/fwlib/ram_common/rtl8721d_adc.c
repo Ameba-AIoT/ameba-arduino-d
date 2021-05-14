@@ -449,10 +449,6 @@ void ADC_ReceiveBuf(u16 *pBuf, u32 len)
 {
 	u32 i = 0;
 
-	ADC->ADC_CLR_FIFO = 1; 
-	while(ADC->ADC_FLR != 0); 
-	ADC->ADC_CLR_FIFO = 0; 
-
 	ADC_AutoCSwCmd(ENABLE);
 
 	for(i = 0; i < len; i++){

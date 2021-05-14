@@ -128,15 +128,6 @@ int flash_get_status2(flash_t *obj);
 int flash_set_status(flash_t * obj, uint32_t data);
 
 /**
-* @brief  Set Status register 2 to enable desired operation
-* @param  obj: Specifies the parameter of flash object.
-* @param  data: Specifies which bit users like to set
-   ex: if users want to set the third bit, data = 0x8. 
-* @retval   status: Success:1 or Failure: Others.
-*/
-int flash_set_status2(flash_t *obj, uint32_t data);
-
-/**
   * @brief This function aims to reset the status register, please make sure the operation is appropriate.
   * @param obj: Specifies the parameter of flash object.
   * @retval none 

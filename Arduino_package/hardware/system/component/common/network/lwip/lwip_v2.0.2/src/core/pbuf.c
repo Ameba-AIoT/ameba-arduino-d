@@ -307,7 +307,7 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
     /* set reference count (needed here in case we fail) */
     p->ref = 1;
     p->flags = 0; //Added by Realtek
-
+    p->if_idx = NETIF_NO_INDEX; //Added by Realtek
     /* now allocate the tail of the pbuf chain */
 
     /* remember first pbuf for linkage in next iteration */
@@ -327,6 +327,7 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
       q->type = type;
       q->flags = 0;
       q->next = NULL;
+      q->if_idx = NETIF_NO_INDEX; //Added by Realtek
       /* make previous pbuf point to this pbuf */
       r->next = q;
       /* set total length of this pbuf and next in chain */
@@ -371,7 +372,7 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
     p->len = p->tot_len = length;
     p->next = NULL;
     p->type = type;
-
+    p->if_idx = NETIF_NO_INDEX; //Added by Realtek
     LWIP_ASSERT("pbuf_alloc: pbuf->payload properly aligned",
            ((mem_ptr_t)p->payload % MEM_ALIGNMENT) == 0);
     break;
@@ -392,6 +393,7 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
     p->len = p->tot_len = length;
     p->next = NULL;
     p->type = type;
+    p->if_idx = NETIF_NO_INDEX; //Added by Realtek
     break;
   default:
     LWIP_ASSERT("pbuf_alloc: erroneous type", 0);

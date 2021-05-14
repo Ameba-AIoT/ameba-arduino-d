@@ -1,9 +1,7 @@
 #if !defined(CONFIG_MBED_ENABLED)
 #include "main.h"
-#if CONFIG_LWIP_LAYER
 #include <lwip_netconf.h>
 #include <lwip/netif.h>
-#endif
 #endif
 #include <stdio.h>
 #include <string.h>
@@ -35,24 +33,12 @@ const unsigned char *eap_client_cert = NULL;
 const unsigned char *eap_client_key = NULL;
 char *eap_client_key_pwd = NULL;
 
-void set_eap_phase(unsigned char is_trigger_eap);
-int get_eap_phase(void);
-int get_eap_ctx_method(void);
-int set_eap_peap_method(void);
-int set_eap_tls_method(void);
-int set_eap_ttls_method(void);
-
 void eap_eapol_recvd_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
 void eap_eapol_start_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
 int connect_by_open_system(char *target_ssid);
 
-#if !defined(CONFIG_MBED_ENABLED)
-int eap_start(char *method);
-#endif
-
 void set_eap_phase(unsigned char is_trigger_eap){
 	eap_phase = is_trigger_eap;
-	wifi_set_eap_phase(is_trigger_eap);
 }
 
 int get_eap_phase(void){
@@ -79,7 +65,7 @@ void judge_station_disconnect(void)
 	int mode = 0;
 	unsigned char ssid[33];
 
-	wifi_get_mode(WLAN0_NAME, &mode);
+	wext_get_mode(WLAN0_NAME, &mode);
 
 	switch(mode) {
 	case IW_MODE_MASTER:	//In AP mode
@@ -88,7 +74,7 @@ void judge_station_disconnect(void)
 		wifi_on(RTW_MODE_STA);
 		break;
 	case IW_MODE_INFRA:		//In STA mode
-		if(wifi_get_ssid(WLAN0_NAME, ssid) > 0)
+		if(wext_get_ssid(WLAN0_NAME, ssid) > 0)
 			wifi_disconnect();
 	}	
 }
@@ -197,8 +183,8 @@ int eap_start(char *method)
 	while(!(wifi_is_up(RTW_STA_INTERFACE) || wifi_is_up(RTW_AP_INTERFACE))) {
 		vTaskDelay(1000 / portTICK_RATE_MS);
 	}
-	
-	if(wifi_is_running(WLAN1_IDX)){
+        
+	if(rltk_wlan_running(WLAN1_IDX)){
 		printf("\n\rNot support con-current mode!\n\r");
 		return -1;
 	}
@@ -621,9 +607,13 @@ int eap_cert_setup(struct eap_tls *tls_context)
 	if(eap_client_cert != NULL && eap_client_key != NULL){
 		if(mbedtls_x509_crt_parse(_cli_crt, eap_client_cert, strlen(eap_client_cert)+1) != 0)
 			return -1;
-	
-		if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, strlen(eap_client_key)+1, eap_client_key_pwd, strlen(eap_client_key_pwd)+1) != 0)
-			return -1;
+		if(eap_client_key_pwd){
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, strlen(eap_client_key)+1, eap_client_key_pwd, strlen(eap_client_key_pwd)+1) != 0)
+				return -1;
+		}else{
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, strlen(eap_client_key)+1, eap_client_key_pwd, 1) != 0)
+				return -1;
+		}
 
 		mbedtls_ssl_conf_own_cert(tls_context->conf, _cli_crt, _clikey_rsa);
 	}

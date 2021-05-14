@@ -484,7 +484,7 @@ uint8_t WiFiDrv::getEncTypeNetowrks(uint8_t networkItem)
 
     if (_networkEncr[networkItem] == RTW_SECURITY_OPEN) {
         encType = ENC_TYPE_NONE;
-    } else if ((_networkEncr[networkItem] & AES_ENABLED) || (_networkEncr[networkItem] == RTW_SECURITY_WPA_WPA2_MIXED)) {
+    } else if (_networkEncr[networkItem] & AES_ENABLED) {
         encType = ENC_TYPE_CCMP;
     } else if (_networkEncr[networkItem] & TKIP_ENABLED) {
         encType = ENC_TYPE_TKIP;

@@ -42,12 +42,13 @@
 
 #include <section_config.h>
 //#include <rom_ssl_func_rename.h>
-
+#if defined  (__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-sign"
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC diagnostic ignored "-Wint-conversion"
+#endif
 
 #define memset _memset
 #define strcmp _strcmp

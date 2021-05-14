@@ -42,8 +42,6 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
 {
     void *pGpio_t;
 
-    sys_jtag_off();
-
     //if (ulPin < 0 || ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC))
     if (ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC))
     {
@@ -63,6 +61,11 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
         return;
     }
 
+    if ((g_APinDescription[ulPin].pinname == PA_27) || (g_APinDescription[ulPin].pinname == PB_3)) {
+        // If user needs to use SWD pins for GPIO, disable SWD debugging to free pins
+        sys_jtag_off();
+    }
+	
     if (g_APinDescription[ulPin].ulPinType == PIO_GPIO && 
             (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE)) {
         // Pin mode changes from gpio_t to gpio_irq_t

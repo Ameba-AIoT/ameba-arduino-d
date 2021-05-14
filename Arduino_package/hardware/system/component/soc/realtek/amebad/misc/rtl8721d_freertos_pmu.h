@@ -67,6 +67,7 @@ void pmu_exec_wakeup_hook_funs(u32 nDeviceIdMax);
 uint32_t pmu_set_sleep_type(uint32_t type);
 uint32_t pmu_get_sleep_type(void);
 void pmu_set_max_sleep_time(uint32_t timer_ms);
+uint32_t pmu_get_max_sleep_time(void);
 #ifndef CONFIG_BUILD_ROM
 void pmu_deepsleep_cmd(u32 NewStatus);
 #endif
@@ -90,6 +91,16 @@ void pmu_acquire_wakelock(uint32_t nDeviceId);
 void pmu_release_wakelock(uint32_t nDeviceId);
 uint32_t pmu_get_wakelock_status(void);
 uint32_t pmu_get_deepwakelock_status(void);
+/**
+  * @brief  set roaming awake or not
+  * @param  enable/threshhold:
+  			1: enable roaming awake and set the threshhold 
+  			0: disable roaming awake and ignore the threshhold
+  * @retval none
+  */
+void pmu_set_roaming_awake(u8 enable, u8 threshhold, u8 winsize);
+void pmu_reset_awake(u8 type);
+void pmu_degrade_awake(u8 type);
 
 extern u32 tickless_debug;
 extern u32 tick_last_tcp;

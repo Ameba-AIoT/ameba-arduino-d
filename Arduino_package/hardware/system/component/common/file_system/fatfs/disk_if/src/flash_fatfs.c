@@ -17,7 +17,7 @@
 #include "task.h"
 #endif
 
-#if	FATFS_DISK_FLASH
+#if defined ( FATFS_DISK_FLASH) && (FATFS_DISK_FLASH)
 
 #include "flash_api.h" // Flash interface
 

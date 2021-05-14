@@ -61,6 +61,7 @@
  *      publicExponent    INTEGER   -- e
  *  }
  */
+SSL_ROM_TEXT_SECTION
 static int pk_write_rsa_pubkey( unsigned char **p, unsigned char *start,
                                   mbedtls_rsa_context *rsa )
 {
@@ -82,6 +83,7 @@ static int pk_write_rsa_pubkey( unsigned char **p, unsigned char *start,
 /*
  * EC public key is an EC point
  */
+SSL_ROM_TEXT_SECTION
 static int pk_write_ec_pubkey( unsigned char **p, unsigned char *start,
                                  mbedtls_ecp_keypair *ec )
 {
@@ -110,6 +112,7 @@ static int pk_write_ec_pubkey( unsigned char **p, unsigned char *start,
  *   namedCurve         OBJECT IDENTIFIER
  * }
  */
+SSL_ROM_TEXT_SECTION
 static int pk_write_ec_param( unsigned char **p, unsigned char *start,
                                 mbedtls_ecp_keypair *ec )
 {
@@ -127,6 +130,7 @@ static int pk_write_ec_param( unsigned char **p, unsigned char *start,
 }
 #endif /* MBEDTLS_ECP_C */
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_write_pubkey( unsigned char **p, unsigned char *start,
                      const mbedtls_pk_context *key )
 {
@@ -148,6 +152,7 @@ int mbedtls_pk_write_pubkey( unsigned char **p, unsigned char *start,
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_write_pubkey_der( mbedtls_pk_context *key, unsigned char *buf, size_t size )
 {
     int ret;
@@ -196,6 +201,7 @@ int mbedtls_pk_write_pubkey_der( mbedtls_pk_context *key, unsigned char *buf, si
     return( (int) len );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_write_key_der( mbedtls_pk_context *key, unsigned char *buf, size_t size )
 {
     int ret;
@@ -375,6 +381,7 @@ int mbedtls_pk_write_key_der( mbedtls_pk_context *key, unsigned char *buf, size_
 #define PRV_DER_MAX_BYTES   RSA_PRV_DER_MAX_BYTES > ECP_PRV_DER_MAX_BYTES ? \
                             RSA_PRV_DER_MAX_BYTES : ECP_PRV_DER_MAX_BYTES
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_write_pubkey_pem( mbedtls_pk_context *key, unsigned char *buf, size_t size )
 {
     int ret;
@@ -397,6 +404,7 @@ int mbedtls_pk_write_pubkey_pem( mbedtls_pk_context *key, unsigned char *buf, si
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_write_key_pem( mbedtls_pk_context *key, unsigned char *buf, size_t size )
 {
     int ret;

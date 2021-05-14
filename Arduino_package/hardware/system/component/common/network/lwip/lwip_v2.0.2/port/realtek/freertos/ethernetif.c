@@ -58,7 +58,6 @@
 
 #include "lwip/ethip6.h" //Add for ipv6
 
-#include "wifi_conf.h"
 #include <platform/platform_stdlib.h>
 #include "platform_opts.h"
 
@@ -68,10 +67,6 @@
 
 #if defined(CONFIG_INIC_HOST) && CONFIG_INIC_HOST
 #include "freertos/inic_intf.h"
-#endif
-
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-#include "inic_ipc_host_trx.h"
 #endif
 
 #define netifMTU                                (1500)
@@ -91,6 +86,10 @@ static void arp_timer(void *arg);
 
 extern void rltk_mii_recv(struct eth_drv_sg *sg_list, int sg_len);
 extern s8 rltk_mii_send(struct eth_drv_sg *sg_list, int sg_len, int total_len);
+
+#if CONFIG_BRIDGE
+extern u8_t get_bridge_portnum(void);
+#endif
 
 /**
  * In this function, the hardware should be initialized.
@@ -115,6 +114,10 @@ static void low_level_init(struct netif *netif)
 #if LWIP_IGMP
 	/* make LwIP_Init do igmp_start to add group 224.0.0.1 */
 	netif->flags |= NETIF_FLAG_IGMP;
+#endif
+
+#if CONFIG_BRIDGE
+	netif->flags |= NETIF_FLAG_ETHERNET;
 #endif
 
 	/* Wlan interface is initialized later */
@@ -146,10 +149,8 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 	int sg_len = 0;
 	struct pbuf *q;
 #if CONFIG_WLAN
-#ifndef CONFIG_INIC_IPC
-	if(!wifi_is_running(netif_get_idx(netif)))
+	if(!rltk_wlan_running(netif_get_idx(netif)))
 		return ERR_IF;
-#endif
 #endif
 	for (q = p; q != NULL && sg_len < MAX_ETH_DRV_SG; q = q->next) {
 		sg_list[sg_len].buf = (unsigned int) q->payload;
@@ -158,11 +159,7 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 
 	if (sg_len) {
 #if CONFIG_WLAN
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-	if (inic_ipc_host_send(netif_get_idx(netif), sg_list, sg_len, p->tot_len) == 0)
-#else
 		if (rltk_wlan_send(netif_get_idx(netif), sg_list, sg_len, p->tot_len) == 0)
-#endif
 #elif CONFIG_INIC_HOST
 		if(rltk_inic_send( sg_list, sg_len, p->tot_len) == 0)
 #else
@@ -178,6 +175,10 @@ static err_t low_level_output(struct netif *netif, struct pbuf *p)
 /*for ethernet mii interface*/
 static err_t low_level_output_mii(struct netif *netif, struct pbuf *p)
 {
+	(void) netif;
+	(void) p;
+
+#if CONFIG_ETHERNET
 	struct eth_drv_sg sg_list[MAX_ETH_DRV_SG];
 	int sg_len = 0;
 	struct pbuf *q;
@@ -185,7 +186,7 @@ static err_t low_level_output_mii(struct netif *netif, struct pbuf *p)
 		sg_list[sg_len].buf = (unsigned int) q->payload;
 		sg_list[sg_len++].len = q->len;
 	}
-#if !defined(CONFIG_PLATFORM_8721D) && !defined(CONFIG_PLATFORM_AMEBAD2)
+
 	if (sg_len) {
 		 if(rltk_mii_send(sg_list, sg_len, p->tot_len) == 0)
 			return ERR_OK;
@@ -227,11 +228,17 @@ void ethernetif_recv(struct netif *netif, int total_len)
 	struct pbuf *p, *q;
 	int sg_len = 0;
 #if CONFIG_WLAN
-#ifndef CONFIG_INIC_IPC
-	if(!wifi_is_running(netif_get_idx(netif)))
+	if(!rltk_wlan_running(netif_get_idx(netif)))
 		return;
 #endif
+
+#if CONFIG_BRIDGE
+	if (get_bridge_portnum() != (NET_IF_NUM - 1)) {
+		// return if bridge not ready
+		return;
+	}
 #endif
+
 	if ((total_len > MAX_ETH_MSG) || (total_len < 0))
 		total_len = MAX_ETH_MSG;
 
@@ -248,12 +255,14 @@ void ethernetif_recv(struct netif *netif, int total_len)
 		sg_list[sg_len++].len = q->len;
 	}
 
+	if (p->if_idx == NETIF_NO_INDEX) {
+		p->if_idx = netif_get_index(netif);
+	}
+
 	// Copy received packet to scatter list from wrapper rx skb
   	//printf("\n\rwlan:%c: Recv sg_len: %d, tot_len:%d", netif->name[1],sg_len, total_len);
 #if CONFIG_WLAN
-#ifndef CONFIG_INIC_IPC
 	rltk_wlan_recv(netif_get_idx(netif), sg_list, sg_len);
-#endif
 #elif CONFIG_INIC_HOST
 	rltk_inic_recv(sg_list, sg_len);
 #endif
@@ -265,6 +274,10 @@ void ethernetif_recv(struct netif *netif, int total_len)
 
 void ethernetif_mii_recv(struct netif *netif, int total_len)
 {
+	(void) netif;
+	(void) total_len;
+
+#if CONFIG_ETHERNET
 	struct eth_drv_sg sg_list[MAX_ETH_DRV_SG];
 	struct pbuf *p, *q;
 	int sg_len = 0;
@@ -284,12 +297,13 @@ void ethernetif_mii_recv(struct netif *netif, int total_len)
    		sg_list[sg_len].buf = (unsigned int) q->payload;
 		sg_list[sg_len++].len = q->len;
 	}
-#if !defined(CONFIG_PLATFORM_8721D) && !defined(CONFIG_PLATFORM_AMEBAD2)
+
 	rltk_mii_recv(sg_list, sg_len);
-#endif
+
 	// Pass received packet to the interface
 	if (ERR_OK != netif->input(p, netif))
 		pbuf_free(p);
+#endif
 
 }
 /**
@@ -354,6 +368,7 @@ err_t ethernetif_mii_init(struct netif *netif)
 
 static void arp_timer(void *arg)
 {
+  (void) arg;
   etharp_tmr();
   sys_timeout(ARP_TMR_INTERVAL, arp_timer, NULL);
 }

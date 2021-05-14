@@ -11,8 +11,7 @@
 #define CMSIS_OS_ERR(fmt, args...)          _DbgDump("\n\r%s: " fmt, __FUNCTION__, ## args)
 
 extern void *_memset( void *s, int c, SIZE_T n );
-extern void * memset ( void * ptr, int value, size_t num );
-#define os_memset           memset//_memset
+#define os_memset           _memset
 
 #if configSignalManagementSupport  // the older FreeRTOS version didn't support Signal Management functions
 #if 0

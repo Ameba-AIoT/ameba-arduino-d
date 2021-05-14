@@ -254,14 +254,10 @@
 /** @defgroup PINMUX_PAD_DrvStrength_definitions 
   * @{
   */
-#define PAD_DRV_STRENGTH_0			(0x00000000 << 9)
-#define PAD_DRV_STRENGTH_1			(0x00000001 << 9)
-#define PAD_DRV_STRENGTH_2			(0x00000002 << 9)
-#define PAD_DRV_STRENGTH_3			(0x00000003 << 9)
-#define PAD_DRV_STRENGTH_4			(0x00000004 << 9)
-#define PAD_DRV_STRENGTH_5			(0x00000005 << 9)
-#define PAD_DRV_STRENGTH_6			(0x00000006 << 9)
-#define PAD_DRV_STRENGTH_7			(0x00000007 << 9)
+#define PAD_DRV_STRENGTH_0			(0x00000000)
+#define PAD_DRV_STRENGTH_1			(0x00000001)
+#define PAD_DRV_STRENGTH_2			(0x00000002)
+#define PAD_DRV_STRENGTH_3			(0x00000003)
 /**
   * @}
   */

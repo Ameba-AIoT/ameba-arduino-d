@@ -254,7 +254,6 @@ void cmd_ssl_client(int argc, char **argv)
 #include "mbedtls/ssl.h"
 #include "mbedtls/error.h"
 #include "mbedtls/debug.h"
-#include "mbedtls/version.h"
 
 #if defined(configENABLE_TRUSTZONE) && (configENABLE_TRUSTZONE == 1) && defined(CONFIG_SSL_CLIENT_PRIVATE_IN_TZ) && (CONFIG_SSL_CLIENT_PRIVATE_IN_TZ == 1)
 #include "device_lock.h"
@@ -264,14 +263,12 @@ void cmd_ssl_client(int argc, char **argv)
 #define SERVER_HOST   "192.168.13.15"
 #define GET_REQUEST   "GET / HTTP/1.0\r\n\r\n"
 #define DEBUG_LEVEL   0
-#define READ_TIMEOUT_MS		10000	// ssl read timeout value in ms
 
 //#define SSL_CLIENT_EXT
 #define STACKSIZE     2048
 
 static int is_task = 0;
 static char server_host[32];
-static char server_port[6];
 static size_t min_heap_size = 0;
 
 static void my_debug(void *ctx, int level, const char *file, int line, const char *str)
@@ -335,9 +332,7 @@ static void ssl_client(void *param)
 	extern void NS_ENTRY secure_set_ns_device_lock(void (*device_mutex_lock_func)(uint32_t), void (*device_mutex_unlock_func)(uint32_t));
 	secure_set_ns_device_lock(device_mutex_lock, device_mutex_unlock);
 #endif
-#if MBEDTLS_VERSION_NUMBER==0x02100300 //if is mbedtls 2.16.4
-	mbedtls_platform_setup(NULL);
-#endif
+
 	mbedtls_platform_set_calloc_free(my_calloc, my_free);
 #if defined(MBEDTLS_DEBUG_C)
 	mbedtls_debug_set_threshold(DEBUG_LEVEL);
@@ -346,11 +341,11 @@ static void ssl_client(void *param)
 	/*
 	 * 1. Start the connection
 	 */
-	printf("\n\r  . Connecting to tcp/%s/%s...", server_host, server_port);
+	printf("\n\r  . Connecting to tcp/%s/%s...", server_host, SERVER_PORT);
 
 	mbedtls_net_init(&server_fd);
 
-	if((ret = mbedtls_net_connect(&server_fd, server_host, server_port, MBEDTLS_NET_PROTO_TCP)) != 0) {
+	if((ret = mbedtls_net_connect(&server_fd, server_host, SERVER_PORT, MBEDTLS_NET_PROTO_TCP)) != 0) {
 		printf(" failed\n\r  ! mbedtls_net_connect returned %d\n", ret);
 		goto exit1;
 	}
@@ -372,8 +367,7 @@ static void ssl_client(void *param)
 	}
 #endif
 
-	mbedtls_ssl_conf_read_timeout(&conf, READ_TIMEOUT_MS);
-	mbedtls_ssl_set_bio(&ssl, &server_fd, mbedtls_net_send, mbedtls_net_recv, mbedtls_net_recv_timeout);
+	mbedtls_ssl_set_bio(&ssl, &server_fd, mbedtls_net_send, mbedtls_net_recv, NULL);
 
 	if((ret = mbedtls_ssl_config_defaults(&conf,
 		MBEDTLS_SSL_IS_CLIENT,
@@ -387,12 +381,6 @@ static void ssl_client(void *param)
 	mbedtls_ssl_conf_authmode(&conf, MBEDTLS_SSL_VERIFY_NONE);
 	mbedtls_ssl_conf_rng(&conf, my_random, NULL);
 	mbedtls_ssl_conf_dbg(&conf, my_debug, NULL);
-
-	ret = mbedtls_ssl_conf_max_frag_len(&conf, MBEDTLS_SSL_MAX_FRAG_LEN_4096);
-	if (ret < 0) {
-		printf(" failed\n\r  ! mbedtls_ssl_conf_max_frag_len %d\n", ret);
-		goto exit;
-	}
 
 #ifdef SSL_CLIENT_EXT
 	if((ret = ssl_client_ext_setup(&conf)) != 0) {
@@ -528,7 +516,6 @@ void do_ssl_connect(void)
 
 	is_task = 0;
 	strcpy(server_host, SERVER_HOST);
-	strcpy(server_port, SERVER_PORT);
 	ssl_client(&ret);
 
 	if(ret != 0)
@@ -539,23 +526,8 @@ void do_ssl_connect(void)
 
 void cmd_ssl_client(int argc, char **argv)
 {
-	if(argc == 2 || argc == 3) {
-		if (strlen(argv[1]) <= sizeof(server_host) - 1) {
-			strcpy(server_host, argv[1]);
-		} else {
-			printf("failed\r\n argv[1]--%s is too long for server_host", argv[1]);
-			return;
-		}
-		if (argc == 3) {
-			if (strlen(argv[2]) <= sizeof(server_port) - 1) {
-				strcpy(server_port, argv[2]);
-			} else {
-				printf("failed\r\n argv[2]--%s is too long for server_port", argv[2]);
-				return;
-			}
-		}
-		else
-			strcpy(server_port, SERVER_PORT);
+	if(argc == 2) {
+		strcpy(server_host, argv[1]);
 	}
 	else {
 		printf("\n\rUsage: %s SSL_SERVER_HOST", argv[0]);

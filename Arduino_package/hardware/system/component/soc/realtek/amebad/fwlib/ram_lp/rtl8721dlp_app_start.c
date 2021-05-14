@@ -177,7 +177,7 @@ u32 app_mpu_nocache_init(void)
 	mpu_cfg.ap = MPU_UN_PRIV_RW;
 	mpu_cfg.sh = MPU_NON_SHAREABLE;
 	mpu_cfg.attr_idx = MPU_MEM_ATTR_IDX_NC;
-	mpu_region_cfg(mpu_entry, &mpu_cfg);
+	mpu_region_cfg(mpu_entry, &mpu_cfg);	
 #endif
 	return 0;
 }
@@ -305,6 +305,9 @@ static void app_gen_random_seed(void)
 	RegTemp = RegData | (BIT(6) | BIT(7));
 	CapTouch->CT_ADC_REG1X_LPAD = RegTemp;
 
+	RCC_PeriphClockCmd(APBPeriph_ADC, APBPeriph_ADC_CLOCK, DISABLE);
+	RCC_PeriphClockCmd(APBPeriph_ADC, APBPeriph_ADC_CLOCK, ENABLE);
+
 	ADC_Cmd(DISABLE);
 
 	ADC->ADC_INTR_CTRL = 0;
@@ -411,6 +414,9 @@ void app_start(void)
 		
 		SDM32K_RTCCalEnable(ps_config.km0_rtc_calibration); /* 0.3ms */
 
+		Temp = HAL_READ32(SYSTEM_CTRL_BASE_LP, REG_AON_BOOT_REASON1);
+		Temp &= ~BIT_DSLP_RETENTION_RAM_PATCH;
+		HAL_WRITE32(SYSTEM_CTRL_BASE_LP, REG_AON_BOOT_REASON1, Temp);
 		// Retention Ram reset
 		_memset((void*)RETENTION_RAM_BASE,0,1024);
 		assert_param(sizeof(RRAM_TypeDef) <= 0xB0);
@@ -434,18 +440,13 @@ void app_start(void)
 	}
 
 	/* configure FreeRTOS interrupt and heap region */
-#ifndef CONFIG_INIC_IPC
 	os_heap_init();
-#endif
 	__NVIC_SetVector(SVCall_IRQn, (u32)vPortSVCHandler);
 	__NVIC_SetVector(PendSV_IRQn, (u32)xPortPendSVHandler);
 	__NVIC_SetVector(SysTick_IRQn, (u32)xPortSysTickHandler); 
 
 	mpu_init();
 	app_mpu_nocache_init();
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-	DCache_Disable();
-#endif
 
 	main();
 }

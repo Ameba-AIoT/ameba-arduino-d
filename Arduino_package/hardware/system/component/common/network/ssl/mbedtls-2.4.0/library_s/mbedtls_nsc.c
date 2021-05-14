@@ -5,10 +5,6 @@
 #include "mbedtls/platform.h"
 #include "mbedtls/ssl.h"
 #include "crypto_api.h"
-#if defined(ENABLE_AMAZON_COMMON)
-#include "threading_alt.h"
-#include "mbedtls/threading.h"
-#endif
 extern const char *client_key_s;
 
 static void* _calloc(size_t count, size_t size)
@@ -29,7 +25,7 @@ static int _random(void *p_rng, unsigned char *output, size_t output_len)
 	if(seed == 0) {
 #if defined(CONFIG_PLATFORM_8710C)
 		crypto_random_generate((uint8_t *)&seed, sizeof(seed));
-#elif (defined CONFIG_PLATFORM_8721D)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif (defined CONFIG_PLATFORM_8721D)
 		extern u32 RandSeedTZ;
 		seed = RandSeedTZ;
 #endif
@@ -114,13 +110,6 @@ error:
 	return NULL;
 }
 
-#if defined(ENABLE_AMAZON_COMMON)
-mbedtls_pk_type_t NS_ENTRY secure_mbedtls_pk_get_type(const mbedtls_pk_context *ctx)
-{
-        return mbedtls_pk_get_type(ctx);
-}
-#endif
-
 void NS_ENTRY secure_mbedtls_pk_free(mbedtls_pk_context *pk)
 {
 	mbedtls_pk_free(pk);
@@ -162,32 +151,3 @@ int NS_ENTRY secure_mbedtls_pk_sign(struct secure_mbedtls_pk_sign_param *param)
 	return mbedtls_pk_sign(param->ctx, param->md_alg, param->hash, param->hash_len,
 			param->sig, param->sig_len, _random, param->p_rng);
 }
-
-#if defined(ENABLE_AMAZON_COMMON)
-void s_mbedtls_mutex_init( mbedtls_threading_mutex_t * mutex )
-{
-   
-}
-
-void s_mbedtls_mutex_free( mbedtls_threading_mutex_t * mutex )
-{
-    
-}
-
-int s_mbedtls_mutex_lock( mbedtls_threading_mutex_t * mutex )
-{
-    __disable_irq();
-    return 0;
-}
-
-int s_mbedtls_mutex_unlock( mbedtls_threading_mutex_t * mutex )
-{
-    __enable_irq();
-    return 0;
-}
-
-void (*mbedtls_mutex_init)( mbedtls_threading_mutex_t * ) = s_mbedtls_mutex_init;
-void (*mbedtls_mutex_free)( mbedtls_threading_mutex_t * ) = s_mbedtls_mutex_free;
-int (*mbedtls_mutex_lock)( mbedtls_threading_mutex_t * ) = s_mbedtls_mutex_lock;
-int (*mbedtls_mutex_unlock)( mbedtls_threading_mutex_t * ) = s_mbedtls_mutex_unlock;
-#endif

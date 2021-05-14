@@ -19,6 +19,7 @@
   */
 
 #include "ameba_soc.h"
+#include "hal_crypto.h"
 
 static const u8 md5_null_msg_result[16] = {
 	0xD4, 0x1D, 0x8C, 0xD9, 0x8F, 0x00, 0xB2, 0x04,

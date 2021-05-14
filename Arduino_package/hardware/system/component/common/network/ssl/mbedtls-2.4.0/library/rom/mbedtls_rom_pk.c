@@ -40,6 +40,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -47,6 +48,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * Initialise a mbedtls_pk_context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_pk_init( mbedtls_pk_context *ctx )
 {
     if( ctx == NULL )
@@ -59,6 +61,7 @@ void mbedtls_pk_init( mbedtls_pk_context *ctx )
 /*
  * Free (the components of) a mbedtls_pk_context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_pk_free( mbedtls_pk_context *ctx )
 {
     if( ctx == NULL || ctx->pk_info == NULL )
@@ -72,6 +75,7 @@ void mbedtls_pk_free( mbedtls_pk_context *ctx )
 /*
  * Get pk_info structure from type
  */
+SSL_ROM_TEXT_SECTION
 const mbedtls_pk_info_t * mbedtls_pk_info_from_type( mbedtls_pk_type_t pk_type )
 {
     switch( pk_type ) {
@@ -98,6 +102,7 @@ const mbedtls_pk_info_t * mbedtls_pk_info_from_type( mbedtls_pk_type_t pk_type )
 /*
  * Initialise context
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_setup( mbedtls_pk_context *ctx, const mbedtls_pk_info_t *info )
 {
     if( ctx == NULL || info == NULL || ctx->pk_info != NULL )
@@ -115,6 +120,7 @@ int mbedtls_pk_setup( mbedtls_pk_context *ctx, const mbedtls_pk_info_t *info )
 /*
  * Initialize an RSA-alt context
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_setup_rsa_alt( mbedtls_pk_context *ctx, void * key,
                          mbedtls_pk_rsa_alt_decrypt_func decrypt_func,
                          mbedtls_pk_rsa_alt_sign_func sign_func,
@@ -145,6 +151,7 @@ int mbedtls_pk_setup_rsa_alt( mbedtls_pk_context *ctx, void * key,
 /*
  * Tell if a PK can do the operations of the given type
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_can_do( const mbedtls_pk_context *ctx, mbedtls_pk_type_t type )
 {
     /* null or NONE context can't do anything */
@@ -157,6 +164,7 @@ int mbedtls_pk_can_do( const mbedtls_pk_context *ctx, mbedtls_pk_type_t type )
 /*
  * Helper for mbedtls_pk_sign and mbedtls_pk_verify
  */
+SSL_ROM_TEXT_SECTION
 static inline int pk_hashlen_helper( mbedtls_md_type_t md_alg, size_t *hash_len )
 {
     const mbedtls_md_info_t *md_info;
@@ -174,6 +182,7 @@ static inline int pk_hashlen_helper( mbedtls_md_type_t md_alg, size_t *hash_len 
 /*
  * Verify a signature
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_verify( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
                const unsigned char *hash, size_t hash_len,
                const unsigned char *sig, size_t sig_len )
@@ -192,6 +201,7 @@ int mbedtls_pk_verify( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
 /*
  * Verify a signature with options
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_verify_ext( mbedtls_pk_type_t type, const void *options,
                    mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
                    const unsigned char *hash, size_t hash_len,
@@ -245,6 +255,7 @@ int mbedtls_pk_verify_ext( mbedtls_pk_type_t type, const void *options,
 /*
  * Make a signature
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_sign( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
              const unsigned char *hash, size_t hash_len,
              unsigned char *sig, size_t *sig_len,
@@ -264,6 +275,7 @@ int mbedtls_pk_sign( mbedtls_pk_context *ctx, mbedtls_md_type_t md_alg,
 /*
  * Decrypt message
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_decrypt( mbedtls_pk_context *ctx,
                 const unsigned char *input, size_t ilen,
                 unsigned char *output, size_t *olen, size_t osize,
@@ -282,6 +294,7 @@ int mbedtls_pk_decrypt( mbedtls_pk_context *ctx,
 /*
  * Encrypt message
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_encrypt( mbedtls_pk_context *ctx,
                 const unsigned char *input, size_t ilen,
                 unsigned char *output, size_t *olen, size_t osize,
@@ -300,6 +313,7 @@ int mbedtls_pk_encrypt( mbedtls_pk_context *ctx,
 /*
  * Check public-private key pair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_check_pair( const mbedtls_pk_context *pub, const mbedtls_pk_context *prv )
 {
     if( pub == NULL || pub->pk_info == NULL ||
@@ -326,6 +340,7 @@ int mbedtls_pk_check_pair( const mbedtls_pk_context *pub, const mbedtls_pk_conte
 /*
  * Get key size in bits
  */
+SSL_ROM_TEXT_SECTION
 size_t mbedtls_pk_get_bitlen( const mbedtls_pk_context *ctx )
 {
     if( ctx == NULL || ctx->pk_info == NULL )
@@ -337,6 +352,7 @@ size_t mbedtls_pk_get_bitlen( const mbedtls_pk_context *ctx )
 /*
  * Export debug information
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_pk_debug( const mbedtls_pk_context *ctx, mbedtls_pk_debug_item *items )
 {
     if( ctx == NULL || ctx->pk_info == NULL )
@@ -352,6 +368,7 @@ int mbedtls_pk_debug( const mbedtls_pk_context *ctx, mbedtls_pk_debug_item *item
 /*
  * Access the PK type name
  */
+SSL_ROM_TEXT_SECTION
 const char *mbedtls_pk_get_name( const mbedtls_pk_context *ctx )
 {
     if( ctx == NULL || ctx->pk_info == NULL )
@@ -363,6 +380,7 @@ const char *mbedtls_pk_get_name( const mbedtls_pk_context *ctx )
 /*
  * Access the PK type
  */
+SSL_ROM_TEXT_SECTION
 mbedtls_pk_type_t mbedtls_pk_get_type( const mbedtls_pk_context *ctx )
 {
     if( ctx == NULL || ctx->pk_info == NULL )

@@ -91,6 +91,9 @@ s8 spdio_rx_done_cb(void *padapter, void *data, u16 offset, u16 pktsize, u8 type
 {
 	struct spdio_buf_t *buf = (struct spdio_buf_t *)data;
 	struct spdio_t *obj = (struct spdio_t *)padapter;
+	
+	DCache_Invalidate((u32) buf->buf_addr, pktsize);
+	
 	if(obj)
 		return obj->rx_done_cb(obj, buf, (u8 *)(buf->buf_addr+offset), pktsize, type);
 	else
@@ -111,6 +114,7 @@ s8 spdio_tx_done_cb(void *padapter, IN u8 *data)
 
 s8 spdio_tx(struct spdio_t *obj, struct spdio_buf_t *pbuf)
 {
+	DCache_CleanInvalidate((u32)pbuf->buf_allocated, pbuf->size_allocated);
 	PHAL_SPDIO_ADAPTER pgSDIODev = obj->priv;
 	INIC_RX_DESC *pRxDesc;
 	SPDIO_RX_BD_HANDLE *pRxBdHdl;
@@ -290,6 +294,7 @@ VOID SPDIO_TX_FIFO_DataReady(IN PHAL_SPDIO_ADAPTER pSPDIODev)
 			if(ret == FAIL)
 				DBG_PRINTF(MODULE_SDIO, LEVEL_ERROR, "SDIO TX_Callback is Null!\n");
 			pTXBD->Address =  obj->rx_buf[pSPDIODev->TXBDRPtr].buf_addr;
+			DCache_CleanInvalidate((u32)pTXBD->Address, obj->rx_buf[pSPDIODev->TXBDRPtr].size_allocated);
 		} else {
 			// Invalid packet, Just drop it
 			ret = SUCCESS;  // pretend we call the TX callback OK
@@ -510,7 +515,8 @@ BOOL SPDIO_Device_Init(struct spdio_t * obj)
 		pTxBdHdl->pTXBD= pgSPDIODev->pTXBDAddrAligned + i;
 		// Pre-allocate buffer by User
 		pTxBdHdl->priv = (void *)&obj->rx_buf[i];
-		pTxBdHdl->pTXBD->Address = (u32)obj->rx_buf[i].buf_addr;	
+		pTxBdHdl->pTXBD->Address = (u32)obj->rx_buf[i].buf_addr;
+		DCache_CleanInvalidate(pTxBdHdl->pTXBD->Address , obj->rx_buf[i].size_allocated);
 		if(pTxBdHdl->pTXBD->Address%4){
 			DBG_PRINTF(MODULE_SDIO, LEVEL_ERROR, "buffer address must be aligned to 4!!\n");	
 			goto SDIO_INIT_ERR;			

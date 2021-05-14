@@ -24,6 +24,12 @@
  *  http://www.itl.nist.gov/fipspubs/fip180-1.htm
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memset _memset
+#define memcpy _memcpy
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -48,6 +54,7 @@
 #if !defined(MBEDTLS_SHA1_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = (unsigned char*)v; while( n-- ) *p++ = 0;
 }
@@ -75,11 +82,13 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 }
 #endif
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_init( mbedtls_sha1_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_sha1_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_free( mbedtls_sha1_context *ctx )
 {
     if( ctx == NULL )
@@ -88,15 +97,20 @@ void mbedtls_sha1_free( mbedtls_sha1_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_sha1_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_clone( mbedtls_sha1_context *dst,
                          const mbedtls_sha1_context *src )
 {
-	*dst = *src;
+//  modify to prevent implicit memcpy call
+//  *dst = *src;
+    memcpy(dst, src, sizeof(mbedtls_sha1_context));
+
 }
 
 /*
  * SHA-1 context setup
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_starts( mbedtls_sha1_context *ctx )
 {
     ctx->total[0] = 0;
@@ -110,6 +124,7 @@ void mbedtls_sha1_starts( mbedtls_sha1_context *ctx )
 }
 
 #if !defined(MBEDTLS_SHA1_PROCESS_ALT)
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_process( mbedtls_sha1_context *ctx, const unsigned char data[64] )
 {
     uint32_t temp, W[16], A, B, C, D, E;
@@ -270,6 +285,7 @@ void mbedtls_sha1_process( mbedtls_sha1_context *ctx, const unsigned char data[6
 /*
  * SHA-1 process buffer
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_update( mbedtls_sha1_context *ctx, const unsigned char *input, size_t ilen )
 {
     size_t fill;
@@ -307,6 +323,7 @@ void mbedtls_sha1_update( mbedtls_sha1_context *ctx, const unsigned char *input,
         memcpy( (void *) (ctx->buffer + left), input, ilen );
 }
 
+SSL_ROM_DATA_SECTION
 static const unsigned char sha1_padding[64] =
 {
  0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -318,6 +335,7 @@ static const unsigned char sha1_padding[64] =
 /*
  * SHA-1 final digest
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1_finish( mbedtls_sha1_context *ctx, unsigned char output[20] )
 {
     uint32_t last, padn;
@@ -349,6 +367,7 @@ void mbedtls_sha1_finish( mbedtls_sha1_context *ctx, unsigned char output[20] )
 /*
  * output = SHA-1( input buffer )
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha1( const unsigned char *input, size_t ilen, unsigned char output[20] )
 {
     mbedtls_sha1_context ctx;

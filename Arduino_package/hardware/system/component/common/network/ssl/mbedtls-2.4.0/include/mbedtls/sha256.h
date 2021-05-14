@@ -49,9 +49,6 @@ typedef struct
     uint32_t state[8];          /*!< intermediate digest state  */
     unsigned char buffer[64];   /*!< data block being processed */
     int is224;                  /*!< 0 => SHA-256, else SHA-224 */
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-    int ssl_hmac;
-#endif
 }
 mbedtls_sha256_context;
 

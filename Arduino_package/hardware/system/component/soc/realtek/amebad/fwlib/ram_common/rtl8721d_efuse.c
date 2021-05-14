@@ -12,8 +12,9 @@
   * possession or use of this module requires written permission of RealTek.
   *
   * Copyright(c) 2015, Realtek Semiconductor Corporation. All rights reserved.
-  ******************************************************************************
+  ****************************************************************************** 
   */
 
+#include "ameba_soc.h"
 
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

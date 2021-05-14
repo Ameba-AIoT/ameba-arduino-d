@@ -40,8 +40,6 @@ task.h is included from an application file. */
 #include "timers.h"
 #include "stack_macros.h"
 
-#define RTK_CUSTOMIZATION
-
 /* Lint e9021, e961 and e750 are suppressed as a MISRA exception justified
 because the MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined
 for the header files above, but not in this file, in order to generate the
@@ -293,10 +291,6 @@ typedef struct tskTaskControlBlock 			/* The old naming convention is used to pr
 
 	#if( configGENERATE_RUN_TIME_STATS == 1 )
 		uint32_t		ulRunTimeCounter;	/*< Stores the amount of time the task has spent in the Running state. */
-#ifdef RTK_CUSTOMIZATION
-		uint32_t		ulStartRunTimeCounterOfPeroid;	/*< Stores the amount of time the task has spent in the Running state during a peroid start. */
-		uint32_t		ulEndRunTimeCounterOfPeroid;	/*< Stores the amount of time the task has spent in the Running state when a peroid end */
-#endif
 	#endif
 
 	#if ( configUSE_NEWLIB_REENTRANT == 1 )
@@ -397,9 +391,7 @@ PRIVILEGED_DATA static volatile UBaseType_t uxSchedulerSuspended	= ( UBaseType_t
 	code working with debuggers that need to remove the static qualifier. */
 	PRIVILEGED_DATA static uint32_t ulTaskSwitchedInTime = 0UL;	/*< Holds the value of a timer/counter the last time a task was switched in. */
 	PRIVILEGED_DATA static uint32_t ulTotalRunTime = 0UL;		/*< Holds the total amount of execution time as defined by the run time counter clock. */
-#ifdef RTK_CUSTOMIZATION	
-	PRIVILEGED_DATA static uint32_t ulDeltaTotalRunTime = 0UL;		/*< Holds the delta total amount of execution time*/
-#endif
+
 #endif
 
 /*lint -restore */
@@ -969,10 +961,6 @@ UBaseType_t x;
 	#if ( configGENERATE_RUN_TIME_STATS == 1 )
 	{
 		pxNewTCB->ulRunTimeCounter = 0UL;
-#ifdef RTK_CUSTOMIZATION
-		pxNewTCB->ulStartRunTimeCounterOfPeroid = 0UL;
-		pxNewTCB->ulEndRunTimeCounterOfPeroid = 0UL;
-#endif
 	}
 	#endif /* configGENERATE_RUN_TIME_STATS */
 
@@ -2499,11 +2487,6 @@ TCB_t *pxTCB;
 
 		vTaskSuspendAll();
 		{
-#if ( configGENERATE_RUN_TIME_STATS == 1 )
-#ifdef RTK_CUSTOMIZATION
-			ulDeltaTotalRunTime = 0;
-#endif
-#endif
 			/* Is there a space in the array for each task in the system? */
 			if( uxArraySize >= uxCurrentNumberOfTasks )
 			{
@@ -2678,79 +2661,6 @@ implementations require configUSE_TICKLESS_IDLE to be set to a value other than
 #endif /* INCLUDE_xTaskAbortDelay */
 /*----------------------------------------------------------*/
 
-#if ( ( configGENERATE_RUN_TIME_STATS == 1 ) && ( configUSE_STATS_FORMATTING_FUNCTIONS == 1 ) )
-#ifdef RTK_CUSTOMIZATION
-	static void prvGenerateRunTimeOfPeroid(xList *pxList, portTickType tickTmp)
-	{
-		volatile tskTCB *pxNextTCB, *pxFirstTCB;
-
-		/* Write the run time stats of all the TCB's in pxList into the buffer. */
-		listGET_OWNER_OF_NEXT_ENTRY( pxFirstTCB, pxList );
-		do
-		{
-			/* Get next TCB in from the list. */
-			listGET_OWNER_OF_NEXT_ENTRY( pxNextTCB, pxList );
-
-			/* Record start&end run time counter. */
-			if (tickTmp%(2*portCONFIGURE_STATS_PEROID_VALUE))
-				pxNextTCB->ulStartRunTimeCounterOfPeroid = pxNextTCB->ulRunTimeCounter;
-			else
-				pxNextTCB->ulEndRunTimeCounterOfPeroid = pxNextTCB->ulRunTimeCounter;
-
-		} while( pxNextTCB != pxFirstTCB );
-	}
-
-	static void prvGetRunTimeStatsOfPeroidForTasksInList(portTickType tickTmp)
-	{
-		unsigned portBASE_TYPE uxQueue;
-	
-		if (tickTmp%portCONFIGURE_STATS_PEROID_VALUE){
-			return;//only portCONFIGURE_STATS_PEROID_VALUE
-		}
-	
-		uxQueue = configMAX_PRIORITIES;
-	
-		do
-		{
-			uxQueue--;
-		
-			if( listLIST_IS_EMPTY( &( pxReadyTasksLists[ uxQueue ] ) ) == pdFALSE )
-			{
-				prvGenerateRunTimeOfPeroid(( xList * ) &( pxReadyTasksLists[ uxQueue ] ), tickTmp );
-			}
-		}while( uxQueue > ( UBaseType_t ) tskIDLE_PRIORITY );
-		
-		if( listLIST_IS_EMPTY( pxDelayedTaskList ) == pdFALSE )
-		{
-			prvGenerateRunTimeOfPeroid(( xList * ) pxDelayedTaskList, tickTmp );
-		}
-		
-		if( listLIST_IS_EMPTY( pxOverflowDelayedTaskList ) == pdFALSE )
-		{
-			prvGenerateRunTimeOfPeroid(( xList * ) pxOverflowDelayedTaskList, tickTmp );
-		}
-		
-#if ( INCLUDE_vTaskDelete == 1 )
-		{
-			if( listLIST_IS_EMPTY( &xTasksWaitingTermination ) == pdFALSE )
-			{
-				prvGenerateRunTimeOfPeroid(&xTasksWaitingTermination, tickTmp );
-			}
-		}
-#endif
-		
-#if ( INCLUDE_vTaskSuspend == 1 )
-		{
-			if( listLIST_IS_EMPTY( &xSuspendedTaskList ) == pdFALSE )
-			{
-				prvGenerateRunTimeOfPeroid(&xSuspendedTaskList, tickTmp );
-			}
-		}
-#endif
-	}
-#endif	
-#endif
-
 BaseType_t xTaskIncrementTick( void )
 {
 TCB_t * pxTCB;
@@ -2905,12 +2815,7 @@ BaseType_t xSwitchRequired = pdFALSE;
 		}
 		#endif
 	}
-#if ( configGENERATE_RUN_TIME_STATS == 1 )
-#ifdef RTK_CUSTOMIZATION
-	prvGetRunTimeStatsOfPeroidForTasksInList(xTickCount);
-#endif
-#endif
-	
+
 	#if ( configUSE_PREEMPTION == 1 )
 	{
 		if( xYieldPending != pdFALSE )
@@ -3726,13 +3631,6 @@ static void prvCheckTasksWaitingTermination( void )
 		#if ( configGENERATE_RUN_TIME_STATS == 1 )
 		{
 			pxTaskStatus->ulRunTimeCounter = pxTCB->ulRunTimeCounter;
-#ifdef RTK_CUSTOMIZATION
-			if (pxTCB->ulEndRunTimeCounterOfPeroid > pxTCB->ulStartRunTimeCounterOfPeroid)
-				pxTaskStatus->ulDelataRunTimeCounterOfPeroid = pxTCB->ulEndRunTimeCounterOfPeroid - pxTCB->ulStartRunTimeCounterOfPeroid;
-			else
-				pxTaskStatus->ulDelataRunTimeCounterOfPeroid = pxTCB->ulStartRunTimeCounterOfPeroid - pxTCB->ulEndRunTimeCounterOfPeroid;
-			ulDeltaTotalRunTime += pxTaskStatus->ulDelataRunTimeCounterOfPeroid;
-#endif
 		}
 		#else
 		{
@@ -4511,9 +4409,6 @@ TCB_t *pxTCB;
 	TaskStatus_t *pxTaskStatusArray;
 	UBaseType_t uxArraySize, x;
 	uint32_t ulTotalTime, ulStatsAsPercentage;
-#ifdef RTK_CUSTOMIZATION
-	uint32_t ulDeltaRunTimeCounter;
-#endif
 
 		#if( configUSE_TRACE_FACILITY != 1 )
 		{
@@ -4562,10 +4457,6 @@ TCB_t *pxTCB;
 		{
 			/* Generate the (binary) data. */
 			uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, &ulTotalTime );
-#ifdef RTK_CUSTOMIZATION
-			printf("\n\rCPU total run time is %u", ulTotalTime);
-			printf("\n\rTaskName\tDeltaRunTime\tpercentage\r\n");
-#endif
 
 			/* For percentage calculations. */
 			ulTotalTime /= 100UL;
@@ -4579,17 +4470,8 @@ TCB_t *pxTCB;
 					/* What percentage of the total run time has the task used?
 					This will always be rounded down to the nearest integer.
 					ulTotalRunTimeDiv100 has already been divided by 100. */
-#ifndef RTK_CUSTOMIZATION
 					ulStatsAsPercentage = pxTaskStatusArray[ x ].ulRunTimeCounter / ulTotalTime;
-#else
-					ulStatsAsPercentage = (100*pxTaskStatusArray[ x ].ulDelataRunTimeCounterOfPeroid) / ulDeltaTotalRunTime;
-					/* just make run time counter looks like more precise*/
-					if (100*(100*pxTaskStatusArray[ x ].ulDelataRunTimeCounterOfPeroid) % ulDeltaTotalRunTime >=50)
-						ulDeltaRunTimeCounter = portCONFIGURE_STATS_PEROID_VALUE*(ulStatsAsPercentage+1)/100;
-					else
-						ulDeltaRunTimeCounter = portCONFIGURE_STATS_PEROID_VALUE*ulStatsAsPercentage/100;
-#endif					
-					
+
 					/* Write the task name to the string, padding with
 					spaces so it can be printed in tabular form more
 					easily. */
@@ -4599,21 +4481,13 @@ TCB_t *pxTCB;
 					{
 						#ifdef portLU_PRINTF_SPECIFIER_REQUIRED
 						{
-#ifndef RTK_CUSTOMIZATION
 							sprintf( pcWriteBuffer, "\t%lu\t\t%lu%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter, ulStatsAsPercentage );
-#else
-							sprintf( pcWriteBuffer, "\t%lu\t\t%lu%%\r\n", ulDeltaRunTimeCounter, ulStatsAsPercentage );
-#endif
 						}
 						#else
 						{
 							/* sizeof( int ) == sizeof( long ) so a smaller
 							printf() library can be used. */
-#ifndef RTK_CUSTOMIZATION
 							sprintf( pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter, ( unsigned int ) ulStatsAsPercentage ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
-#else
-							sprintf( pcWriteBuffer, "\t%u\t\t%u%%\r\n", ( unsigned int ) ulDeltaRunTimeCounter, ( unsigned int ) ulStatsAsPercentage );
-#endif
 						}
 						#endif
 					}
@@ -4623,21 +4497,13 @@ TCB_t *pxTCB;
 						consumed less than 1% of the total run time. */
 						#ifdef portLU_PRINTF_SPECIFIER_REQUIRED
 						{
-#ifndef RTK_CUSTOMIZATION
 							sprintf( pcWriteBuffer, "\t%lu\t\t<1%%\r\n", pxTaskStatusArray[ x ].ulRunTimeCounter );
-#else
-							sprintf( pcWriteBuffer, "\t%lu\t\t<1%%\r\n", ulDeltaRunTimeCounter );
-#endif
 						}
 						#else
 						{
 							/* sizeof( int ) == sizeof( long ) so a smaller
 							printf() library can be used. */
-#ifndef RTK_CUSTOMIZATION		
 							sprintf( pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( unsigned int ) pxTaskStatusArray[ x ].ulRunTimeCounter ); /*lint !e586 sprintf() allowed as this is compiled with many compilers and this is a utility function only - not part of the core kernel implementation. */
-#else
-							sprintf( pcWriteBuffer, "\t%u\t\t<1%%\r\n", ( unsigned int ) ulDeltaRunTimeCounter );
-#endif
 						}
 						#endif
 					}

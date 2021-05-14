@@ -15,26 +15,17 @@
   ****************************************************************************** 
   */
 #include "ameba_soc.h"
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-#include "inic_ipc.h"
-#include "inic_ipc_api.h"
-#endif
 
 #if defined (ARM_CORE_CM4)
 const IPC_INIT_TABLE  ipc_init_config[] =
 {
-	//USER_MSG_TYPE		IRQFUNC						IRQDATA
-	{IPC_USER_DATA,		shell_switch_ipc_int,				(VOID*) NULL},//channel 0: IPC_INT_CHAN_SHELL_SWITCH
+	//USER_MSG_TYPE		IRQFUNC								IRQDATA
+	{IPC_USER_DATA,		shell_switch_ipc_int,		(VOID*) NULL},//channel 0: IPC_INT_CHAN_SHELL_SWITCH
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 1: IPC_INT_CHAN_WIFI_FW
-	{IPC_USER_DATA,		FLASH_Write_IPC_Int,				(VOID*) NULL},//channel 2: IPC_INT_CHAN_FLASHPG_REQ
+	{IPC_USER_DATA,		FLASH_Write_IPC_Int,		(VOID*) NULL},//channel 2: IPC_INT_CHAN_FLASHPG_REQ
 	{IPC_USER_POINT,	NULL,						(VOID*) NULL},//channel 3: IPC_INT_KM4_TICKLESS_INDICATION
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-	{IPC_USER_POINT,	inic_ipc_dev_event_int_hdl,			(VOID*) NULL},//channel 4: IPC_INT_CHAN_WIFI_TRAN
-	{IPC_USER_POINT,	inic_ipc_api_dev_int_hdl,			(VOID*) NULL},//channel 5: IPC_INT_CHAN_WIFI_API
-#else
-	{IPC_USER_DATA, 	NULL,						(VOID*) NULL},//channel 4: Reserved for Realtek use
+	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 4: Reserved for Realtek use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 5: Reserved for Realtek use
-#endif
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 6: Reserved for Realtek use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 7: Reserved for Realtek use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 8: Reserved for Realtek use
@@ -73,18 +64,13 @@ extern void driver_fw_flow_ipc_int(VOID *Data, u32 IrqStatus, u32 ChanNum);
 #endif
 const IPC_INIT_TABLE  ipc_init_config[] =
 {
-	//USER_MSG_TYPE		IRQFUNC						IRQDATA
-	{IPC_USER_DATA,		shell_switch_ipc_int,				(VOID*) NULL},//channel 0: IPC_INT_CHAN_SHELL_SWITCH
+	//USER_MSG_TYPE		IRQFUNC								IRQDATA
+	{IPC_USER_DATA,		shell_switch_ipc_int,		(VOID*) NULL},//channel 0: IPC_INT_CHAN_SHELL_SWITCH
 	{IPC_USER_DATA,		fw_flow_ipc_int,				(VOID*) IPCM4_DEV},//channel 1: IPC_INT_CHAN_WIFI_FW
-	{IPC_USER_DATA,		FLASH_Write_IPC_Int,				(VOID*) NULL},//channel 2: IPC_INT_CHAN_FLASHPG_REQ
-	{IPC_USER_POINT,	km4_tickless_ipc_int,				(VOID*) NULL},//channel 3: IPC_INT_KM4_TICKLESS_INDICATION
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-	{IPC_USER_POINT,	inic_ipc_host_event_int_hdl,			(VOID*) NULL},//channel 4: IPC_INT_CHAN_WIFI_TRAN
-	{IPC_USER_POINT,	inic_ipc_api_host_int_hdl,			(VOID*) NULL},//channel 5: IPC_INT_CHAN_WIFI_API
-#else
-	{IPC_USER_DATA, 	NULL,						(VOID*) NULL},//channel 4: Reserved for Realtek use
+	{IPC_USER_DATA,		FLASH_Write_IPC_Int,		(VOID*) NULL},//channel 2: IPC_INT_CHAN_FLASHPG_REQ
+	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 3: Reserved for Realtek use
+	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 4: Reserved for Realtek use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 5: Reserved for Realtek use
-#endif
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 6: Reserved for Realtek use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 7: Reserved for Realtek use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 8: Reserved for Realtek use
@@ -110,7 +96,7 @@ const IPC_INIT_TABLE  ipc_init_config[] =
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 28: Reserved for Customer use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 29: Reserved for Customer use
 	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 30: Reserved for Customer use
-	{IPC_USER_DATA,		NULL,						(VOID*) NULL},//channel 31: Reserved for Customer use
+	{IPC_USER_POINT,    km4_tickless_ipc_int,		(VOID*) NULL},//channel 31: IPC_INT_KM4_TICKLESS_INDICATION
 
 	{0xFFFFFFFF,		OFF,								OFF},	/* Table end */
 };

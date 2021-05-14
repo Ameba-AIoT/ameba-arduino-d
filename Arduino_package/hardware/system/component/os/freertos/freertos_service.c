@@ -8,10 +8,9 @@
 #include <stdio.h>
 #include <freertos_pmu.h>
 //#include <tcm_heap.h>
-//#include <cmsis.h>
+#include <cmsis.h>
 
 #if defined(CONFIG_PLATFORM_8710C)
-#include <cmsis.h>
 #include "rtl8710c_freertos_pmu.h"
 #endif
 
@@ -178,14 +177,10 @@ static void _freertos_mutex_free(_mutex *pmutex)
 
 static int __in_interrupt(void)
 {
-#ifdef ARM_CORE_CA7
-	return __get_mode()!=CPSR_M_USR;
-#else
 #if defined(__ICCARM__)
 	return (__get_PSR()&0x1FF)!=0;
 #elif defined(__GNUC__)
 	return (__get_xPSR()&0x1FF)!=0;
-#endif
 #endif
 }
 
@@ -308,9 +303,9 @@ static void _freertos_exit_critical_mutex(_mutex *pmutex, _irqL *pirqL)
 
 #if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
 #include "timer_api.h"
-//static gtimer_t tmp_timer_obj;
-#include "us_ticker_api.h"
-static uint32_t lock_ticker;
+#if defined(CONFIG_PLATFORM_8195BHP)
+static gtimer_t tmp_timer_obj;
+#endif
 #endif
 static void _freertos_cpu_lock(void)
 {
@@ -318,27 +313,27 @@ static void _freertos_cpu_lock(void)
 	__disable_irq();
 	icache_disable();
 	dcache_disable();
-
-	//gtimer_init(&tmp_timer_obj, 0xff);
-	//gtimer_reload(&tmp_timer_obj, 400*1000 );	// 4s
-	//gtimer_start(&tmp_timer_obj);
-	us_ticker_init();
-	lock_ticker = us_ticker_read();
+#if defined(CONFIG_PLATFORM_8195BHP)
+	gtimer_init(&tmp_timer_obj, 0xff);
+	gtimer_reload(&tmp_timer_obj, 400*1000 );	// 4s
+	gtimer_start(&tmp_timer_obj);
+#endif
 #endif
 }
 
 static void _freertos_cpu_unlock(void)
 {
 #if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
-	//int duration = (int)gtimer_read_us(&tmp_timer_obj)/1000;
-	//gtimer_deinit(&tmp_timer_obj);
-	if(xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED){
-		uint32_t duration = (us_ticker_read()-lock_ticker)/1000;
-		// compensate rtos tick
-		for(int i=0;i<duration;i++)
-			xTaskIncrementTick();
-	}
+#if defined(CONFIG_PLATFORM_8195BHP)
+	int duration = (int)gtimer_read_us(&tmp_timer_obj)/1000;
 	
+	gtimer_deinit(&tmp_timer_obj);
+	// compensate rtos tick
+	//vTaskIncTick(duration); // cannot use this here
+	for(int i=0;i<duration;i++)
+		xTaskIncrementTick();
+	
+#endif
 	dcache_enable();
 	icache_enable();	
 	icache_invalidate();
@@ -508,9 +503,9 @@ static u32 _freertos_sec_to_systime(u32 sec)
 
 static void _freertos_msleep_os(int ms)
 {
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8735B)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP)
 	vTaskDelay(ms / portTICK_RATE_MS);
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)
 	if (pmu_yield_os_check()) {
 		vTaskDelay(ms / portTICK_RATE_MS);
 	} else {
@@ -534,9 +529,9 @@ static void _freertos_usleep_os(int us)
 	WLAN_BSP_UsLoop(us);
 #elif defined(CONFIG_PLATFORM_8195A)
 	HalDelayUs(us);
-#elif defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8735B)
+#elif defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
 	hal_delay_us(us);
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)
 	DelayUs(us);
 #else
 	#error "Please implement hardware dependent micro second level sleep here"
@@ -547,7 +542,7 @@ static void _freertos_mdelay_os(int ms)
 {
 #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP)
 	vTaskDelay(ms / portTICK_RATE_MS);
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)
 	if (pmu_yield_os_check()) {
 		vTaskDelay(ms / portTICK_RATE_MS);
 	} else {
@@ -571,9 +566,9 @@ static void _freertos_udelay_os(int us)
 	WLAN_BSP_UsLoop(us);
 #elif defined(CONFIG_PLATFORM_8195A)
 	HalDelayUs(us);
-#elif defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8735B)
+#elif defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
 	hal_delay_us(us);
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)
 	DelayUs(us);
 #else
 	#error "Please implement hardware dependent micro second level sleep here"
@@ -582,9 +577,9 @@ static void _freertos_udelay_os(int us)
 
 static void _freertos_yield_os(void)
 {
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8735B)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP)
 	taskYIELD();
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)
 	if (pmu_yield_os_check()) {
 		taskYIELD();
 	} else {
@@ -603,42 +598,26 @@ static void _freertos_yield_os(void)
 
 static void _freertos_ATOMIC_SET(ATOMIC_T *v, int i)
 {
-#if defined(STDATOMIC)	
-	atomic_store(v, i);
-#else
 	atomic_set(v,i);
-#endif
 }
 
 static int _freertos_ATOMIC_READ(ATOMIC_T *v)
 {
-#if defined(STDATOMIC)	
-	return atomic_load(v);
-#else	
 	return atomic_read(v);
-#endif
 }
 
 static void _freertos_ATOMIC_ADD(ATOMIC_T *v, int i)
 {
-#if defined(STDATOMIC)	
-	atomic_fetch_add(v, i);
-#else
 	save_and_cli();
 	v->counter += i;
 	restore_flags();
-#endif
 }
 
 static void _freertos_ATOMIC_SUB(ATOMIC_T *v, int i)
 {
-#if defined(STDATOMIC)	
-	atomic_fetch_sub(v, i);
-#else	
 	save_and_cli();
 	v->counter -= i;
 	restore_flags();
-#endif
 }
 
 static void _freertos_ATOMIC_INC(ATOMIC_T *v)
@@ -653,10 +632,6 @@ static void _freertos_ATOMIC_DEC(ATOMIC_T *v)
 
 static int _freertos_ATOMIC_ADD_RETURN(ATOMIC_T *v, int i)
 {
-#if defined(STDATOMIC)	
-	atomic_fetch_add(v, i);
-	return atomic_load(v);
-#else	
 	int temp;
 
 	save_and_cli();
@@ -666,15 +641,10 @@ static int _freertos_ATOMIC_ADD_RETURN(ATOMIC_T *v, int i)
 	restore_flags();
 
 	return temp;
-#endif
 }
 
 static int _freertos_ATOMIC_SUB_RETURN(ATOMIC_T *v, int i)
 {
-#if defined(STDATOMIC)	
-	atomic_fetch_sub(v, i);
-	return atomic_load(v);
-#else	
 	int temp;
 
 	save_and_cli();
@@ -684,7 +654,6 @@ static int _freertos_ATOMIC_SUB_RETURN(ATOMIC_T *v, int i)
 	restore_flags();
 
 	return temp;
-#endif
 }
 
 static int _freertos_ATOMIC_INC_RETURN(ATOMIC_T *v)
@@ -715,15 +684,10 @@ static u64 _freertos_modular64(u64 n, u64 base)
 /* Refer to ecos bsd tcpip codes */
 static int _freertos_arc4random(void)
 {
-#if defined(CONFIG_PLATFORM_8721D)|| (defined CONFIG_PLATFORM_AMEBAD2)
-
-#if defined(CONFIG_PLATFORM_AMEBAD2)
-	int value = (int)rand();
-#else
+#if defined(CONFIG_PLATFORM_8721D)
 	int value = (int)Rand();
-#endif
 	return value;
-	
+
 #else
 	u32 res = xTaskGetTickCount();
 	static unsigned long seed = 0xDEADB00B;
@@ -793,10 +757,10 @@ static int _freertos_create_task(struct task_struct *ptask, const char *name,
 	}
 
 	priority += tskIDLE_PRIORITY;
-
-#if defined(CONFIG_USE_TCM_HEAP) && CONFIG_USE_TCM_HEAP && defined(CONFIG_WIFI_NORMAL) && defined(CONFIG_NETWORK)
+#if defined(CONFIG_WIFI_NORMAL) && defined(CONFIG_NETWORK)
 	if(rtw_if_wifi_thread((char*)name) == 0){
 
+#if defined(CONFIG_USE_TCM_HEAP) && CONFIG_USE_TCM_HEAP
 		void *stack_addr = tcm_heap_malloc(stack_size*sizeof(int));
 		//void *stack_addr = rtw_malloc(stack_size*sizeof(int));
 		if(stack_addr == NULL){
@@ -811,6 +775,15 @@ static int _freertos_create_task(struct task_struct *ptask, const char *name,
 				&ptask->task,
 				stack_addr,
 				NULL);
+#else							 
+		ret = xTaskCreate(
+				task_func,
+				(const char *)name,
+				stack_size,
+				task_ctx,
+				priority,
+				(TaskHandle_t*)&ptask->task);
+#endif
 	}
 	else
 #endif
@@ -968,7 +941,7 @@ void _freertos_acquire_wakelock(void)
    	pmu_acquire_wakelock(PMU_WLAN_DEVICE);
 #endif
 	
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)
 
 #if defined(configUSE_WAKELOCK_PMU) && (configUSE_WAKELOCK_PMU == 1)
 	if (pmu_yield_os_check()) 
@@ -987,7 +960,7 @@ void _freertos_release_wakelock(void)
     pmu_release_wakelock(PMU_WLAN_DEVICE);
 #endif
 	
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)
 
 #if defined(configUSE_WAKELOCK_PMU) && (configUSE_WAKELOCK_PMU == 1)
 	if (pmu_yield_os_check()) 
@@ -1001,7 +974,7 @@ void _freertos_wakelock_timeout(uint32_t timeout)
 {
 #if defined(CONFIG_PLATFORM_8195A)
 	
-#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)|| (defined CONFIG_PLATFORM_AMEBAD2)
+#elif defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)
 	if (pmu_yield_os_check()) 
 		pmu_set_sysactive_time(timeout);
 	else {

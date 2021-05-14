@@ -6,18 +6,12 @@
 #include "main.h"
 #include "queue.h"
 #include "utils/os.h"
-#if CONFIG_LWIP_LAYER
 #include <lwip_netconf.h>
 #include <lwip/netif.h>
-#endif
 #include "wifi/wifi_conf.h"
 #include "wps/wps_defs.h"
 #include <platform/platform_stdlib.h>
 #include "wifi_wps_config.h"
-
-#if defined(CONFIG_PLATFORM_8710C)
-#include "platform_opts_bt.h"
-#endif
 
 // The maximum number of WPS credentials. The value should be in range of 1~10.
 int wps_max_cred_count = 10;
@@ -310,7 +304,7 @@ static void wps_config_wifi_setting(rtw_network_info_t *wifi, struct dev_credent
 {
 	printf("\r\nwps_config_wifi_setting\n");
 	//memcpy((void *)wifi->ssid, (void *)dev_cred->ssid, dev_cred->ssid_len); 
-	strncpy((char*)wifi->ssid.val, (char*)&dev_cred->ssid[0], sizeof(wifi->ssid.val));
+	strcpy((char*)wifi->ssid.val, (char*)&dev_cred->ssid[0]);
 	printf("\r\nwps_wifi.ssid = %s\n", wifi->ssid.val);
 	wifi->ssid.len = dev_cred->ssid_len;
 	printf("\r\nwps_wifi.ssid_len = %d\n", wifi->ssid.len);
@@ -330,7 +324,11 @@ static void wps_config_wifi_setting(rtw_network_info_t *wifi, struct dev_credent
 		}
 	}
 	else if(dev_cred->auth_type & (WPS_AUTH_TYPE_WPA_PERSONAL | WPS_AUTH_TYPE_WPA_ENTERPRISE)) {
-		if(dev_cred->encr_type & WPS_ENCR_TYPE_AES) {
+		if((dev_cred->encr_type & WPS_ENCR_TYPE_AES) && (dev_cred->encr_type & WPS_ENCR_TYPE_TKIP)) {
+			printf("\r\nsecurity_type = RTW_SECURITY_WPA_MIXED_PSK\n");
+			wifi->security_type = RTW_SECURITY_WPA_MIXED_PSK;
+		}
+		else if(dev_cred->encr_type & WPS_ENCR_TYPE_AES) {
 			printf("\r\nsecurity_type = RTW_SECURITY_WPA_AES_PSK\n");
 			wifi->security_type = RTW_SECURITY_WPA_AES_PSK;
 		}
@@ -574,7 +572,7 @@ static void update_discovered_ssids(char *ssid)
 			if(strlen(discovery_ssid) == 0) {
 				discovered_ssids[i] = malloc(strlen(ssid) + 1);
 				strcpy(discovered_ssids[i], ssid);
-				strncpy(discovery_ssid, ssid, sizeof(discovery_ssid));
+				strcpy(discovery_ssid, ssid);
 				break;
 			}
 		}
@@ -694,6 +692,9 @@ static rtw_result_t wps_scan_result_handler( rtw_scan_handler_result_t* malloced
 	return RTW_SUCCESS;
 }
 
+extern void wifi_scan_each_report_hdl( char* buf, int buf_len, int flags, void* userdata);
+extern void wifi_scan_done_hdl( char* buf, int buf_len, int flags, void* userdata);
+
 static int wps_find_out_triger_wps_AP(char *target_ssid, unsigned char *target_bssid, u16 config_method)
 {
 	int isoverlap = -1;
@@ -717,8 +718,9 @@ static int wps_find_out_triger_wps_AP(char *target_ssid, unsigned char *target_b
 	if(rtw_down_timeout_sema(&wps_arg.scan_sema, SCAN_LONGEST_WAIT_TIME) == RTW_FALSE){
 		printf("\r\nWPS scan done early!\r\n");
 	}
+	wifi_unreg_event_handler(WIFI_EVENT_SCAN_RESULT_REPORT, wifi_scan_each_report_hdl);
+	wifi_unreg_event_handler(WIFI_EVENT_SCAN_DONE, wifi_scan_done_hdl);
 
-	wifi_scan_unreg_event_handler();
 exit:
 	rtw_free_sema(&wps_arg.scan_sema);
 	
@@ -846,7 +848,7 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 	if(wps_config == WPS_CONFIG_DISPLAY
 		|| wps_config == WPS_CONFIG_KEYPAD) {
 		if(pin)
-			strncpy(wps_pin_code, pin, sizeof(wps_pin_code));
+			strcpy(wps_pin_code, pin);
 		else{
 			printf("\n\rWPS: PIN is NULL. Not triger WPS.\n");
 			return -1;
@@ -959,7 +961,9 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 				cur_security = RTW_SECURITY_WPA2_TKIP_PSK;
 		}
 		else if(dev_cred[cur_index].auth_type & (WPS_AUTH_TYPE_WPA_PERSONAL | WPS_AUTH_TYPE_WPA_ENTERPRISE)) {
-			if(dev_cred[cur_index].encr_type & WPS_ENCR_TYPE_AES)
+			if((dev_cred[cur_index].encr_type & WPS_ENCR_TYPE_AES) && (dev_cred[cur_index].encr_type & WPS_ENCR_TYPE_TKIP))
+				cur_security = RTW_SECURITY_WPA_MIXED_PSK;
+			else if(dev_cred[cur_index].encr_type & WPS_ENCR_TYPE_AES)
 				cur_security = RTW_SECURITY_WPA_AES_PSK;
 			else if(dev_cred[cur_index].encr_type & WPS_ENCR_TYPE_TKIP)
 				cur_security = RTW_SECURITY_WPA_TKIP_PSK;
@@ -984,8 +988,19 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 		wifi_set_wps_phase(DISABLE);
 #if defined(CONFIG_WIFI_IND_USE_THREAD) && CONFIG_WIFI_IND_USE_THREAD
 		vTaskDelay(10); //Wait WIFI_DISCONNECT_EVENT and WIFI_EVENT_WPS_FINISH to be processed which sent by OnDeauth
-#endif		
-		ret = wps_connect_to_AP_by_certificate(&wifi);
+#endif
+
+#ifdef  CONFIG_SAE_SUPPORT
+		if(wext_get_support_wpa3()==1) {
+			wext_set_support_wpa3(DISABLE);
+			ret = wps_connect_to_AP_by_certificate(&wifi);
+			wext_set_support_wpa3(ENABLE);
+		}
+		else
+#endif
+		{
+			ret = wps_connect_to_AP_by_certificate(&wifi);
+		}
 		os_free(dev_cred,0);
 		goto exit1;
 	} else {
@@ -1098,7 +1113,7 @@ void wifi_start_ap_wps_thread(u16 config_methods, char *pin)
 	if(config_methods == WPS_CONFIG_DISPLAY
 		|| config_methods == WPS_CONFIG_KEYPAD) {
 		if(pin)
-			strncpy(wps_pin_code, pin, sizeof(wps_pin_code));
+			strcpy(wps_pin_code, pin);
 		else{
 			printf("\n\rWPS-AP: PIN is NULL. Not triger WPS.\n");
 			return;
@@ -1119,44 +1134,35 @@ void wifi_start_ap_wps_thread(u16 config_methods, char *pin)
 
 #endif //CONFIG_ENABLE_WPS_AP
 
-int wps_judge_staion_disconnect(void) 
+void wps_judge_staion_disconnect(void) 
 {
 	int mode = 0;
 	unsigned char ssid[33];
 
-	if(wifi_get_mode(WLAN0_NAME, &mode) != 0 )
-	{
-		return -1;
-        }
+	wext_get_mode(WLAN0_NAME, &mode);
 
 	switch(mode) {
 	case IW_MODE_MASTER:		//In AP mode
+//		rltk_wlan_deinit();
+//		rltk_wlan_init(0,RTW_MODE_STA);
+//		rltk_wlan_start(0);
 		//modified by Chris Yang for iNIC
-#if defined(CONFIG_PLATFORM_8710C) && (defined(CONFIG_BT) && CONFIG_BT)
-		wifi_set_mode(RTW_MODE_STA);
-#else
 		wifi_off();
 		vTaskDelay(20);
 		wifi_on(RTW_MODE_STA);
-#endif
 		break;
 	case IW_MODE_INFRA:		//In STA mode
-		if(wifi_get_ssid(WLAN0_NAME, ssid) > 0)
+		if(wext_get_ssid(WLAN0_NAME, ssid) > 0)
 			wifi_disconnect();
-	}
-	return 0;	
+	}	
 }
 
 void cmd_wps(int argc, char **argv)
 {
 	int ret = -1;
 	(void) ret;
-
-	if(wps_judge_staion_disconnect() != 0)
-	{
-	    return;
-	}
-
+	wps_judge_staion_disconnect();
+	
 	if((argc == 2 || argc == 3 ) && (argv[1] != NULL)){
 		if(strcmp(argv[1],"pin") == 0){
 			unsigned int pin_val = 0;
@@ -1164,7 +1170,7 @@ void cmd_wps(int argc, char **argv)
 			if(argc == 2){
 				char device_pin[10];
 				pin_val = wps_generate_pin();
-				snprintf(device_pin, sizeof(device_pin),"%08d", pin_val);
+				snprintf(device_pin, sizeof(device_pin), "%08d", pin_val);
 				/* Display PIN 3 times to prevent to be overwritten by logs from other tasks */
 				printf("\n\rWPS: Start WPS PIN Display. PIN: [%s]\n\r", device_pin);
 				printf("\n\rWPS: Start WPS PIN Display. PIN: [%s]\n\r", device_pin);
@@ -1204,11 +1210,11 @@ cmd_ap_wps pbc or cmd_ap_wps pin 12345678
 void cmd_ap_wps(int argc, char **argv)
 {
 	int mode = 0;
-	if(wifi_is_running(WLAN1_IDX)){
+	if(rltk_wlan_running(WLAN1_IDX)){
 		printf("\n\rNot support con-current softAP WSC!\n\r");
 		return;
 	}
-	wifi_get_mode(WLAN0_NAME, &mode);
+	wext_get_mode(WLAN0_NAME, &mode);
 	if(mode != IW_MODE_MASTER){
 		printf("\n\rOnly valid for IW_MODE_MASTER!\n\r");
 		return;
@@ -1228,7 +1234,7 @@ void cmd_ap_wps(int argc, char **argv)
 			}else{
 				char device_pin[10];
 				pin_val = wps_generate_pin();
-				sprintf(device_pin, "%08d", pin_val);
+				snprintf(device_pin, sizeof(device_pin), "%08d", pin_val);
 				printf("\n\rWPS: Start WPS PIN Display. PIN: %s\n\r", device_pin);
 				wifi_start_ap_wps_thread(WPS_CONFIG_DISPLAY, (char*)device_pin);
 			}
