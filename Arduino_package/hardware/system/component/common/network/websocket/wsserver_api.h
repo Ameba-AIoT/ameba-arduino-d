@@ -202,7 +202,7 @@ ws_conn *ws_server_get_conn_info(int conn_no);
 void ws_server_sendPing(ws_conn *conn);
 
 /**
- * @brief	  This function is used to create the sending binary data and copy to tx_bufs.
+ * @brief	  This function is used to create the sending binary data and copy to tx_bufs. Data will be sent while polling.
  * @param[in] message: the binary data that will be sent to client
  * @param[in] message_len: the length of the binary data
  * @param[in] use_mask: 0/1; 1 means using mask for data
@@ -212,7 +212,7 @@ void ws_server_sendPing(ws_conn *conn);
  void ws_server_sendBinary(uint8_t* message, int message_len, int use_mask, ws_conn *conn);
 
 /**
- * @brief	  This function is used to create the sending text data and copy to tx_bufs.
+ * @brief	  This function is used to create the sending text data and copy to tx_bufs. Data will be sent while polling.
  * @param[in] message: the text data that will be sent to client
  * @param[in] message_len: the length of the text data
  * @param[in] use_mask: 0/1; 1 means using mask for data
@@ -220,6 +220,27 @@ void ws_server_sendPing(ws_conn *conn);
  * @return    None
  */
 void ws_server_sendText(char* message, int message_len, int use_mask, ws_conn *conn);
+
+/**
+ * @brief	  This function is used to create the sending binary data and send directly instead of sending while polling.
+ * @param[in] message: the binary data that will be sent to client
+ * @param[in] message_len: the length of the binary data
+ * @param[in] use_mask: 0/1; 1 means using mask for data
+ * @param[in] ws_conn: the websocket connection
+ * @return    None
+ */
+ void ws_server_direct_sendBinary(uint8_t* message, int message_len, int use_mask, ws_conn *conn);
+
+/**
+ * @brief	  This function is used to create the sending text data and send directly instead of sending while polling.
+ * @param[in] message: the text data that will be sent to client
+ * @param[in] message_len: the length of the text data
+ * @param[in] use_mask: 0/1; 1 means using mask for data
+ * @param[in] ws_conn: the websocket connection
+ * @return    None
+ */
+void ws_server_direct_sendText(char* message, int message_len, int use_mask, ws_conn *conn);
+
 
 /**
  * @brief	  This function is used to sending close to websocket connection.

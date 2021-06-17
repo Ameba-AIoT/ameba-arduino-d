@@ -177,7 +177,7 @@ void pwmout_init(pwmout_t* obj, PinName pin)
 void pwmout_free(pwmout_t* obj) 
 {
 	/* disable pwm channel */
-	uint8_t pwm_chan = obj->pwm_idx & (~BIT_PWM_TIM_IDX_FLAG);
+	uint8_t pwm_chan = obj->pwm_idx & (~(uint8_t)BIT_PWM_TIM_IDX_FLAG);
 	uint8_t pwm_tim_idx = obj->pwm_idx >> BIT_PWM_TIM_IDX_SHIFT;;
 	
 	
@@ -232,7 +232,7 @@ void pwmout_write(pwmout_t* obj, float percent) //write duty-cycle
 	
 	ccrx = (u32)(obj->pulse  * 40 / (prescaler + 1)) & 0x0000ffff;
 	
-	RTIM_CCRxSet(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], ccrx, obj->pwm_idx & (~BIT_PWM_TIM_IDX_FLAG));
+	RTIM_CCRxSet(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], ccrx, obj->pwm_idx & (~(uint8_t)BIT_PWM_TIM_IDX_FLAG));
 }
 
 /**
@@ -329,7 +329,7 @@ void pwmout_pulsewidth_us(pwmout_t* obj, int us)
 	
 	obj->pulse = (float)us;
 	ccrx = (u32)(obj->pulse  * 40 / (prescaler + 1)) & 0x0000ffff;
-	RTIM_CCRxSet(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], ccrx, obj->pwm_idx & (~BIT_PWM_TIM_IDX_FLAG)); 
+	RTIM_CCRxSet(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], ccrx, obj->pwm_idx & (~(uint8_t)BIT_PWM_TIM_IDX_FLAG)); 
 }
 
 /**
@@ -339,7 +339,7 @@ void pwmout_pulsewidth_us(pwmout_t* obj, int us)
   */
 void pwmout_start(pwmout_t* obj) 
 {
-	RTIM_CCxCmd(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], obj->pwm_idx & (~BIT_PWM_TIM_IDX_FLAG), TIM_CCx_Enable);
+	RTIM_CCxCmd(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], obj->pwm_idx & (~(uint8_t)BIT_PWM_TIM_IDX_FLAG), TIM_CCx_Enable);
 }
 
 /**
@@ -349,7 +349,7 @@ void pwmout_start(pwmout_t* obj)
   */
 void pwmout_stop(pwmout_t* obj) 
 {
-	RTIM_CCxCmd(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], obj->pwm_idx & (~BIT_PWM_TIM_IDX_FLAG), TIM_CCx_Disable);
+	RTIM_CCxCmd(PWM_TIM[obj->pwm_idx >>BIT_PWM_TIM_IDX_SHIFT], obj->pwm_idx & (~(uint8_t)BIT_PWM_TIM_IDX_FLAG), TIM_CCx_Disable);
 }
 
 /**
@@ -364,9 +364,9 @@ void pwmout_stop(pwmout_t* obj)
 void pwmout_set_polarity(pwmout_t* obj, int polarity)
 {
 	if(0 == polarity)
-		RTIM_CCxPolarityConfig(TIM5, TIM_CCPolarity_Low, obj->pwm_idx&(~BIT_PWM_TIM_IDX_FLAG));
+		RTIM_CCxPolarityConfig(TIM5, TIM_CCPolarity_Low, obj->pwm_idx&(~(uint8_t)BIT_PWM_TIM_IDX_FLAG));
 	else
-		RTIM_CCxPolarityConfig(TIM5, TIM_CCPolarity_High, obj->pwm_idx&(~BIT_PWM_TIM_IDX_FLAG));
+		RTIM_CCxPolarityConfig(TIM5, TIM_CCPolarity_High, obj->pwm_idx&(~(uint8_t)BIT_PWM_TIM_IDX_FLAG));
 }
 /** 
   * @}

@@ -350,7 +350,6 @@ static const uint32_t RT3[256] = { RT };
 
 #undef RT
 
-#ifdef SUPPORT_HW_SW_CRYPTO
 /*
  * Round constants
  */
@@ -360,7 +359,7 @@ static const uint32_t RCON[10] =
     0x00000010, 0x00000020, 0x00000040, 0x00000080,
     0x0000001B, 0x00000036
 };
-#endif
+
 #else /* MBEDTLS_AES_ROM_TABLES */
 
 /*
@@ -616,8 +615,6 @@ int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
 
     return( 0 );
     }
-#else
-    return( MBEDTLS_ERR_AES_INVALID_KEY_LENGTH );
 #endif /* SUPPORT_HW_SW_CRYPTO */
 }
 #endif /* !MBEDTLS_AES_SETKEY_ENC_ALT */
@@ -707,8 +704,6 @@ exit:
 
     return( ret );
     }
-#else
-    return( MBEDTLS_ERR_AES_INVALID_KEY_LENGTH );
 #endif /* SUPPORT_HW_SW_CRYPTO */
 }
 #endif /* !MBEDTLS_AES_SETKEY_DEC_ALT */
@@ -958,8 +953,6 @@ int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
 
     return( 0 );
     }
-#else
-    return( 0 );
 #endif /* SUPPORT_HW_SW_CRYPTO */
 }
 
@@ -1154,8 +1147,6 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
 
     return( 0 );
     }
-#else
-    return( MBEDTLS_ERR_AES_INVALID_INPUT_LENGTH );
 #endif /* SUPPORT_HW_SW_CRYPTO */
 }
 #endif /* MBEDTLS_CIPHER_MODE_CBC */

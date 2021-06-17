@@ -24,6 +24,12 @@
  *  http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memset _memset
+#define memcpy _memcpy
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -51,6 +57,7 @@
 #if !defined(MBEDTLS_SHA256_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -78,11 +85,13 @@ do {                                                    \
 } while( 0 )
 #endif
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_init( mbedtls_sha256_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_sha256_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_free( mbedtls_sha256_context *ctx )
 {
     if( ctx == NULL )
@@ -91,15 +100,19 @@ void mbedtls_sha256_free( mbedtls_sha256_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_sha256_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_clone( mbedtls_sha256_context *dst,
                            const mbedtls_sha256_context *src )
 {
-    *dst = *src;
+//  modify to prevent implicit memcpy call
+//  *dst = *src;
+    memcpy(dst, src, sizeof(mbedtls_sha256_context));
 }
 
 /*
  * SHA-256 context setup
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_starts( mbedtls_sha256_context *ctx, int is224 )
 {
     ctx->total[0] = 0;
@@ -134,6 +147,7 @@ void mbedtls_sha256_starts( mbedtls_sha256_context *ctx, int is224 )
 }
 
 #if !defined(MBEDTLS_SHA256_PROCESS_ALT)
+SSL_ROM_DATA_SECTION
 static const uint32_t K[] =
 {
     0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
@@ -179,6 +193,7 @@ static const uint32_t K[] =
     d += temp1; h = temp1 + temp2;              \
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_process( mbedtls_sha256_context *ctx, const unsigned char data[64] )
 {
     uint32_t temp1, temp2, W[64];
@@ -238,6 +253,7 @@ void mbedtls_sha256_process( mbedtls_sha256_context *ctx, const unsigned char da
 /*
  * SHA-256 process buffer
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_update( mbedtls_sha256_context *ctx, const unsigned char *input,
                     size_t ilen )
 {
@@ -276,6 +292,7 @@ void mbedtls_sha256_update( mbedtls_sha256_context *ctx, const unsigned char *in
         memcpy( (void *) (ctx->buffer + left), input, ilen );
 }
 
+SSL_ROM_DATA_SECTION
 static const unsigned char sha256_padding[64] =
 {
  0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -287,6 +304,7 @@ static const unsigned char sha256_padding[64] =
 /*
  * SHA-256 final digest
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256_finish( mbedtls_sha256_context *ctx, unsigned char output[32] )
 {
     uint32_t last, padn;
@@ -323,6 +341,7 @@ void mbedtls_sha256_finish( mbedtls_sha256_context *ctx, unsigned char output[32
 /*
  * output = SHA-256( input buffer )
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha256( const unsigned char *input, size_t ilen,
              unsigned char output[32], int is224 )
 {

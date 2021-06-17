@@ -498,8 +498,6 @@ struct xml_node *xml_parse_doc(char *doc_buf, int doc_len, char *doc_prefix, cha
 struct xml_node *xml_parse(char *doc_buf, int doc_len)
 {
 	char *proc_inst, *comment, *pos, *prolog_end;
-	proc_inst = doc_buf;
-	comment = doc_buf;
 
 	/* Remove XML Prolog */
 	pos = doc_buf;

@@ -15,6 +15,7 @@
  *                              Header Files
  *============================================================================*/
 #include "ir_led.h"
+#include "rtl_lib.h"
 
 /** @addtogroup  IO_DEMO_APP IO_DEMO APP
     * @brief

@@ -24,6 +24,12 @@
  *  http://www.ietf.org/rfc/rfc1321.txt
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memset _memset
+#define memcpy _memcpy
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -48,6 +54,7 @@
 #if !defined(MBEDTLS_MD5_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -75,11 +82,13 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 }
 #endif
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_init( mbedtls_md5_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_md5_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_free( mbedtls_md5_context *ctx )
 {
     if( ctx == NULL )
@@ -88,16 +97,20 @@ void mbedtls_md5_free( mbedtls_md5_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_md5_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_clone( mbedtls_md5_context *dst,
                         const mbedtls_md5_context *src )
 {
-	*dst = *src;
+//  modify to prevent implicit memcpy call
+//  *dst = *src;
+    memcpy(dst, src, sizeof(mbedtls_md5_context));
 
 }
 
 /*
  * MD5 context setup
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_starts( mbedtls_md5_context *ctx )
 {
     ctx->total[0] = 0;
@@ -110,6 +123,7 @@ void mbedtls_md5_starts( mbedtls_md5_context *ctx )
 }
 
 #if !defined(MBEDTLS_MD5_PROCESS_ALT)
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_process( mbedtls_md5_context *ctx, const unsigned char data[64] )
 {
     uint32_t X[16], A, B, C, D;
@@ -237,6 +251,7 @@ void mbedtls_md5_process( mbedtls_md5_context *ctx, const unsigned char data[64]
 /*
  * MD5 process buffer
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_update( mbedtls_md5_context *ctx, const unsigned char *input, size_t ilen )
 {
     size_t fill;
@@ -276,6 +291,7 @@ void mbedtls_md5_update( mbedtls_md5_context *ctx, const unsigned char *input, s
     }
 }
 
+SSL_ROM_DATA_SECTION
 static const unsigned char md5_padding[64] =
 {
  0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -287,6 +303,7 @@ static const unsigned char md5_padding[64] =
 /*
  * MD5 final digest
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5_finish( mbedtls_md5_context *ctx, unsigned char output[16] )
 {
     uint32_t last, padn;
@@ -317,6 +334,7 @@ void mbedtls_md5_finish( mbedtls_md5_context *ctx, unsigned char output[16] )
 /*
  * output = MD5( input buffer )
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_md5( const unsigned char *input, size_t ilen, unsigned char output[16] )
 {
     mbedtls_md5_context ctx;

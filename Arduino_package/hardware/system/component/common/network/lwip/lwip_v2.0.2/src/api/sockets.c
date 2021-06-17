@@ -443,14 +443,6 @@ free_socket(struct lwip_sock *sock, int is_tcp)
   sock->lastoffset = 0;
   sock->err        = 0;
 
-  /* Added by Realtek to fix the issue that
-   * a socket is closed by another thread when used by multiple threads
-   * if this value not cleared, the socket will be occupied and exhausted as time goes by
-   * Because tryget_socket() will return NULL(sockets.c:1495),
-   * it can't do sock->select_waiting--, then alloc_socket() will fail(sockets.c:410)
-   */
-  sock->select_waiting = 0;
-
   /* Protect socket array */
   SYS_ARCH_SET(sock->conn, NULL);
   /* don't use 'sock' after this line, as another task might have allocated it */

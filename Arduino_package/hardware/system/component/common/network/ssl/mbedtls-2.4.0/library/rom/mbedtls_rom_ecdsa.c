@@ -46,6 +46,7 @@
  * Derive a suitable integer for group grp from a buffer of length len
  * SEC1 4.1.3 step 5 aka SEC1 4.1.4 step 3
  */
+SSL_ROM_TEXT_SECTION
 static int derive_mpi( const mbedtls_ecp_group *grp, mbedtls_mpi *x,
                        const unsigned char *buf, size_t blen )
 {
@@ -69,6 +70,7 @@ cleanup:
  * Compute ECDSA signature of a hashed message (SEC1 4.1.3)
  * Obviously, compared to SEC1 4.1.3, we skip step 4 (hash message)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_sign( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                 const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
                 int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
@@ -158,6 +160,7 @@ cleanup:
 /*
  * Deterministic signature wrapper
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_sign_det( mbedtls_ecp_group *grp, mbedtls_mpi *r, mbedtls_mpi *s,
                     const mbedtls_mpi *d, const unsigned char *buf, size_t blen,
                     mbedtls_md_type_t md_alg )
@@ -196,6 +199,7 @@ cleanup:
  * Verify ECDSA signature of hashed message (SEC1 4.1.4)
  * Obviously, compared to SEC1 4.1.3, we skip step 2 (hash message)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_verify( mbedtls_ecp_group *grp,
                   const unsigned char *buf, size_t blen,
                   const mbedtls_ecp_point *Q, const mbedtls_mpi *r, const mbedtls_mpi *s)
@@ -281,6 +285,7 @@ cleanup:
 /*
  * Convert a signature (given by context) to ASN.1
  */
+SSL_ROM_TEXT_SECTION
 static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
                                     unsigned char *sig, size_t *slen )
 {
@@ -305,6 +310,7 @@ static int ecdsa_signature_to_asn1( const mbedtls_mpi *r, const mbedtls_mpi *s,
 /*
  * Compute and write signature
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_write_signature( mbedtls_ecdsa_context *ctx, mbedtls_md_type_t md_alg,
                            const unsigned char *hash, size_t hlen,
                            unsigned char *sig, size_t *slen,
@@ -341,6 +347,7 @@ cleanup:
 
 #if ! defined(MBEDTLS_DEPRECATED_REMOVED) && \
     defined(MBEDTLS_ECDSA_DETERMINISTIC)
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_write_signature_det( mbedtls_ecdsa_context *ctx,
                                const unsigned char *hash, size_t hlen,
                                unsigned char *sig, size_t *slen,
@@ -354,6 +361,7 @@ int mbedtls_ecdsa_write_signature_det( mbedtls_ecdsa_context *ctx,
 /*
  * Read and check signature
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_read_signature( mbedtls_ecdsa_context *ctx,
                           const unsigned char *hash, size_t hlen,
                           const unsigned char *sig, size_t slen )
@@ -405,6 +413,7 @@ cleanup:
 /*
  * Generate key pair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_genkey( mbedtls_ecdsa_context *ctx, mbedtls_ecp_group_id gid,
                   int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
@@ -415,6 +424,7 @@ int mbedtls_ecdsa_genkey( mbedtls_ecdsa_context *ctx, mbedtls_ecp_group_id gid,
 /*
  * Set context from an mbedtls_ecp_keypair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdsa_from_keypair( mbedtls_ecdsa_context *ctx, const mbedtls_ecp_keypair *key )
 {
     int ret;
@@ -432,6 +442,7 @@ int mbedtls_ecdsa_from_keypair( mbedtls_ecdsa_context *ctx, const mbedtls_ecp_ke
 /*
  * Initialize context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecdsa_init( mbedtls_ecdsa_context *ctx )
 {
     mbedtls_ecp_keypair_init( ctx );
@@ -440,6 +451,7 @@ void mbedtls_ecdsa_init( mbedtls_ecdsa_context *ctx )
 /*
  * Free context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecdsa_free( mbedtls_ecdsa_context *ctx )
 {
     mbedtls_ecp_keypair_free( ctx );

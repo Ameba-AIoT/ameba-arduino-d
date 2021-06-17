@@ -21,7 +21,7 @@ extern "C" {
 
 
 /* platform related settings */
-#if (defined(CONFIG_PLATFORM_8195A)|| defined(CONFIG_PLATFORM_8711B)|| defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8721D))
+#if (defined(CONFIG_PLATFORM_8195A)|| defined(CONFIG_PLATFORM_8711B)|| defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C))
 #undef u32
 #undef s32
 #undef u8
@@ -31,7 +31,7 @@ extern "C" {
 typedef unsigned int u32;
 typedef signed int s32;
 typedef unsigned char u8;
-typedef signed char s8;
+typedef char s8;
 typedef unsigned short int u16;
 typedef signed short int s16;
 #else

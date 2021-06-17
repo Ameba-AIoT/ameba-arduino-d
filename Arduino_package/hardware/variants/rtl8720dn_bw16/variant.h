@@ -95,7 +95,7 @@ extern "C"{
  * Use this function along with J-LINK or other debug tool
  **/
 extern void wait_for_debug(void);
-extern void* rtw_calloc(size_t cnt,char fill);
+//extern void* rtw_calloc(size_t cnt,char fill);
 extern char* ltoa(long l, char * buffer, int radix);
 #ifdef __cplusplus
 }

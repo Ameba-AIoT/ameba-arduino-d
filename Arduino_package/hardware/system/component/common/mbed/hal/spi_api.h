@@ -38,7 +38,7 @@ extern "C" {
  */
 
 
-#if ((defined(CONFIG_PLATFORM_8711B) && (CONFIG_PLATFORM_8711B == 1)) || (defined (CONFIG_PLATFORM_8721D) && (CONFIG_PLATFORM_8721D == 1)) || (defined (CONFIG_PLATFORM_AMEBAD2) && (CONFIG_PLATFORM_AMEBAD2 == 1)))
+#if ((defined(CONFIG_PLATFORM_8711B) && (CONFIG_PLATFORM_8711B == 1)) || (defined (CONFIG_PLATFORM_8721D) && (CONFIG_PLATFORM_8721D == 1)))
 ///@name AmebaZ and AmebaD 
 ///@{
 typedef enum {

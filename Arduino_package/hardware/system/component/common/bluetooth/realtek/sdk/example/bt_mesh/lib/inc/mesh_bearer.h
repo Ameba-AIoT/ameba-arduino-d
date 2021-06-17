@@ -55,15 +55,6 @@ typedef enum
 
 typedef enum
 {
-    BEARER_FIELD_LOOPBACK = BIT0,
-    BEARER_FIELD_ADV = BIT1,
-    BEARER_FIELD_GATT = BIT2,
-    BEARER_FIELD_OTHER = BIT3,
-    BEARER_FIELD_ALL = BIT0 | BIT1 | BIT2 | BIT3
-} bearer_field_t;
-
-typedef enum
-{
     BEARER_PKT_TYPE_MESH_PKT,
     BEARER_PKT_TYPE_MESH_BEACON,
     BEARER_PKT_TYPE_MESH_PB_ADV,

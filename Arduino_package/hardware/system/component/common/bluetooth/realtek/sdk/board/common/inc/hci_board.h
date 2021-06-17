@@ -15,8 +15,6 @@ bool hci_board_init(void);
 void bt_reset(void);
 void bt_power_on(void);
 void bt_power_off(void);
-int bt_get_mac_address(uint8_t *mac);
-int bt_set_mac_address(uint8_t *mac);
 
 
 #ifdef __cplusplus

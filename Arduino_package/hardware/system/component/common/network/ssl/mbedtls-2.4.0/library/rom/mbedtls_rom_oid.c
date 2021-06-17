@@ -21,6 +21,11 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memcmp _memcmp
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -55,7 +60,7 @@
  * the other functions)
  */
 #define FN_OID_TYPED_FROM_ASN1( TYPE_T, NAME, LIST )                        \
-static const TYPE_T * oid_ ## NAME ## _from_asn1( const mbedtls_asn1_buf *oid )     \
+SSL_ROM_TEXT_SECTION static const TYPE_T * oid_ ## NAME ## _from_asn1( const mbedtls_asn1_buf *oid )     \
 {                                                                           \
     const TYPE_T *p = LIST;                                                 \
     const mbedtls_oid_descriptor_t *cur = (const mbedtls_oid_descriptor_t *) p;             \
@@ -76,7 +81,7 @@ static const TYPE_T * oid_ ## NAME ## _from_asn1( const mbedtls_asn1_buf *oid ) 
  * descriptor of an mbedtls_oid_descriptor_t wrapper.
  */
 #define FN_OID_GET_DESCRIPTOR_ATTR1(FN_NAME, TYPE_T, TYPE_NAME, ATTR1_TYPE, ATTR1) \
-int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
+SSL_ROM_TEXT_SECTION int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
 {                                                                       \
     const TYPE_T *data = oid_ ## TYPE_NAME ## _from_asn1( oid );        \
     if( data == NULL ) return( MBEDTLS_ERR_OID_NOT_FOUND );            \
@@ -89,7 +94,7 @@ int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  
  * mbedtls_oid_descriptor_t wrapper.
  */
 #define FN_OID_GET_ATTR1(FN_NAME, TYPE_T, TYPE_NAME, ATTR1_TYPE, ATTR1) \
-int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
+SSL_ROM_TEXT_SECTION int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  \
 {                                                                       \
     const TYPE_T *data = oid_ ## TYPE_NAME ## _from_asn1( oid );        \
     if( data == NULL ) return( MBEDTLS_ERR_OID_NOT_FOUND );            \
@@ -103,7 +108,7 @@ int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1 )                  
  */
 #define FN_OID_GET_ATTR2(FN_NAME, TYPE_T, TYPE_NAME, ATTR1_TYPE, ATTR1,     \
                          ATTR2_TYPE, ATTR2)                                 \
-int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1, ATTR2_TYPE * ATTR2 )  \
+SSL_ROM_TEXT_SECTION int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1, ATTR2_TYPE * ATTR2 )  \
 {                                                                           \
     const TYPE_T *data = oid_ ## TYPE_NAME ## _from_asn1( oid );            \
     if( data == NULL ) return( MBEDTLS_ERR_OID_NOT_FOUND );                \
@@ -117,7 +122,7 @@ int FN_NAME( const mbedtls_asn1_buf *oid, ATTR1_TYPE * ATTR1, ATTR2_TYPE * ATTR2
  * attribute from a mbedtls_oid_descriptor_t wrapper.
  */
 #define FN_OID_GET_OID_BY_ATTR1(FN_NAME, TYPE_T, LIST, ATTR1_TYPE, ATTR1)   \
-int FN_NAME( ATTR1_TYPE ATTR1, const char **oid, size_t *olen )             \
+SSL_ROM_TEXT_SECTION int FN_NAME( ATTR1_TYPE ATTR1, const char **oid, size_t *olen )             \
 {                                                                           \
     const TYPE_T *cur = LIST;                                               \
     while( cur->descriptor.asn1 != NULL ) {                                 \
@@ -137,7 +142,7 @@ int FN_NAME( ATTR1_TYPE ATTR1, const char **oid, size_t *olen )             \
  */
 #define FN_OID_GET_OID_BY_ATTR2(FN_NAME, TYPE_T, LIST, ATTR1_TYPE, ATTR1,   \
                                 ATTR2_TYPE, ATTR2)                          \
-int FN_NAME( ATTR1_TYPE ATTR1, ATTR2_TYPE ATTR2, const char **oid ,         \
+SSL_ROM_TEXT_SECTION int FN_NAME( ATTR1_TYPE ATTR1, ATTR2_TYPE ATTR2, const char **oid ,         \
              size_t *olen )                                                 \
 {                                                                           \
     const TYPE_T *cur = LIST;                                               \
@@ -161,6 +166,7 @@ typedef struct {
     const char          *short_name;
 } oid_x520_attr_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_x520_attr_t oid_x520_attr_type[] =
 {
     {
@@ -256,6 +262,7 @@ typedef struct {
     int                 ext_type;
 } oid_x509_ext_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_x509_ext_t oid_x509_ext[] =
 {
     {
@@ -287,6 +294,7 @@ static const oid_x509_ext_t oid_x509_ext[] =
 FN_OID_TYPED_FROM_ASN1(oid_x509_ext_t, x509_ext, oid_x509_ext)
 FN_OID_GET_ATTR1(mbedtls_oid_get_x509_ext_type, oid_x509_ext_t, x509_ext, int, ext_type)
 
+SSL_ROM_DATA_SECTION
 static const mbedtls_oid_descriptor_t oid_ext_key_usage[] =
 {
     { ADD_LEN( MBEDTLS_OID_SERVER_AUTH ),      "id-kp-serverAuth",      "TLS Web Server Authentication" },
@@ -312,6 +320,7 @@ typedef struct {
     mbedtls_pk_type_t           pk_alg;
 } oid_sig_alg_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_sig_alg_t oid_sig_alg[] =
 {
 #if defined(MBEDTLS_RSA_C)
@@ -420,6 +429,7 @@ typedef struct {
     mbedtls_pk_type_t           pk_alg;
 } oid_pk_alg_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_pk_alg_t oid_pk_alg[] =
 {
     {
@@ -453,6 +463,7 @@ typedef struct {
     mbedtls_ecp_group_id        grp_id;
 } oid_ecp_grp_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_ecp_grp_t oid_ecp_grp[] =
 {
 #if defined(MBEDTLS_ECP_DP_SECP192R1_ENABLED)
@@ -541,6 +552,7 @@ typedef struct {
     mbedtls_cipher_type_t       cipher_alg;
 } oid_cipher_alg_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_cipher_alg_t oid_cipher_alg[] =
 {
     {
@@ -570,6 +582,7 @@ typedef struct {
     mbedtls_md_type_t           md_alg;
 } oid_md_alg_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_md_alg_t oid_md_alg[] =
 {
 #if defined(MBEDTLS_MD2_C)
@@ -637,6 +650,7 @@ typedef struct {
     mbedtls_cipher_type_t       cipher_alg;
 } oid_pkcs12_pbe_alg_t;
 
+SSL_ROM_DATA_SECTION
 static const oid_pkcs12_pbe_alg_t oid_pkcs12_pbe_alg[] =
 {
     {
@@ -666,6 +680,9 @@ FN_OID_GET_ATTR2(mbedtls_oid_get_pkcs12_pbe_alg, oid_pkcs12_pbe_alg_t, pkcs12_pb
         p += (size_t) ret;                              \
     } while( 0 )
 
+#if 0	// Not link to ROM if no snprintf in ROM
+/* Return the x.y.z.... style numeric string for the given OID */
+SSL_ROM_TEXT_SECTION
 int mbedtls_oid_get_numeric_string( char *buf, size_t size,
                             const mbedtls_asn1_buf *oid )
 {
@@ -705,5 +722,6 @@ int mbedtls_oid_get_numeric_string( char *buf, size_t size,
 
     return( (int) ( size - n ) );
 }
+#endif
 
 #endif /* MBEDTLS_OID_C */

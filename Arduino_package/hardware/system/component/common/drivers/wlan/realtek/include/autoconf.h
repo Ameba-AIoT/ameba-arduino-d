@@ -24,7 +24,7 @@
  */
 #include "platform_opts.h"
 
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_AMEBAD2) || defined(CONFIG_PLATFORM_8735B)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
 #ifndef CONFIG_PLATFORM_AMEBA_X
 #define CONFIG_PLATFORM_AMEBA_X 1
 #endif
@@ -33,13 +33,14 @@
 #endif
 
 #if (CONFIG_PLATFORM_AMEBA_X == 1)
-#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8735B)
+#if defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
 	#define CONFIG_AXI_HCI
 	#else
 	#define CONFIG_LX_HCI
 	#endif
 #else
 	#if defined(CONFIG_PLATFOMR_CUSTOMER_RTOS)
+	#define PLATFORM_CUSTOMER_RTOS 1
 	#define CONFIG_LWIP_LAYER 0
 	#else
 	#define PLATFORM_FREERTOS	1
@@ -52,7 +53,7 @@
 #endif // #if (CONFIG_PLATFORM_AMEBA_X == 1)
 
 
-#if defined(CONFIG_HARDWARE_8188F) || defined(CONFIG_HARDWARE_8192E)|| defined(CONFIG_HARDWARE_8723D) || defined(CONFIG_HARDWARE_8821C) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_HARDWARE_8188E) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_AMEBAD2) || defined(CONFIG_PLATFORM_8735B)
+#if defined(CONFIG_HARDWARE_8188F) || defined(CONFIG_HARDWARE_8192E)|| defined(CONFIG_HARDWARE_8723D) || defined(CONFIG_HARDWARE_8821C) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_HARDWARE_8188E) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8710C)
 #define CONFIG_FW_C2H_PKT
 #define PHYDM_LINUX_CODING_STYLE 1
 #else
@@ -113,9 +114,6 @@
 //#define CONFIG_MEMORY_ACCESS_ALIGNED
 
 #define CONFIG_POWER_SAVING
-#ifdef CONFIG_INIC_IPC_TODO
-#undef CONFIG_POWER_SAVING
-#endif
 #ifdef CONFIG_POWER_SAVING
 	#define CONFIG_IPS
 	#define CONFIG_LPS
@@ -203,7 +201,7 @@
 #define NOT_SUPPORT_RF_MULTIPATH
 #endif
 #define NOT_SUPPORT_VHT
-#define NOT_SUPPORT_40M
+//#define NOT_SUPPORT_40M
 #define NOT_SUPPORT_80M
 #if defined(CONFIG_PLATFORM_8195A)
 #define NOT_SUPPORT_BBSWING
@@ -244,13 +242,6 @@
 #define ALL_DH_GROUPS
 #endif
 
-//#define CONFIG_RTK_MESH
-#ifdef CONFIG_RTK_MESH
-#define CONFIG_IEEE80211W
-#define CONFIG_SAE_SUPPORT
-#define CONFIG_SAE_DH_SUPPORT 1
-#define ALL_DH_GROUPS
-#endif
 
 
 /* For promiscuous mode */
@@ -275,20 +266,23 @@
 #define CONFIG_CONCURRENT_MODE
 #ifdef CONFIG_CONCURRENT_MODE
 //#define CONFIG_MCC_MODE
-//#define CONFIG_STA_MODE_SCAN_UNDER_AP_MODE
-  #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8735B)
+  #if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
     #define CONFIG_RUNTIME_PORT_SWITCH
   #endif
-  #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
+  #ifdef CONFIG_BRIDGE
+    #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_BRIDGE) + (CONFIG_WLAN) + 1)
+  #else
+    #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
+  #endif
 #else
   #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN))
 #endif
 
 
 /****************** For EAP auth configurations *******************/
-#define CONFIG_TLS	0
-#define CONFIG_PEAP	0
-#define CONFIG_TTLS	0
+#define CONFIG_TLS	1
+#define CONFIG_PEAP	1
+#define CONFIG_TTLS	1
 
 // DO NOT change the below config of EAP
 #ifdef PRE_CONFIG_EAP
@@ -341,7 +335,7 @@
 extern unsigned char g_user_ap_sta_num;
 #define USER_AP_STA_NUM g_user_ap_sta_num
 #if (CONFIG_PLATFORM_AMEBA_X == 1)
-#if defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_AMEBAD2)
+#if defined(CONFIG_PLATFORM_8721D)
 #define AP_STA_NUM	5
 #else
 #define AP_STA_NUM	3	//2014/10/27 modify to 3
@@ -432,7 +426,6 @@ extern unsigned int g_ap_sta_num;
 		//#define CONFIG_BT_COEXIST
 		//#define CONFIG_SW_MAILBOX_EN
 		//#define NEW_BT_COEX
-		#define CONFIG_BT_COEXIST_SOC
 	#endif
 #endif // #ifdef CONFIG_MP_INCLUDED
 
@@ -507,9 +500,6 @@ extern unsigned int g_ap_sta_num;
 		#ifndef CONFIG_RTL8721D 
 			#define CONFIG_RTL8721D
 		#endif
-		#ifdef CONFIG_MCC_MODE
-			#define CONFIG_MCC_IQK_OFFLOAD
-		#endif
 		#undef NOT_SUPPORT_5G
 		#undef CONFIG_ADAPTOR_INFO_CACHING_FLASH
 		#define CONFIG_ADAPTOR_INFO_CACHING_FLASH 0
@@ -518,8 +508,6 @@ extern unsigned int g_ap_sta_num;
 		//#define CONFIG_TRAFFIC_PROTECT
 		#undef SUPPORT_5G_CHANNEL
 		#define SUPPORT_5G_CHANNEL	1
-		//#define RX_SHORTCUT
-		//#define TX_SHORTCUT
 		#define CONFIG_DFS
 		#define CONFIG_XMIT_ACK
 		#define TXBD_PRE_MALLOC
@@ -531,7 +519,6 @@ extern unsigned int g_ap_sta_num;
 		#define DBG_DM_DIG 0			// DebugComponents: bit0
 		//#define CONFIG_SUPPORT_DYNAMIC_TXPWR   //rtw_phydm_fill_desc_dpt todo
 		#if (CONFIG_INIC_EN == 1)
-			#ifndef CONFIG_INIC_IPC
 			#undef CONFIG_PROMISC
 			#undef CONFIG_WPS
 			#undef CONFIG_AP_MODE
@@ -542,9 +529,10 @@ extern unsigned int g_ap_sta_num;
 			//#undef SUPPORT_SCAN_BUF
 			#undef CONFIG_CONCURRENT_MODE
 			#undef CONFIG_AUTO_RECONNECT
-			#endif
 		#endif
-		//#define CONFIG_WIFI_MESH	0	
+	#define CONFIG_WLAN_SWITCH_MODE         //save memory while switching mode without driver re-init
+	//#define LOW_POWER_WIFI_CONNECT
+	//#define LONG_PERIOD_TICKLESS
 	#endif
 	#if defined(CONFIG_PLATFORM_8195BHP)
 		#define CONFIG_RTL8195B
@@ -610,84 +598,6 @@ extern unsigned int g_ap_sta_num;
 
 		#define CONFIG_MAC_LOOPBACK_DRIVER_RTL8195B 0
 	#endif
-	#if defined(CONFIG_PLATFORM_8735B)
-		#define CONFIG_RTL8735B
-		#undef CONFIG_EAP
-		#undef CONFIG_ADAPTOR_INFO_CACHING_FLASH
-		#define CONFIG_ADAPTOR_INFO_CACHING_FLASH 0
-		#undef CHECK_FLASH_VALID_MASK
-		#define CHECK_FLASH_VALID_MASK				0
-		#undef CHECK_EFUSE_VALID_MASK
-		#define CHECK_EFUSE_VALID_MASK				0
-		#undef CONFIG_RW_PHYSICAL_EFUSE
-		#define CONFIG_RW_PHYSICAL_EFUSE			1	// efuse_get realraw
-		#undef NOT_SUPPORT_5G
-		#undef NOT_SUPPORT_VHT
-//		#undef NOT_SUPPORT_40M
-//		#undef NOT_SUPPORT_80M
-		#undef DBG
-		#define DBG 1
-		#ifdef CONFIG_POWER_SAVING
-			#define CONFIG_LPS_LCLK
-			#ifdef CONFIG_LPS_LCLK
-				#define CONFIG_DETECT_CPWM_BY_POLLING
-				#define LPS_RPWM_WAIT_MS 300
-			#endif
-			#define CONFIG_LPS_PG
-		#endif
-		#define CONFIG_80211AC_VHT
-		#undef CONFIG_IPS
-		#define CONFIG_NO_FW
-//		#define CONFIG_EX_FW_BIN
-		//#define CONFIG_WOWLAN
-		//#define CONFIG_WOWLAN_HW_CAM
-		//#define CONFIG_WOWLAN_CUSTOM_PATTERN
-		#ifdef CONFIG_WOWLAN
-			#define CONFIG_WOWLAN_TCP_KEEP_ALIVE
-		#endif
-		#define LOAD_FW_HEADER_FROM_DRIVER
-		#define FW_IQK
-//		#define RTW_IQK_FW_OFFLOAD
-		#define CONFIG_PHY_CAPABILITY_QUERY
-		#define CONFIG_ISR_THREAD_MODE_INTERRUPT	/* Wlan IRQ Interrupt  Mode*/
-//		#define CONFIG_WLAN_RF_CNTL
-		#undef SUPPORT_5G_CHANNEL
-		#define SUPPORT_5G_CHANNEL	1
-		#define CONFIG_DFS
-		#ifdef CONFIG_DFS
-			#define CONFIG_DFS_ACTION
-		#endif
-			
-		#define DBG_DM_DIG 0			// DebugComponents: bit0
-//		#define CONFIG_DEBUG
-
-		#define RTW_HALMAC		/* Use HALMAC architecture */
-		#define RTW_HALMAC_MU_BF	0
-		#define RTW_HALMAC_SU_BF	0
-		#define RTW_HALMAC_BT_COEX	0
-		#define RTW_HALMAC_DUMP_INFO  0
-		#define RTW_HALMAC_TXBF		0
-		#define RTW_HALMAC_FW_OFFLOAD  0
-		#define RTW_HALMAC_PHYSICAL_EFUSE  0
-		#define RTW_HALMAC_SIZE_OPTIMIZATION 1
-		#define RTW_HALMAC_SDIO_CIA_READ 0
-		#define RTW_HALMAC_LTE_COEX 0
-
-		#define CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B 0
-		//#define CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C 1 // 1: HAL+MAC LOOPBACK, 2: HAL+MAC+BB LOOPBACK 3: DRV+HAL+MAC LOOPBACK
-		#if defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 3)
-		#define CONFIG_MAC_LOOPBACK_DRIVER_AMEBA
-		#endif
-
-		// TODO: remove
-		#undef CONFIG_PROMISC
-		#undef CONFIG_PMKSA_CACHING
-		#undef CONFIG_IEEE80211W
-		#undef CONFIG_SAE_SUPPORT
-		#define CONFIG_NO_PHYDM
-		#define CONFIG_NO_EFUSE
-		#define CONFIG_WLAN_TODO
-	#endif
 	#if defined(CONFIG_PLATFORM_8710C)
 		#ifndef CONFIG_RTL8710C 
 			#define CONFIG_RTL8710C
@@ -735,55 +645,7 @@ extern unsigned int g_ap_sta_num;
 		#if defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 3)
 		#define CONFIG_MAC_LOOPBACK_DRIVER_AMEBA
 		#endif
-		#define CONFIG_UNSUPPORT_PLCPHDR_RPT 1
-
-		//#define CONFIG_ENHANCE_ACTIVE_SCAN	// double scan action on each channel and reduce SURVEY_TO to half	
-		//#define CONFIG_WLAN_SWITCH_MODE         //save memory while switching mode without driver re-init
-	#endif
-
-	#if defined(CONFIG_PLATFORM_AMEBAD2)
-		#undef CONFIG_EMPTY_EFUSE_PG_ENABLE
-		#define CONFIG_APP_CTRL_RF_ONOFF
-		#ifndef CONFIG_AMEBAD2
-			#define CONFIG_AMEBAD2
-		#endif
-		#undef NOT_SUPPORT_5G
-		#undef CONFIG_ADAPTOR_INFO_CACHING_FLASH
-		#define CONFIG_ADAPTOR_INFO_CACHING_FLASH 0
-		#define CONFIG_EFUSE_SEPARATE
-		#define CONFIG_WOWLAN
-		//#define CONFIG_TRAFFIC_PROTECT
-		#undef SUPPORT_5G_CHANNEL
-		#define SUPPORT_5G_CHANNEL	1
-		//#define RX_SHORTCUT
-		//#define TX_SHORTCUT
-		#define CONFIG_DFS
-		#define CONFIG_XMIT_ACK
-		#define TXBD_PRE_MALLOC
-		#define USER_CTL_POWER_SAVE
-		#define RTL8721D_SPECIFIC		//Patch for rtl8721d, has to check if D2 still need
-		#ifdef CONFIG_DFS
-			#define CONFIG_DFS_ACTION
-		#endif
-		#define DBG_DM_DIG 0			// DebugComponents: bit0
-		//#define CONFIG_SUPPORT_DYNAMIC_TXPWR   //rtw_phydm_fill_desc_dpt todo
-		#if (CONFIG_INIC_EN == 1)
-			#undef CONFIG_PROMISC
-			#undef CONFIG_WPS
-			#undef CONFIG_AP_MODE
-			#undef CONFIG_NATIVEAP_MLME
-			#undef CONFIG_INTERRUPT_BASED_TXBCN
-			#undef CONFIG_INTERRUPT_BASED_TXBCN_BCN_OK_ERR
-			#undef USE_DEDICATED_BCN_TX
-			//#undef SUPPORT_SCAN_BUF
-			#undef CONFIG_CONCURRENT_MODE
-			#undef CONFIG_AUTO_RECONNECT
-		#endif
-		//#define CONFIG_WIFI_MESH	0
-		#define CONFIG_ANTENNA_DIVERSITY
-		#define AMEBAD2_WL_TODO
-		#undef AP_STA_NUM // reduce ram size, revert this when ddr or psram read
-		#define AP_STA_NUM	1// reduce ram size, revert this when ddr or psram ready
+		#define CONFIG_WLAN_SWITCH_MODE         //save memory while switching mode without driver re-init
 	#endif
 #elif defined(CONFIG_HARDWARE_8188F)
 #define CONFIG_RTL8188F
@@ -812,7 +674,6 @@ extern unsigned int g_ap_sta_num;
 #define RTL8723D_SUPPORT 0
 #define RTL8195B_SUPPORT 0
 #define RTL8710C_SUPPORT 0
-#define AMEBAD2_SUPPORT 0
 #if defined(CONFIG_PLATFORM_8195A)
 #undef RTL8195A_SUPPORT
 #define RTL8195A_SUPPORT 1
@@ -825,15 +686,9 @@ extern unsigned int g_ap_sta_num;
 #elif defined(CONFIG_PLATFORM_8195BHP)
 #undef RTL8195B_SUPPORT
 #define RTL8195B_SUPPORT 1
-#elif defined(CONFIG_PLATFORM_8735B)
-#undef RTL8735B_SUPPORT
-#define RTL8735B_SUPPORT 1
 #elif defined(CONFIG_PLATFORM_8710C)
 #undef RTL8710C_SUPPORT
 #define RTL8710C_SUPPORT 1
-#elif defined(CONFIG_PLATFORM_AMEBAD2)
-#undef AMEBAD2_SUPPORT
-#define AMEBAD2_SUPPORT 1
 #elif defined(CONFIG_HARDWARE_8188F)
 #undef	RTL8188F_SUPPORT
 #define RTL8188F_SUPPORT 1
@@ -872,8 +727,6 @@ extern unsigned int g_ap_sta_num;
 #elif defined(CONFIG_PLATFORM_8710C)
 #define RATE_ADAPTIVE_SUPPORT 0
 //#define CONFIG_ODM_REFRESH_RAMASK
-#elif defined(CONFIG_PLATFORM_AMEBAD2)
-#define RATE_ADAPTIVE_SUPPORT 0
 #else
 #define RATE_ADAPTIVE_SUPPORT 1
 #endif
@@ -906,7 +759,7 @@ extern unsigned int g_ap_sta_num;
 	#define SKB_PRE_ALLOCATE_RX	0
 #endif
 
-#if (!defined(CONFIG_PLATFORM_8721D)) && (!defined(CONFIG_PLATFORM_AMEBAD2))
+#if (!defined(CONFIG_PLATFORM_8721D))
 	#define TX_CHECK_DSEC_ALWAYS 1
 #endif
 
@@ -920,8 +773,7 @@ extern unsigned int g_ap_sta_num;
 	#endif
 #endif
 #if (defined(CONFIG_FPGA) && !defined(CONFIG_PLATFORM_8710C))\
-	|| (defined(CONFIG_PLATFORM_8710C) && defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 1)) \
-	|| (defined(CONFIG_PLATFORM_8735B) && defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B) && ((CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 1) || (CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 2)))
+	|| (defined(CONFIG_PLATFORM_8710C) && defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 1))
 	//Enable mac loopback for test mode (Ameba)
 	#ifdef CONFIG_WIFI_NORMAL
 		#define CONFIG_TWO_MAC_DRIVER // for test mode
@@ -933,9 +785,7 @@ extern unsigned int g_ap_sta_num;
 #endif
 
 #ifdef ENABLE_MAC_LB_FOR_TEST_MODE
-#if !defined(CONFIG_PLATFORM_AMEBAD2)//loopback test doesn't need SUDO PHY
 	#define CONFIG_SUDO_PHY_SETTING
-#endif
 	#define INT_HANDLE_IN_ISR 1
 #ifdef CONFIG_LWIP_LAYER
         #undef CONFIG_LWIP_LAYER
@@ -947,11 +797,10 @@ extern unsigned int g_ap_sta_num;
 	#define CONFIG_WLAN_HAL_RX_TASK
 	#define CONFIG_MAC_LOOPBACK_DRIVER_AMEBA 1
 	#define HAL_MAC_ENABLE 1
-	#if !defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_PLATFORM_AMEBAD2) && !defined(CONFIG_PLATFORM_8735B)
+	#if !defined(CONFIG_PLATFORM_8710C)
 	#define CONFIG_TWO_MAC_TEST_MODE 
 	#endif
-	#if (defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 2)) \
-	|| (defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8735B == 2))
+	#if defined(CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C) && (CONFIG_MAC_LOOPBACK_DRIVER_RTL8710C == 2)
 	// Enable BB loopback test
 	#define HAL_BB_ENABLE 1
 	#define HAL_RF_ENABLE 1
@@ -982,13 +831,11 @@ extern unsigned int g_ap_sta_num;
 //fast reconnection
 //#define CONFIG_FAST_RECONNECTION 1
 #if defined(CONFIG_INIC_EN)&&(CONFIG_INIC_EN==1)
-//#define CONFIG_RECV_REORDERING_CTRL //enable reordering for iNIC high throughput
+#define CONFIG_RECV_REORDERING_CTRL //enable reordering for iNIC high throughput
 #undef RX_AGGREGATION
-//#define RX_AGGREGATION 1
+#define RX_AGGREGATION 1
 #undef NOT_SUPPORT_40M
-#ifndef CONFIG_INIC_IPC
 #undef CONFIG_CONCURRENT_MODE
-#endif
 #endif
 
 #if defined(CONFIG_HARDWARE_8821C)
@@ -1007,15 +854,15 @@ extern unsigned int g_ap_sta_num;
 #ifdef CONFIG_ADDRESS_ALIGNMENT
 #define ALIGNMENT_SIZE 32
 #endif
-#if !defined(LBK_REDUCE_SIZE)
+
 #define CONFIG_DFS
-#endif
 //#define CONFIG_EMPTY_EFUSE_PG_ENABLE
 
 #define WLAN_WRAPPER_VERSION 1
 
 #define TIME_THRES	20
 
+// zzw
 /* 80211 - K V R */
 //#define CONFIG_IEEE80211K
 //#define CONFIG_LAYER2_ROAMING

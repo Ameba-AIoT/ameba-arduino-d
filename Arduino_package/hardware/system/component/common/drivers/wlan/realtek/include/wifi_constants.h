@@ -121,7 +121,7 @@ enum
     RTW_NONRESIDENT                  = -42,  /**< access to nonresident overlay */
     RTW_DISABLED                     = -43   /**< Disabled in this build */
 };
-typedef signed long rtw_result_t;
+typedef unsigned long rtw_result_t;
 
 /**
   * @brief  The enumeration lists the possible security types to set when connection.\n
@@ -134,19 +134,21 @@ enum {
     RTW_SECURITY_WEP_SHARED     = ( WEP_ENABLED | SHARED_ENABLED ),                 /**< WEP Security with shared authentication */
     RTW_SECURITY_WPA_TKIP_PSK   = ( WPA_SECURITY  | TKIP_ENABLED ),                 /**< WPA Security with TKIP                  */
     RTW_SECURITY_WPA_AES_PSK    = ( WPA_SECURITY  | AES_ENABLED ),                  /**< WPA Security with AES                   */
+    RTW_SECURITY_WPA_MIXED_PSK  = ( WPA_SECURITY | AES_ENABLED | TKIP_ENABLED ),    /**< WPA Security with AES & TKIP            */
     RTW_SECURITY_WPA2_AES_PSK   = ( WPA2_SECURITY | AES_ENABLED ),                  /**< WPA2 Security with AES                  */
     RTW_SECURITY_WPA2_TKIP_PSK  = ( WPA2_SECURITY | TKIP_ENABLED ),                 /**< WPA2 Security with TKIP                 */
     RTW_SECURITY_WPA2_MIXED_PSK = ( WPA2_SECURITY | AES_ENABLED | TKIP_ENABLED ),   /**< WPA2 Security with AES & TKIP           */
-    RTW_SECURITY_WPA_WPA2_MIXED = ( WPA_SECURITY  | WPA2_SECURITY ),                /**< WPA/WPA2 Security                       */
-    RTW_SECURITY_WPA2_AES_CMAC = ( WPA2_SECURITY | AES_CMAC_ENABLED),               /**< WPA2 Security with AES and Management Frame Protection*/
-    RTW_SECURITY_WPA2_ENTERPRISE = ( WPA2_SECURITY | ENTERPRISE_ENABLED ),          /**< WPA2 Security with 802.1X authentication>*/
-    RTW_SECURITY_WPA_WPA2_ENTERPRISE = ( WPA_SECURITY | WPA2_SECURITY | ENTERPRISE_ENABLED),/** <WPA/WPA2 Security with 802.1X authentication>*/
+    RTW_SECURITY_WPA_WPA2_TKIP_PSK = ( WPA_SECURITY  | WPA2_SECURITY | TKIP_ENABLED), /**< WPA/WPA2 Security with TKIP           */
+    RTW_SECURITY_WPA_WPA2_AES_PSK = ( WPA_SECURITY  | WPA2_SECURITY | AES_ENABLED),   /**< WPA/WPA2 Security with AES            */
+    RTW_SECURITY_WPA_WPA2_MIXED_PSK = ( WPA_SECURITY  | WPA2_SECURITY | TKIP_ENABLED | AES_ENABLED), /**< WPA/WPA2 Security with AES & TKIP      */
+    RTW_SECURITY_WPA2_AES_CMAC = ( WPA2_SECURITY | AES_CMAC_ENABLED),                /**< WPA2 Security with AES and Management Frame Protection */
+    RTW_SECURITY_WPA2_ENTERPRISE = ( WPA2_SECURITY | ENTERPRISE_ENABLED ),				/**< WPA2 Security with 802.1X authentication>*/
+    RTW_SECURITY_WPA_WPA2_ENTERPRISE = ( WPA_SECURITY | WPA2_SECURITY | ENTERPRISE_ENABLED),	/**<WPA/WPA2 Security with 802.1X authentication>*/
 
     RTW_SECURITY_WPS_OPEN       = WPS_ENABLED,                                      /**< WPS with open security                  */
     RTW_SECURITY_WPS_SECURE     = (WPS_ENABLED | AES_ENABLED),                      /**< WPS with AES security                   */
 
-    RTW_SECURITY_WPA3_AES_PSK 	= (WPA3_SECURITY | AES_ENABLED),                    /**< WPA3-SAE with AES security              */
-    RTW_SECURITY_WPA2_WPA3_MIXED = (WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED),   /**< WPA3-SAE/WPA2 with AES security         */
+    RTW_SECURITY_WPA3_AES_PSK 	= (WPA3_SECURITY | AES_ENABLED),						/**< WPA3-AES with AES security  */
 
     RTW_SECURITY_UNKNOWN        = -1,                                               /**< May be returned by scan function if security is unknown. Do not pass this to the join function! */
 
@@ -397,6 +399,18 @@ enum {
 typedef unsigned long rtw_adaptivity_mode_t;
 
 /**
+  * @brief  The enumeration lists the trp_tis types.
+  */
+enum {
+	RTW_TRP_TIS_DISABLE = 0,
+	RTW_TRP_TIS_NORMAL,
+	RTW_TRP_TIS_DYNAMIC,				// enable dynamic mechanism
+	RTW_TRP_TIS_FIX_ACK_RATE,			// fix ack rate to 6M
+};
+typedef unsigned long rtw_trp_tis_mode_t;
+
+
+/**
   * @brief  The enumeration lists the supported operation mode by WIFI driver,
   *			including station and AP mode.
   */
@@ -441,6 +455,7 @@ typedef unsigned long rtw_link_status_t;
 enum {
     RTW_SCAN_TYPE_ACTIVE              = 0x00,  /**< Actively scan a network by sending 802.11 probe(s)         */
     RTW_SCAN_TYPE_PASSIVE             = 0x01,  /**< Passively scan a network by listening for beacons from APs */
+    RTW_SCAN_TYPE_PROHIBITED_CHANNELS = 0x04   /**< Passively scan on channels not enabled by the country code */
 };
 typedef unsigned long rtw_scan_type_t;
 
@@ -575,29 +590,8 @@ enum _WIFI_EVENT_INDICATE{
 	WIFI_EVENT_IP_CHANGED = 16,
 	WIFI_EVENT_ICV_ERROR = 17,
 	WIFI_EVENT_CHALLENGE_FAIL = 18,
-	WIFI_EVENT_STA_START = 19,
-	WIFI_EVENT_STA_STOP = 20,
-	WIFI_EVENT_AP_START = 21,
-	WIFI_EVENT_AP_STOP = 22,
-	WIFI_EVENT_STA_GOT_IP = 23,
-	WIFI_EVENT_STA_LOST_IP = 24,
-	WIFI_EVENT_NO_BEACON = 25,
-	
-	WIFI_EVENT_PATHSEL_GEN_RREQ = 59,
-	WIFI_EVENT_PATHSEL_GEN_RERR = 60,
-	WIFI_EVENT_PATHSEL_RECV_RREQ = 61,
-	WIFI_EVENT_PATHSEL_RECV_RREP = 62,
-	WIFI_EVENT_PATHSEL_RECV_RERR = 63,
-	WIFI_EVENT_PATHSEL_RECV_PANN = 65,
-	WIFI_EVENT_PATHSEL_RECV_RANN = 66,
-
-	WIFI_EVENT_PATHSEL_GEN_PREQ = 150,
-	WIFI_EVENT_PATHSEL_GEN_PERR = 151,
-	WIFI_EVENT_PATHSEL_RECV_PREQ = 152,
-	WIFI_EVENT_PATHSEL_RECV_PREP = 153,
-	WIFI_EVENT_PATHSEL_RECV_PERR = 154,
-	WIFI_EVENT_PATHSEL_RECV_GANN = 155,
-
+	WIFI_EVENT_SOFTAP_START = 19,
+	WIFI_EVENT_SOFTAP_STOP = 20,
 	WIFI_EVENT_MAX,
 };
 typedef unsigned long rtw_event_indicate_t;

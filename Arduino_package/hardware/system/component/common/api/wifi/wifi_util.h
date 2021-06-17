@@ -49,7 +49,7 @@ int wext_get_mode(const char *ifname, int *mode);
 int wext_set_ap_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len);
 int wext_set_country(const char *ifname, rtw_country_code_t country_code);
 int wext_get_rssi(const char *ifname, int *rssi);
-int wext_get_snr(const char *ifname, int *snr);
+int wifi_get_bcn_rssi(int *pRSSI);
 int wext_set_channel(const char *ifname, __u8 ch);
 int wext_get_channel(const char *ifname, __u8 *ch);
 int wext_register_multicast_address(const char *ifname, rtw_mac_t *mac);
@@ -65,6 +65,9 @@ int wext_set_tdma_param(const char *ifname, __u8 slot_period, __u8 rfon_period_l
 int wext_set_lps_dtim(const char *ifname, __u8 lps_dtim);
 int wext_get_lps_dtim(const char *ifname, __u8 *lps_dtim);
 int wext_set_lps_thresh(const char *ifname, __u8 low_thresh);
+#ifdef LONG_PERIOD_TICKLESS
+int wext_set_lps_smartps(const char *ifname, __u8 smart_ps);
+#endif
 int wext_set_beacon_mode(const char *ifname, __u8 mode);
 int wext_set_lps_level(const char *ifname, __u8 lps_level);
 int wext_get_tx_power(const char *ifname, __u8 *poweridx);
@@ -79,8 +82,9 @@ int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u
 int wext_set_autoreconnect(const char *ifname, __u8 mode, __u8 retry_times, __u16 timeout);
 int wext_get_autoreconnect(const char *ifname, __u8 *mode);
 int wext_set_adaptivity(rtw_adaptivity_mode_t adaptivity_mode);
-int wext_set_adaptivity_th_l2h_ini(__u8 l2h_threshold);
 int wext_set_trp_tis(__u8 enable);
+int wext_set_anti_interference(__u8 enable);
+int wext_set_adaptivity_th_l2h_ini(__u8 l2h_threshold);
 int wext_get_auto_chl(const char *ifname, unsigned char *channel_set, unsigned char channel_num);
 int wext_set_sta_num(unsigned char ap_sta_num);
 int wext_del_station(const char *ifname, unsigned char* hwaddr);
@@ -107,7 +111,7 @@ int wext_get_drv_ability(const char *ifname, __u32 *ability);
 int wext_enable_forwarding(const char *ifname);
 int wext_disable_forwarding(const char *ifname);
 int wext_set_ch_deauth(const char *ifname, __u8 enable);
-
+int wext_ap_switch_chl_and_inform(unsigned char new_channel);
 #ifdef CONFIG_WOWLAN
 int wext_wowlan_ctrl(const char *ifname, int enable);
 int wext_wowlan_set_pattern(const char *ifname, wowlan_pattern_t pattern);

@@ -11,7 +11,7 @@ extern "C" {
 #endif
 #include <stdio.h>
 #include "ameba_soc.h"
-#include "wifi_conf.h"
+
 #define platform_debug DBG_8195A
 
 #define TRACE_SWITCH_CLOSE
@@ -104,6 +104,7 @@ extern "C" {
 #define CHECK_SW(x)                  (HAL_READ32(SPI_FLASH_BASE, FLASH_SYSTEM_DATA_ADDR + 0x28) & x)
 
 
+extern uint8_t rltk_wlan_is_mp(void);
 
 
 

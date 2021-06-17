@@ -42,6 +42,7 @@
 /*
  * Convert a mbedtls_ecjpake_role to identifier string
  */
+SSL_ROM_DATA_SECTION
 static const char * const ecjpake_id[] = {
     "client",
     "server"
@@ -53,6 +54,7 @@ static const char * const ecjpake_id[] = {
 /*
  * Initialize context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecjpake_init( mbedtls_ecjpake_context *ctx )
 {
     if( ctx == NULL )
@@ -76,6 +78,7 @@ void mbedtls_ecjpake_init( mbedtls_ecjpake_context *ctx )
 /*
  * Free context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecjpake_free( mbedtls_ecjpake_context *ctx )
 {
     if( ctx == NULL )
@@ -98,6 +101,7 @@ void mbedtls_ecjpake_free( mbedtls_ecjpake_context *ctx )
 /*
  * Setup context
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_setup( mbedtls_ecjpake_context *ctx,
                            mbedtls_ecjpake_role role,
                            mbedtls_md_type_t hash,
@@ -126,6 +130,7 @@ cleanup:
 /*
  * Check if context is ready for use
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_check( const mbedtls_ecjpake_context *ctx )
 {
     if( ctx->md_info == NULL ||
@@ -141,6 +146,7 @@ int mbedtls_ecjpake_check( const mbedtls_ecjpake_context *ctx )
 /*
  * Write a point plus its length to a buffer
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_write_len_point( unsigned char **p,
                                     const unsigned char *end,
                                     const mbedtls_ecp_group *grp,
@@ -178,6 +184,7 @@ static int ecjpake_write_len_point( unsigned char **p,
 /*
  * Compute hash for ZKP (7.4.2.2.2.1)
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_hash( const mbedtls_md_info_t *md_info,
                          const mbedtls_ecp_group *grp,
                          const int pf,
@@ -228,6 +235,7 @@ cleanup:
 /*
  * Parse a ECShnorrZKP (7.4.2.2.2) and verify it (7.4.2.3.3)
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_zkp_read( const mbedtls_md_info_t *md_info,
                              const mbedtls_ecp_group *grp,
                              const int pf,
@@ -300,6 +308,7 @@ cleanup:
 /*
  * Generate ZKP (7.4.2.3.2) and write it as ECSchnorrZKP (7.4.2.2.2)
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_zkp_write( const mbedtls_md_info_t *md_info,
                               const mbedtls_ecp_group *grp,
                               const int pf, 
@@ -361,6 +370,7 @@ cleanup:
  * Parse a ECJPAKEKeyKP (7.4.2.2.1) and check proof
  * Output: verified public key X
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_kkp_read( const mbedtls_md_info_t *md_info,
                              const mbedtls_ecp_group *grp,
                              const int pf,
@@ -398,6 +408,7 @@ cleanup:
  * Generate an ECJPAKEKeyKP
  * Output: the serialized structure, plus private/public key pair
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_kkp_write( const mbedtls_md_info_t *md_info,
                               const mbedtls_ecp_group *grp,
                               const int pf,
@@ -435,6 +446,7 @@ cleanup:
  * Read a ECJPAKEKeyKPPairList (7.4.2.3) and check proofs
  * Ouputs: verified peer public keys Xa, Xb
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_kkpp_read( const mbedtls_md_info_t *md_info,
                               const mbedtls_ecp_group *grp,
                               const int pf,
@@ -468,6 +480,7 @@ cleanup:
  * Generate a ECJPAKEKeyKPPairList
  * Outputs: the serialized structure, plus two private/public key pairs
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_kkpp_write( const mbedtls_md_info_t *md_info,
                                const mbedtls_ecp_group *grp,
                                const int pf,
@@ -501,6 +514,7 @@ cleanup:
 /*
  * Read and process the first round message
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_read_round_one( mbedtls_ecjpake_context *ctx,
                                     const unsigned char *buf,
                                     size_t len )
@@ -514,6 +528,7 @@ int mbedtls_ecjpake_read_round_one( mbedtls_ecjpake_context *ctx,
 /*
  * Generate and write the first round message
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_write_round_one( mbedtls_ecjpake_context *ctx,
                             unsigned char *buf, size_t len, size_t *olen,
                             int (*f_rng)(void *, unsigned char *, size_t),
@@ -528,6 +543,7 @@ int mbedtls_ecjpake_write_round_one( mbedtls_ecjpake_context *ctx,
 /*
  * Compute the sum of three points R = A + B + C
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_ecp_add3( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                              const mbedtls_ecp_point *A,
                              const mbedtls_ecp_point *B,
@@ -551,6 +567,7 @@ cleanup:
 /*
  * Read and process second round message (C: 7.4.2.5, S: 7.4.2.6)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_read_round_two( mbedtls_ecjpake_context *ctx,
                                             const unsigned char *buf,
                                             size_t len )
@@ -609,6 +626,7 @@ cleanup:
 /*
  * Compute R = +/- X * S mod N, taking care not to leak S
  */
+SSL_ROM_TEXT_SECTION
 static int ecjpake_mul_secret( mbedtls_mpi *R, int sign,
                                const mbedtls_mpi *X,
                                const mbedtls_mpi *S,
@@ -640,6 +658,7 @@ cleanup:
 /*
  * Generate and write the second round message (S: 7.4.2.5, C: 7.4.2.6)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_write_round_two( mbedtls_ecjpake_context *ctx,
                             unsigned char *buf, size_t len, size_t *olen,
                             int (*f_rng)(void *, unsigned char *, size_t),
@@ -717,6 +736,7 @@ cleanup:
 /*
  * Derive PMS (7.4.2.7 / 7.4.2.8)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecjpake_derive_secret( mbedtls_ecjpake_context *ctx,
                             unsigned char *buf, size_t len, size_t *olen,
                             int (*f_rng)(void *, unsigned char *, size_t),

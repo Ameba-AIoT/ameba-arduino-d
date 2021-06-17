@@ -18,17 +18,20 @@
 #include "wlan_intf.h"
 #include "wifi_constants.h"
 #endif
-#if CONFIG_LWIP_LAYER
 #include "lwip_netconf.h"
-#endif
 #include <platform/platform_stdlib.h>
 #include "osdep_service.h"
 
 #ifndef CONFIG_INIT_NET
 #define CONFIG_INIT_NET             1
 #endif
+#ifndef CONFIG_INTERACTIVE_MODE
+#define CONFIG_INTERACTIVE_MODE     1
+#endif
 
 #define STACKSIZE                   (512 + 768)
+
+xSemaphoreHandle uart_rx_interrupt_sema = NULL;
 
 void init_thread(void *param)
 {
@@ -54,6 +57,13 @@ void init_thread(void *param)
 #endif
 	printf("\n\r%s(%d), Available heap 0x%x", __FUNCTION__, __LINE__, xPortGetFreeHeapSize());	
 #endif
+
+#if CONFIG_INTERACTIVE_MODE
+ 	/* Initial uart rx swmaphore*/
+	vSemaphoreCreateBinary(uart_rx_interrupt_sema);
+	xSemaphoreTake(uart_rx_interrupt_sema, 1/portTICK_RATE_MS);
+	start_interactive_mode();
+#endif	
 
 	/* Kill init thread after all init tasks done */
 	vTaskDelete(NULL);

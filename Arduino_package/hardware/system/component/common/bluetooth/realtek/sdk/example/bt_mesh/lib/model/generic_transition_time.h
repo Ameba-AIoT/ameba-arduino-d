@@ -109,13 +109,6 @@ generic_transition_time_t generic_transition_time_get(const mesh_model_info_p pm
  * @return converted time, unit is ms
  */
 uint32_t generic_transition_time_convert(generic_transition_time_t trans_time);
-
-/**
- * @brief convert ms to generic transition time
- * @param[in] time: time ms
- * @return converted transition time
- */
-generic_transition_time_t time_to_generic_transition_time(uint32_t time);
 /** @} */
 /** @} */
 

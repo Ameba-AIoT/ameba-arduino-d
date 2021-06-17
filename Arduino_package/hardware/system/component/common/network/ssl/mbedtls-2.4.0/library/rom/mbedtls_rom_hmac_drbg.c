@@ -51,6 +51,7 @@
 #endif /* MBEDTLS_PLATFORM_C */
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -58,6 +59,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * HMAC_DRBG context initialization
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_hmac_drbg_init( mbedtls_hmac_drbg_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_hmac_drbg_context ) );
@@ -70,6 +72,7 @@ void mbedtls_hmac_drbg_init( mbedtls_hmac_drbg_context *ctx )
 /*
  * HMAC_DRBG update, using optional additional data (10.1.2.2)
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_hmac_drbg_update( mbedtls_hmac_drbg_context *ctx,
                        const unsigned char *additional, size_t add_len )
 {
@@ -98,6 +101,7 @@ void mbedtls_hmac_drbg_update( mbedtls_hmac_drbg_context *ctx,
 /*
  * Simplified HMAC_DRBG initialisation (for use with deterministic ECDSA)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_seed_buf( mbedtls_hmac_drbg_context *ctx,
                         const mbedtls_md_info_t * md_info,
                         const unsigned char *data, size_t data_len )
@@ -123,6 +127,7 @@ int mbedtls_hmac_drbg_seed_buf( mbedtls_hmac_drbg_context *ctx,
 /*
  * HMAC_DRBG reseeding: 10.1.2.4 (arabic) + 9.2 (Roman)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_reseed( mbedtls_hmac_drbg_context *ctx,
                       const unsigned char *additional, size_t len )
 {
@@ -164,6 +169,7 @@ int mbedtls_hmac_drbg_reseed( mbedtls_hmac_drbg_context *ctx,
 /*
  * HMAC_DRBG initialisation (10.1.2.3 + 9.1)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_seed( mbedtls_hmac_drbg_context *ctx,
                     const mbedtls_md_info_t * md_info,
                     int (*f_entropy)(void *, unsigned char *, size_t),
@@ -220,6 +226,7 @@ int mbedtls_hmac_drbg_seed( mbedtls_hmac_drbg_context *ctx,
 /*
  * Set prediction resistance
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_hmac_drbg_set_prediction_resistance( mbedtls_hmac_drbg_context *ctx,
                                           int resistance )
 {
@@ -229,6 +236,7 @@ void mbedtls_hmac_drbg_set_prediction_resistance( mbedtls_hmac_drbg_context *ctx
 /*
  * Set entropy length grabbed for reseeds
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_hmac_drbg_set_entropy_len( mbedtls_hmac_drbg_context *ctx, size_t len )
 {
     ctx->entropy_len = len;
@@ -237,6 +245,7 @@ void mbedtls_hmac_drbg_set_entropy_len( mbedtls_hmac_drbg_context *ctx, size_t l
 /*
  * Set reseed interval
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_hmac_drbg_set_reseed_interval( mbedtls_hmac_drbg_context *ctx, int interval )
 {
     ctx->reseed_interval = interval;
@@ -246,6 +255,7 @@ void mbedtls_hmac_drbg_set_reseed_interval( mbedtls_hmac_drbg_context *ctx, int 
  * HMAC_DRBG random function with optional additional data:
  * 10.1.2.5 (arabic) + 9.3 (Roman)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_random_with_add( void *p_rng,
                                unsigned char *output, size_t out_len,
                                const unsigned char *additional, size_t add_len )
@@ -306,6 +316,7 @@ int mbedtls_hmac_drbg_random_with_add( void *p_rng,
 /*
  * HMAC_DRBG random function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_random( void *p_rng, unsigned char *output, size_t out_len )
 {
     int ret;
@@ -329,6 +340,7 @@ int mbedtls_hmac_drbg_random( void *p_rng, unsigned char *output, size_t out_len
 /*
  * Free an HMAC_DRBG context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_hmac_drbg_free( mbedtls_hmac_drbg_context *ctx )
 {
     if( ctx == NULL )
@@ -342,6 +354,7 @@ void mbedtls_hmac_drbg_free( mbedtls_hmac_drbg_context *ctx )
 }
 
 #if defined(MBEDTLS_FS_IO)
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_write_seed_file( mbedtls_hmac_drbg_context *ctx, const char *path )
 {
     int ret;
@@ -367,6 +380,7 @@ exit:
     return( ret );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_hmac_drbg_update_seed_file( mbedtls_hmac_drbg_context *ctx, const char *path )
 {
     FILE *f;

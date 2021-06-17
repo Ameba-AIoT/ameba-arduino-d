@@ -19,6 +19,11 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memcmp _memcmp
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -41,6 +46,7 @@
 #endif /* MBEDTLS_PLATFORM_C */
 #endif /* MBEDTLS_SELF_TEST */
 
+SSL_ROM_DATA_SECTION
 static const unsigned char base64_enc_map[64] =
 {
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
@@ -52,6 +58,7 @@ static const unsigned char base64_enc_map[64] =
     '8', '9', '+', '/'
 };
 
+SSL_ROM_DATA_SECTION
 static const unsigned char base64_dec_map[128] =
 {
     127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
@@ -74,6 +81,7 @@ static const unsigned char base64_dec_map[128] =
 /*
  * Encode a buffer into base64 format
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_base64_encode( unsigned char *dst, size_t dlen, size_t *olen,
                    const unsigned char *src, size_t slen )
 {
@@ -141,6 +149,7 @@ int mbedtls_base64_encode( unsigned char *dst, size_t dlen, size_t *olen,
 /*
  * Decode a base64-formatted buffer
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_base64_decode( unsigned char *dst, size_t dlen, size_t *olen,
                    const unsigned char *src, size_t slen )
 {

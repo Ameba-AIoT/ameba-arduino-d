@@ -25,6 +25,13 @@
  *  http://csrc.nist.gov/publications/fips/fips46-3/fips46-3.pdf
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memset _memset
+#define memcpy _memcpy
+#define memcmp _memcmp
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -57,6 +64,7 @@
 #if !defined(MBEDTLS_DES_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = (unsigned char*)v; while( n-- ) *p++ = 0;
 }
@@ -87,6 +95,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * Expanded DES S-boxes
  */
+SSL_ROM_DATA_SECTION
 static const uint32_t SB1[64] =
 {
     0x01010400, 0x00000000, 0x00010000, 0x01010404,
@@ -107,6 +116,7 @@ static const uint32_t SB1[64] =
     0x00010004, 0x00010400, 0x00000000, 0x01010004
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB2[64] =
 {
     0x80108020, 0x80008000, 0x00008000, 0x00108020,
@@ -127,6 +137,7 @@ static const uint32_t SB2[64] =
     0x80000000, 0x80100020, 0x80108020, 0x00108000
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB3[64] =
 {
     0x00000208, 0x08020200, 0x00000000, 0x08020008,
@@ -147,6 +158,7 @@ static const uint32_t SB3[64] =
     0x00020208, 0x00000008, 0x08020008, 0x00020200
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB4[64] =
 {
     0x00802001, 0x00002081, 0x00002081, 0x00000080,
@@ -167,6 +179,7 @@ static const uint32_t SB4[64] =
     0x00000080, 0x00800000, 0x00002000, 0x00802080
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB5[64] =
 {
     0x00000100, 0x02080100, 0x02080000, 0x42000100,
@@ -187,6 +200,7 @@ static const uint32_t SB5[64] =
     0x00000000, 0x40080000, 0x02080100, 0x40000100
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB6[64] =
 {
     0x20000010, 0x20400000, 0x00004000, 0x20404010,
@@ -207,6 +221,7 @@ static const uint32_t SB6[64] =
     0x20404000, 0x20000000, 0x00400010, 0x20004010
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB7[64] =
 {
     0x00200000, 0x04200002, 0x04000802, 0x00000000,
@@ -227,6 +242,7 @@ static const uint32_t SB7[64] =
     0x04000002, 0x04000800, 0x00000800, 0x00200002
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t SB8[64] =
 {
     0x10001040, 0x00001000, 0x00040000, 0x10041040,
@@ -250,6 +266,7 @@ static const uint32_t SB8[64] =
 /*
  * PC1: left and right halves bit-swap
  */
+SSL_ROM_DATA_SECTION
 static const uint32_t LHs[16] =
 {
     0x00000000, 0x00000001, 0x00000100, 0x00000101,
@@ -258,6 +275,7 @@ static const uint32_t LHs[16] =
     0x01010000, 0x01010001, 0x01010100, 0x01010101
 };
 
+SSL_ROM_DATA_SECTION
 static const uint32_t RHs[16] =
 {
     0x00000000, 0x01000000, 0x00010000, 0x01010000,
@@ -314,11 +332,13 @@ static const uint32_t RHs[16] =
 
 #define SWAP(a,b) { uint32_t t = a; a = b; b = t; t = 0; }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_des_init( mbedtls_des_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_des_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_des_free( mbedtls_des_context *ctx )
 {
     if( ctx == NULL )
@@ -327,11 +347,13 @@ void mbedtls_des_free( mbedtls_des_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_des_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_des3_init( mbedtls_des3_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_des3_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_des3_free( mbedtls_des3_context *ctx )
 {
     if( ctx == NULL )
@@ -340,6 +362,7 @@ void mbedtls_des3_free( mbedtls_des3_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_des3_context ) );
 }
 
+SSL_ROM_DATA_SECTION
 static const unsigned char odd_parity_table[128] = { 1,  2,  4,  7,  8,
         11, 13, 14, 16, 19, 21, 22, 25, 26, 28, 31, 32, 35, 37, 38, 41, 42, 44,
         47, 49, 50, 52, 55, 56, 59, 61, 62, 64, 67, 69, 70, 73, 74, 76, 79, 81,
@@ -351,6 +374,7 @@ static const unsigned char odd_parity_table[128] = { 1,  2,  4,  7,  8,
         227, 229, 230, 233, 234, 236, 239, 241, 242, 244, 247, 248, 251, 253,
         254 };
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_des_key_set_parity( unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 {
     int i;
@@ -362,6 +386,7 @@ void mbedtls_des_key_set_parity( unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 /*
  * Check the given key's parity, returns 1 on failure, 0 on SUCCESS
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des_key_check_key_parity( const unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 {
     int i;
@@ -396,6 +421,7 @@ int mbedtls_des_key_check_key_parity( const unsigned char key[MBEDTLS_DES_KEY_SI
 
 #define WEAK_KEY_COUNT 16
 
+SSL_ROM_DATA_SECTION
 static const unsigned char weak_key_table[WEAK_KEY_COUNT][MBEDTLS_DES_KEY_SIZE] =
 {
     { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
@@ -417,6 +443,7 @@ static const unsigned char weak_key_table[WEAK_KEY_COUNT][MBEDTLS_DES_KEY_SIZE] 
     { 0xFE, 0xE0, 0xFE, 0xE0, 0xFE, 0xF1, 0xFE, 0xF1 }
 };
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_des_key_check_weak( const unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 {
     int i;
@@ -429,6 +456,7 @@ int mbedtls_des_key_check_weak( const unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 }
 
 #if !defined(MBEDTLS_DES_SETKEY_ALT)
+SSL_ROM_TEXT_SECTION
 void mbedtls_des_setkey( uint32_t SK[32], const unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 {
     int i;
@@ -502,6 +530,7 @@ void mbedtls_des_setkey( uint32_t SK[32], const unsigned char key[MBEDTLS_DES_KE
 /*
  * DES key schedule (56-bit, encryption)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des_setkey_enc( mbedtls_des_context *ctx, const unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 {
 #ifdef RTL_HW_CRYPTO
@@ -518,6 +547,7 @@ int mbedtls_des_setkey_enc( mbedtls_des_context *ctx, const unsigned char key[MB
 /*
  * DES key schedule (56-bit, decryption)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des_setkey_dec( mbedtls_des_context *ctx, const unsigned char key[MBEDTLS_DES_KEY_SIZE] )
 {
     int i;
@@ -538,6 +568,7 @@ int mbedtls_des_setkey_dec( mbedtls_des_context *ctx, const unsigned char key[MB
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 static void des3_set2key( uint32_t esk[96],
                           uint32_t dsk[96],
                           const unsigned char key[MBEDTLS_DES_KEY_SIZE*2] )
@@ -566,6 +597,7 @@ static void des3_set2key( uint32_t esk[96],
 /*
  * Triple-DES key schedule (112-bit, encryption)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des3_set2key_enc( mbedtls_des3_context *ctx,
                       const unsigned char key[MBEDTLS_DES_KEY_SIZE * 2] )
 {
@@ -586,6 +618,7 @@ int mbedtls_des3_set2key_enc( mbedtls_des3_context *ctx,
 /*
  * Triple-DES key schedule (112-bit, decryption)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des3_set2key_dec( mbedtls_des3_context *ctx,
                       const unsigned char key[MBEDTLS_DES_KEY_SIZE * 2] )
 {
@@ -603,6 +636,7 @@ int mbedtls_des3_set2key_dec( mbedtls_des3_context *ctx,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 static void des3_set3key( uint32_t esk[96],
                           uint32_t dsk[96],
                           const unsigned char key[24] )
@@ -629,6 +663,7 @@ static void des3_set3key( uint32_t esk[96],
 /*
  * Triple-DES key schedule (168-bit, encryption)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des3_set3key_enc( mbedtls_des3_context *ctx,
                       const unsigned char key[MBEDTLS_DES_KEY_SIZE * 3] )
 {
@@ -648,6 +683,7 @@ int mbedtls_des3_set3key_enc( mbedtls_des3_context *ctx,
 /*
  * Triple-DES key schedule (168-bit, decryption)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des3_set3key_dec( mbedtls_des3_context *ctx,
                       const unsigned char key[MBEDTLS_DES_KEY_SIZE * 3] )
 {
@@ -668,6 +704,7 @@ int mbedtls_des3_set3key_dec( mbedtls_des3_context *ctx,
  * DES-ECB block encryption/decryption
  */
 #if !defined(MBEDTLS_DES_CRYPT_ECB_ALT)
+SSL_ROM_TEXT_SECTION
 int mbedtls_des_crypt_ecb( mbedtls_des_context *ctx,
                     const unsigned char input[8],
                     unsigned char output[8] )
@@ -701,6 +738,7 @@ int mbedtls_des_crypt_ecb( mbedtls_des_context *ctx,
 /*
  * DES-CBC buffer encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des_crypt_cbc( mbedtls_des_context *ctx,
                     int mode,
                     size_t length,
@@ -814,6 +852,7 @@ int mbedtls_des_crypt_cbc( mbedtls_des_context *ctx,
  * 3DES-ECB block encryption/decryption
  */
 #if !defined(MBEDTLS_DES3_CRYPT_ECB_ALT)
+SSL_ROM_TEXT_SECTION
 int mbedtls_des3_crypt_ecb( mbedtls_des3_context *ctx,
                      const unsigned char input[8],
                      unsigned char output[8] )
@@ -859,6 +898,7 @@ int mbedtls_des3_crypt_ecb( mbedtls_des3_context *ctx,
 /*
  * 3DES-CBC buffer encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_des3_crypt_cbc( mbedtls_des3_context *ctx,
                      int mode,
                      size_t length,

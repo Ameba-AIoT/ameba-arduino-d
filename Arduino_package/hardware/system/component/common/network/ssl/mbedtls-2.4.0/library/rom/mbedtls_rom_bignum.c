@@ -35,11 +35,19 @@
  *
  */
 
+//#include <rom_ssl_func_rename.h>
+#include <section_config.h>
+#include "basic_types.h"
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-sign"
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC diagnostic ignored "-Wint-conversion"
+
+#define memcpy _memcpy
+#define memset _memset
+#define strlen _strlen
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
@@ -65,6 +73,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_mpi_zeroize( mbedtls_mpi_uint *v, size_t n ) {
     volatile mbedtls_mpi_uint *p = v; while( n-- ) *p++ = 0;
 }
@@ -85,6 +94,7 @@ static void mbedtls_mpi_zeroize( mbedtls_mpi_uint *v, size_t n ) {
 /*
  * Initialize one MPI
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_mpi_init( mbedtls_mpi *X )
 {
     if( X == NULL )
@@ -98,6 +108,7 @@ void mbedtls_mpi_init( mbedtls_mpi *X )
 /*
  * Unallocate one MPI
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_mpi_free( mbedtls_mpi *X )
 {
     if( X == NULL )
@@ -117,6 +128,7 @@ void mbedtls_mpi_free( mbedtls_mpi *X )
 /*
  * Enlarge to the specified number of limbs
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_grow( mbedtls_mpi *X, size_t nblimbs )
 {
     mbedtls_mpi_uint *p;
@@ -147,6 +159,7 @@ int mbedtls_mpi_grow( mbedtls_mpi *X, size_t nblimbs )
  * Resize down as much as possible,
  * while keeping at least the specified number of limbs
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_shrink( mbedtls_mpi *X, size_t nblimbs )
 {
     mbedtls_mpi_uint *p;
@@ -183,6 +196,7 @@ int mbedtls_mpi_shrink( mbedtls_mpi *X, size_t nblimbs )
 /*
  * Copy the contents of Y into X
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_copy( mbedtls_mpi *X, const mbedtls_mpi *Y )
 {
     int ret;
@@ -217,6 +231,7 @@ cleanup:
 /*
  * Swap the contents of X and Y
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_mpi_swap( mbedtls_mpi *X, mbedtls_mpi *Y )
 {
     mbedtls_mpi T;
@@ -231,6 +246,7 @@ void mbedtls_mpi_swap( mbedtls_mpi *X, mbedtls_mpi *Y )
  * about whether the assignment was made or not.
  * (Leaking information about the respective sizes of X and Y is ok however.)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_safe_cond_assign( mbedtls_mpi *X, const mbedtls_mpi *Y, unsigned char assign )
 {
     int ret = 0;
@@ -259,6 +275,7 @@ cleanup:
  * Here it is not ok to simply swap the pointers, which whould lead to
  * different memory access patterns when X and Y are used afterwards.
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_safe_cond_swap( mbedtls_mpi *X, mbedtls_mpi *Y, unsigned char swap )
 {
     int ret, s;
@@ -293,6 +310,7 @@ cleanup:
 /*
  * Set value from integer
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_lset( mbedtls_mpi *X, mbedtls_mpi_sint z )
 {
     int ret;
@@ -311,6 +329,7 @@ cleanup:
 /*
  * Get a specific bit
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_get_bit( const mbedtls_mpi *X, size_t pos )
 {
     if( X->n * biL <= pos )
@@ -322,6 +341,7 @@ int mbedtls_mpi_get_bit( const mbedtls_mpi *X, size_t pos )
 /*
  * Set a bit to a specific value of 0 or 1
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_set_bit( mbedtls_mpi *X, size_t pos, unsigned char val )
 {
     int ret = 0;
@@ -350,6 +370,7 @@ cleanup:
 /*
  * Return the number of less significant zero-bits
  */
+SSL_ROM_TEXT_SECTION
 size_t mbedtls_mpi_lsb( const mbedtls_mpi *X )
 {
     size_t i, j, count = 0;
@@ -365,6 +386,7 @@ size_t mbedtls_mpi_lsb( const mbedtls_mpi *X )
 /*
  * Count leading zero bits in a given integer
  */
+SSL_ROM_TEXT_SECTION
 static size_t mbedtls_clz( const mbedtls_mpi_uint x )
 {
     size_t j;
@@ -383,6 +405,7 @@ static size_t mbedtls_clz( const mbedtls_mpi_uint x )
 /*
  * Return the number of bits
  */
+SSL_ROM_TEXT_SECTION
 size_t mbedtls_mpi_bitlen( const mbedtls_mpi *X )
 {
     size_t i, j;
@@ -402,6 +425,7 @@ size_t mbedtls_mpi_bitlen( const mbedtls_mpi *X )
 /*
  * Return the total size in bytes
  */
+SSL_ROM_TEXT_SECTION
 size_t mbedtls_mpi_size( const mbedtls_mpi *X )
 {
     return( ( mbedtls_mpi_bitlen( X ) + 7 ) >> 3 );
@@ -410,6 +434,7 @@ size_t mbedtls_mpi_size( const mbedtls_mpi *X )
 /*
  * Convert an ASCII character to digit value
  */
+SSL_ROM_TEXT_SECTION
 static int mpi_get_digit( mbedtls_mpi_uint *d, int radix, char c )
 {
     *d = 255;
@@ -427,6 +452,7 @@ static int mpi_get_digit( mbedtls_mpi_uint *d, int radix, char c )
 /*
  * Import from an ASCII string
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_read_string( mbedtls_mpi *X, int radix, const char *s )
 {
     int ret;
@@ -499,6 +525,7 @@ cleanup:
 /*
  * Helper to write the digits high-order first
  */
+SSL_ROM_TEXT_SECTION
 static int mpi_write_hlp( mbedtls_mpi *X, int radix, char **p )
 {
     int ret;
@@ -526,6 +553,7 @@ cleanup:
 /*
  * Export into an ASCII string
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_write_string( const mbedtls_mpi *X, int radix,
                               char *buf, size_t buflen, size_t *olen )
 {
@@ -670,6 +698,7 @@ cleanup:
 /*
  * Import X from unsigned binary data, big endian
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_read_binary( mbedtls_mpi *X, const unsigned char *buf, size_t buflen )
 {
     int ret;
@@ -693,6 +722,7 @@ cleanup:
 /*
  * Export X into unsigned binary data, big endian
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_write_binary( const mbedtls_mpi *X, unsigned char *buf, size_t buflen )
 {
     size_t i, j, n;
@@ -713,6 +743,7 @@ int mbedtls_mpi_write_binary( const mbedtls_mpi *X, unsigned char *buf, size_t b
 /*
  * Left-shift: X <<= count
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_shift_l( mbedtls_mpi *X, size_t count )
 {
     int ret;
@@ -763,6 +794,7 @@ cleanup:
 /*
  * Right-shift: X >>= count
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_shift_r( mbedtls_mpi *X, size_t count )
 {
     size_t i, v0, v1;
@@ -806,6 +838,7 @@ int mbedtls_mpi_shift_r( mbedtls_mpi *X, size_t count )
 /*
  * Compare unsigned values
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_cmp_abs( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 {
     size_t i, j;
@@ -836,6 +869,7 @@ int mbedtls_mpi_cmp_abs( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 /*
  * Compare signed values
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_cmp_mpi( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 {
     size_t i, j;
@@ -869,6 +903,7 @@ int mbedtls_mpi_cmp_mpi( const mbedtls_mpi *X, const mbedtls_mpi *Y )
 /*
  * Compare signed values
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_cmp_int( const mbedtls_mpi *X, mbedtls_mpi_sint z )
 {
     mbedtls_mpi Y;
@@ -885,6 +920,7 @@ int mbedtls_mpi_cmp_int( const mbedtls_mpi *X, mbedtls_mpi_sint z )
 /*
  * Unsigned addition: X = |A| + |B|  (HAC 14.7)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_add_abs( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret;
@@ -941,6 +977,7 @@ cleanup:
 /*
  * Helper for mbedtls_mpi subtraction
  */
+SSL_ROM_TEXT_SECTION
 static void mpi_sub_hlp( size_t n, mbedtls_mpi_uint *s, mbedtls_mpi_uint *d )
 {
     size_t i;
@@ -962,6 +999,7 @@ static void mpi_sub_hlp( size_t n, mbedtls_mpi_uint *s, mbedtls_mpi_uint *d )
 /*
  * Unsigned subtraction: X = |A| - |B|  (HAC 14.9)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_sub_abs( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     mbedtls_mpi TB;
@@ -1005,6 +1043,7 @@ cleanup:
 /*
  * Signed addition: X = A + B
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_add_mpi( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret, s = A->s;
@@ -1036,6 +1075,7 @@ cleanup:
 /*
  * Signed subtraction: X = A - B
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_sub_mpi( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret, s = A->s;
@@ -1067,6 +1107,7 @@ cleanup:
 /*
  * Signed addition: X = A + b
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_add_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_sint b )
 {
     mbedtls_mpi _B;
@@ -1083,6 +1124,7 @@ int mbedtls_mpi_add_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_sint 
 /*
  * Signed subtraction: X = A - b
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_sub_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_sint b )
 {
     mbedtls_mpi _B;
@@ -1099,6 +1141,7 @@ int mbedtls_mpi_sub_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_sint 
 /*
  * Helper for mbedtls_mpi multiplication
  */
+SSL_ROM_TEXT_SECTION
 static
 #if defined(__APPLE__) && defined(__arm__)
 /*
@@ -1171,6 +1214,7 @@ void mpi_mul_hlp( size_t i, mbedtls_mpi_uint *s, mbedtls_mpi_uint *d, mbedtls_mp
 /*
  * Baseline multiplication: X = A * B  (HAC 14.12)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_mul_mpi( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret;
@@ -1208,6 +1252,7 @@ cleanup:
 /*
  * Baseline multiplication: X = A * b
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_mul_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_uint b )
 {
     mbedtls_mpi _B;
@@ -1225,6 +1270,7 @@ int mbedtls_mpi_mul_int( mbedtls_mpi *X, const mbedtls_mpi *A, mbedtls_mpi_uint 
  * Unsigned integer divide - double mbedtls_mpi_uint dividend, u1/u0, and
  * mbedtls_mpi_uint divisor, d
  */
+SSL_ROM_TEXT_SECTION
 static mbedtls_mpi_uint mbedtls_int_div_int( mbedtls_mpi_uint u1,
             mbedtls_mpi_uint u0, mbedtls_mpi_uint d, mbedtls_mpi_uint *r )
 {
@@ -1320,6 +1366,7 @@ static mbedtls_mpi_uint mbedtls_int_div_int( mbedtls_mpi_uint u1,
 /*
  * Division by mbedtls_mpi: A = Q * B + R  (HAC 14.20)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_div_mpi( mbedtls_mpi *Q, mbedtls_mpi *R, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret;
@@ -1435,6 +1482,7 @@ cleanup:
 /*
  * Division by int: A = Q * b + R
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_div_int( mbedtls_mpi *Q, mbedtls_mpi *R, const mbedtls_mpi *A, mbedtls_mpi_sint b )
 {
     mbedtls_mpi _B;
@@ -1451,6 +1499,7 @@ int mbedtls_mpi_div_int( mbedtls_mpi *Q, mbedtls_mpi *R, const mbedtls_mpi *A, m
 /*
  * Modulo: R = A mod B
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_mod_mpi( mbedtls_mpi *R, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret;
@@ -1474,6 +1523,7 @@ cleanup:
 /*
  * Modulo: r = A mod b
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_mod_int( mbedtls_mpi_uint *r, const mbedtls_mpi *A, mbedtls_mpi_sint b )
 {
     size_t i;
@@ -1531,6 +1581,7 @@ int mbedtls_mpi_mod_int( mbedtls_mpi_uint *r, const mbedtls_mpi *A, mbedtls_mpi_
 /*
  * Fast Montgomery initialization (thanks to Tom St Denis)
  */
+SSL_ROM_TEXT_SECTION
 static void mpi_montg_init( mbedtls_mpi_uint *mm, const mbedtls_mpi *N )
 {
     mbedtls_mpi_uint x, m0 = N->p[0];
@@ -1548,6 +1599,7 @@ static void mpi_montg_init( mbedtls_mpi_uint *mm, const mbedtls_mpi *N )
 /*
  * Montgomery multiplication: A = A * B * R^-1 mod N  (HAC 14.36)
  */
+SSL_ROM_TEXT_SECTION
 static int mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi *N, mbedtls_mpi_uint mm,
                          const mbedtls_mpi *T )
 {
@@ -1591,6 +1643,7 @@ static int mpi_montmul( mbedtls_mpi *A, const mbedtls_mpi *B, const mbedtls_mpi 
 /*
  * Montgomery reduction: A = A * R^-1 mod N
  */
+SSL_ROM_TEXT_SECTION
 static int mpi_montred( mbedtls_mpi *A, const mbedtls_mpi *N, mbedtls_mpi_uint mm, const mbedtls_mpi *T )
 {
     mbedtls_mpi_uint z = 1;
@@ -1605,6 +1658,7 @@ static int mpi_montred( mbedtls_mpi *A, const mbedtls_mpi *N, mbedtls_mpi_uint m
 /*
  * Sliding-window exponentiation: X = A^E mod N  (HAC 14.85)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_exp_mod( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *E, const mbedtls_mpi *N, mbedtls_mpi *_RR )
 {
     int ret;
@@ -1813,6 +1867,7 @@ cleanup:
 /*
  * Greatest common divisor: G = gcd(A, B)  (HAC 14.54)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_gcd( mbedtls_mpi *G, const mbedtls_mpi *A, const mbedtls_mpi *B )
 {
     int ret;
@@ -1869,6 +1924,7 @@ cleanup:
  * regardless of the platform endianness (useful when f_rng is actually
  * deterministic, eg for tests).
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_fill_random( mbedtls_mpi *X, size_t size,
                      int (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng )
@@ -1889,6 +1945,7 @@ cleanup:
 /*
  * Modular inverse: X = A^-1 mod N  (HAC 14.61 / 14.64)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_inv_mod( mbedtls_mpi *X, const mbedtls_mpi *A, const mbedtls_mpi *N )
 {
     int ret;
@@ -1983,6 +2040,7 @@ cleanup:
 
 #if defined(MBEDTLS_GENPRIME)
 
+SSL_ROM_DATA_SECTION
 static const int small_prime[] =
 {
         3,    5,    7,   11,   13,   17,   19,   23,
@@ -2017,6 +2075,7 @@ static const int small_prime[] =
  * MBEDTLS_ERR_MPI_NOT_ACCEPTABLE: certain non-prime
  * other negative: error
  */
+SSL_ROM_TEXT_SECTION
 static int mpi_check_small_factors( const mbedtls_mpi *X )
 {
     int ret = 0;
@@ -2044,6 +2103,7 @@ cleanup:
 /*
  * Miller-Rabin pseudo-primality test  (HAC 4.24)
  */
+SSL_ROM_TEXT_SECTION
 static int mpi_miller_rabin( const mbedtls_mpi *X,
                              int (*f_rng)(void *, unsigned char *, size_t),
                              void *p_rng )
@@ -2148,6 +2208,7 @@ cleanup:
 /*
  * Pseudo-primality test: small factors, then Miller-Rabin
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_is_prime( const mbedtls_mpi *X,
                   int (*f_rng)(void *, unsigned char *, size_t),
                   void *p_rng )
@@ -2180,6 +2241,7 @@ int mbedtls_mpi_is_prime( const mbedtls_mpi *X,
 /*
  * Prime number generation
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_mpi_gen_prime( mbedtls_mpi *X, size_t nbits, int dh_flag,
                    int (*f_rng)(void *, unsigned char *, size_t),
                    void *p_rng )

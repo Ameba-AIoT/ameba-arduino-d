@@ -45,6 +45,7 @@ BEGIN_DECLS
   * @brief
   * @{
   */
+extern uint8_t proxy_ctx_id;
 /** @} */
 
 /** @defgroup Proxy_Service_Exported_Functions Exported Functions

@@ -25,6 +25,12 @@
  *  http://csrc.nist.gov/publications/fips/fips197/fips-197.pdf
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memset _memset
+#define memcpy _memcpy
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -63,6 +69,7 @@
 #if !defined(MBEDTLS_AES_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = (unsigned char*)v; while( n-- ) *p++ = 0;
 }
@@ -99,6 +106,7 @@ static int aes_padlock_ace = -1;
 /*
  * Forward S-box
  */
+SSL_ROM_DATA_SECTION
 static const unsigned char FSb[256] =
 {
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5,
@@ -206,18 +214,22 @@ static const unsigned char FSb[256] =
     V(CB,B0,B0,7B), V(FC,54,54,A8), V(D6,BB,BB,6D), V(3A,16,16,2C)
 
 #define V(a,b,c,d) 0x##a##b##c##d
+SSL_ROM_DATA_SECTION
 static const uint32_t FT0[256] = { FT };
 #undef V
 
 #define V(a,b,c,d) 0x##b##c##d##a
+SSL_ROM_DATA_SECTION
 static const uint32_t FT1[256] = { FT };
 #undef V
 
 #define V(a,b,c,d) 0x##c##d##a##b
+SSL_ROM_DATA_SECTION
 static const uint32_t FT2[256] = { FT };
 #undef V
 
 #define V(a,b,c,d) 0x##d##a##b##c
+SSL_ROM_DATA_SECTION
 static const uint32_t FT3[256] = { FT };
 #undef V
 
@@ -226,6 +238,7 @@ static const uint32_t FT3[256] = { FT };
 /*
  * Reverse S-box
  */
+SSL_ROM_DATA_SECTION
 static const unsigned char RSb[256] =
 {
     0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5, 0x38,
@@ -333,18 +346,22 @@ static const unsigned char RSb[256] =
     V(61,84,CB,7B), V(70,B6,32,D5), V(74,5C,6C,48), V(42,57,B8,D0)
 
 #define V(a,b,c,d) 0x##a##b##c##d
+SSL_ROM_DATA_SECTION
 static const uint32_t RT0[256] = { RT };
 #undef V
 
 #define V(a,b,c,d) 0x##b##c##d##a
+SSL_ROM_DATA_SECTION
 static const uint32_t RT1[256] = { RT };
 #undef V
 
 #define V(a,b,c,d) 0x##c##d##a##b
+SSL_ROM_DATA_SECTION
 static const uint32_t RT2[256] = { RT };
 #undef V
 
 #define V(a,b,c,d) 0x##d##a##b##c
+SSL_ROM_DATA_SECTION
 static const uint32_t RT3[256] = { RT };
 #undef V
 
@@ -353,6 +370,7 @@ static const uint32_t RT3[256] = { RT };
 /*
  * Round constants
  */
+SSL_ROM_DATA_SECTION
 static const uint32_t RCON[10] =
 {
     0x00000001, 0x00000002, 0x00000004, 0x00000008,
@@ -472,11 +490,13 @@ static void aes_gen_tables( void )
 
 #endif /* MBEDTLS_AES_ROM_TABLES */
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_aes_init( mbedtls_aes_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_aes_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_aes_free( mbedtls_aes_context *ctx )
 {
     if( ctx == NULL )
@@ -489,6 +509,7 @@ void mbedtls_aes_free( mbedtls_aes_context *ctx )
  * AES key schedule (encryption)
  */
 #if !defined(MBEDTLS_AES_SETKEY_ENC_ALT)
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
                     unsigned int keybits )
 {
@@ -623,6 +644,7 @@ int mbedtls_aes_setkey_enc( mbedtls_aes_context *ctx, const unsigned char *key,
  * AES key schedule (decryption)
  */
 #if !defined(MBEDTLS_AES_SETKEY_DEC_ALT)
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_setkey_dec( mbedtls_aes_context *ctx, const unsigned char *key,
                     unsigned int keybits )
 {
@@ -758,6 +780,7 @@ exit:
  * AES-ECB block encryption
  */
 #if !defined(MBEDTLS_AES_ENCRYPT_ALT)
+SSL_ROM_TEXT_SECTION
 void mbedtls_aes_encrypt( mbedtls_aes_context *ctx,
                           const unsigned char input[16],
                           unsigned char output[16] )
@@ -815,6 +838,7 @@ void mbedtls_aes_encrypt( mbedtls_aes_context *ctx,
  * AES-ECB block decryption
  */
 #if !defined(MBEDTLS_AES_DECRYPT_ALT)
+SSL_ROM_TEXT_SECTION
 void mbedtls_aes_decrypt( mbedtls_aes_context *ctx,
                           const unsigned char input[16],
                           unsigned char output[16] )
@@ -871,6 +895,7 @@ void mbedtls_aes_decrypt( mbedtls_aes_context *ctx,
 /*
  * AES-ECB block encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
                     int mode,
                     const unsigned char input[16],
@@ -933,6 +958,7 @@ int mbedtls_aes_crypt_ecb( mbedtls_aes_context *ctx,
 /*
  * AES-CBC buffer encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
                     int mode,
                     size_t length,
@@ -1058,6 +1084,7 @@ int mbedtls_aes_crypt_cbc( mbedtls_aes_context *ctx,
 /*
  * AES-CFB128 buffer encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
                        int mode,
                        size_t length,
@@ -1104,6 +1131,7 @@ int mbedtls_aes_crypt_cfb128( mbedtls_aes_context *ctx,
 /*
  * AES-CFB8 buffer encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
                        int mode,
                        size_t length,
@@ -1138,6 +1166,7 @@ int mbedtls_aes_crypt_cfb8( mbedtls_aes_context *ctx,
 /*
  * AES-CTR buffer encryption/decryption
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_aes_crypt_ctr( mbedtls_aes_context *ctx,
                        size_t length,
                        size_t *nc_off,

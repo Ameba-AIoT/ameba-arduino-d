@@ -24,12 +24,18 @@
  *  http://csrc.nist.gov/publications/fips/fips180-2/fips180-2.pdf
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-sign"
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC diagnostic ignored "-Wint-conversion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+
+#define memset _memset
+#define memcpy _memcpy
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
@@ -64,6 +70,7 @@
 #if !defined(MBEDTLS_SHA512_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -99,11 +106,13 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 }
 #endif /* PUT_UINT64_BE */
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_init( mbedtls_sha512_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_sha512_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_free( mbedtls_sha512_context *ctx )
 {
     if( ctx == NULL )
@@ -112,15 +121,19 @@ void mbedtls_sha512_free( mbedtls_sha512_context *ctx )
     mbedtls_zeroize( ctx, sizeof( mbedtls_sha512_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_clone( mbedtls_sha512_context *dst,
                            const mbedtls_sha512_context *src )
 {
-	*dst = *src;
+//  modify to prevent implicit memcpy call
+//  *dst = *src;
+    memcpy(dst, src, sizeof(mbedtls_sha512_context));
 }
 
 /*
  * SHA-512 context setup
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_starts( mbedtls_sha512_context *ctx, int is384 )
 {
     ctx->total[0] = 0;
@@ -159,6 +172,7 @@ void mbedtls_sha512_starts( mbedtls_sha512_context *ctx, int is384 )
 /*
  * Round constants
  */
+SSL_ROM_DATA_SECTION
 static const uint64_t K[80] =
 {
     UL64(0x428A2F98D728AE22),  UL64(0x7137449123EF65CD),
@@ -203,6 +217,7 @@ static const uint64_t K[80] =
     UL64(0x5FCB6FAB3AD6FAEC),  UL64(0x6C44198C4A475817)
 };
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_process( mbedtls_sha512_context *ctx, const unsigned char data[128] )
 {
     int i;
@@ -276,6 +291,7 @@ void mbedtls_sha512_process( mbedtls_sha512_context *ctx, const unsigned char da
 /*
  * SHA-512 process buffer
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_update( mbedtls_sha512_context *ctx, const unsigned char *input,
                     size_t ilen )
 {
@@ -313,6 +329,7 @@ void mbedtls_sha512_update( mbedtls_sha512_context *ctx, const unsigned char *in
         memcpy( (void *) (ctx->buffer + left), input, ilen );
 }
 
+SSL_ROM_DATA_SECTION
 static const unsigned char sha512_padding[128] =
 {
  0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -328,6 +345,7 @@ static const unsigned char sha512_padding[128] =
 /*
  * SHA-512 final digest
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512_finish( mbedtls_sha512_context *ctx, unsigned char output[64] )
 {
     size_t last, padn;
@@ -366,6 +384,7 @@ void mbedtls_sha512_finish( mbedtls_sha512_context *ctx, unsigned char output[64
 /*
  * output = SHA-512( input buffer )
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_sha512( const unsigned char *input, size_t ilen,
              unsigned char output[64], int is384 )
 {

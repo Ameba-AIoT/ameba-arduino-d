@@ -437,7 +437,7 @@ typedef struct fd_set
 #define LWIP_TIMEVAL_PRIVATE 1
 #endif
 
-#if LWIP_TIMEVAL_PRIVATE && !defined(_TIMEVAL_DEFINED) //* Added by Realtek */
+#if LWIP_TIMEVAL_PRIVATE
 struct timeval {
   long    tv_sec;         /* seconds */
   long    tv_usec;        /* and microseconds */

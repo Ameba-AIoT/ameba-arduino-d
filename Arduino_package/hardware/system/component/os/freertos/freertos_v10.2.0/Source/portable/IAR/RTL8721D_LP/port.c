@@ -220,7 +220,7 @@ void vApplicationIdleHook( void )
 {
 	/* Use the idle task to place the CPU into a low power mode.  Greater power
 	saving could be achieved by not including any demo tasks that never block. */
-#if defined (CONFIG_PLATFORM_8721D) || (defined CONFIG_PLATFORM_AMEBAD2)
+#if defined (CONFIG_PLATFORM_8721D)
 	extern void app_taskidle_handler(void);
 	app_taskidle_handler();
 #endif

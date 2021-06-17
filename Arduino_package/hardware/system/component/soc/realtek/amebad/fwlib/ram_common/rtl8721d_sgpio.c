@@ -995,8 +995,7 @@ void SGPIO_MULDMA_Cmd(SGPIO_TypeDef *SGPIOx, u8 NewState)
 
 		/* Trigger the SGPIO multiple match FIFO load with data for the first time*/
 		SGPIOx->SGPIO_MULMC_CTRL |= BIT_SGPIO_MUL_DMA_START;
-		if (SGPIOx->SGPIO_MULMC_CTRL & BIT_SGPIO_MUL_MR0_IE)
-			while(SGPIOx->SGPIO_MULMC_CTRL & BIT_SGPIO_MUL_DMA_START);
+		while((1 == SGPIOx->SGPIO_MULMC_CTRL) & BIT_SGPIO_MUL_DMA_START);
 	} else {
 		/* Disable the SGPIO multiple match DMA mode*/
 		SGPIOx->SGPIO_MULMC_CTRL &= (~BIT_SGPIO_MUL_DMA_EN);

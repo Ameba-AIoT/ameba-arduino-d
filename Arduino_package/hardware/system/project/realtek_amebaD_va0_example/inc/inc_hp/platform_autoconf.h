@@ -45,6 +45,11 @@
 #undef  CONFIG_TRUSTZONE
 
 /*
+ * < CONFIG SBootIMG2 
+ */
+#undef  CONFIG_SBootIMG2
+
+/*
  * < CONFIG OS 
  */
 #define CONFIG_KERNEL 1
@@ -107,7 +112,6 @@
 #undef  CONFIG_BT_MESH_DEVICE_MULTIPLE_PROFILE
 #undef  CONFIG_BT_MESH_PROVISIONER_RTK_DEMO
 #undef  CONFIG_BT_MESH_DEVICE_RTK_DEMO
-#undef  CONFIG_BT_MESH_TEST
 #undef  CONFIG_BT_MESH_CENTRAL
 #undef  CONFIG_BT_MESH_PERIPHERAL
 #undef  CONFIG_BT_MESH_SCATTERNET
@@ -121,11 +125,6 @@
 #define CONFIG_WIFI_NORMAL 1
 #undef  CONFIG_WIFI_TEST
 #define CONFIG_WIFI_MODULE 1
-
-/*
- * < CONFIG INIC
- */
-#undef  CONFIG_INIC_EN
 
 /*
  * < CONFIG NETWORK 
@@ -143,6 +142,11 @@
  * < DuerOS Config 
  */
 #undef  CONFIG_BAIDU_DUER
+
+/*
+ * < LinkKit Config 
+ */
+#undef  CONFIG_LINKKIT_AWSS
 
 /*
  * < MQTT Config 

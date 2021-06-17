@@ -762,10 +762,11 @@
 
 /* REG_LP_EFUSE_PROTECTION 0x03E0 */
 #define EFUSE_PHYSICAL_SBOOT_ON		BIT_SECURE_BOOT_DIS
+#define BIT_SECURE_IMG2_DIS			BIT(15)	/* R	1		1: Disable Secure img2 ,  0: Enable */
 #define BIT_CPU_PC_DBGEN				BIT(14)	/* R	1		"1: Enable to get KM4/KM0 PC value through debug port0: Disable" */
 #define BIT_SECURE_BOOT_DIS			BIT(13)	/* R	1		1: Disable Secure boot ,  0: Enable */
 #define BIT_LSYS_INVA_DBGEN			BIT(12)	/* R	1		1: Enable invasive debug */
-#define BIT_LSYS_NONINVA_DBGEN		BIT([11)	/* R	1		1: Enable non-invasive debug */
+#define BIT_LSYS_NONINVA_DBGEN		BIT(11)	/* R	1		1: Enable non-invasive debug */
 #define BIT_LSYS_SEC_INVA_DBGEN		BIT(10)	/* R	1		1: Enable secure invasive debug */
 #define BIT_LSYS_SEC_NONINVA_DBGEN	BIT(9)	/* R	1		1: Enable secure non-invasive debug */
 #define BIT_LSYS_SWD_PROTECT_DIS		BIT(8)	/* R	1		1: Disable SWD password protection;  0: Enable */

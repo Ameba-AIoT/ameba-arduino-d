@@ -91,6 +91,25 @@ int efuse_otp_chk(u8 len, u8 *buf);
   */
 int efuse_disable_jtag(void);
 
+/** 
+  * @brief  read logical efuse
+  * @param  addr: Specified the address to be read.
+  * @param  size: Specifies the data length to be read.
+  * @param  *pbuf: Pointer to the read out data buffer.
+  * @retval   status: Success:0 or Failure: -1.
+  */
+
+int efuse_logical_read(u16 addr, u16 size, u8 *pbuf);
+
+/** 
+  * @brief  write logical efuse
+  * @param  addr: Specified the address to be write.
+  * @param  size: Specifies the data length to be write.
+  * @param  *pbuf: Pointer to the write data buffer.
+  * @retval   status: Success:0 or Failure: -1.
+  */
+
+int efuse_logical_write(u16 addr, u16 size, u8 *data);
 
 ///@}
 

@@ -20,6 +20,9 @@ struct ws_data_header_type{
 #define WS_SERVER_USE_TLS            WS_SERVER_TLS_MBEDTLS
 #endif
 
+#define WS_SERVER_SEND_BY_POLL			0    /*!< WS server send data when polling */
+#define WS_SERVER_SEND_DIRECTLY			1    /*!< WS server send data directly */
+
 void *ws_server_malloc(size_t size);
 
 void ws_server_free(void *ptr);
@@ -36,7 +39,7 @@ int ws_server_handshake_read_header(ws_conn *conn);
 
 int ws_server_handshake_response(ws_conn *conn);
 
-void ws_server_sendData(uint8_t type, size_t message_size, uint8_t* message, int useMask, ws_conn *conn);
+void ws_server_sendData(uint8_t type, size_t message_size, uint8_t* message, int useMask, uint8_t send_mode, ws_conn *conn);
 
 void ws_server_dispatchBinary(ws_conn *conn);
 

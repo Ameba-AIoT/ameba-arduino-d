@@ -9,7 +9,7 @@
 #ifndef ROM_WPS_OS_H
 #define ROM_WPS_OS_H
 
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_AMEBAD2)
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D)
 
 #include <rom_wlan_ram_map.h>
 extern struct _rom_wlan_ram_map rom_wlan_ram_map;

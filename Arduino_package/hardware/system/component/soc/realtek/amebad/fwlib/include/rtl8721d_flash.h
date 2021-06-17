@@ -377,6 +377,7 @@ void FLASH_TxData256BXIP(u32 StartAddr, u32 DataPhaseLen, u8* pData);
 void FLASH_EraseXIP(u32 EraseType, u32 Address);
 void FLASH_EreaseDwordsXIP(u32 address, u32 dword_num);
 void FLASH_Write_IPC_Int(VOID *Data, u32 IrqStatus, u32 ChanNum);
+void FLASH_Invalidate_Auto_Write(void);
 /**
   * @}
   */

@@ -19,7 +19,7 @@ DSTATUS disk_status (
 {
     DSTATUS stat = STA_NODISK;
 
-    if (disk.nbr <= 0 || (char) pdrv < 0 || pdrv >= disk.nbr)
+    if (disk.nbr <= 0 || (signed char) pdrv < 0 || pdrv >= disk.nbr)
       return stat;
 	
 	stat = disk.drv[pdrv]->disk_status();
@@ -40,7 +40,7 @@ DSTATUS disk_initialize (
 
 	DSTATUS stat = STA_NOINIT;
 
-	if (disk.nbr <= 0 || (char) pdrv < 0 || pdrv >= disk.nbr)
+	if (disk.nbr <= 0 || (signed char) pdrv < 0 || pdrv >= disk.nbr)
       return stat;
 	stat = disk.drv[pdrv]->disk_initialize();
 	return stat;
@@ -58,7 +58,7 @@ DSTATUS disk_deinitialize (
 {
 	DSTATUS stat = STA_NOINIT;
 
-	if (disk.nbr <= 0 || (char) pdrv < 0 || pdrv >= disk.nbr)
+	if (disk.nbr <= 0 || (signed char) pdrv < 0 || pdrv >= disk.nbr)
       return stat;
 	stat = disk.drv[pdrv]->disk_deinitialize();
 	return stat;
@@ -79,7 +79,7 @@ DRESULT disk_read (
 {
 	DRESULT res = RES_PARERR;
 	
-	if ((char) pdrv < 0 || pdrv >= disk.nbr || buff == (void*)0 || count <= 0)
+	if ((signed char) pdrv < 0 || pdrv >= disk.nbr || buff == (void*)0 || count <= 0)
 		return RES_PARERR; // Return if the parameter is invalid
 
 	if(disk.nbr <= 0)
@@ -105,7 +105,7 @@ DRESULT disk_write (
 {       
 	DRESULT res = RES_PARERR;
 	
-	if ((char) pdrv < 0 || pdrv >= disk.nbr || buff == (void*)0 || count <= 0)
+	if ((signed char) pdrv < 0 || pdrv >= disk.nbr || buff == (void*)0 || count <= 0)
 		return RES_PARERR; // Return if the parameter is invalid
 
 	if(disk.nbr <= 0)
@@ -131,7 +131,7 @@ DRESULT disk_ioctl (
 {
     DRESULT res = RES_PARERR;
 	
-	if ((char) pdrv < 0 || pdrv >= disk.nbr)
+	if ((signed char) pdrv < 0 || pdrv >= disk.nbr)
 		return RES_PARERR; // Return if the parameter is invalid
 
 	if(disk.nbr <= 0)

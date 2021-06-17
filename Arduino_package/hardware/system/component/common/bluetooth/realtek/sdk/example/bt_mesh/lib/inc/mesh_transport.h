@@ -244,7 +244,6 @@ typedef struct
     plt_timer_t timer; //!< used to retransimit
     uint8_t times[32]; //!< tx times of each seg
     uint32_t send; //!< need tx flag of each seg
-    uint32_t send_first; //!< need tx first time flag of each seg
     uint32_t ack; //!< seg acked info
     uint8_t seg_num;
 } trans_tx_ctx_t, *trans_tx_ctx_p;
@@ -293,7 +292,6 @@ void trans_handle_timeout(uint8_t type, void *pctx);
 bool trans_handle_ping_pong_msg(mesh_msg_p pmesh_msg);
 mesh_msg_send_cause_t trans_hb(uint16_t dst, uint16_t net_key_index, uint8_t init_ttl,
                                mesh_features_t features);
-void trans_rx_ctx_clear(void);
 ///@endcond
 
 /**

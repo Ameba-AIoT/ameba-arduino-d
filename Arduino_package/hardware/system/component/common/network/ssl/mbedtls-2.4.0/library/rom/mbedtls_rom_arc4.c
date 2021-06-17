@@ -48,15 +48,18 @@
 #if !defined(MBEDTLS_ARC4_ALT)
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = (unsigned char*)v; while( n-- ) *p++ = 0;
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_arc4_init( mbedtls_arc4_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_arc4_context ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_arc4_free( mbedtls_arc4_context *ctx )
 {
     if( ctx == NULL )
@@ -68,6 +71,7 @@ void mbedtls_arc4_free( mbedtls_arc4_context *ctx )
 /*
  * ARC4 key schedule
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_arc4_setup( mbedtls_arc4_context *ctx, const unsigned char *key,
                  unsigned int keylen )
 {
@@ -98,6 +102,7 @@ void mbedtls_arc4_setup( mbedtls_arc4_context *ctx, const unsigned char *key,
 /*
  * ARC4 cipher function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_arc4_crypt( mbedtls_arc4_context *ctx, size_t length, const unsigned char *input,
                 unsigned char *output )
 {

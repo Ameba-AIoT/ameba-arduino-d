@@ -151,6 +151,9 @@ static u32 SD_ResetCard(void)
   */
 static u32 SD_VoltageCheck(u8 * voltage_mismatch)
 {
+	/* To avoid gcc warnings */
+	( void ) voltage_mismatch;
+	
 	u32 ret;
 	SDIOH_CmdTypeDef cmd_attr;
 
@@ -166,12 +169,12 @@ static u32 SD_VoltageCheck(u8 * voltage_mismatch)
 
 	ret = CmdRespError(SDIOH_RESP_R7, SD_CMD_SendIfCond);
 	if(ret == HAL_TIMEOUT) {
-		*voltage_mismatch = 1;  /* for Ver1.x SD card*/
+		//voltage_mismatch = 1;  /* for Ver1.x SD card*/
 		DBG_PRINTF(MODULE_SDIO, LEVEL_INFO,"voltage mismatch\n");
 		ret = HAL_OK;
 		
 	} else if(ret == HAL_OK) {
-		*voltage_mismatch = 0;
+		//voltage_mismatch = 0;
 		DBG_PRINTF(MODULE_SDIO, LEVEL_INFO,"voltage match\n");
 	}
 
@@ -351,6 +354,7 @@ static SD_RESULT SD_GetOCR(u8 voltage_mismatch)
 			return HAL_OK;
 		}
 	}while(cnt--);
+	
 
 	return HAL_ERR_UNKNOWN;
 	
@@ -1367,8 +1371,8 @@ u32 SD_GetSDStatus(u8 *buf_32align)
 				 }
 			 }
 		 } else {
-			 DBG_PRINTF(MODULE_SDIO, LEVEL_WARN, "This card doesn't support the specified speed mode !!\r\n");
-			 return HAL_ERR_HW;
+			 DBG_PRINTF(MODULE_SDIO, LEVEL_WARN, "This card doesn't support the specified speed mode, use current speed mode !!\r\n");
+			 return HAL_OK;
 		 }
 	 } else {
 		 DBG_PRINTF(MODULE_SDIO, LEVEL_WARN,"This card doesn't support CMD6 and can't switch the bus speed !!\r\n");
@@ -1568,10 +1572,12 @@ SD_RESULT SD_Init(void)
 {
 	u32 ret;
 	u8 voltage_mismatch = 0;
-
-	_memset(&card_info, 0, sizeof(SD_CardInfo));
-	card_info.sd_status = SD_NODISK;
-
+	
+	if(card_info.sd_status != SD_INSERT){
+		_memset(&card_info, 0, sizeof(SD_CardInfo));
+		card_info.sd_status = SD_NODISK;
+	}
+	
 	/* Configure pinmux */
 	SDIOH_Pinmux();
 

@@ -48,11 +48,6 @@
 
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
-#define RTK_CUSTOMIZATION
-#ifdef RTK_CUSTOMIZATION
-#include <stdio.h>
-#endif
-
 /**
  * The FreeRTOS Cortex M33 port can be configured to run on the Secure Side only
  * i.e. the processor boots as secure and never jumps to the non-secure side.
@@ -315,13 +310,9 @@ void vPortSVCHandler_C( uint32_t *pulCallerStackAddress ) PRIVILEGED_FUNCTION;
 
 /**
  * @brief Each task maintains its own interrupt status in the critical nesting
- * variable. For using malloc before start scheduler, 
+ * variable.
  */
-#ifdef RTK_CUSTOMIZATION
-static volatile uint32_t ulCriticalNesting = 0; //0xaaaaaaaaUL;
-#else
 static volatile uint32_t ulCriticalNesting = 0xaaaaaaaaUL;
-#endif
 
 #if( configENABLE_TRUSTZONE == 1 )
 	/**
@@ -491,14 +482,14 @@ void vPortYield( void ) /* PRIVILEGED_FUNCTION */
 
 void vPortEnterCritical( void ) /* PRIVILEGED_FUNCTION */
 {
-#ifdef RTK_CUSTOMIZATION	
+	
 	if((ulCriticalNesting!=0xaaaaaaaaUL) && (ulCriticalNesting>0) && (__get_PRIMASK()==0)){
 		if(__get_FAULTMASK()==0){
 			printf("ISR On in critical, check code before this LR = %x\n\r", __get_LR());
 			while(1);
 		}
 	}
-#endif
+	
 	portDISABLE_INTERRUPTS();
 	ulCriticalNesting++;
 
@@ -512,12 +503,10 @@ void vPortEnterCritical( void ) /* PRIVILEGED_FUNCTION */
 void vPortExitCritical( void ) /* PRIVILEGED_FUNCTION */
 {
 	configASSERT( ulCriticalNesting );
-#ifdef RTK_CUSTOMIZATION
 	if(__get_PRIMASK()==0){
 		printf("ISR On before exiting critical, LR = %x\n\r", __get_LR());
 		while(1);
 	}
-#endif
 	ulCriticalNesting--;
 
 	if( ulCriticalNesting == 0 )
@@ -657,18 +646,7 @@ uint8_t ucSVCNumber;
 			}
 			break;
 		#endif /* configENABLE_MPU */
-#ifdef RTK_CUSTOMIZATION
-		case portSVC_SECCALL:
-		{
-			uint32_t ulR0 = pulCallerStackAddress[ 0 ];
-			uint32_t ulR1 = pulCallerStackAddress[ 1 ];
-			uint32_t ulR2 = pulCallerStackAddress[ 2 ];
-			uint32_t ulR3 = pulCallerStackAddress[ 3 ];
-			ulR0 = vPortDoSecCall(ulR0, ulR1, ulR2, ulR3);
-			pulCallerStackAddress[ 0 ] = ulR0;
-		}
-		break;
-#endif
+
 		default:
 		{
 			/* Incorrect SVC call. */
@@ -834,17 +812,6 @@ void vPortEndScheduler( void ) /* PRIVILEGED_FUNCTION */
 	configASSERT( ulCriticalNesting == 1000UL );
 }
 /*-----------------------------------------------------------*/
-
-#ifdef RTK_CUSTOMIZATION
-int vPortSecCall( void *pvFunc, uint32_t ulArg0, uint32_t ulArg1, uint32_t ulArg2 ) /* PRIVILEGED_FUNCTION */
-{
-	uint32_t res;
-	__asm volatile ( "svc %0 \n" :: "i" ( portSVC_SECCALL ) : "memory" );
-	__asm volatile ( "mov %0, r0" : "=r" (res));
-	return res;	
-}
-/*-----------------------------------------------------------*/
-#endif
 
 #if( configENABLE_MPU == 1 )
 	void vPortStoreTaskMPUSettings( xMPU_SETTINGS *xMPUSettings, const struct xMEMORY_REGION * const xRegions, StackType_t *pxBottomOfStack, uint32_t ulStackDepth )

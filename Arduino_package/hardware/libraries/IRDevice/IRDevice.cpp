@@ -133,18 +133,24 @@ IRDevice::IRDevice() {
 }
 
 void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
-    if (receivePin == 3) {
+    /* there are three groups of pinmux and pad settings:
+    *  |  IR_TX  |  _PA_25  |  _PB_23 |  _PB_31 |
+    *  |  IR_RX  |  _PA_26  |  _PB_22 |  _PB_29 |
+    */
+    if (receivePin == 6) {
+        PAD_PullCtrl(_PB_29, PullNone);
         Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
     } else if (receivePin == 8) {
         Pinmux_Config(_PB_22, PINMUX_FUNCTION_IR);
     } else if (receivePin == 17) {
+        PAD_PullCtrl(_PA_26, PullNone);
         Pinmux_Config(_PA_26, PINMUX_FUNCTION_IR);
     } else {
         printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
         return;
     }
 
-    if (transmitPin == 6) {
+    if (transmitPin == 3) {
         Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
     } else if (transmitPin == 9) {
         Pinmux_Config(_PB_23, PINMUX_FUNCTION_IR);
@@ -219,7 +225,7 @@ void IRDevice::send(const unsigned int buf[], uint16_t len) {
 
     while ((IR_DataStruct.bufLen - tx_count) > 0) {
         while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
-           taskYIELD();
+            taskYIELD();
         }
         if ((IR_DataStruct.bufLen - tx_count) > tx_thres) {
             IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), tx_thres, FALSE);
@@ -227,9 +233,9 @@ void IRDevice::send(const unsigned int buf[], uint16_t len) {
         } else {
             IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), (IR_DataStruct.bufLen - tx_count), TRUE);
             tx_count = IR_DataStruct.bufLen;
-        }        
+        }
     }
-    // finish until buffer is cleared
+
     vTaskDelay((200 / portTICK_RATE_MS));
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
 }
@@ -326,7 +332,7 @@ uint8_t IRDevice::recvNEC(uint8_t &adr, uint8_t &cmd, uint32_t timeout) {
         if (IR_RX_INVERTED) {
             InvertPulse(IR_DataStruct.irBuf, IR_DataStruct.bufLen);
         }
-        
+
         // result = IR_NECDecode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
         IR_NECDecode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
         adr = data[0];

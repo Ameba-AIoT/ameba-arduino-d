@@ -64,6 +64,7 @@
 /*
  * Initialize an RSA context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_rsa_init( mbedtls_rsa_context *ctx,
                int padding,
                int hash_id )
@@ -80,6 +81,7 @@ void mbedtls_rsa_init( mbedtls_rsa_context *ctx,
 /*
  * Set padding for an existing RSA context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_rsa_set_padding( mbedtls_rsa_context *ctx, int padding, int hash_id )
 {
     ctx->padding = padding;
@@ -91,6 +93,7 @@ void mbedtls_rsa_set_padding( mbedtls_rsa_context *ctx, int padding, int hash_id
 /*
  * Generate an RSA keypair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_gen_key( mbedtls_rsa_context *ctx,
                  int (*f_rng)(void *, unsigned char *, size_t),
                  void *p_rng,
@@ -170,6 +173,7 @@ cleanup:
 /*
  * Check a public RSA key
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_check_pubkey( const mbedtls_rsa_context *ctx )
 {
     if( !ctx->N.p || !ctx->E.p )
@@ -193,6 +197,7 @@ int mbedtls_rsa_check_pubkey( const mbedtls_rsa_context *ctx )
 /*
  * Check a private RSA key
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_check_privkey( const mbedtls_rsa_context *ctx )
 {
     int ret;
@@ -255,6 +260,7 @@ cleanup:
 /*
  * Check if contexts holding a public and private key match
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_check_pub_priv( const mbedtls_rsa_context *pub, const mbedtls_rsa_context *prv )
 {
     if( mbedtls_rsa_check_pubkey( pub ) != 0 ||
@@ -275,6 +281,7 @@ int mbedtls_rsa_check_pub_priv( const mbedtls_rsa_context *pub, const mbedtls_rs
 /*
  * Do an RSA public key operation
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_public( mbedtls_rsa_context *ctx,
                 const unsigned char *input,
                 unsigned char *output )
@@ -322,6 +329,7 @@ cleanup:
  *  DSS, and other systems. In : Advances in Cryptology-CRYPTO'96. Springer
  *  Berlin Heidelberg, 1996. p. 104-113.
  */
+SSL_ROM_TEXT_SECTION
 static int rsa_prepare_blinding( mbedtls_rsa_context *ctx,
                  int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
@@ -359,6 +367,7 @@ cleanup:
 /*
  * Do an RSA private key operation
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_private( mbedtls_rsa_context *ctx,
                  int (*f_rng)(void *, unsigned char *, size_t),
                  void *p_rng,
@@ -461,6 +470,7 @@ cleanup:
  * \param slen      length of the source buffer
  * \param md_ctx    message digest context to use
  */
+SSL_ROM_TEXT_SECTION
 static void mgf_mask( unsigned char *dst, size_t dlen, unsigned char *src,
                       size_t slen, mbedtls_md_context_t *md_ctx )
 {
@@ -503,6 +513,7 @@ static void mgf_mask( unsigned char *dst, size_t dlen, unsigned char *src,
 /*
  * Implementation of the PKCS#1 v2.1 RSAES-OAEP-ENCRYPT function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsaes_oaep_encrypt( mbedtls_rsa_context *ctx,
                             int (*f_rng)(void *, unsigned char *, size_t),
                             void *p_rng,
@@ -580,6 +591,7 @@ int mbedtls_rsa_rsaes_oaep_encrypt( mbedtls_rsa_context *ctx,
 /*
  * Implementation of the PKCS#1 v2.1 RSAES-PKCS1-V1_5-ENCRYPT function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsaes_pkcs1_v15_encrypt( mbedtls_rsa_context *ctx,
                                  int (*f_rng)(void *, unsigned char *, size_t),
                                  void *p_rng,
@@ -646,6 +658,7 @@ int mbedtls_rsa_rsaes_pkcs1_v15_encrypt( mbedtls_rsa_context *ctx,
 /*
  * Add the message padding, then do an RSA operation
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_pkcs1_encrypt( mbedtls_rsa_context *ctx,
                        int (*f_rng)(void *, unsigned char *, size_t),
                        void *p_rng,
@@ -676,6 +689,7 @@ int mbedtls_rsa_pkcs1_encrypt( mbedtls_rsa_context *ctx,
 /*
  * Implementation of the PKCS#1 v2.1 RSAES-OAEP-DECRYPT function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsaes_oaep_decrypt( mbedtls_rsa_context *ctx,
                             int (*f_rng)(void *, unsigned char *, size_t),
                             void *p_rng,
@@ -800,6 +814,7 @@ int mbedtls_rsa_rsaes_oaep_decrypt( mbedtls_rsa_context *ctx,
 /*
  * Implementation of the PKCS#1 v2.1 RSAES-PKCS1-V1_5-DECRYPT function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsaes_pkcs1_v15_decrypt( mbedtls_rsa_context *ctx,
                                  int (*f_rng)(void *, unsigned char *, size_t),
                                  void *p_rng,
@@ -886,6 +901,7 @@ int mbedtls_rsa_rsaes_pkcs1_v15_decrypt( mbedtls_rsa_context *ctx,
 /*
  * Do an RSA operation, then remove the message padding
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_pkcs1_decrypt( mbedtls_rsa_context *ctx,
                        int (*f_rng)(void *, unsigned char *, size_t),
                        void *p_rng,
@@ -918,6 +934,7 @@ int mbedtls_rsa_pkcs1_decrypt( mbedtls_rsa_context *ctx,
 /*
  * Implementation of the PKCS#1 v2.1 RSASSA-PSS-SIGN function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsassa_pss_sign( mbedtls_rsa_context *ctx,
                          int (*f_rng)(void *, unsigned char *, size_t),
                          void *p_rng,
@@ -1019,6 +1036,7 @@ int mbedtls_rsa_rsassa_pss_sign( mbedtls_rsa_context *ctx,
 /*
  * Do an RSA operation to sign the message digest
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsassa_pkcs1_v15_sign( mbedtls_rsa_context *ctx,
                                int (*f_rng)(void *, unsigned char *, size_t),
                                void *p_rng,
@@ -1143,6 +1161,7 @@ cleanup:
 /*
  * Do an RSA operation to sign the message digest
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_pkcs1_sign( mbedtls_rsa_context *ctx,
                     int (*f_rng)(void *, unsigned char *, size_t),
                     void *p_rng,
@@ -1175,6 +1194,7 @@ int mbedtls_rsa_pkcs1_sign( mbedtls_rsa_context *ctx,
 /*
  * Implementation of the PKCS#1 v2.1 RSASSA-PSS-VERIFY function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsassa_pss_verify_ext( mbedtls_rsa_context *ctx,
                                int (*f_rng)(void *, unsigned char *, size_t),
                                void *p_rng,
@@ -1301,6 +1321,7 @@ int mbedtls_rsa_rsassa_pss_verify_ext( mbedtls_rsa_context *ctx,
 /*
  * Simplified PKCS#1 v2.1 RSASSA-PSS-VERIFY function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsassa_pss_verify( mbedtls_rsa_context *ctx,
                            int (*f_rng)(void *, unsigned char *, size_t),
                            void *p_rng,
@@ -1326,6 +1347,7 @@ int mbedtls_rsa_rsassa_pss_verify( mbedtls_rsa_context *ctx,
 /*
  * Implementation of the PKCS#1 v2.1 RSASSA-PKCS1-v1_5-VERIFY function
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_rsassa_pkcs1_v15_verify( mbedtls_rsa_context *ctx,
                                  int (*f_rng)(void *, unsigned char *, size_t),
                                  void *p_rng,
@@ -1444,6 +1466,7 @@ int mbedtls_rsa_rsassa_pkcs1_v15_verify( mbedtls_rsa_context *ctx,
 /*
  * Do an RSA operation and check the message digest
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_pkcs1_verify( mbedtls_rsa_context *ctx,
                       int (*f_rng)(void *, unsigned char *, size_t),
                       void *p_rng,
@@ -1475,6 +1498,7 @@ int mbedtls_rsa_pkcs1_verify( mbedtls_rsa_context *ctx,
 /*
  * Copy the components of an RSA key
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_rsa_copy( mbedtls_rsa_context *dst, const mbedtls_rsa_context *src )
 {
     int ret;
@@ -1512,6 +1536,7 @@ cleanup:
 /*
  * Free the components of an RSA key
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_rsa_free( mbedtls_rsa_context *ctx )
 {
     mbedtls_mpi_free( &ctx->Vi ); mbedtls_mpi_free( &ctx->Vf );

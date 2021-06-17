@@ -50,20 +50,20 @@ u32 OTA_Region[2] = {
 *	There are 4 RSIP mask entries totally. Entry 0 is already used by System Data, Entry 3 is reserved by Realtek. 
 *	Only Entry 1 & Entry 2 can be used by Users.
 *	MaskAddr: start address for RSIP Mask, should be 4KB aligned
-*	MaskSize: size of the mask area, unit is 4KB
+*	MaskSize: size of the mask area, unit is 4KB, MaxSize 255*4KB
 */
 BOOT_RAM_DATA_SECTION
 RSIP_MaskDef RSIP_Mask_Config[] = {
 	/*MaskAddr,		MaskSize*/
-	{0x08001000,	3},  		//Entry 0: 4K system data & 4K backup & DPK
+	{0x08002000,	2},  		//Entry 0: 4K system data & 4K backup
 
 	/* customer can set here */
-	{0xFFFFFFFF,	0xFFFF},  	//Entry 1: can be used by users
-	{0xFFFFFFFF,	0xFFFF}, 	//Entry 2: can be used by users
-	{0xFFFFFFFF, 	0xFFFF}, 	//Entry 3: Reserved by Realtek. If RDP is not used, this entry can be used by users.
+	{0xFFFFFFFF,	0xFF},  	//Entry 1: can be used by users
+	{0xFFFFFFFF,	0xFF}, 	//Entry 2: can be used by users
+	{0xFFFFFFFF, 	0xFF}, 	//Entry 3: Reserved by Realtek. If RDP is not used, this entry can be used by users.
 
 	/* End */
-	{0xFFFFFFFF, 	0xFFFF},
+	{0xFFFFFFFF, 	0xFF},
 };
 
 /**

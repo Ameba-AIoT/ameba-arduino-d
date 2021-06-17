@@ -1075,7 +1075,7 @@ int32_t spi_master_write_stream_dma(spi_t *obj, char *tx_buffer, uint32_t length
   * @param  length: number of data bytes to be send & recv.
   * @retval  : stream init status
   */
-int32_t spi_master_write_read_stream_dma(spi_t *obj, char *tx_buffer,
+int32_t spi_master_write_read_stream_dma(spi_t *obj, char *tx_buffer, 
 	char *rx_buffer, uint32_t length)
 {
 	uint8_t  spi_idx = obj->spi_idx &0x0F;
@@ -1093,7 +1093,7 @@ int32_t spi_master_write_read_stream_dma(spi_t *obj, char *tx_buffer,
 		obj->state &= ~SPI_STATE_RX_BUSY;
 		return HAL_BUSY;
 	}
-
+	
 	obj->state |= SPI_STATE_TX_BUSY;
 	ret = ssi_dma_send(ssi_adapter, (u8 *) tx_buffer, length);
 	if (ret != _TRUE) {
@@ -1101,7 +1101,7 @@ int32_t spi_master_write_read_stream_dma(spi_t *obj, char *tx_buffer,
 		return HAL_BUSY;
 	}
 
-	return HAL_OK;
+	return (ret == _TRUE) ? HAL_OK : HAL_BUSY;
 }
 
 /**

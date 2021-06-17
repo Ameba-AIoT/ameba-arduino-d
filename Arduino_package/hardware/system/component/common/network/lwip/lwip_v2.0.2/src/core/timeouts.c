@@ -330,7 +330,15 @@ sys_check_timeouts(void)
       if (tmptimeout && (tmptimeout->time <= diff)) {
         /* timeout has expired */
         had_one = 1;
-        timeouts_last_time += tmptimeout->time;
+        /* if use tickless, timeouts_last_time should be "now" or the timer struct will insert in a wrong place of list */
+        if(0 != pmu_get_wakelock_status())
+        {
+            timeouts_last_time += tmptimeout->time;
+        }
+        else
+        {
+            timeouts_last_time = sys_now();
+        }
         diff -= tmptimeout->time;
         next_timeout = tmptimeout->next;
         handler = tmptimeout->h;

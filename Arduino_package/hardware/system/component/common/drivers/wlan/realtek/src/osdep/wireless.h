@@ -367,18 +367,6 @@ typedef	long long __i64;
 /* Send WPS EAPOL Frame */
 #define SIOCSIWEAPOLSEND	0x8B38		/* Send WPS EAPOL Frame */
 
-#define SIOCQPATHTABLE  0x8BA0  // query pathselection table
-#define SIOCUPATHTABLE  0x8BA1  // update  existing entry's date in pathselection table
-#define SIOCAPATHTABLE  0x8BA2  // add a new entry into pathselection table
-#define SIOCQAPATHTABLE  0x8BA6  // query the whole pathselection table
-
-#define SIOC_NOTIFY_PATH_CREATE 0x8BA9 // path selection daemon notify dirver that the path to des mac has created
-#define SIOC_UPDATE_ROOT_INFO 0x8BAA // update root mac into driver
-#define SIOC_SET_ROUTING_INFO 0x8BAD //init root and set routing information
-#define UPDATE_MESH_METRIC 0x8BAE	//update mesh metric
-#define SIOC_MESH_TX_RAW_DATA 0x8BAF //send raw data
-#define REMOVE_PATH_ENTRY 0x8B8C // remove specified path entry
-
 /* Set MailBox Info */
 #define SIOCSIMAILBOX	0x8B39		/* Set MailBox Info */
 
@@ -388,8 +376,8 @@ typedef	long long __i64;
 /* Set Finite cyclic groups id for SAE  */
 #define SIOCSIWGRPID	0x8B3B		/* Set Finite cyclic groups id for SAE  */
 
-/* Get SNR */
-#define SIOCGIWSNR	0x8B3C
+/* Get rssiBCN */
+#define SIOCGIWBCNSENS	0x8B40 		/* Get beacon average rssi */
 
 /* -------------------- DEV PRIVATE IOCTL LIST -------------------- */
 
@@ -1013,7 +1001,7 @@ union	iwreq_data
 					 * > 1000 = frequency in Hz */
 
 	struct iw_param	sens;		/* signal level threshold */
-	struct iw_param	snr;		/* signal noise ratio */
+	struct iw_param	bcnsens;	/* signal level threshold */
 	struct iw_param	bitrate;	/* default bit rate */
 	struct iw_param	txpower;	/* default transmit power */
 	struct iw_param	rts;		/* RTS threshold threshold */
@@ -1238,4 +1226,6 @@ struct iw_event
 #define IW_EVT_STR_NO_NETWORK "No Assoc Network After Scan Done"
 #define IW_EVT_STR_ICV_ERROR "ICV Eror"
 #define IW_EVT_STR_CHALLENGE_FAIL "Auth Challenge Fail"
+#define IW_EVT_STR_SOFTAP_START "Softap Start"
+#define IW_EVT_STR_SOFTAP_STOP "Softap Stop"
 #endif	/* _LINUX_WIRELESS_H */

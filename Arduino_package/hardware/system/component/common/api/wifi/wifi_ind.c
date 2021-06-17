@@ -25,7 +25,7 @@ static rtw_worker_thread_t          wifi_worker_thread;
 
 //----------------------------------------------------------------------------//
 #if CONFIG_WIFI_IND_USE_THREAD
-rtw_result_t rtw_send_event_to_worker(int event_cmd, char *buf, int buf_len, int flags)
+static rtw_result_t rtw_send_event_to_worker(int event_cmd, char *buf, int buf_len, int flags)
 {
 	rtw_event_message_t message;
 	int i;
@@ -64,7 +64,7 @@ rtw_result_t rtw_send_event_to_worker(int event_cmd, char *buf, int buf_len, int
 	return ret;
 }
 #else
-rtw_result_t rtw_indicate_event_handle(int event_cmd, char *buf, int buf_len, int flags)
+static rtw_result_t rtw_indicate_event_handle(int event_cmd, char *buf, int buf_len, int flags)
 {
 	rtw_event_handler_t handle = NULL;
 	int i;
@@ -202,22 +202,27 @@ void wifi_indication( rtw_event_indicate_t event, char *buf, int buf_len, int fl
 			printf("\n\r%s(): WIFI_EVENT_CHALLENGE_FAIL\n", __func__);
 #endif
 			break;
+		case WIFI_EVENT_SOFTAP_START:
+#if(WIFI_INDICATE_MSG==1)
+			printf("\n\r%s(): WIFI_EVENT_SOFTAP_START\n", __func__);
+#endif
+			break;
+		case WIFI_EVENT_SOFTAP_STOP:
+#if(WIFI_INDICATE_MSG==1)
+			printf("\n\r%s(): WIFI_EVENT_SOFTAP_STOP\n", __func__);
+#endif
+			break;
+
 	}
 
 #if CONFIG_INIC_EN
-#ifndef CONFIG_INIC_IPC
 	inic_indicate_event(event, buf, buf_len, flags);
-#endif
 #endif//CONFIG_INIC_EN
 
 #if CONFIG_WIFI_IND_USE_THREAD
 	rtw_send_event_to_worker(event, buf, buf_len, flags);
 #else
 	rtw_indicate_event_handle(event, buf, buf_len, flags);
-#endif
-
-#if defined(CONFIG_INIC_IPC) && CONFIG_INIC_IPC
-	inic_ipc_wifi_event_indicate(event, buf, buf_len, flags);
 #endif
 }
 

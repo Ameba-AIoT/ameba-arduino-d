@@ -41,6 +41,7 @@
 /*
  * Generate public key: simple wrapper around mbedtls_ecp_gen_keypair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls_ecp_point *Q,
                      int (*f_rng)(void *, unsigned char *, size_t),
                      void *p_rng )
@@ -51,6 +52,7 @@ int mbedtls_ecdh_gen_public( mbedtls_ecp_group *grp, mbedtls_mpi *d, mbedtls_ecp
 /*
  * Compute shared secret (SEC1 3.3.1)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_compute_shared( mbedtls_ecp_group *grp, mbedtls_mpi *z,
                          const mbedtls_ecp_point *Q, const mbedtls_mpi *d,
                          int (*f_rng)(void *, unsigned char *, size_t),
@@ -85,6 +87,7 @@ cleanup:
 /*
  * Initialize context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecdh_init( mbedtls_ecdh_context *ctx )
 {
     memset( ctx, 0, sizeof( mbedtls_ecdh_context ) );
@@ -93,6 +96,7 @@ void mbedtls_ecdh_init( mbedtls_ecdh_context *ctx )
 /*
  * Free context
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecdh_free( mbedtls_ecdh_context *ctx )
 {
     if( ctx == NULL )
@@ -115,6 +119,7 @@ void mbedtls_ecdh_free( mbedtls_ecdh_context *ctx )
  *          ECPoint         public;
  *      } ServerECDHParams;
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_make_params( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
                       int (*f_rng)(void *, unsigned char *, size_t),
@@ -152,6 +157,7 @@ int mbedtls_ecdh_make_params( mbedtls_ecdh_context *ctx, size_t *olen,
  *          ECPoint         public;
  *      } ServerECDHParams;
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_read_params( mbedtls_ecdh_context *ctx,
                       const unsigned char **buf, const unsigned char *end )
 {
@@ -170,6 +176,7 @@ int mbedtls_ecdh_read_params( mbedtls_ecdh_context *ctx,
 /*
  * Get parameters from a keypair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_get_params( mbedtls_ecdh_context *ctx, const mbedtls_ecp_keypair *key,
                      mbedtls_ecdh_side side )
 {
@@ -196,6 +203,7 @@ int mbedtls_ecdh_get_params( mbedtls_ecdh_context *ctx, const mbedtls_ecp_keypai
 /*
  * Setup and export the client public value
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_make_public( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
                       int (*f_rng)(void *, unsigned char *, size_t),
@@ -217,6 +225,7 @@ int mbedtls_ecdh_make_public( mbedtls_ecdh_context *ctx, size_t *olen,
 /*
  * Parse and import the client's public value
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_read_public( mbedtls_ecdh_context *ctx,
                       const unsigned char *buf, size_t blen )
 {
@@ -238,6 +247,7 @@ int mbedtls_ecdh_read_public( mbedtls_ecdh_context *ctx,
 /*
  * Derive and export the shared secret
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecdh_calc_secret( mbedtls_ecdh_context *ctx, size_t *olen,
                       unsigned char *buf, size_t blen,
                       int (*f_rng)(void *, unsigned char *, size_t),

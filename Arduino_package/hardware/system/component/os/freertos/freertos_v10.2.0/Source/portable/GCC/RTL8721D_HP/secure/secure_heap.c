@@ -159,13 +159,13 @@ const HeapRegion_t *pxHeapRegion;
 		/* Ensure the heap region starts on a correctly aligned boundary. */
 		xAddress = ( size_t ) pxHeapRegion->pucStartAddress;
 		if( ( xAddress & secureportBYTE_ALIGNMENT_MASK ) != 0 )
-		{
+	{
 			xAddress += ( secureportBYTE_ALIGNMENT - 1 );
 			xAddress &= ~secureportBYTE_ALIGNMENT_MASK;
 
 			/* Adjust the size for the bytes lost to alignment. */
 			xTotalRegionSize -= xAddress - ( size_t ) pxHeapRegion->pucStartAddress;
-		}
+	}
 
 		xAlignedHeap = xAddress;
 
@@ -175,7 +175,7 @@ const HeapRegion_t *pxHeapRegion;
 			/* xStart is used to hold a pointer to the first item in the list of
 			free blocks.  The void cast is used to prevent compiler warnings. */
 			xStart.pxNextFreeBlock = ( BlockLink_t * ) xAlignedHeap;
-			xStart.xBlockSize = ( size_t ) 0;
+	xStart.xBlockSize = ( size_t ) 0;
 		}
 		else
 		{
@@ -197,8 +197,8 @@ const HeapRegion_t *pxHeapRegion;
 		xAddress -= xHeapStructSize;
 		xAddress &= ~secureportBYTE_ALIGNMENT_MASK;
 		pxEnd = ( BlockLink_t * ) xAddress;
-		pxEnd->xBlockSize = 0;
-		pxEnd->pxNextFreeBlock = NULL;
+	pxEnd->xBlockSize = 0;
+	pxEnd->pxNextFreeBlock = NULL;
 
 		/* To start with there is a single free block in this region that is
 		sized to take up the entire heap region minus the space taken by the

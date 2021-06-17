@@ -105,8 +105,8 @@ void sys_sdram_off(void);
 ///@}
 #endif //CONFIG_PLATFORM_8195A
 
-#if (defined(CONFIG_PLATFORM_8711B) && (CONFIG_PLATFORM_8711B == 1)) || defined(CONFIG_PLATFORM_8710C) && (CONFIG_PLATFORM_8710C == 1)
-///@name AmebaZ/AmebaZ2 
+#if defined(CONFIG_PLATFORM_8711B) && (CONFIG_PLATFORM_8711B == 1)
+///@name AmebaZ Only 
 ///@{
 /**
   * @brief vector reset 
@@ -114,7 +114,7 @@ void sys_sdram_off(void);
   */
 void sys_cpu_reset(void);
 ///@}
-#endif //CONFIG_PLATFORM_8711B | CONFIG_PLATFORM_8710C
+#endif //CONFIG_PLATFORM_8711B
 
 /*\@}*/
 

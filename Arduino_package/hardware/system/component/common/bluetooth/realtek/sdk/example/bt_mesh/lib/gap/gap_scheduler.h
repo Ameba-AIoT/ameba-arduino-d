@@ -42,21 +42,8 @@ BEGIN_DECLS
 #define GAP_ADTYPE_MESH_MSG                     GAP_ADTYPE_MESH_PACKET
 #define GAP_ADTYPE_PB_ADV                       GAP_ADTYPE_MESH_PB_ADV
 
-#define GAP_SCHED_ADV_PARALLEL                  1
-
 #define GAP_SCHED_SCAN_ALL_THE_TIME             1
 #define GAP_SCHED_ONE_SHOT_ADV                  1 //!< adv
-#define GAP_SCHED_BT5_AE                        0
-#if GAP_SCHED_BT5_AE
-#ifndef F_BT_LE_5_0_AE_ADV_SUPPORT
-#define F_BT_LE_5_0_AE_ADV_SUPPORT              1
-#endif
-#ifndef F_BT_LE_5_0_AE_SCAN_SUPPORT
-#define F_BT_LE_5_0_AE_SCAN_SUPPORT             1
-#endif
-#include "gap_ext_adv.h"
-#include "gap_ext_scan.h"
-#endif
 /** Advertising interval (units of 625us, 160=100ms), Value range: 0x0020 - 0x4000 (20ms - 10240ms 0.625ms/step) */
 #define GAP_SCHED_ADV_INTERVAL_MIN              0x20 /* 20ms */
 #define GAP_SCHED_ADV_INTERVAL_MAX              0x20 /* 20ms */
@@ -86,15 +73,6 @@ BEGIN_DECLS
   */
 typedef enum
 {
-    GAP_SCHED_BT5_AE_ADV_TYPE_LEGACY_ON_1M,
-    GAP_SCHED_BT5_AE_ADV_TYPE_LEGACY_ON_C2,
-    GAP_SCHED_BT5_AE_ADV_TYPE_LEGACY_ON_C8,
-    GAP_SCHED_BT5_AE_ADV_TYPE_EXTEND_ON_1M_1M,
-    GAP_SCHED_BT5_AE_ADV_TYPE_EXTEND_ON_1M_2M,
-} gap_sched_bt5_ae_adv_type_t;
-
-typedef enum
-{
     GAP_SCHED_PARAMS_DEVICE_NAME,
     GAP_SCHED_PARAMS_APPEARANCE,
     GAP_SCHED_PARAMS_TX_POWER,
@@ -103,9 +81,7 @@ typedef enum
     GAP_SCHED_PARAMS_SCAN_WINDOW,
     GAP_SCHED_PARAMS_INTERWAVE_SCAN_INTERVAL,
     GAP_SCHED_PARAMS_INTERWAVE_SCAN_WINDOW,
-    GAP_SCHED_PARAMS_TASK_NUM,
-    GAP_SCHED_PARAMS_BT5_AE, /**< Shall be configured before mesh_node_cfg invoked */
-    GAP_SCHED_PARAMS_BT5_AE_ADV_TYPE,
+    GAP_SCHED_PARAMS_TASK_NUM
 } gap_sched_params_type_t;
 
 typedef enum
@@ -215,7 +191,6 @@ typedef struct _gap_sched_task_t
 } gap_sched_task_t, *gap_sched_task_p;
 
 #define GAP_SCHED_LINK_INVALID     0xff
-#define GAP_SCHED_LINK_ALL         0xfe
 typedef uint8_t gap_sched_link_t;
 
 typedef void (*gap_sched_link_disc_cb_t)(gap_sched_link_t link);
@@ -327,61 +302,6 @@ void gap_sched_handle_adv_report(T_LE_SCAN_INFO *ple_scan_info);
   * @retval false: no
   */
 bool gap_sched_link_check(void);
-
-#if GAP_SCHED_BT5_AE
-/**
-  * @brief dump all adv set state
-  * @return none
-  */
-void gap_sched_ext_adv_state_dump(void);
-
-/**
-  * @brief process the extended adv procedure
-  * @param[in] handle: the extended adv handle
-  * @return the result
-  */
-T_GAP_CAUSE gap_sched_ext_adv_step(uint8_t handle);
-
-/**
-  * @brief process the extended adv state change event
-  * @param[in] handle: the extended adv handle
-  * @param[in] new_state: the new state of the extended adv set
-  * @param[in] cause: the cause the state change
-  * @return none
-  */
-void gap_sched_handle_ext_adv_state_evt(uint8_t handle, T_GAP_EXT_ADV_STATE new_state,
-                                        uint16_t cause);
-
-/**
-  * @brief process the extended adv state change event
-  * @param[in] pext_adv_report: the extended adv report
-  * @return none
-  */
-void gap_sched_handle_ext_adv_report(T_LE_EXT_ADV_REPORT_INFO *pext_adv_report);
-
-/**
-  * @brief start the extended adv without worry about collision with other adv set
-  * @param[in] handle: the extended adv handle
-  * @return the result
-  */
-T_GAP_CAUSE gap_sched_ext_adv_start(uint8_t handle);
-
-/**
-  * @brief stop the extended adv without worry about collision with other adv set
-  * @param[in] handle: the extended adv handle
-  * @return the result
-  */
-T_GAP_CAUSE gap_sched_ext_adv_stop(uint8_t handle);
-
-/**
-  * @brief set the extend adv parameter flag to enable the setting flow
-  * @param[in] handle: the extended adv handle
-  * @param[in] param_flag: the adv setting parameters flag @ref EXT_ADV_PARAM
-  * @return the result
-  */
-bool gap_sched_ext_adv_set_param_flag(uint8_t handle, uint8_t param_flag);
-
-#endif
 
 /** @} */
 /** @} */

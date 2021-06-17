@@ -584,6 +584,40 @@ int wext_set_lps_thresh(const char *ifname, u8 low_thresh) {
 	return ret;
 }
 
+#ifdef LONG_PERIOD_TICKLESS
+int wext_set_lps_smartps(const char *ifname, __u8 smartps) {
+	struct iwreq iwr;
+	int ret = 0;
+	__u16 pindex = 0;
+	__u8 *para = NULL;
+	int cmd_len = 0;
+
+	memset(&iwr, 0, sizeof(iwr));
+	cmd_len = sizeof("pm_set");
+
+	// Encode parameters as TLV (type, length, value) format
+	para = rtw_malloc( 7 + (1+1+1) );
+	
+	snprintf((char*)para, cmd_len, "pm_set");
+	pindex = 7;
+
+	para[pindex++] = 9; // type 9 smartps
+	para[pindex++] = 1; // len
+	para[pindex++] = smartps;
+
+	iwr.u.data.pointer = para;
+	iwr.u.data.length = pindex;
+
+	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
+		ret = -1;
+	}
+
+	rtw_free(para);
+	return ret;
+
+}
+#endif
 int wext_set_beacon_mode(const char *ifname, __u8 mode) {
 	struct iwreq iwr;
 	int ret = 0;
@@ -806,9 +840,9 @@ int wext_set_ap_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 
 	if(ssid_len > 32){
 		printf("Error: SSID should be 0-32 characters\r\n");
-		return RTW_BADARG;
+		return -1;
 	}
-	
+
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.essid.pointer = (void *) ssid;
 	iwr.u.essid.length = ssid_len;
@@ -854,18 +888,18 @@ int wext_get_rssi(const char *ifname, int *rssi)
 	return ret;
 }
 
-int wext_get_snr(const char *ifname, int *snr)
+int wext_get_bcn_rssi(const char *ifname, int *rssi)
 {
 	struct iwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
-	if (iw_ioctl(ifname, SIOCGIWSNR, &iwr) < 0) {
-		printf("\n\rioctl[SIOCGIWSNR] error");
+	if (iw_ioctl(ifname, SIOCGIWBCNSENS, &iwr) < 0) {
+		printf("\n\rioctl[SIOCGIWBCNSENS] error");
 		ret = -1;
 	} else {
-		*snr = iwr.u.sens.value;
+		*rssi = 0 - iwr.u.bcnsens.value;
 	}
 	return ret;
 }
@@ -1109,7 +1143,11 @@ void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra)
 					wifi_indication(WIFI_EVENT_STA_DISASSOC, wrqu->addr.sa_data, sizeof(null_mac), 0);
 				else if(!memcmp(IW_EVT_STR_SEND_ACTION_DONE, extra, strlen(IW_EVT_STR_SEND_ACTION_DONE)))
 					wifi_indication(WIFI_EVENT_SEND_ACTION_DONE, NULL, 0, wrqu->data.flags);
-#endif				
+				else if(!memcmp(IW_EVT_STR_SOFTAP_START, extra, strlen(IW_EVT_STR_SOFTAP_START)))
+					wifi_indication(WIFI_EVENT_SOFTAP_START, extra, strlen(IW_EVT_STR_SOFTAP_START), 0);
+				else if(!memcmp(IW_EVT_STR_SOFTAP_STOP, extra, strlen(IW_EVT_STR_SOFTAP_STOP)))
+					wifi_indication(WIFI_EVENT_SOFTAP_STOP, extra, strlen(IW_EVT_STR_SOFTAP_STOP), 0);
+#endif
 			}
 			break;
 		case SIOCGIWSCAN:
@@ -1428,18 +1466,21 @@ int wext_set_ch_deauth(const char *ifname, __u8 enable)
 
 int wext_set_adaptivity(rtw_adaptivity_mode_t adaptivity_mode)
 {
+	extern u8 rtw_adaptivity_en;
+	extern u8 rtw_adaptivity_mode;
+
 	switch(adaptivity_mode){
 		case RTW_ADAPTIVITY_NORMAL:
-			rltk_wlan_enable_adaptivity(ENABLE); // enable adaptivity
-			rltk_wlan_set_adaptivity_mode(RTW_ADAPTIVITY_MODE_NORMAL);
+			rtw_adaptivity_en = 1; // enable adaptivity
+			rtw_adaptivity_mode = RTW_ADAPTIVITY_MODE_NORMAL;
 			break;
 		case RTW_ADAPTIVITY_CARRIER_SENSE:
-			rltk_wlan_enable_adaptivity(ENABLE); // enable adaptivity
-			rltk_wlan_set_adaptivity_mode(RTW_ADAPTIVITY_MODE_CARRIER_SENSE);
+			rtw_adaptivity_en = 1; // enable adaptivity
+			rtw_adaptivity_mode = RTW_ADAPTIVITY_MODE_CARRIER_SENSE;
 			break;		
 		case RTW_ADAPTIVITY_DISABLE:
 		default:
-			rltk_wlan_enable_adaptivity(DISABLE); //disable adaptivity
+			rtw_adaptivity_en = 0; //disable adaptivity
 			break;
 	}
 	return 0;
@@ -1447,25 +1488,80 @@ int wext_set_adaptivity(rtw_adaptivity_mode_t adaptivity_mode)
 
 int wext_set_trp_tis(__u8 enable)
 {
-	if(enable == ENABLE){
+	extern u8 rtw_tx_pwr_lmt_enable;
+	extern u8 rtw_tx_pwr_by_rate;
+	extern u8 rtw_trp_tis_cert_en;
+#ifdef CONFIG_POWER_SAVING
+	extern u8 rtw_powersave_en;
+#endif
+	
+	if(enable != RTW_TRP_TIS_DISABLE){
 		//close the tx power limit and pwr by rate incase the efficiency of Antenna is not good enough.
-		rltk_wlan_set_tx_pwr_lmt(2);//set 0 to disable, set 2 to use efuse value
-		rltk_wlan_set_tx_pwr_by_rate(2);//set 0 to disable, set 2 to use efuse value
+		rtw_tx_pwr_lmt_enable = 2;//set 0 to disable, set 2 to use efuse value
+		rtw_tx_pwr_by_rate = 2;//set 0 to disable, set 2 to use efuse value
 		//disable power save.
 #ifdef CONFIG_POWER_SAVING
-		rltk_wlan_enable_powersave(DISABLE);
+		rtw_powersave_en = 0;
 #endif
-		//disable some dynamic mechanism
-		rltk_wlan_enable_trp_tis_cert(ENABLE);
+		if(enable == RTW_TRP_TIS_NORMAL){
+			//disable some dynamic mechanism
+			rtw_trp_tis_cert_en = BIT0;
+		}else if(enable == RTW_TRP_TIS_DYNAMIC){
+			rtw_trp_tis_cert_en = BIT1 | BIT0;
+		}else if(enable == RTW_TRP_TIS_FIX_ACK_RATE){
+			rtw_trp_tis_cert_en = BIT2 | BIT0;
+		}
 		//you can change autoreconnct mode to RTW_AUTORECONNECT_INFINITE in init_thread function
 	}
+	return 0;
 }
+
+int wext_set_anti_interference(__u8 enable)
+{
+	extern u8 rtw_anti_interference_en;
+
+	if(enable == ENABLE){
+		rtw_anti_interference_en = 1;
+	}else{
+		rtw_anti_interference_en = 0;
+	}
+
+	return 0;
+}
+
+int wext_set_ant_div_gpio(__u8 type)
+{
+	extern u8 rtw_ant_div_gpio_ext;
+	
+	rtw_ant_div_gpio_ext = type;
+
+	return 0;
+}
+
 
 int wext_set_adaptivity_th_l2h_ini(__u8 l2h_threshold)
 {
 	extern s8 rtw_adaptivity_th_l2h_ini;
 	rtw_adaptivity_th_l2h_ini = (__s8)l2h_threshold;
 	return 0;
+}
+
+int wext_set_bw40_enable(__u8 enable)
+{
+    extern u8 rtw_cbw40_enable;
+    /* 0: 20 MHz, 1: 40 MHz, 2: 80 MHz, 3: 160MHz, 4: 80+80MHz
+    * 2.4G use bit 0 ~ 3, 5G use bit 4 ~ 7
+    * 0x21 means enable 2.4G 40MHz & 5G 80MHz */
+    extern u8 rtw_bw_mode;
+	if(enable == ENABLE){
+        rtw_cbw40_enable = 1;
+        rtw_bw_mode = 0x11;
+	}else{
+        rtw_cbw40_enable = 0;
+        rtw_bw_mode = 0;
+	}
+
+    return 0;
 }
 
 extern int rltk_get_auto_chl(const char *ifname, unsigned char *channel_set, unsigned char channel_num);
@@ -1530,40 +1626,21 @@ int wext_deinit_mac_filter(void)
 	return 0;
 }
 
-#ifdef CONFIG_RTK_MESH
-int wext_search_mac_filter(unsigned char* hwaddr){
-	if(mf_list_head != NULL){
-		struct list_head *iterator;
-		rtw_mac_filter_list_t *item;
-		list_for_each(iterator, mf_list_head) {
-			item = list_entry(iterator, rtw_mac_filter_list_t, node);
-			if(memcmp(item->mac_addr, hwaddr, 6) == 0){
-				return 0;;
-			}
-		}
-	}
-	return -1;
-}
-#endif
-
 int wext_add_mac_filter(unsigned char* hwaddr)
 {
 	if(mf_list_head == NULL){
 		return -1;
 	}
-#ifdef CONFIG_RTK_MESH
-	if(wext_search_mac_filter(hwaddr)!= 0)
-#endif
-	{
-		rtw_mac_filter_list_t *mf_list_new;
-		mf_list_new =(rtw_mac_filter_list_t *) malloc(sizeof(rtw_mac_filter_list_t));
-		if(mf_list_new == NULL){
-			RTW_API_INFO("\n\r[ERROR] %s : can't allocate mf_list_new",__func__);
-			return -1;
-		}
-		memcpy(mf_list_new->mac_addr,hwaddr,6);
-		list_add(&(mf_list_new->node), mf_list_head);
+
+	rtw_mac_filter_list_t *mf_list_new;
+	mf_list_new =(rtw_mac_filter_list_t *) malloc(sizeof(rtw_mac_filter_list_t));
+	if(mf_list_new == NULL){
+		RTW_API_INFO("\n\r[ERROR] %s : can't allocate mf_list_new",__func__);
+		return -1;
 	}
+	memcpy(mf_list_new->mac_addr,hwaddr,6);
+	list_add(&(mf_list_new->node), mf_list_head);
+
 	return 0;
 }
 
@@ -1587,36 +1664,33 @@ int wext_del_mac_filter(unsigned char* hwaddr)
 	return -1;
 }
 
-#ifdef CONFIG_RTK_MESH
-int wext_list_mac_filter(void)
-{
-	struct list_head *iterator;
-	rtw_mac_filter_list_t *item;
-	int i = 0;
-
-	if(mf_list_head == NULL){
-		goto exit;
-	}
-
-	list_for_each(iterator, mf_list_head) {
-		item = list_entry(iterator, rtw_mac_filter_list_t, node);
-		printf("%d: "MAC_FMT"\r\n", i++, MAC_ARG(item->mac_addr));
-	}
-
-	return 0;
-exit:
-	if(i==0)
-		printf("No MAC filter!\r\n");
-	return -1;
-}
-#endif
-
 extern void rtw_set_indicate_mgnt(int enable);
 void wext_set_indicate_mgnt(int enable)
 {
 	rtw_set_indicate_mgnt(enable);
 	return;
 }
+
+#ifdef CONFIG_AP_MODE
+extern void rltk_suspend_softap(const char *ifname);
+extern void rltk_suspend_softap_beacon(const char *ifname);
+void wext_suspend_softap(const char *ifname)
+{
+	rltk_suspend_softap(ifname);
+}
+
+void wext_suspend_softap_beacon(const char *ifname)
+{
+	rltk_suspend_softap_beacon(ifname);
+}
+int wext_ap_switch_chl_and_inform(unsigned char new_channel)
+{
+	if(rtw_ap_switch_chl_and_inform(new_channel))
+		return RTW_SUCCESS;
+	else
+		return RTW_ERROR;
+}
+#endif
 
 #ifdef CONFIG_SW_MAILBOX_EN
 int wext_mailbox_to_wifi(const char *ifname, char *buf, __u16 buf_len)
@@ -1738,89 +1812,15 @@ int wext_wlan_redl_fw(const char *ifname){
 }
 #endif
 
-#ifdef CONFIG_RTK_MESH
-int wext_enable_mesh(const char *ifname)
-{
-	int ret = 0;
-	int cmd_len;
-	char * buf;
-	cmd_len = strlen("set_mesh "); 
-	buf = (char *)rtw_zmalloc(cmd_len + 2);
-	if(buf == NULL) return -1;
-
-	snprintf(buf, cmd_len + 2, "set_mesh 1");
-	ret = wext_private_command(ifname, buf, 0);
-
-	rtw_free(buf);
-	return ret;
-}
-
-int wext_disable_mesh(const char *ifname)
-{
-	int ret = 0;
-	int cmd_len;
-	char * buf;
-	cmd_len = strlen("set_mesh "); 
-	buf = (char *)rtw_zmalloc(cmd_len + 2);
-	if(buf == NULL) return -1;
-
-	snprintf(buf, cmd_len + 2, "set_mesh 0");
-	ret = wext_private_command(ifname, buf, 0);
-
-	rtw_free(buf);
-	return ret;
-}
-
-int wext_set_mesh_id(const char *ifname, void * mesh_id, int id_len)
-{
-	int ret = 0;
-	int cmd_len;
-	char * buf;
-	cmd_len = strlen("set_mesh_id "); 
-	buf = (char *)rtw_zmalloc(cmd_len + id_len+1);
-	if(buf == NULL) return -1;
-	snprintf(buf, cmd_len+1, "set_mesh_id ");
-	memcpy(buf+cmd_len, mesh_id, id_len);
-	ret = wext_private_command(ifname, buf, 0);
-
-	rtw_free(buf);
-	return ret;
-}
-
-int wext_get_mesh_id(const char *ifname, void * mesh_id)
-{
-	int ret = 0;
-	char buf[33];
-	rtw_memset(buf, 0, sizeof(buf));
-	rtw_memcpy(buf, "get_mesh_id", strlen("get_mesh_id"));
-	ret = wext_private_command_with_retval(WLAN0_NAME, buf, buf, 32);
-	strcpy(mesh_id, buf);
-	return ret;
-}
-
-int wext_set_mesh_rssi_threshold(const char *ifname, s32 rssi)
-{
-	int ret = 0;
-	int cmd_len;
-	char * buf;
-	cmd_len = strlen("set_mesh_rssi "); 
-	buf = (char *)rtw_zmalloc(cmd_len + 4 + 1);
-	if(buf == NULL) return -1;
-	snprintf(buf, cmd_len+5, "set_mesh_rssi %d", rssi);
-	ret = wext_private_command(ifname, buf, 0);
-
-	rtw_free(buf);
-	return ret;
-}
-
-int wext_get_mesh_rssi_threshold(const char *ifname, s32 * rssi)
-{
-	int ret = 0;
-	char buf[33];
-	rtw_memset(buf, 0, sizeof(buf));
-	rtw_memcpy(buf, "get_mesh_rssi", strlen("get_mesh_rssi"));
-	ret = wext_private_command_with_retval(WLAN0_NAME, buf, buf, 32);
-	*rssi = strtol(buf, NULL, 0);
-	return ret;
+#ifdef CONFIG_POWER_SAVING
+extern u8 rtw_power_mgnt;
+void wext_set_powersave_mode(__u8 ps_mode){
+	
+	if((ps_mode!=1)&&(ps_mode!=2)){
+		printf("\n\rSet powersave mode fail! Wrong powersave mode value, input value can only be 1(min mode) or 2(max mode)");
+		return;
+	}
+	rtw_power_mgnt = ps_mode;
+	return;
 }
 #endif

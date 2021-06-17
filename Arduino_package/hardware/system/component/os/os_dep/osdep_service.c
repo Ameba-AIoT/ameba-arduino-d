@@ -513,23 +513,15 @@ void rtw_free_sema(_sema *sema)
 
 
 //#if defined(__GNUC__)
-//#include <cmsis.h>
-//#endif
-
-#if defined(CONFIG_PLATFORM_8710C)
 #include <cmsis.h>
-#endif
+//#endif
 
 int rtw_in_interrupt(void)
 {
-#ifdef ARM_CORE_CA7
-	return __get_mode()!=CPSR_M_USR;
-#else
 #if defined(__ICCARM__)
 	return (__get_PSR()&0x1FF)!=0;
 #elif defined(__GNUC__)
 	return (__get_xPSR()&0x1FF)!=0;
-#endif
 #endif
 }
 
@@ -1191,7 +1183,6 @@ int rtw_get_priority_task(void* task)
 
 	return -1;	
 }
-
 void rtw_suspend_task(void * task)
 {
 	if(osdep_service.rtw_suspend_task)
@@ -1480,7 +1471,6 @@ void rtw_create_secure_context(u32 secure_stack_size)
 		OSDEP_DBG("Not implement osdep service: rtw_create_secure_context");
 	}	
 }
-
 void* rtw_get_current_TaskHandle(void)
 {
 	if(osdep_service.rtw_get_current_TaskHandle)
@@ -1490,4 +1480,3 @@ void* rtw_get_current_TaskHandle(void)
 
 	return NULL;
 }
-

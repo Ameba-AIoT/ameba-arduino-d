@@ -61,8 +61,6 @@ extern "C" {
 /* Definitions specific to the port being used. */
 #include "portable.h"
 
-#define RTK_CUSTOMIZATION
-
 /* Must be defaulted before configUSE_NEWLIB_REENTRANT is used below. */
 #ifndef configUSE_NEWLIB_REENTRANT
 	#define configUSE_NEWLIB_REENTRANT 0
@@ -1120,10 +1118,6 @@ typedef struct xSTATIC_TCB
 	#endif
 	#if ( configGENERATE_RUN_TIME_STATS == 1 )
 		uint32_t		ulDummy16;
-#ifdef RTK_CUSTOMIZATION  // to match with delta runtime stats modified by RTK
-		uint32_t		ulDummyRTK1;
-		uint32_t		ulDummyRTK2;
-#endif
 	#endif
 	#if ( configUSE_NEWLIB_REENTRANT == 1 )
 		struct	_reent	xDummy17;

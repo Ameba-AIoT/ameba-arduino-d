@@ -60,10 +60,6 @@
 #include "lwip/ip6_addr.h"
 #include "lwip/nd6.h"
 
-#ifdef LWIP_HOOK_TCP_ISN
-#include <tcp_isn.h>
-#endif
-
 #include <string.h>
 
 #ifdef LWIP_HOOK_FILENAME
@@ -1929,22 +1925,6 @@ tcp_next_iss(struct tcp_pcb *pcb)
   return iss;
 #endif /* LWIP_HOOK_TCP_ISN */
 }
-
-#ifdef LWIP_HOOK_TCP_ISN
-void tcp_isn_init(void)
-{
-	// Seed lwip random
-    LWIP_SRAND();
-	//printf("seed: %d\r\n", sys_now());
-	// Initialise TCP sequence number
-	uint32_t tcp_isn_secret[4];
-	for (int i = 0; i < 4; i++) {
-		tcp_isn_secret[i] = LWIP_RAND();
-		//printf("tcp_isn_secret: %d\r\n", tcp_isn_secret[i]);
-	}
-	lwip_init_tcp_isn( (sys_now()/configTICK_RATE_HZ) , (u8_t *) &tcp_isn_secret); //The unit of first parameter is second.
-}
-#endif
 
 #if TCP_CALCULATE_EFF_SEND_MSS
 /**

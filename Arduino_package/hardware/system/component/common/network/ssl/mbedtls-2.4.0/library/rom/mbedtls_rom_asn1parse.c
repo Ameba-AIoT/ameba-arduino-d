@@ -19,6 +19,12 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
+#define memset _memset
+#define memcmp _memcmp
+
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
 #else
@@ -44,6 +50,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = (unsigned char*)v; while( n-- ) *p++ = 0;
 }
@@ -51,6 +58,7 @@ static void mbedtls_zeroize( void *v, size_t n ) {
 /*
  * ASN.1 DER decoding routines
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_len( unsigned char **p,
                   const unsigned char *end,
                   size_t *len )
@@ -109,6 +117,7 @@ int mbedtls_asn1_get_len( unsigned char **p,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_tag( unsigned char **p,
                   const unsigned char *end,
                   size_t *len, int tag )
@@ -124,6 +133,7 @@ int mbedtls_asn1_get_tag( unsigned char **p,
     return( mbedtls_asn1_get_len( p, end, len ) );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_bool( unsigned char **p,
                    const unsigned char *end,
                    int *val )
@@ -143,6 +153,7 @@ int mbedtls_asn1_get_bool( unsigned char **p,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_int( unsigned char **p,
                   const unsigned char *end,
                   int *val )
@@ -168,6 +179,7 @@ int mbedtls_asn1_get_int( unsigned char **p,
 }
 
 #if defined(MBEDTLS_BIGNUM_C)
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_mpi( unsigned char **p,
                   const unsigned char *end,
                   mbedtls_mpi *X )
@@ -186,6 +198,7 @@ int mbedtls_asn1_get_mpi( unsigned char **p,
 }
 #endif /* MBEDTLS_BIGNUM_C */
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_bitstring( unsigned char **p, const unsigned char *end,
                         mbedtls_asn1_bitstring *bs)
 {
@@ -219,6 +232,7 @@ int mbedtls_asn1_get_bitstring( unsigned char **p, const unsigned char *end,
 /*
  * Get a bit string without unused bits
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_bitstring_null( unsigned char **p, const unsigned char *end,
                              size_t *len )
 {
@@ -238,6 +252,7 @@ int mbedtls_asn1_get_bitstring_null( unsigned char **p, const unsigned char *end
 /*
  *  Parses and splits an ASN.1 "SEQUENCE OF <tag>"
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_sequence_of( unsigned char **p,
                           const unsigned char *end,
                           mbedtls_asn1_sequence *cur,
@@ -288,6 +303,7 @@ int mbedtls_asn1_get_sequence_of( unsigned char **p,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_alg( unsigned char **p,
                   const unsigned char *end,
                   mbedtls_asn1_buf *alg, mbedtls_asn1_buf *params )
@@ -332,6 +348,7 @@ int mbedtls_asn1_get_alg( unsigned char **p,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 int mbedtls_asn1_get_alg_null( unsigned char **p,
                        const unsigned char *end,
                        mbedtls_asn1_buf *alg )
@@ -350,6 +367,7 @@ int mbedtls_asn1_get_alg_null( unsigned char **p,
     return( 0 );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_asn1_free_named_data( mbedtls_asn1_named_data *cur )
 {
     if( cur == NULL )
@@ -361,6 +379,7 @@ void mbedtls_asn1_free_named_data( mbedtls_asn1_named_data *cur )
     mbedtls_zeroize( cur, sizeof( mbedtls_asn1_named_data ) );
 }
 
+SSL_ROM_TEXT_SECTION
 void mbedtls_asn1_free_named_data_list( mbedtls_asn1_named_data **head )
 {
     mbedtls_asn1_named_data *cur;
@@ -373,6 +392,7 @@ void mbedtls_asn1_free_named_data_list( mbedtls_asn1_named_data **head )
     }
 }
 
+SSL_ROM_TEXT_SECTION
 mbedtls_asn1_named_data *mbedtls_asn1_find_named_data( mbedtls_asn1_named_data *list,
                                        const char *oid, size_t len )
 {

@@ -67,14 +67,6 @@
 
 static void icmp_send_response(struct pbuf *p, u8_t type, u8_t code);
 
-/* Reaktek added to suppress ICMP message */
-#if defined(LWIP_ICMP_SUPPRESS) && LWIP_ICMP_SUPPRESS
-#ifndef LWIP_ICMP_SUPPRESS_INTERVAL
-#define LWIP_ICMP_SUPPRESS_INTERVAL 900 // allow one icmp per second with tolerance of 100 ms
-#endif
-static u32_t icmp_suppress_time = 0;
-#endif
-
 /**
  * Processes ICMP input packets, called from ip_input().
  *
@@ -98,18 +90,6 @@ icmp_input(struct pbuf *p, struct netif *inp)
 
   ICMP_STATS_INC(icmp.recv);
   MIB2_STATS_INC(mib2.icmpinmsgs);
-
-/* Reaktek added to suppress ICMP message */
-#if LWIP_ICMP_SUPPRESS
-  u32_t time_now = sys_now();
-  if(icmp_suppress_time && !((time_now >= icmp_suppress_time + LWIP_ICMP_SUPPRESS_INTERVAL) || (icmp_suppress_time >= time_now + LWIP_ICMP_SUPPRESS_INTERVAL))) {
-    pbuf_free(p);
-    return;
-  }
-  else {
-    icmp_suppress_time = time_now;
-  }
-#endif
 
   iphdr_in = ip4_current_header();
   hlen = IPH_HL(iphdr_in) * 4;
@@ -358,17 +338,6 @@ icmp_send_response(struct pbuf *p, u8_t type, u8_t code)
   struct icmp_echo_hdr *icmphdr;
   ip4_addr_t iphdr_src;
   struct netif *netif;
-
-/* Reaktek added to suppress ICMP message */
-#if LWIP_ICMP_SUPPRESS
-  u32_t time_now = sys_now();
-  if(icmp_suppress_time && !((time_now >= icmp_suppress_time + LWIP_ICMP_SUPPRESS_INTERVAL) || (icmp_suppress_time >= time_now + LWIP_ICMP_SUPPRESS_INTERVAL))) {
-    return;
-  }
-  else {
-    icmp_suppress_time = time_now;
-  }
-#endif
 
   /* increase number of messages attempted to send */
   MIB2_STATS_INC(mib2.icmpoutmsgs);

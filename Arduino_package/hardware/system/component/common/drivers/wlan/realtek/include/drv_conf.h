@@ -11,8 +11,14 @@
 #define __DRV_CONF_H__
 
 #include "autoconf.h"
-#if ((RTL8195A_SUPPORT==1) || (RTL8711B_SUPPORT==1) || (RTL8721D_SUPPORT == 1) || (AMEBAD2_SUPPORT == 1))
+#if ((RTL8195A_SUPPORT==1) || (RTL8711B_SUPPORT==1) || (RTL8721D_SUPPORT == 1))
 #include "platform_autoconf.h"
+#endif
+
+#if defined (PLATFORM_LINUX) && defined (PLATFORM_WINDOWS)
+
+#error "Shall be Linux or Windows, but not both!\n"
+
 #endif
 
 //Older Android kernel doesn't has CONFIG_ANDROID defined,

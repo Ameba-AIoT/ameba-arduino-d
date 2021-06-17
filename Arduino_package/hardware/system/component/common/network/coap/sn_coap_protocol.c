@@ -32,11 +32,7 @@
 #include <stdlib.h> /* For libary malloc() */
 #include <string.h> /* For memset() and memcpy() */
 #if defined __linux__ || defined TARGET_LIKE_MBED
-#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
-#include "time64.h"
-#else
 #include <time.h>
-#endif
 #endif
 
 #include "ns_types.h"

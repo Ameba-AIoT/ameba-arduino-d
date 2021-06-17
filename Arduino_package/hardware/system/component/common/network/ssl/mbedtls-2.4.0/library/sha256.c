@@ -30,14 +30,6 @@
 #include MBEDTLS_CONFIG_FILE
 #endif
 
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-#ifdef RTL_HW_CRYPTO
-#include <hal_crypto.h>
-#endif
-#endif
-
-#if !(!defined(SUPPORT_HW_SSL_HMAC_SHA256) && defined(CONFIG_PLATFORM_8710C) && !defined(CONFIG_BUILD_SECURE))
-
 #if defined(MBEDTLS_SHA256_C)
 
 #include "mbedtls/sha256.h"
@@ -110,12 +102,6 @@ void mbedtls_sha256_clone( mbedtls_sha256_context *dst,
  */
 void mbedtls_sha256_starts( mbedtls_sha256_context *ctx, int is224 )
 {
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-    if(ctx->ssl_hmac) {
-        hal_crypto_sha2_256_init();
-    }
-#endif
-
     ctx->total[0] = 0;
     ctx->total[1] = 0;
 
@@ -261,26 +247,6 @@ void mbedtls_sha256_update( mbedtls_sha256_context *ctx, const unsigned char *in
     if( ilen == 0 )
         return;
 
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-    if(ctx->ssl_hmac) {
-        if(ctx->ssl_hmac == 1) {
-            memcpy(ctx->buffer, input, ilen);
-            ctx->ssl_hmac = 2;
-        }
-        else if(ctx->ssl_hmac == 2) {
-            hal_crypto_sha2_256_init();
-            hal_crypto_sha2_256_update(ctx->buffer, 64);
-            hal_crypto_sha2_256_update(input, ilen);
-            ctx->ssl_hmac = 3;
-        }
-        else {
-            hal_crypto_sha2_256_update(input, ilen);
-        }
-
-        return;
-    }
-#endif
-
     left = ctx->total[0] & 0x3F;
     fill = 64 - left;
 
@@ -323,13 +289,6 @@ static const unsigned char sha256_padding[64] =
  */
 void mbedtls_sha256_finish( mbedtls_sha256_context *ctx, unsigned char output[32] )
 {
-#if defined(SUPPORT_HW_SSL_HMAC_SHA256)
-    if(ctx->ssl_hmac) {
-        hal_crypto_sha2_256_final(output);
-        return;
-    }
-#endif
-
     uint32_t last, padn;
     uint32_t high, low;
     unsigned char msglen[8];
@@ -497,5 +456,3 @@ exit:
 #endif /* MBEDTLS_SELF_TEST */
 
 #endif /* MBEDTLS_SHA256_C */
-
-#endif /* SUPPORT_HW_SSL_HMAC_SHA256 CONFIG_PLATFORM_8710C CONFIG_BUILD_SECURE */

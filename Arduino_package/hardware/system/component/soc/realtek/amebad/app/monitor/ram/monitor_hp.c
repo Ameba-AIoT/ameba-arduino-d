@@ -96,10 +96,17 @@ CmdTickPS(
 	if (_strcmp((const char*)argv[0], "dslp") == 0){
 		u32 duration_ms = _strtoul((const char*)(argv[1]), (char **)NULL, 10);
 
+		asm volatile ("cpsid i" : : : "memory");
+
 		dsleep_param.dlps_enable = TRUE;
 		dsleep_param.sleep_time = duration_ms;
 
 		ipc_send_message(IPC_INT_KM4_TICKLESS_INDICATION, (u32)&dsleep_param);
+
+		asm volatile ("wfe");
+		asm volatile ("wfe");
+
+		asm volatile ("cpsie i" : : : "memory");
 
 		while (1);
 	}

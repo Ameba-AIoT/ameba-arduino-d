@@ -2,7 +2,7 @@
 #include <osdep_service.h>
 #include <skbuff.h>
 
-#define MAX_SKB_BUF_SIZE     1658	// should >= the size in wlan driver
+#define MAX_SKB_BUF_SIZE     1650	// should >= the size in wlan driver
 #define MAX_SKB_BUF_NUM      8
 #define MAX_LOCAL_SKB_NUM    (MAX_SKB_BUF_NUM + 2)
 

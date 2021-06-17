@@ -21,6 +21,11 @@
 #include "gpio_irq_api.h"
 #include "gpio_irq_ex_api.h"
 
+extern GPIO_IRQ_FUN PortA_IrqHandler[32]; // The interrupt handler triggered by Port A[x]
+extern GPIO_IRQ_FUN PortB_IrqHandler[32]; // The interrupt handler triggered by Port B[x]
+extern void *PortA_IrqData[32];
+extern void *PortB_IrqData[32];
+
 /** @addtogroup AmebaD_Mbed_API 
   * @{
   */
@@ -33,6 +38,51 @@
 /** @defgroup MBED_GPIOIRQ_Exported_Functions MBED_GPIOIRQ Exported Functions
   * @{
   */
+IMAGE2_RAM_TEXT_SECTION
+u32 GPIO_INTHandler_RAM(
+    IN VOID *pData
+)
+{
+	GPIO_TypeDef* GPIO = (GPIO_TypeDef*)pData;
+	u32 IrqStatus;
+	u32 i;
+	u32 port_a_in;
+	u32 event;
+	
+	port_a_in =  GPIO->EXT_PORT[0];
+	IrqStatus = GPIO->INT_STATUS;
+	/* Clear pending interrupt */
+	GPIO->PORTA_EOI = IrqStatus;
+	
+	if (GPIO == GPIOA_BASE) {
+		for (i=0;i<32;i++) {
+			if (IrqStatus & (1<<i)) {
+				if (PortA_IrqHandler[i] != NULL) {
+					if (port_a_in & (1<<i)) {
+						event = HAL_IRQ_RISE | (i<<16); /* (event | port_pin << 16 */
+					} else {
+						event = HAL_IRQ_FALL | (i<<16); /* (event | port_pin << 16 */
+					}
+					PortA_IrqHandler[i](PortA_IrqData[i], event);
+				}
+			}
+		}
+	} else {
+		for (i=0;i<32;i++) {
+			if (IrqStatus & (1<<i)) {
+				if (PortB_IrqHandler[i] != NULL) {
+					if (port_a_in & (1<<i)) {
+						event = HAL_IRQ_RISE | (i<<16) | (1 << 21); /* (event | port_pin << 16 */
+					} else {
+						event = HAL_IRQ_FALL | (i<<16) | (1 << 21); /* (event | port_pin << 16 */
+					}
+					PortB_IrqHandler[i](PortB_IrqData[i], event);
+				}
+			}
+		}
+	}	
+	return 0;
+}
 
 /**
   * @brief  Initializes the GPIO device interrupt mode, include mode/trigger/polarity registers.
@@ -63,10 +113,10 @@ int gpio_irq_init(gpio_irq_t *obj, PinName pin, gpio_irq_handler handler, uint32
 	GPIO_Init(&GPIO_InitStruct);
 
 	if (port_num == GPIO_PORT_A) {
-		InterruptRegister(GPIO_INTHandler, GPIOA_IRQ, (u32)GPIOA_BASE, 5);		
+		InterruptRegister(GPIO_INTHandler_RAM, GPIOA_IRQ, (u32)GPIOA_BASE, 5);		
 		InterruptEn(GPIOA_IRQ, 5);
 	} else if (port_num == GPIO_PORT_B) {
-		InterruptRegister(GPIO_INTHandler, GPIOB_IRQ, (u32)GPIOB_BASE, 5);		
+		InterruptRegister(GPIO_INTHandler_RAM, GPIOB_IRQ, (u32)GPIOB_BASE, 5);		
 		InterruptEn(GPIOB_IRQ, 5);
 	}
 

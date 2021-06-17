@@ -145,6 +145,18 @@ void flash_erase_sector(flash_t *obj, u32 address)
 	DCache_Invalidate(SPI_FLASH_BASE + address, 0x1000);
 	FLASH_Write_Unlock();
 }
+IMAGE2_RAM_TEXT_SECTION
+void flash_erase_sector_inner(flash_t *obj, u32 address)
+{
+	/* To avoid gcc warnings */
+	( void ) obj;
+	
+//	FLASH_Write_Lock();
+	FLASH_Erase(EraseSector, address);
+
+	DCache_Invalidate(SPI_FLASH_BASE + address, 0x1000);
+//	FLASH_Write_Unlock();
+}
 
 /**
   * @brief  Erase flash block(64KB)
@@ -195,6 +207,8 @@ int  flash_read_word(flash_t *obj, u32 address, u32 * data)
 	
 //	FLASH_RxData(0, address, 4, data);
 	assert_param(data != NULL);
+
+	FLASH_Write_Lock();
 	
 	u32 offset_to_align = address & 0x03;
 	u32 read_data;
@@ -214,6 +228,8 @@ int  flash_read_word(flash_t *obj, u32 address, u32 * data)
 	}else{
 		* data = HAL_READ32(SPI_FLASH_BASE, address);
 	}
+
+	FLASH_Write_Unlock();
 	
 	return 1;
 }
@@ -285,6 +301,8 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 * data)
 	u8 *ptr;
 	u8 *pbuf;
 
+	FLASH_Write_Lock();
+
 	offset_to_align = address & 0x03;
 	pbuf = data;
 	if (offset_to_align != 0) {
@@ -332,6 +350,8 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 * data)
 			pbuf++;
 		}        
 	}
+
+	FLASH_Write_Unlock();
 
 	return 1;
 }
@@ -427,6 +447,187 @@ int  flash_stream_write(flash_t *obj, u32 address, u32 len, u8 * data)
 
 	return 1;
 }
+
+IMAGE2_RAM_TEXT_SECTION
+int  flash_stream_write_inner(flash_t *obj, u32 address, u32 len, u8 * data)
+{
+	/* To avoid gcc warnings */
+	( void ) obj;
+	
+	// Check address: 4byte aligned & page(256bytes) aligned
+	u32 page_begin = address &  (~0xff);                     
+	u32 page_end = (address + len) & (~0xff);
+	u32 page_cnt = ((page_end - page_begin) >> 8) + 1;
+
+	u32 addr_begin = address;
+	u32 addr_end = (page_cnt == 1) ? (address + len) : (page_begin + 0x100);
+	u32 size = addr_end - addr_begin;
+	u8 *buffer = data;
+	u8 write_data[12];
+	
+	u32 offset_to_align;
+	u32 read_word;
+	u32 i;
+
+//	FLASH_Write_Lock();
+	while(page_cnt){	
+		offset_to_align = addr_begin & 0x3;
+		
+		if(offset_to_align != 0){
+			read_word = HAL_READ32(SPI_FLASH_BASE, addr_begin - offset_to_align);
+			for(i = offset_to_align;i < 4;i++){
+				read_word = (read_word &  (~(0xff << (8*i)))) |( (*buffer) <<(8*i));
+				size--;
+				buffer++;
+				if(size == 0)
+					break;
+			}
+			FLASH_TxData12B(addr_begin - offset_to_align, 4, (u8*)&read_word);
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+		}
+
+		addr_begin = (((addr_begin-1) >> 2) + 1) << 2;
+		for(;size >= 12 ;size -= 12){
+			_memcpy(write_data, buffer, 12);
+			FLASH_TxData12B(addr_begin, 12, write_data);
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+			buffer += 12;
+			addr_begin += 12;
+		}
+
+		for(;size >= 4; size -=4){
+			_memcpy(write_data, buffer, 4);			
+			FLASH_TxData12B(addr_begin, 4, write_data);
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+			buffer += 4;
+			addr_begin += 4;
+		}
+
+		if(size > 0){
+			read_word = HAL_READ32(SPI_FLASH_BASE, addr_begin);
+			for( i = 0;i < size;i++){
+				read_word = (read_word & (~(0xff << (8*i)))) | ((*buffer) <<(8*i));
+				buffer++;
+			}
+			FLASH_TxData12B(addr_begin, 4, (u8*)&read_word); 
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+		}
+
+		page_cnt--;
+		addr_begin = addr_end;
+		addr_end = (page_cnt == 1) ? (address + len) : (((addr_begin>>8) + 1)<<8);
+		size = addr_end - addr_begin;		
+	}
+
+	DCache_Invalidate(SPI_FLASH_BASE + address, len);
+//	FLASH_Write_Unlock();
+
+	return 1;
+}
+
+
+static inline void mmu_save(u32 MMUIdx, u32 *vAddrSt, u32 *vAddrEnd, u32 *ctrl, u32 *offset)
+{
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+
+    /* save 4 registers */
+	*vAddrSt = RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_STRADDR;
+	*vAddrEnd = RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_ENDADDR;
+	*offset = RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_OFFSET;
+	*ctrl =  RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_CTRL;
+}
+static inline void mmu_restore(u32 MMUIdx, u32 *vAddrSt, u32 *vAddrEnd, u32 *ctrl, u32 *offset)
+{
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+
+    /* save 4 registers */
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_STRADDR = *vAddrSt;
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_ENDADDR = *vAddrEnd;
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_OFFSET = *offset;
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_CTRL = *ctrl;
+}
+
+/**
+  * @brief	: encrypt the given flash area with virtual address
+  * @param  : paddr-the physical address of the flash area
+  *           vaddr-the virtual address
+  *           len-the length to be encrypted in byte
+  * @retval : 1 means success and 0 means failure
+  */ 
+IMAGE2_RAM_TEXT_SECTION
+int flash_stream_write_RSIP(unsigned int paddr, unsigned int vaddr, unsigned int len)
+{
+    int res=  1;
+    unsigned char *sectorBuff = (unsigned char *)rtw_malloc(FLASH_SECTOR_SIZE);
+    unsigned int mmuRecord[4] = {0, };
+    
+    mmu_save(0, &mmuRecord[0], &mmuRecord[1], &mmuRecord[2], &mmuRecord[3]);
+
+    /* input parameters check */
+    if((0 != (paddr & 0xFFF)) || (0 != (vaddr & 0xFFF)) ||(len <= 0)){
+        unsigned char errlog[] = "\n\r[encrypt_ota_area]Illegal input parameters!\n";
+        printf(errlog);
+        res = 0;
+        goto exit;
+    }
+    /* make length 4k aligned */
+    len = ((((len -1) >> 12) + 1) << 12);
+
+    if(!sectorBuff){
+        unsigned char errlog[] = "\n\r[encrypt_ota_area]Alloc buffer failed\n";
+        printf(errlog);
+        goto exit;
+    }
+
+    FLASH_Write_Lock();
+    
+    unsigned int curPhyAddr = paddr, imgPhyEnd = paddr + len, sectorCnt = 0, i = 0;
+
+    /* mapping virtual address to physical address */
+    if(vaddr > paddr)
+        RSIP_MMU_Config(0, vaddr, vaddr + len - 1, 1, vaddr - paddr);
+    else
+        RSIP_MMU_Config(0, vaddr, vaddr + len - 1, 0, paddr - vaddr);
+    /* deal sector by sector */
+    while(curPhyAddr < imgPhyEnd)
+    {
+        /* read using virtual address */
+        for(i = 0; i < FLASH_SECTOR_SIZE; i++){
+            sectorBuff[i] = HAL_READ8(vaddr + sectorCnt * FLASH_SECTOR_SIZE, i);
+        }
+        
+        /* write using physic address */
+        flash_erase_sector_inner(NULL, curPhyAddr-SPI_FLASH_BASE);
+        if(flash_stream_write_inner(NULL, curPhyAddr-SPI_FLASH_BASE, FLASH_SECTOR_SIZE, sectorBuff) < 0){
+            unsigned char errlog[] = "\n\r[encrypt_ota_area]flash write failure\n";
+            printf(errlog);
+            res = 0;
+            goto exit;
+        }
+
+        /* update to next sector */
+        curPhyAddr += FLASH_SECTOR_SIZE;
+        sectorCnt ++;
+    }
+
+exit:
+    mmu_restore(0, &mmuRecord[0], &mmuRecord[1], &mmuRecord[2], &mmuRecord[3]);
+    FLASH_Write_Unlock();
+
+    if(sectorBuff)
+        rtw_mfree(sectorBuff, FLASH_SECTOR_SIZE);
+
+    return res;
+}
+
 
 /**
   * @brief  It is the same with flash_stream_write function which is used to write a stream of data to specified address.

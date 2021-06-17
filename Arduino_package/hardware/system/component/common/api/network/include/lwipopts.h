@@ -51,15 +51,11 @@ a lot of data that needs to be copied, this should be set high. */
 #if WIFI_LOGO_CERTIFICATION_CONFIG
     #define MEM_SIZE                (20*1024) //for ping 10k test
 #elif CONFIG_ETHERNET
-    #define MEM_SIZE                (6*1024)  //for iperf test
+	#define MEM_SIZE				(6*1024)  //for iperf test
 #elif defined(CONFIG_HIGH_TP_TEST) && CONFIG_HIGH_TP_TEST
     #define MEM_SIZE                (23*1024)
 #elif defined(CONFIG_PLATFORM_8721D)
-    #define MEM_SIZE                (7*1024)
-#elif defined(CONFIG_PLATFORM_AMEBAD2)
-    #define MEM_SIZE                (7*1024)
-#elif defined(ENABLE_AMAZON_COMMON)
-    #define MEM_SIZE                (10*1024)
+	#define MEM_SIZE    			  (7*1024)
 #else
     #define MEM_SIZE                (5*1024)
 #endif
@@ -97,8 +93,6 @@ a lot of data that needs to be copied, this should be set high. */
     #define IP_REASS_MAXAGE		1
 #elif defined(CONFIG_HIGH_TP_TEST) && CONFIG_HIGH_TP_TEST
     #define PBUF_POOL_SIZE          60
-#elif defined(ENABLE_AMAZON_COMMON)
-    #define PBUF_POOL_SIZE          30
 #else
     #define PBUF_POOL_SIZE          20
 #endif
@@ -106,8 +100,6 @@ a lot of data that needs to be copied, this should be set high. */
 /* IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.*/
 #if WIFI_LOGO_CERTIFICATION_CONFIG
     #define IP_REASS_MAX_PBUFS              60 //for ping 10k test
-#elif defined(ENABLE_AMAZON_COMMON)
-    #define IP_REASS_MAX_PBUFS              30 //for ping 10k test
 #else
     #define IP_REASS_MAX_PBUFS              10
 #endif
@@ -146,11 +138,7 @@ a lot of data that needs to be copied, this should be set high. */
 #ifdef CONFIG_HIGH_TP_TEST
     #define TCP_WND                 (8*TCP_MSS)
 #elif defined(CONFIG_PLATFORM_8721D)
-    #define TCP_WND                 (5*TCP_MSS)
-#elif defined(CONFIG_PLATFORM_AMEBAD2)
-    #define TCP_WND                 (5*TCP_MSS)
-#elif defined(ENABLE_AMAZON_COMMON)
-    #define TCP_WND                 (4*TCP_MSS)
+	#define TCP_WND  			  (5*TCP_MSS)
 #else
     #define TCP_WND                 (2*TCP_MSS)
 #endif
@@ -172,10 +160,10 @@ a lot of data that needs to be copied, this should be set high. */
 #define LWIP_UDP                1
 #define UDP_TTL                 255
 /* ---------- DNS options ---------- */
-#define LWIP_DNS                1
+#define LWIP_DNS                        1
 
 /* ---------- UPNP options --------- */
-#define LWIP_UPNP               0
+#define LWIP_UPNP		0
 
 /* ---------- SO_SNDRCVTIMEO_NONSTANDARD options --------- */
 #define LWIP_SO_SNDRCVTIMEO_NONSTANDARD 1
@@ -216,32 +204,36 @@ extern unsigned int sys_now(void);
 #define TCP_KEEPCNT_DEFAULT			10U
 #endif
 
+#if CONFIG_BRIDGE
+#define LWIP_NUM_NETIF_CLIENT_DATA            1
+#endif
+
 #if (defined(CONFIG_EXAMPLE_UART_ATCMD) && (CONFIG_EXAMPLE_UART_ATCMD)) \
     || (defined(CONFIG_EXAMPLE_SPI_ATCMD) && (CONFIG_EXAMPLE_SPI_ATCMD))
 #undef  LWIP_SO_SNDTIMEO        
-#define LWIP_SO_SNDTIMEO                        1
+#define LWIP_SO_SNDTIMEO                		1
 
 #undef  SO_REUSE        
-#define SO_REUSE                                1
+#define SO_REUSE                        			1
 
 #undef SO_REUSE_RXTOALL
-#define SO_REUSE_RXTOALL                        1
+#define SO_REUSE_RXTOALL				1
 
 #undef MEMP_NUM_NETCONN                	
-#define MEMP_NUM_NETCONN                        10
+#define MEMP_NUM_NETCONN                	10
 
 #undef MEMP_NUM_TCP_PCB
-#define MEMP_NUM_TCP_PCB                        (MEMP_NUM_NETCONN)
+#define MEMP_NUM_TCP_PCB				(MEMP_NUM_NETCONN)
 
 #undef MEMP_NUM_UDP_PCB
-#define MEMP_NUM_UDP_PCB                        (MEMP_NUM_NETCONN)
+#define MEMP_NUM_UDP_PCB				(MEMP_NUM_NETCONN)
 
 #undef TCP_WND                
-#define TCP_WND                                 (4*TCP_MSS)
+#define TCP_WND                                       	(4*TCP_MSS)
 
-#define TCP_KEEPIDLE_DEFAULT                    10000UL
-#define TCP_KEEPINTVL_DEFAULT                   1000UL
-#define TCP_KEEPCNT_DEFAULT                     10U
+#define TCP_KEEPIDLE_DEFAULT			10000UL
+#define TCP_KEEPINTVL_DEFAULT			1000UL
+#define TCP_KEEPCNT_DEFAULT			10U
 
 #define ERRNO   1
 
@@ -380,7 +372,7 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #define TCPIP_MBOX_SIZE                 6
 #define DEFAULT_UDP_RECVMBOX_SIZE       6
 #define DEFAULT_TCP_RECVMBOX_SIZE       6
-#define DEFAULT_RAW_RECVMBOX_SIZE       6
+#define DEFAULT_RAW_RECVMBOX_SIZE		6
 #define DEFAULT_ACCEPTMBOX_SIZE         6
 #define DEFAULT_THREAD_STACKSIZE        500
 #define TCPIP_THREAD_PRIO               (configMAX_PRIORITIES - 2)
@@ -391,15 +383,15 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 /* Added by Realtek start */
 #define LWIP_RANDOMIZE_INITIAL_LOCAL_PORTS 1
 #define LWIP_DNS_LEGACY_SUPPORT 0
-#define LWIP_ICMP_SUPPRESS 0
-#define LWIP_ICMP_SUPPRESS_INTERVAL 900 // allow one icmp per second with tolerance of 100 ms
 /* Added by Realtek end */
 
 /* Extra options for lwip_v2.0.2 which should not affect lwip_v1.4.1 */
 #define LWIP_TCPIP_CORE_LOCKING         0
+#define ERRNO   1
 #define LWIP_TCPIP_TIMEOUT              1
 #define LWIP_SO_RCVTIMEO                1
-#define LWIP_SOCKET_SET_ERRNO           0
+#define LWIP_SO_SNDTIMEO                1
+#define LWIP_SOCKET_SET_ERRNO           1
 #undef LWIP_DEBUG
 #define LWIP_RAW                        1
 #define LWIP_AUTOIP                     1
@@ -411,22 +403,11 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #define MEMP_NUM_SYS_TIMEOUT            13
 #endif
 
-#ifndef CONFIG_EXAMPLE_COAP_SERVER
-#define CONFIG_EXAMPLE_COAP_SERVER 0
-#endif
-
-#ifndef CONFIG_EXAMPLE_COAP_CLIENT
-#define CONFIG_EXAMPLE_COAP_CLIENT 0
-#endif
-
 /*CONFIG_LIBCOAP_ON is defined to 1 in the lib_coap project options preprocessor defined symbol
  *CONFIG_EXAMPLE_COAP_SERVER and CONFIG_EXAMPLE_COAP_CLIENT is defined in platform_opts.h
  */
 #if CONFIG_EXAMPLE_COAP_SERVER || CONFIG_EXAMPLE_COAP_CLIENT || (defined(CONFIG_LIBCOAP_ON) && (CONFIG_LIBCOAP_ON))
-#if defined LWIP_TIMEVAL_PRIVATE
-#undef LWIP_TIMEVAL_PRIVATE
 #define LWIP_TIMEVAL_PRIVATE            1
-#endif
 #undef SO_REUSE
 #define SO_REUSE                        1
 #undef MEMP_NUM_NETCONN
@@ -444,21 +425,10 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #endif
 #endif
 #endif 
-      
-#if defined(ENABLE_AMAZON_COMMON) 
-#define LWIP_COMPAT_MUTEX_ALLOWED  
-#define ERRNO                           1
-#define LWIP_SO_SNDTIMEO                1
-#define SYS_LIGHTWEIGHT_PROT            1
-#define SO_REUSE                        1
-#undef LWIP_TCPIP_CORE_LOCKING
-#undef LWIP_SOCKET_SET_ERRNO
-#define LWIP_TCPIP_CORE_LOCKING         1
-#define LWIP_SOCKET_SET_ERRNO           1
-#define SOCKETS_DEBUG                   LWIP_DBG_ON      
-#endif
-      
-#if defined(CONFIG_EXAMPLE_AZURE_IOT_HUB) && CONFIG_EXAMPLE_AZURE_IOT_HUB
+
+
+#if (defined(CONFIG_EXAMPLE_AZURE_IOTHUB_TELEMETRY) && (CONFIG_EXAMPLE_AZURE_IOTHUB_TELEMETRY)) \
+      || (defined(CONFIG_EXAMPLE_AZURE_IOTHUB_X509) && (CONFIG_EXAMPLE_AZURE_IOTHUB_X509))
 #define ERRNO                           1
 #endif
       

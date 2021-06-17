@@ -72,12 +72,11 @@
 static int wsa_init_done = 0;
 
 #elif defined(__ICCARM__) || defined(__CC_ARM) || defined ( __GNUC__ )
-#if CONFIG_LWIP_LAYER
+
 #include "lwip/sockets.h"
 #include "lwip/inet.h"
 #if LWIP_DNS
 #include "lwip/netdb.h"
-#endif
 #endif
 #include <errno.h>
 
@@ -109,11 +108,7 @@ static int wsa_init_done = 0;
 
 #include <stdio.h>
 
-#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
-#include "time64.h"
-#else
 #include <time.h>
-#endif
 
 #include <stdint.h>
 
@@ -400,7 +395,7 @@ static int net_would_block( const mbedtls_net_context *ctx )
     /*
      * Never return 'WOULD BLOCK' on a non-blocking socket
      */
-    if( ( fcntl( ctx->fd, F_GETFL, 0 ) & O_NONBLOCK ) != O_NONBLOCK )
+    if( ( fcntl( ctx->fd, F_GETFL ) & O_NONBLOCK ) != O_NONBLOCK )
         return( 0 );
 
     switch( errno )

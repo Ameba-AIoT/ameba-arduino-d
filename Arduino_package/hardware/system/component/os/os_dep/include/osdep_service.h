@@ -32,10 +32,8 @@ extern "C" {
 
 #define CONFIG_LITTLE_ENDIAN
 
-#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)|| (defined CONFIG_PLATFORM_AMEBAD2) || (defined CONFIG_PLATFORM_8735B)
-	#define CONFIG_PLATFORM_AMEBA_X 1
-#else
-	#define CONFIG_PLATFORM_AMEBA_X 0
+#if defined(CONFIG_PLATFORM_8195A) || defined(CONFIG_PLATFORM_8711B) || defined(CONFIG_PLATFORM_8721D) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8710C)
+#define CONFIG_PLATFORM_AMEBA_X 1
 #endif
 
 #if defined(CONFIG_PLATFORM_8195A)
@@ -43,7 +41,7 @@ extern "C" {
 	#define USE_MUTEX_FOR_SPINLOCK	1
 #endif
 
-#if defined(CONFIG_PLATFORM_AMEBA_X) && (CONFIG_PLATFORM_AMEBA_X == 1)
+#if (CONFIG_PLATFORM_AMEBA_X == 1)
 	#define CONFIG_MEM_MONITOR	MEM_MONITOR_SIMPLE
 #else
 	#define CONFIG_MEM_MONITOR	MEM_MONITOR_SIMPLE
@@ -76,19 +74,19 @@ extern "C" {
 
 #include <stdio.h>
 
-#if defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8195BHP) || defined(CONFIG_PLATFORM_8735B)
+#if defined(CONFIG_PLATFORM_8710C) || defined(CONFIG_PLATFORM_8195BHP)
 #include <platform_conf.h>
 #include <basic_types.h>
 #if (CONFIG_CMSIS_FREERTOS_EN==1)
 #define PLATFORM_FREERTOS 1
 #endif
 #else
-#if defined(CONFIG_PLATFORM_AMEBA_X) && (CONFIG_PLATFORM_AMEBA_X == 1)
+#if (CONFIG_PLATFORM_AMEBA_X == 1)
 #include "platform_autoconf.h"
 #endif
 #endif
 
-#if defined(CONFIG_PLATFORM_AMEBA_X) && (CONFIG_PLATFORM_AMEBA_X == 0)
+#if (CONFIG_PLATFORM_AMEBA_X == 0)
 #ifndef SUCCESS
 #define SUCCESS	0
 #endif
@@ -1019,7 +1017,6 @@ void rtw_wakeup_task(struct task_struct *task);
 void rtw_set_priority_task(void* task, u32 NewPriority );
 
 int rtw_get_priority_task(void* task);
-
 void rtw_suspend_task (void* task);
 
 void rtw_resume_task (void* task);

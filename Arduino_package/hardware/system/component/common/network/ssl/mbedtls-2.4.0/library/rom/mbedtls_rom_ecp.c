@@ -39,11 +39,18 @@
  *     ePrint Archive, 2004, vol. 2004, p. 342.
  *     <http://eprint.iacr.org/2004/342.pdf>
  */
+
+#include <section_config.h>
+//#include <rom_ssl_func_rename.h>
+
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpointer-sign"
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-function"
 #pragma GCC diagnostic ignored "-Wint-conversion"
+
+#define memset _memset
+#define strcmp _strcmp
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
@@ -73,6 +80,7 @@
 #endif
 
 /* Implementation that should never be optimized out by the compiler */
+SSL_ROM_TEXT_SECTION
 static void mbedtls_zeroize( void *v, size_t n ) {
     volatile unsigned char *p = v; while( n-- ) *p++ = 0;
 }
@@ -125,6 +133,7 @@ typedef enum
  *
  * Reminder: update profiles in x509_crt.c when adding a new curves!
  */
+SSL_ROM_DATA_SECTION
 static const mbedtls_ecp_curve_info ecp_supported_curves[] =
 {
 #if defined(MBEDTLS_ECP_DP_SECP521R1_ENABLED)
@@ -172,6 +181,7 @@ static const mbedtls_ecp_curve_info ecp_supported_curves[] =
 /*
  * List of supported curves and associated info
  */
+SSL_ROM_TEXT_SECTION
 const mbedtls_ecp_curve_info *mbedtls_ecp_curve_list( void )
 {
     return( ecp_supported_curves );
@@ -208,6 +218,7 @@ const mbedtls_ecp_group_id *mbedtls_ecp_grp_id_list( void )
 /*
  * Get the curve info for the internal identifier
  */
+SSL_ROM_TEXT_SECTION
 const mbedtls_ecp_curve_info *mbedtls_ecp_curve_info_from_grp_id( mbedtls_ecp_group_id grp_id )
 {
     const mbedtls_ecp_curve_info *curve_info;
@@ -226,6 +237,7 @@ const mbedtls_ecp_curve_info *mbedtls_ecp_curve_info_from_grp_id( mbedtls_ecp_gr
 /*
  * Get the curve info from the TLS identifier
  */
+SSL_ROM_TEXT_SECTION
 const mbedtls_ecp_curve_info *mbedtls_ecp_curve_info_from_tls_id( uint16_t tls_id )
 {
     const mbedtls_ecp_curve_info *curve_info;
@@ -244,6 +256,7 @@ const mbedtls_ecp_curve_info *mbedtls_ecp_curve_info_from_tls_id( uint16_t tls_i
 /*
  * Get the curve info from the name
  */
+SSL_ROM_TEXT_SECTION
 const mbedtls_ecp_curve_info *mbedtls_ecp_curve_info_from_name( const char *name )
 {
     const mbedtls_ecp_curve_info *curve_info;
@@ -262,6 +275,7 @@ const mbedtls_ecp_curve_info *mbedtls_ecp_curve_info_from_name( const char *name
 /*
  * Get the type of a curve
  */
+SSL_ROM_TEXT_SECTION
 static inline ecp_curve_type ecp_get_type( const mbedtls_ecp_group *grp )
 {
     if( grp->G.X.p == NULL )
@@ -276,6 +290,7 @@ static inline ecp_curve_type ecp_get_type( const mbedtls_ecp_group *grp )
 /*
  * Initialize (the components of) a point
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecp_point_init( mbedtls_ecp_point *pt )
 {
     if( pt == NULL )
@@ -289,6 +304,7 @@ void mbedtls_ecp_point_init( mbedtls_ecp_point *pt )
 /*
  * Initialize (the components of) a group
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecp_group_init( mbedtls_ecp_group *grp )
 {
     if( grp == NULL )
@@ -300,6 +316,7 @@ void mbedtls_ecp_group_init( mbedtls_ecp_group *grp )
 /*
  * Initialize (the components of) a key pair
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecp_keypair_init( mbedtls_ecp_keypair *key )
 {
     if( key == NULL )
@@ -313,6 +330,7 @@ void mbedtls_ecp_keypair_init( mbedtls_ecp_keypair *key )
 /*
  * Unallocate (the components of) a point
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecp_point_free( mbedtls_ecp_point *pt )
 {
     if( pt == NULL )
@@ -326,6 +344,7 @@ void mbedtls_ecp_point_free( mbedtls_ecp_point *pt )
 /*
  * Unallocate (the components of) a group
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecp_group_free( mbedtls_ecp_group *grp )
 {
     size_t i;
@@ -355,6 +374,7 @@ void mbedtls_ecp_group_free( mbedtls_ecp_group *grp )
 /*
  * Unallocate (the components of) a key pair
  */
+SSL_ROM_TEXT_SECTION
 void mbedtls_ecp_keypair_free( mbedtls_ecp_keypair *key )
 {
     if( key == NULL )
@@ -368,6 +388,7 @@ void mbedtls_ecp_keypair_free( mbedtls_ecp_keypair *key )
 /*
  * Copy the contents of a point
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_copy( mbedtls_ecp_point *P, const mbedtls_ecp_point *Q )
 {
     int ret;
@@ -383,6 +404,7 @@ cleanup:
 /*
  * Copy the contents of a group object
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_group_copy( mbedtls_ecp_group *dst, const mbedtls_ecp_group *src )
 {
     return mbedtls_ecp_group_load( dst, src->id );
@@ -391,6 +413,7 @@ int mbedtls_ecp_group_copy( mbedtls_ecp_group *dst, const mbedtls_ecp_group *src
 /*
  * Set point to zero
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_set_zero( mbedtls_ecp_point *pt )
 {
     int ret;
@@ -406,6 +429,7 @@ cleanup:
 /*
  * Tell if a point is zero
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_is_zero( mbedtls_ecp_point *pt )
 {
     return( mbedtls_mpi_cmp_int( &pt->Z, 0 ) == 0 );
@@ -414,6 +438,7 @@ int mbedtls_ecp_is_zero( mbedtls_ecp_point *pt )
 /*
  * Compare two points lazyly
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_point_cmp( const mbedtls_ecp_point *P,
                            const mbedtls_ecp_point *Q )
 {
@@ -430,6 +455,7 @@ int mbedtls_ecp_point_cmp( const mbedtls_ecp_point *P,
 /*
  * Import a non-zero point from ASCII strings
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_point_read_string( mbedtls_ecp_point *P, int radix,
                            const char *x, const char *y )
 {
@@ -446,6 +472,7 @@ cleanup:
 /*
  * Export a point into unsigned binary data (SEC1 2.3.3)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_point_write_binary( const mbedtls_ecp_group *grp, const mbedtls_ecp_point *P,
                             int format, size_t *olen,
                             unsigned char *buf, size_t buflen )
@@ -502,6 +529,7 @@ cleanup:
 /*
  * Import a point from unsigned binary data (SEC1 2.3.4)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_point_read_binary( const mbedtls_ecp_group *grp, mbedtls_ecp_point *pt,
                            const unsigned char *buf, size_t ilen )
 {
@@ -541,6 +569,7 @@ cleanup:
  *          opaque point <1..2^8-1>;
  *      } ECPoint;
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_tls_read_point( const mbedtls_ecp_group *grp, mbedtls_ecp_point *pt,
                         const unsigned char **buf, size_t buf_len )
 {
@@ -572,6 +601,7 @@ int mbedtls_ecp_tls_read_point( const mbedtls_ecp_group *grp, mbedtls_ecp_point 
  *          opaque point <1..2^8-1>;
  *      } ECPoint;
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_tls_write_point( const mbedtls_ecp_group *grp, const mbedtls_ecp_point *pt,
                          int format, size_t *olen,
                          unsigned char *buf, size_t blen )
@@ -600,6 +630,7 @@ int mbedtls_ecp_tls_write_point( const mbedtls_ecp_group *grp, const mbedtls_ecp
 /*
  * Set a group from an ECParameters record (RFC 4492)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_tls_read_group( mbedtls_ecp_group *grp, const unsigned char **buf, size_t len )
 {
     uint16_t tls_id;
@@ -633,6 +664,7 @@ int mbedtls_ecp_tls_read_group( mbedtls_ecp_group *grp, const unsigned char **bu
 /*
  * Write the ECParameters record corresponding to a group (RFC 4492)
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_tls_write_group( const mbedtls_ecp_group *grp, size_t *olen,
                          unsigned char *buf, size_t blen )
 {
@@ -668,6 +700,7 @@ int mbedtls_ecp_tls_write_group( const mbedtls_ecp_group *grp, size_t *olen,
  *
  * This function is in the critial loop for mbedtls_ecp_mul, so pay attention to perf.
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_modp( mbedtls_mpi *N, const mbedtls_ecp_group *grp )
 {
     int ret;
@@ -748,6 +781,7 @@ cleanup:
  * Normalize jacobian coordinates so that Z == 0 || Z == 1  (GECC 3.2.1)
  * Cost: 1N := 1I + 3M + 1S
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_normalize_jac( const mbedtls_ecp_group *grp, mbedtls_ecp_point *pt )
 {
     int ret;
@@ -794,6 +828,7 @@ cleanup:
  *
  * Cost: 1N(t) := 1I + (6t - 3)M + 1S
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_normalize_jac_many( const mbedtls_ecp_group *grp,
                                    mbedtls_ecp_point *T[], size_t t_len )
 {
@@ -875,6 +910,7 @@ cleanup:
  * Conditional point inversion: Q -> -Q = (Q.X, -Q.Y, Q.Z) without leak.
  * "inv" must be 0 (don't invert) or 1 (invert) or the result will be invalid
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_safe_invert_jac( const mbedtls_ecp_group *grp,
                             mbedtls_ecp_point *Q,
                             unsigned char inv )
@@ -910,6 +946,7 @@ cleanup:
  *             4M + 4S          (A == -3)
  *             3M + 6S + 1a     otherwise
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_double_jac( const mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                            const mbedtls_ecp_point *P )
 {
@@ -1001,6 +1038,7 @@ cleanup:
  *
  * Cost: 1A := 8M + 3S
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_add_mixed( const mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                           const mbedtls_ecp_point *P, const mbedtls_ecp_point *Q )
 {
@@ -1083,6 +1121,7 @@ cleanup:
  *
  * This countermeasure was first suggested in [2].
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_randomize_jac( const mbedtls_ecp_group *grp, mbedtls_ecp_point *pt,
                 int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
@@ -1156,6 +1195,7 @@ cleanup:
  * - m is the MPI, expected to be odd and such that bitlength(m) <= w * d
  *   (the result will be incorrect if these assumptions are not satisfied)
  */
+SSL_ROM_TEXT_SECTION
 static void ecp_comb_fixed( unsigned char x[], size_t d,
                             unsigned char w, const mbedtls_mpi *m )
 {
@@ -1196,6 +1236,7 @@ static void ecp_comb_fixed( unsigned char x[], size_t d,
  *
  * Cost: d(w-1) D + (2^{w-1} - 1) A + 1 N(w-1) + 1 N(2^{w-1} - 1)
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_precompute_comb( const mbedtls_ecp_group *grp,
                                 mbedtls_ecp_point T[], const mbedtls_ecp_point *P,
                                 unsigned char w, size_t d )
@@ -1248,6 +1289,7 @@ cleanup:
 /*
  * Select precomputed point: R = sign(i) * T[ abs(i) / 2 ]
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_select_comb( const mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                             const mbedtls_ecp_point T[], unsigned char t_len,
                             unsigned char i )
@@ -1278,6 +1320,7 @@ cleanup:
  *
  * Cost: d A + d D + 1 R
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_mul_comb_core( const mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                               const mbedtls_ecp_point T[], unsigned char t_len,
                               const unsigned char x[], size_t d,
@@ -1314,6 +1357,7 @@ cleanup:
  * Multiplication using the comb method,
  * for curves in short Weierstrass form
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_mul_comb( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                          const mbedtls_mpi *m, const mbedtls_ecp_point *P,
                          int (*f_rng)(void *, unsigned char *, size_t),
@@ -1445,6 +1489,7 @@ cleanup:
  * Normalize Montgomery x/z coordinates: X = X/Z, Z = 1
  * Cost: 1M + 1I
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_normalize_mxz( const mbedtls_ecp_group *grp, mbedtls_ecp_point *P )
 {
     int ret;
@@ -1465,6 +1510,7 @@ cleanup:
  * This countermeasure was first suggested in [2].
  * Cost: 2M
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_randomize_mxz( const mbedtls_ecp_group *grp, mbedtls_ecp_point *P,
                 int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
@@ -1512,6 +1558,7 @@ cleanup:
  *
  * Cost: 5M + 4S
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_double_add_mxz( const mbedtls_ecp_group *grp,
                                mbedtls_ecp_point *R, mbedtls_ecp_point *S,
                                const mbedtls_ecp_point *P, const mbedtls_ecp_point *Q,
@@ -1555,6 +1602,7 @@ cleanup:
  * Multiplication with Montgomery ladder in x/z coordinates,
  * for curves in Montgomery form
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_mul_mxz( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
                         const mbedtls_mpi *m, const mbedtls_ecp_point *P,
                         int (*f_rng)(void *, unsigned char *, size_t),
@@ -1616,6 +1664,7 @@ cleanup:
 /*
  * Multiplication R = m * P
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
              int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
@@ -1646,6 +1695,7 @@ int mbedtls_ecp_mul( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
  * Check that an affine point is valid as a public key,
  * short weierstrass curves (SEC1 3.2.3.1)
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_check_pubkey_sw( const mbedtls_ecp_group *grp, const mbedtls_ecp_point *pt )
 {
     int ret;
@@ -1695,6 +1745,7 @@ cleanup:
  * R = m * P with shortcuts for m == 1 and m == -1
  * NOT constant-time - ONLY for short Weierstrass!
  */
+SSL_ROM_TEXT_SECTION
 static int mbedtls_ecp_mul_shortcuts( mbedtls_ecp_group *grp,
                                       mbedtls_ecp_point *R,
                                       const mbedtls_mpi *m,
@@ -1725,6 +1776,7 @@ cleanup:
  * Linear combination
  * NOT constant-time
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_muladd( mbedtls_ecp_group *grp, mbedtls_ecp_point *R,
              const mbedtls_mpi *m, const mbedtls_ecp_point *P,
              const mbedtls_mpi *n, const mbedtls_ecp_point *Q )
@@ -1754,6 +1806,7 @@ cleanup:
 /*
  * Check validity of a public key for Montgomery curves with x-only schemes
  */
+SSL_ROM_TEXT_SECTION
 static int ecp_check_pubkey_mx( const mbedtls_ecp_group *grp, const mbedtls_ecp_point *pt )
 {
     /* [Curve25519 p. 5] Just check X is the correct number of bytes */
@@ -1767,6 +1820,7 @@ static int ecp_check_pubkey_mx( const mbedtls_ecp_group *grp, const mbedtls_ecp_
 /*
  * Check that a point is valid as a public key
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_check_pubkey( const mbedtls_ecp_group *grp, const mbedtls_ecp_point *pt )
 {
     /* Must use affine coordinates */
@@ -1787,6 +1841,7 @@ int mbedtls_ecp_check_pubkey( const mbedtls_ecp_group *grp, const mbedtls_ecp_po
 /*
  * Check that an mbedtls_mpi is valid as a private key
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_check_privkey( const mbedtls_ecp_group *grp, const mbedtls_mpi *d )
 {
 #if defined(ECP_MONTGOMERY)
@@ -1820,6 +1875,7 @@ int mbedtls_ecp_check_privkey( const mbedtls_ecp_group *grp, const mbedtls_mpi *
 /*
  * Generate a keypair with configurable base point
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_gen_keypair_base( mbedtls_ecp_group *grp,
                      const mbedtls_ecp_point *G,
                      mbedtls_mpi *d, mbedtls_ecp_point *Q,
@@ -1902,6 +1958,7 @@ cleanup:
 /*
  * Generate key pair, wrapper for conventional base point
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_gen_keypair( mbedtls_ecp_group *grp,
                              mbedtls_mpi *d, mbedtls_ecp_point *Q,
                              int (*f_rng)(void *, unsigned char *, size_t),
@@ -1913,6 +1970,7 @@ int mbedtls_ecp_gen_keypair( mbedtls_ecp_group *grp,
 /*
  * Generate a keypair, prettier wrapper
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_gen_key( mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *key,
                 int (*f_rng)(void *, unsigned char *, size_t), void *p_rng )
 {
@@ -1927,6 +1985,7 @@ int mbedtls_ecp_gen_key( mbedtls_ecp_group_id grp_id, mbedtls_ecp_keypair *key,
 /*
  * Check a public-private key pair
  */
+SSL_ROM_TEXT_SECTION
 int mbedtls_ecp_check_pub_priv( const mbedtls_ecp_keypair *pub, const mbedtls_ecp_keypair *prv )
 {
     int ret;
