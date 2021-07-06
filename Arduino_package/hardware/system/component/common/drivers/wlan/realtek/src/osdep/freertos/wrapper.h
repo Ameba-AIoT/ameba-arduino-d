@@ -400,6 +400,12 @@ struct net_device_stats {
 	unsigned long   rx_overflow;            /* rx fifo overflow count       */
 	unsigned long   rx_reorder_drop_cnt;
 	unsigned long   rx_reorder_timeout_cnt;
+	unsigned long	tx_unicast_packets;
+	unsigned long	tx_broadcast_packets;
+	unsigned long	tx_multicast_packets;
+	unsigned long	rx_unicast_packets;
+	unsigned long	rx_broadcast_packets;
+	unsigned long	rx_multicast_packets;
 };
 
 struct net_device {

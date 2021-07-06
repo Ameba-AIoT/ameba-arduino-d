@@ -71,6 +71,14 @@ float analogin_read(analogin_t *obj);
   */
 uint16_t analogin_read_u16(analogin_t *obj);
 
+/**
+  * @brief  Read resistor value
+  * @retval -1: invalid value
+            0: efuse not program
+            others: resistor value
+  */
+int analogin_resistor_read(void);
+
 ///@}
 /*\@}*/
 

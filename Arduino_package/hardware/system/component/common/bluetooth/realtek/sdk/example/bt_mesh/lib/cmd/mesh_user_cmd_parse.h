@@ -20,6 +20,7 @@ extern "C" {
 #endif      /* __cplusplus */
 
 #include "platform_misc.h"
+#include <platform_opts_bt.h>
 
 /****************************************************************************************************************
 * macros that other .c files may use all defined here
@@ -37,7 +38,13 @@ extern "C" {
 
 /** @brief  command parse related macros. */
 #define USER_CMD_MAX_COMMAND_LINE        70           /* max. length of command line in bytes */
+
+#if defined(CONFIG_BT_MESH_TEST) && CONFIG_BT_MESH_TEST
+#define USER_CMD_MAX_PARAMETERS          80           /* max. number of parameters that the parser will scan */
+#else
 #define USER_CMD_MAX_PARAMETERS          25           /* max. number of parameters that the parser will scan */
+#endif
+
 #define USER_CMD_MAX_HISTORY_LINE        3
 /** @} */
 
@@ -52,12 +59,11 @@ extern "C" {
  *
  * This is the structure where the command line parser puts its values.
  */
-typedef struct
-{
-    char      *pcommand;                    /* pointer to command */
-    uint8_t    para_count;             /* number of found parameters */
-    uint32_t   dw_parameter[USER_CMD_MAX_PARAMETERS]; /* automatically parsed parameters */
-    char      *pparameter[USER_CMD_MAX_PARAMETERS];  /* automatically parsed parameters */
+typedef struct {
+	char      *pcommand;                    /* pointer to command */
+	uint8_t    para_count;             /* number of found parameters */
+	uint32_t   dw_parameter[USER_CMD_MAX_PARAMETERS]; /* automatically parsed parameters */
+	char      *pparameter[USER_CMD_MAX_PARAMETERS];  /* automatically parsed parameters */
 } user_cmd_parse_value_t;
 
 /**
@@ -65,32 +71,30 @@ typedef struct
  *
  * This is the structure where the command line parser puts its result.
  */
-typedef enum
-{
-    USER_CMD_RESULT_OK,
-    USER_CMD_RESULT_ERROR,
-    USER_CMD_RESULT_EMPTY_CMD_LINE,
-    USER_CMD_RESULT_CMD_NOT_FOUND,
-    USER_CMD_RESULT_WRONG_PARAMETER,
-    USER_CMD_RESULT_WRONG_NUM_OF_PARAMETERS,
-    USER_CMD_RESULT_VALUE_OUT_OF_RANGE
+typedef enum {
+	USER_CMD_RESULT_OK,
+	USER_CMD_RESULT_ERROR,
+	USER_CMD_RESULT_EMPTY_CMD_LINE,
+	USER_CMD_RESULT_CMD_NOT_FOUND,
+	USER_CMD_RESULT_WRONG_PARAMETER,
+	USER_CMD_RESULT_WRONG_NUM_OF_PARAMETERS,
+	USER_CMD_RESULT_VALUE_OUT_OF_RANGE
 } user_cmd_parse_result_t;
 
 /**
  * @brief command interface.
  */
-typedef struct
-{
-    char      cmd_line[USER_CMD_MAX_COMMAND_LINE + 2];
-    uint8_t   cmd_len; /**< accumulated length of command */
-    uint8_t   cmd_cur; /**< cmd cursor */
-    uint8_t   cmd_history[USER_CMD_MAX_HISTORY_LINE][USER_CMD_MAX_COMMAND_LINE + 2];
-    uint8_t   cmd_history_len[USER_CMD_MAX_HISTORY_LINE];
-    uint8_t   history_head;
-    uint8_t   history_tail;
-    uint8_t   history_cur; /**< current cmd pointer */
-    char      cmd_prompt[2];
-    char      cmd_crlf[3];
+typedef struct {
+	char      cmd_line[USER_CMD_MAX_COMMAND_LINE + 2];
+	uint8_t   cmd_len; /**< accumulated length of command */
+	uint8_t   cmd_cur; /**< cmd cursor */
+	uint8_t   cmd_history[USER_CMD_MAX_HISTORY_LINE][USER_CMD_MAX_COMMAND_LINE + 2];
+	uint8_t   cmd_history_len[USER_CMD_MAX_HISTORY_LINE];
+	uint8_t   history_head;
+	uint8_t   history_tail;
+	uint8_t   history_cur; /**< current cmd pointer */
+	char      cmd_prompt[2];
+	char      cmd_crlf[3];
 } user_cmd_if_t, *user_cmd_if_p;
 
 /**
@@ -102,12 +106,11 @@ typedef user_cmd_parse_result_t (*pf_user_cmd_func_t)(user_cmd_parse_value_t *pp
  * @brief command table entry.
  *
 */
-typedef struct
-{
-    char              *pcommand;
-    char              *poption;
-    char              *phelp;
-    pf_user_cmd_func_t    user_cmd_func;
+typedef struct {
+	char              *pcommand;
+	char              *poption;
+	char              *phelp;
+	pf_user_cmd_func_t    user_cmd_func;
 } user_cmd_table_entry_t;
 /** @} */
 

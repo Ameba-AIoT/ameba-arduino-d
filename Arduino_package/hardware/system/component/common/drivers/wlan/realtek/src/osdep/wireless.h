@@ -7,229 +7,20 @@
   *
 ******************************************************************************/
 
-#ifndef _LINUX_WIRELESS_H
-#define _LINUX_WIRELESS_H
-
-/************************** DOCUMENTATION **************************/
-/*
- * Initial APIs (1996 -> onward) :
- * -----------------------------
- * Basically, the wireless extensions are for now a set of standard ioctl
- * call + /proc/net/wireless
- *
- * The entry /proc/net/wireless give statistics and information on the
- * driver.
- * This is better than having each driver having its entry because
- * its centralised and we may remove the driver module safely.
- *
- * Ioctl are used to configure the driver and issue commands.  This is
- * better than command line options of insmod because we may want to
- * change dynamically (while the driver is running) some parameters.
- *
- * The ioctl mechanimsm are copied from standard devices ioctl.
- * We have the list of command plus a structure descibing the
- * data exchanged...
- * Note that to add these ioctl, I was obliged to modify :
- *	# net/core/dev.c (two place + add include)
- *	# net/ipv4/af_inet.c (one place + add include)
- *
- * /proc/net/wireless is a copy of /proc/net/dev.
- * We have a structure for data passed from the driver to /proc/net/wireless
- * Too add this, I've modified :
- *	# net/core/dev.c (two other places)
- *	# include/linux/netdevice.h (one place)
- *	# include/linux/proc_fs.h (one place)
- *
- * New driver API (2002 -> onward) :
- * -------------------------------
- * This file is only concerned with the user space API and common definitions.
- * The new driver API is defined and documented in :
- *	# include/net/iw_handler.h
- *
- * Note as well that /proc/net/wireless implementation has now moved in :
- *	# net/core/wireless.c
- *
- * Wireless Events (2002 -> onward) :
- * --------------------------------
- * Events are defined at the end of this file, and implemented in :
- *	# net/core/wireless.c
- *
- * Other comments :
- * --------------
- * Do not add here things that are redundant with other mechanisms
- * (drivers init, ifconfig, /proc/net/dev, ...) and with are not
- * wireless specific.
- *
- * These wireless extensions are not magic : each driver has to provide
- * support for them...
- *
- * IMPORTANT NOTE : As everything in the kernel, this is very much a
- * work in progress. Contact me if you have ideas of improvements...
- */
+#ifndef _WIRELESS_H
+#define _WIRELESS_H
 
 /***************************** INCLUDES *****************************/
 
-/* This header is used in user-space, therefore need to be sanitised
- * for that purpose. Those includes are usually not compatible with glibc.
- * To know which includes to use in user-space, check iwlib.h. */
-#ifdef __KERNEL__
-#include <linux/types.h>		/* for "caddr_t" et al		*/
-#include <linux/socket.h>		/* for "struct sockaddr" et al	*/
-#include <linux/if.h>			/* for IFNAMSIZ and co... */
-#endif	/* __KERNEL__ */
 
 //#include <sockets.h>
 #define IFNAMSIZ	16
 #define	ARPHRD_ETHER	1	/* ethernet hardware format */
 
-/***************************** VERSION *****************************/
-/*
- * This constant is used to know the availability of the wireless
- * extensions and to know which version of wireless extensions it is
- * (there is some stuff that will be added in the future...)
- * I just plan to increment with each new version.
- */
+
 #define WIRELESS_EXT	22
 
-/*
- * Changes :
- *
- * V2 to V3
- * --------
- *	Alan Cox start some incompatibles changes. I've integrated a bit more.
- *	- Encryption renamed to Encode to avoid US regulation problems
- *	- Frequency changed from float to struct to avoid problems on old 386
- *
- * V3 to V4
- * --------
- *	- Add sensitivity
- *
- * V4 to V5
- * --------
- *	- Missing encoding definitions in range
- *	- Access points stuff
- *
- * V5 to V6
- * --------
- *	- 802.11 support (ESSID ioctls)
- *
- * V6 to V7
- * --------
- *	- define IW_ESSID_MAX_SIZE and IW_MAX_AP
- *
- * V7 to V8
- * --------
- *	- Changed my e-mail address
- *	- More 802.11 support (nickname, rate, rts, frag)
- *	- List index in frequencies
- *
- * V8 to V9
- * --------
- *	- Support for 'mode of operation' (ad-hoc, managed...)
- *	- Support for unicast and multicast power saving
- *	- Change encoding to support larger tokens (>64 bits)
- *	- Updated iw_params (disable, flags) and use it for NWID
- *	- Extracted iw_point from iwreq for clarity
- *
- * V9 to V10
- * ---------
- *	- Add PM capability to range structure
- *	- Add PM modifier : MAX/MIN/RELATIVE
- *	- Add encoding option : IW_ENCODE_NOKEY
- *	- Add TxPower ioctls (work like TxRate)
- *
- * V10 to V11
- * ----------
- *	- Add WE version in range (help backward/forward compatibility)
- *	- Add retry ioctls (work like PM)
- *
- * V11 to V12
- * ----------
- *	- Add SIOCSIWSTATS to get /proc/net/wireless programatically
- *	- Add DEV PRIVATE IOCTL to avoid collisions in SIOCDEVPRIVATE space
- *	- Add new statistics (frag, retry, beacon)
- *	- Add average quality (for user space calibration)
- *
- * V12 to V13
- * ----------
- *	- Document creation of new driver API.
- *	- Extract union iwreq_data from struct iwreq (for new driver API).
- *	- Rename SIOCSIWNAME as SIOCSIWCOMMIT
- *
- * V13 to V14
- * ----------
- *	- Wireless Events support : define struct iw_event
- *	- Define additional specific event numbers
- *	- Add "addr" and "param" fields in union iwreq_data
- *	- AP scanning stuff (SIOCSIWSCAN and friends)
- *
- * V14 to V15
- * ----------
- *	- Add IW_PRIV_TYPE_ADDR for struct sockaddr private arg
- *	- Make struct iw_freq signed (both m & e), add explicit padding
- *	- Add IWEVCUSTOM for driver specific event/scanning token
- *	- Add IW_MAX_GET_SPY for driver returning a lot of addresses
- *	- Add IW_TXPOW_RANGE for range of Tx Powers
- *	- Add IWEVREGISTERED & IWEVEXPIRED events for Access Points
- *	- Add IW_MODE_MONITOR for passive monitor
- *
- * V15 to V16
- * ----------
- *	- Increase the number of bitrates in iw_range to 32 (for 802.11g)
- *	- Increase the number of frequencies in iw_range to 32 (for 802.11b+a)
- *	- Reshuffle struct iw_range for increases, add filler
- *	- Increase IW_MAX_AP to 64 for driver returning a lot of addresses
- *	- Remove IW_MAX_GET_SPY because conflict with enhanced spy support
- *	- Add SIOCSIWTHRSPY/SIOCGIWTHRSPY and "struct iw_thrspy"
- *	- Add IW_ENCODE_TEMP and iw_range->encoding_login_index
- *
- * V16 to V17
- * ----------
- *	- Add flags to frequency -> auto/fixed
- *	- Document (struct iw_quality *)->updated, add new flags (INVALID)
- *	- Wireless Event capability in struct iw_range
- *	- Add support for relative TxPower (yick !)
- *
- * V17 to V18 (From Jouni Malinen <jkmaline@cc.hut.fi>)
- * ----------
- *	- Add support for WPA/WPA2
- *	- Add extended encoding configuration (SIOCSIWENCODEEXT and
- *	  SIOCGIWENCODEEXT)
- *	- Add SIOCSIWGENIE/SIOCGIWGENIE
- *	- Add SIOCSIWMLME
- *	- Add SIOCSIWPMKSA
- *	- Add struct iw_range bit field for supported encoding capabilities
- *	- Add optional scan request parameters for SIOCSIWSCAN
- *	- Add SIOCSIWAUTH/SIOCGIWAUTH for setting authentication and WPA
- *	  related parameters (extensible up to 4096 parameter values)
- *	- Add wireless events: IWEVGENIE, IWEVMICHAELMICFAILURE,
- *	  IWEVASSOCREQIE, IWEVASSOCRESPIE, IWEVPMKIDCAND
- *
- * V18 to V19
- * ----------
- *	- Remove (struct iw_point *)->pointer from events and streams
- *	- Remove header includes to help user space
- *	- Increase IW_ENCODING_TOKEN_MAX from 32 to 64
- *	- Add IW_QUAL_ALL_UPDATED and IW_QUAL_ALL_INVALID macros
- *	- Add explicit flag to tell stats are in dBm : IW_QUAL_DBM
- *	- Add IW_IOCTL_IDX() and IW_EVENT_IDX() macros
- *
- * V19 to V20
- * ----------
- *	- RtNetlink requests support (SET/GET)
- *
- * V20 to V21
- * ----------
- *	- Remove (struct net_device *)->get_wireless_stats()
- *	- Change length in ESSID and NICK to strlen() instead of strlen()+1
- *	- Add IW_RETRY_SHORT/IW_RETRY_LONG retry modifiers
- *	- Power/Retry relative values no longer * 100000
- *	- Add explicit flag to tell stats are in 802.11k RCPI : IW_QUAL_RCPI
- *
- * V21 to V22
- * ----------
- *	- Prevent leaking of kernel space in stream on 64 bits.
- */
+
 
 /**************************** CONSTANTS ****************************/
 typedef unsigned char __u8;
@@ -1228,4 +1019,4 @@ struct iw_event
 #define IW_EVT_STR_CHALLENGE_FAIL "Auth Challenge Fail"
 #define IW_EVT_STR_SOFTAP_START "Softap Start"
 #define IW_EVT_STR_SOFTAP_STOP "Softap Stop"
-#endif	/* _LINUX_WIRELESS_H */
+#endif	/* _WIRELESS_H */

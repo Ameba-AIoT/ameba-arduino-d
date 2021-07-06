@@ -105,7 +105,7 @@
 #include "device_lock.h"
 #define DATA_SECTOR     AP_SETTING_SECTOR
 #undef BACKUP_SECTOR
-#define BACKUP_SECTOR	(0x00008000)
+#define BACKUP_SECTOR	(FLASH_SYSTEM_DATA_ADDR-0x1000)
 
 #endif
 #endif

@@ -71,7 +71,7 @@ int SSLDrv::getDataBuf(sslclient_context *ssl_client, uint8_t *_data, uint16_t _
         _available = false;
         _dataLen--;
         if (_dataLen > 0) {
-            ret = get_ssl_receive(ssl_client, _data, _dataLen, 0);
+            ret = get_ssl_receive(ssl_client, &_data[1], _dataLen, 0);
             if (ret > 0) {
                 ret++;
                 return ret;

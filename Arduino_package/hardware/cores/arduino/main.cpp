@@ -35,6 +35,31 @@ void initVariant() __attribute__((weak));
 void initVariant() { }
 
 /*
+ * //app_mbedtls_rom_init 
+ */
+static void* app_mbedtls_calloc_func(size_t nelements, size_t elementSize)
+{
+    size_t size;
+    void *ptr = NULL;
+
+    size = nelements * elementSize;
+    ptr = pvPortMalloc(size);
+
+    if (ptr) {
+        _memset(ptr, 0, size);
+    }
+
+    return ptr;
+}
+
+void app_mbedtls_rom_init(void)
+{
+    mbedtls_platform_set_calloc_free(app_mbedtls_calloc_func, vPortFree);
+    //rom_ssl_ram_map.use_hw_crypto_func = 1;
+    rtl_cryptoEngine_init();
+}
+
+/*
  * \brief handle sketch
  */
 #if defined(Arduino_STD_PRINTF)
@@ -51,8 +76,11 @@ int _write(int file, char *ptr, unsigned int len){
 #endif
 
 //void main_task(void const *arg)
+//void main_task(void *arg)
 void main_task(void)
 {
+//    (void)arg;
+
     delay(1);
 
     setup();
@@ -63,6 +91,7 @@ void main_task(void)
             serialEventRun();
         }
         osThreadYield();
+        //vTaskDelete(NULL);
     }
 }
 
@@ -75,15 +104,27 @@ int main(void)
 
     initVariant();
 
+#ifdef CONFIG_MBED_TLS_ENABLED
+    app_mbedtls_rom_init();
+#endif
+
 //For all amebad boards, Analog pin needs to pull none. GPIO_PuPd_NOPULL/GPIO_PuPd_DOWN/GPIO_PuPd_UP
     PAD_PullCtrl(_PB_1, GPIO_PuPd_NOPULL);
     PAD_PullCtrl(_PB_2, GPIO_PuPd_NOPULL);
     PAD_PullCtrl(_PB_3, GPIO_PuPd_NOPULL);
 
+#if 1
     osThreadDef(main_task, osPriorityRealtime, 1, MAIN_THREAD_STACK_SIZE);
     main_tid = osThreadCreate(osThread(main_task), NULL);
 
     osKernelStart();
+#else
+    if(xTaskCreate(main_task, ((const char*)"init"), MAIN_THREAD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 + PRIORITIE_OFFSET, NULL) != pdPASS) {
+        printf("\n\r%s xTaskCreate(main_task) failed", __FUNCTION__);
+    }
+
+    vTaskStartScheduler();
+#endif
 
     while(1);
 

@@ -60,7 +60,6 @@ SECTIONS
 		*(.image2.ram.text*)
 		*(.image2.net.ram.text*)
 		__ram_text_end__ = .;
-		. = ALIGN(16);
 	} > BD_RAM_NS
 
 	.ram_image2.data : 
@@ -96,7 +95,7 @@ SECTIONS
 		end = .;
 		*(.heap.stdlib*)
 		. = . + 4096;
-	
+		__bfsram_end__ = .;
 	} > BD_RAM_NS
 
 	.xip_image2.text : 
@@ -218,3 +217,5 @@ SECTIONS
 		*(.psram.heap*)
 	} > PSRAM_NS
 }
+
+__sram_end__ = ORIGIN(BD_RAM_NS) + LENGTH(BD_RAM_NS);

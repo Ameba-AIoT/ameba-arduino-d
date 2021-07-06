@@ -18,4 +18,7 @@
 /** @brief  Config local address type: 0-pulic address, 1-static random address */
 #define F_BT_LE_USE_STATIC_RANDOM_ADDR      0
 
+/** @brief  Config device name characteristic and appearance characteristic property: 0-Not writeable, 1-writeable, save to flash*/
+#define F_BT_GAPS_CHAR_WRITEABLE            0
+
 #endif

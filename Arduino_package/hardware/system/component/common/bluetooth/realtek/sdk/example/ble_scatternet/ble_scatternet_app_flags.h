@@ -42,7 +42,6 @@
 /** @brief  Config the discovery table number of gcs_client */
 #define BLE_SCATTERNET_APP_MAX_DISCOV_TABLE_NUM 40
 
-#define F_BT_GAPS_CHAR_WRITEABLE            1
 /** @brief  Config set physical: 0-Not built in, 1-built in, use user command to set*/
 #if defined(CONFIG_PLATFORM_8721D)
 #define F_BT_LE_5_0_SET_PHY_SUPPORT         1

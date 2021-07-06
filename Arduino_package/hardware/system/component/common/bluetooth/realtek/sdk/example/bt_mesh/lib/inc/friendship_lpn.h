@@ -27,11 +27,16 @@ BEGIN_DECLS
 /** @defgroup LPN_Exported_Types Exported Types
   * @{
   */
+/* lpn node offer choose algorithm function */
+typedef bool (*pf_lpn_offer_choose_t)(uint16_t frnd_addr, uint8_t frnd_index,
+                                      frnd_offer_t *pfrnd_offer, int8_t rssi);
 typedef struct
 {
     uint32_t poll_interval; //!< in units of 100 milliseconds, little than poll_timeout
     uint32_t poll_timeout; //!< in units of 100 milliseconds, range 0x00000A - C0x34BBFF
     frnd_criteria_t criteria;
+    pf_lpn_offer_choose_t
+    offer_choose; /* user can define offer choose algorithm or set to NULL to use stack's default offer choose algorithm */
 } lpn_req_params_t;
 
 typedef enum
@@ -100,6 +105,45 @@ lpn_req_reason_t lpn_req(uint8_t frnd_index, uint16_t net_key_index,
   * @retval false: operation failure
   */
 bool lpn_clear(uint8_t fn_index);
+
+/**
+ * @brief get friend offer information
+ * @param[in] fn_index: the fn index
+ * @return friend offer information
+ */
+frnd_offer_t lpn_get_frnd_offer(uint8_t fn_index);
+
+/**
+ * @brief set friend offer information
+ * @param[in] fn_index: the fn index
+ * @param[in] friend offer information
+ * @return TRUE: local set friend offer success
+ *         FALSE: local set friend offer failed
+ */
+bool lpn_set_frnd_offer(uint8_t fn_index, uint16_t net_key_index, uint16_t fn_addr,
+                        frnd_offer_t frnd_offer);
+
+/**
+ * @brief get lpn counter
+ * @param[in] fn_index: the fn index
+ * @return lpn counter
+ */
+uint16_t lpn_get_counter(uint8_t fn_index);
+
+/**
+ * @brief set lpn counter
+ * @param[in] fn_index: the fn index
+ * @param[in] lpn_counter: lpn counter
+ * @return TRUE: local set lpn counter success
+ *         FALSE: local set lpn counter failed
+ */
+bool lpn_set_counter(uint8_t fn_index, uint16_t lpn_counter);
+
+/**
+ * @brief start friend poll
+ * @param[in] poll_interval: friend poll interval, in unit of 100 milliseconds
+ */
+bool lpn_poll(uint8_t fn_index, uint32_t poll_interval);
 
 /**
   * @brief add or remove the subscribe list when the friendship exists

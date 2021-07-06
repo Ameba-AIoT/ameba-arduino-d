@@ -1,6 +1,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "main.h"
+#include "freertos_service.h"
 
 #include <lwip/sockets.h>
 #include <lwip/raw.h>
@@ -8,7 +9,7 @@
 #include <lwip/inet_chksum.h>
 #include <platform/platform_stdlib.h>
 
-#define BSD_STACK_SIZE		    256
+#define BSD_STACK_SIZE		 1024
 #define DEFAULT_PORT            5001
 #define DEFAULT_TIME            10
 #define SERVER_BUF_SIZE         1500
@@ -87,6 +88,20 @@ char *tcp_server_buffer = NULL;
 char *udp_client_buffer = NULL;
 char *udp_server_buffer = NULL;
 
+_mutex tcp_test_log_mutex = NULL;
+#define HAVE_NO_TCP_TEST_NOW()  ((NULL == g_tcp_server_task) && (NULL == g_tcp_client_task) && \
+                                (NULL == g_udp_client_task) && (NULL == g_udp_server_task))
+#define tcp_test_log(...)       do { \
+                                    if(NULL != tcp_test_log_mutex){\
+                                        rtw_mutex_get(&tcp_test_log_mutex); \
+                                        printf(__VA_ARGS__); \
+                                        rtw_mutex_put(&tcp_test_log_mutex); \
+                                    }\
+                                    else{\
+                                        printf(__VA_ARGS__); \
+                                    }\
+                                }while(0)
+
 static void udp_client_handler(void *param);
 static void tcp_client_handler(void *param);
 
@@ -103,7 +118,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 
 	tcp_client_buffer = pvPortMalloc(iperf_data.buf_size);
 	if(!tcp_client_buffer){
-		printf("\n\r[ERROR] %s: Alloc buffer failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Alloc buffer failed",__func__);
 		goto Exit2;
 	}
 
@@ -113,7 +128,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 
 	//create socket
 	if( (iperf_data.client_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
-		printf("\n\r[ERROR] %s: Create TCP socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Create TCP socket failed",__func__);
 		goto Exit2;
 	}
 
@@ -123,15 +138,15 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 	ser_addr.sin_port = htons(iperf_data.port);
 	ser_addr.sin_addr.s_addr = inet_addr((char const*)iperf_data.server_ip);
 
-	printf("\n\r%s: Server IP=%s, port=%d", __func__,iperf_data.server_ip, iperf_data.port);
-	printf("\n\r%s: Create socket fd = %d", __func__,iperf_data.client_fd);
+	tcp_test_log("\n\r%s: Server IP=%s, port=%d", __func__,iperf_data.server_ip, iperf_data.port);
+	tcp_test_log("\n\r%s: Create socket fd = %d", __func__,iperf_data.client_fd);
 
 	//Connecting to server
 	if( connect(iperf_data.client_fd, (struct sockaddr*)&ser_addr, sizeof(ser_addr)) < 0){
-		printf("\n\r[ERROR] %s: Connect to server failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Connect to server failed",__func__);
 		goto Exit1;
 	}
-	printf("\n\r%s: Connect to server successfully",__func__);
+	tcp_test_log("\n\r%s: Connect to server successfully",__func__);
 
 	// For "iperf -d" command, send first packet with iperf client header
 	if(g_tcp_bidirection){
@@ -142,7 +157,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 		client_hdr.mWinband = 0;
 		client_hdr.mAmount = htonl (~(iperf_data.time*100) + 1);
 		if( send(iperf_data.client_fd, (char*) &client_hdr, sizeof(client_hdr),0) <= 0){
-			printf("\n\r[ERROR] %s: TCP client send data error",__func__);
+			tcp_test_log("\n\r[ERROR] %s: TCP client send data error",__func__);
 			goto Exit1;
 		}
 	}
@@ -154,7 +169,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 		report_start_time = start_time;
 		while ( ((end_time - start_time) <= (configTICK_RATE_HZ * iperf_data.time)) && (!g_tcp_terminate) ) {
 			if( send(iperf_data.client_fd, tcp_client_buffer, iperf_data.buf_size,0) <= 0){
-				printf("\n\r[ERROR] %s: TCP client send data error",__func__);
+				tcp_test_log("\n\r[ERROR] %s: TCP client send data error",__func__);
 				goto Exit1;
 			}
 			total_size+=iperf_data.buf_size;
@@ -170,7 +185,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 			}
 
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))){
-				printf("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
+				tcp_test_log("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
 				bandwidth_time = end_time;
 				report_size = 0;
@@ -185,7 +200,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 		report_start_time = start_time;
 		while ( (total_size < iperf_data.total_size) && (!g_tcp_terminate) ) {
 			if( send(iperf_data.client_fd, tcp_client_buffer, iperf_data.buf_size,0) <= 0){
-				printf("\n\r[ERROR] %s: TCP client send data error",__func__);
+				tcp_test_log("\n\r[ERROR] %s: TCP client send data error",__func__);
 				goto Exit1;
 			}
 			total_size+=iperf_data.buf_size;
@@ -201,7 +216,7 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 			}
 			
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))) {
-				printf("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
+				tcp_test_log("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
 				bandwidth_time = end_time;
 				report_size = 0;
@@ -209,12 +224,12 @@ int tcp_client_func(struct iperf_data_t iperf_data)
 			}
 		}
 	}
-	printf("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));
+	tcp_test_log("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));
 
 Exit1:
 	closesocket(iperf_data.client_fd);
 Exit2:
-	printf("\n\r%s: Close client socket",__func__);
+	tcp_test_log("\n\r%s: Close client socket",__func__);
 	if(tcp_client_buffer){
 		vPortFree(tcp_client_buffer);
 		tcp_client_buffer = NULL;
@@ -235,17 +250,17 @@ int tcp_server_func(struct iperf_data_t iperf_data)
 
 	tcp_server_buffer = pvPortMalloc(iperf_data.buf_size);
 	if(!tcp_server_buffer){
-		printf("\n\r[ERROR] %s: Alloc buffer failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Alloc buffer failed",__func__);
 		goto Exit3;
 	}
 
 	//create socket
 	if((iperf_data.server_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
-		printf("\n\r[ERROR] %s: Create socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Create socket failed",__func__);
 		goto Exit3;
 	}
 
-	printf("\n\r%s: Create socket fd = %d", __func__,iperf_data.server_fd);
+	tcp_test_log("\n\r%s: Create socket fd = %d", __func__,iperf_data.server_fd);
 
 	setsockopt( iperf_data.server_fd, SOL_SOCKET, SO_REUSEADDR, (const char *) &n, sizeof( n ) );
 
@@ -257,24 +272,24 @@ int tcp_server_func(struct iperf_data_t iperf_data)
 
 	// binding the TCP socket to the TCP server address
 	if( bind(iperf_data.server_fd, (struct sockaddr*)&ser_addr, sizeof(ser_addr)) < 0){
-		printf("\n\r[ERROR] %s: Bind socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Bind socket failed",__func__);
 		goto Exit2;
 	}
-	printf("\n\r%s: Bind socket successfully",__func__);
+	tcp_test_log("\n\r%s: Bind socket successfully",__func__);
 
 	//Make it listen to socket with max 20 connections
 	if( listen(iperf_data.server_fd, 20) != 0){
-		printf("\n\r[ERROR] %s: Listen socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Listen socket failed",__func__);
 		goto Exit2;
 	}
-	printf("\n\r%s: Listen port %d",__func__,iperf_data.port);
+	tcp_test_log("\n\r%s: Listen port %d",__func__,iperf_data.port);
 
 //Restart:
 	if( (iperf_data.client_fd = accept(iperf_data.server_fd, (struct sockaddr*)&client_addr, (u32_t*)&addrlen)) < 0){
-		printf("\n\r[ERROR] %s: Accept TCP client socket error!",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Accept TCP client socket error!",__func__);
 		goto Exit2;
 	}
-	printf("\n\r%s: Accept connection successfully",__func__);
+	tcp_test_log("\n\r%s: Accept connection successfully",__func__);
 
 	recv_size = recv(iperf_data.client_fd, tcp_server_buffer, iperf_data.buf_size, 0);
 	if(!g_tcp_bidirection){//Server
@@ -291,7 +306,7 @@ int tcp_server_func(struct iperf_data_t iperf_data)
 		if(ntohl(client_hdr.flags) == 0x80000001){//bi-direction, create client to send packets back
 			if((NULL == g_tcp_client_task)){
 				if(xTaskCreate(tcp_client_handler, "tcp_client_handler", BSD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 + PRIORITIE_OFFSET, &g_tcp_client_task) != pdPASS)
-					printf("\n\rTCP ERROR: Create TCP client task failed.");
+					tcp_test_log("\n\rTCP ERROR: Create TCP client task failed.");
 				else{
 					strncpy((char*)tcp_client_data.server_ip, inet_ntoa(client_addr.sin_addr), (strlen(inet_ntoa(client_addr.sin_addr))) );
 					tcp_client_data.port = ntohl(client_hdr.mPort);
@@ -307,11 +322,11 @@ int tcp_server_func(struct iperf_data_t iperf_data)
 	while (!g_tcp_terminate) {
 		recv_size = recv(iperf_data.client_fd, tcp_server_buffer, iperf_data.buf_size, 0);  //MSG_DONTWAIT   MSG_WAITALL
 		if( recv_size < 0){
-			printf("\n\r[ERROR] %s: Receive data failed",__func__);
+			tcp_test_log("\n\r[ERROR] %s: Receive data failed",__func__);
 			goto Exit1;
 		}
 		else if(recv_size == 0){
-			//printf("\n\r%s: [END] Totally receive %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t) (total_size/KB),(uint32_t) (end_time-start_time),((uint32_t) (total_size*8)/(end_time - start_time)));
+			//tcp_test_log("\n\r%s: [END] Totally receive %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t) (total_size/KB),(uint32_t) (end_time-start_time),((uint32_t) (total_size*8)/(end_time - start_time)));
 			//total_size=0;
 			//close(iperf_data.client_fd);
 			//goto Restart;
@@ -321,12 +336,12 @@ int tcp_server_func(struct iperf_data_t iperf_data)
 		total_size+=recv_size;
 		report_size+=recv_size;
 		if((iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))) {
-			printf("\n\r%s: Receive %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t) (report_size/KB),(uint32_t) (end_time-report_start_time),((uint32_t) (report_size*8)/(end_time - report_start_time)));
+			tcp_test_log("\n\r%s: Receive %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t) (report_size/KB),(uint32_t) (end_time-report_start_time),((uint32_t) (report_size*8)/(end_time - report_start_time)));
 			report_start_time = end_time;
 			report_size = 0;
 		}
 	}
-	printf("\n\r%s: [END] Totally receive %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t) (total_size/KB),(uint32_t) (end_time-start_time),((uint32_t) (total_size*8)/(end_time - start_time)));
+	tcp_test_log("\n\r%s: [END] Totally receive %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t) (total_size/KB),(uint32_t) (end_time-start_time),((uint32_t) (total_size*8)/(end_time - start_time)));
 
 Exit1:
 	// close the connected socket after receiving from connected TCP client
@@ -359,7 +374,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 	
 	udp_client_buffer = pvPortMalloc(iperf_data.buf_size);
 	if(!udp_client_buffer){
-		printf("\n\r[ERROR] %s: Alloc buffer failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Alloc buffer failed",__func__);
 		goto Exit2;
 	}
 
@@ -369,7 +384,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 
 	//create socket
 	if( (iperf_data.client_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0){
-		printf("\n\r[ERROR] %s: Create UDP socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Create UDP socket failed",__func__);
 		goto Exit2;
 	}
 
@@ -379,11 +394,11 @@ int udp_client_func(struct iperf_data_t iperf_data)
 	ser_addr.sin_port = htons(iperf_data.port);
 	ser_addr.sin_addr.s_addr = inet_addr((char const*)iperf_data.server_ip);
 
-	printf("\n\r%s: Server IP=%s, port=%d", __func__,iperf_data.server_ip, iperf_data.port);
-	printf("\n\r%s: Create socket fd = %d", __func__,iperf_data.client_fd);
+	tcp_test_log("\n\r%s: Server IP=%s, port=%d", __func__,iperf_data.server_ip, iperf_data.port);
+	tcp_test_log("\n\r%s: Create socket fd = %d", __func__,iperf_data.client_fd);
 
 	if(setsockopt(iperf_data.client_fd,IPPROTO_IP,IP_TOS,&tos_value,sizeof(tos_value)) != 0){
-		printf("\n\r[ERROR] %s: Set sockopt failed", __func__);
+		tcp_test_log("\n\r[ERROR] %s: Set sockopt failed", __func__);
 		goto Exit1;
 	}
 	
@@ -431,7 +446,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 			}
 
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))){
-				printf("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
+				tcp_test_log("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
 				bandwidth_time = end_time;
 				report_size = 0;
@@ -452,7 +467,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 	     		client_hdr.tv_usec = htonl((now % 1000) * 1000); 
 			memcpy(udp_client_buffer, &client_hdr, sizeof(client_hdr)); 
 			if( sendto(iperf_data.client_fd, udp_client_buffer, iperf_data.buf_size,0,(struct sockaddr*)&ser_addr, addrlen) < 0){
-				//printf("\n\r[ERROR] %s: UDP client send data error",__func__);
+				//tcp_test_log("\n\r[ERROR] %s: UDP client send data error",__func__);
 			}else{
 				total_size+=iperf_data.buf_size;
 				bandwidth_size+=iperf_data.buf_size;
@@ -468,7 +483,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 			}
 			
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))) {
-				printf("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
+				tcp_test_log("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
 				bandwidth_time = end_time;
 				report_size = 0;
@@ -476,7 +491,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 			}
 		}
 	}
-	printf("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));
+	tcp_test_log("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));
 
 	// send a final terminating datagram
 	i = 0;
@@ -519,11 +534,11 @@ int udp_client_func(struct iperf_data_t iperf_data)
 
 				UDP_Hdr = (struct iperf_udp_datagram*) udp_client_buffer;
 				hdr = (struct iperf_udp_server_hdr*) (UDP_Hdr+1);
-				printf("\n\r%s: Server Report", __func__);
+				tcp_test_log("\n\r%s: Server Report", __func__);
 				if ( (ntohl(hdr->flags) & 0x80000000) != 0 ) {
 					stop_ms = ntohl( hdr->stop_sec )*1000 + ntohl( hdr->stop_usec ) /1000;
 					total_len = (((uint64_t) ntohl( hdr->total_len1 )) << 32) +ntohl( hdr->total_len2 );
-					printf("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec", __func__, (uint32_t)(total_len/KB), stop_ms, (uint32_t)(total_len*8/stop_ms));
+					tcp_test_log("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec", __func__, (uint32_t)(total_len/KB), stop_ms, (uint32_t)(total_len*8/stop_ms));
 				}
 			}
 			break; 
@@ -532,7 +547,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 Exit1:
 	close(iperf_data.client_fd);
 Exit2:
-	printf("\n\r%s: Close client socket",__func__);
+	tcp_test_log("\n\r%s: Close client socket",__func__);
 	if(udp_client_buffer){
 		vPortFree(udp_client_buffer);
 		udp_client_buffer = NULL;
@@ -553,16 +568,16 @@ int udp_server_func(struct iperf_data_t iperf_data)
 
 	udp_server_buffer = pvPortMalloc(iperf_data.buf_size);
 	if(!udp_server_buffer){
-		printf("\n\r[ERROR] %s: Alloc buffer failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Alloc buffer failed",__func__);
 		goto Exit2;
 	}
 
 	//create socket
 	if((iperf_data.server_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0){
-		printf("\n\r[ERROR] %s: Create socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Create socket failed",__func__);
 		goto Exit2;
 	}
-	printf("\n\r%s: Create socket fd = %d, port = %d", __func__,iperf_data.server_fd,iperf_data.port);
+	tcp_test_log("\n\r%s: Create socket fd = %d, port = %d", __func__,iperf_data.server_fd,iperf_data.port);
 
 	setsockopt( iperf_data.server_fd, SOL_SOCKET, SO_REUSEADDR, (const char *) &n, sizeof( n ) );
 
@@ -574,11 +589,11 @@ int udp_server_func(struct iperf_data_t iperf_data)
 
 	// binding the TCP socket to the TCP server address
 	if( bind(iperf_data.server_fd, (struct sockaddr*)&ser_addr, sizeof(ser_addr)) < 0){
-		printf("\n\r[ERROR] %s: Bind socket failed",__func__);
+		tcp_test_log("\n\r[ERROR] %s: Bind socket failed",__func__);
 		goto Exit1;
 	}
 
-	printf("\n\r%s: Bind socket successfully",__func__);
+	tcp_test_log("\n\r%s: Bind socket successfully",__func__);
 
 	//wait for first packet to start
 	recv_size = recvfrom(iperf_data.server_fd,udp_server_buffer,iperf_data.buf_size,0,(struct sockaddr *) &client_addr,(u32_t*)&addrlen);
@@ -604,7 +619,7 @@ int udp_server_func(struct iperf_data_t iperf_data)
 		if(ntohl(client_hdr.flags) == 0x80000001){//bi-direction, create client to send packets back
 			if(NULL == g_udp_client_task){
 				if(xTaskCreate(udp_client_handler, "udp_client_handler", BSD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 + PRIORITIE_OFFSET, &g_udp_client_task) != pdPASS)
-					printf("\r\nUDP ERROR: Create UDP client task failed.");
+					tcp_test_log("\r\nUDP ERROR: Create UDP client task failed.");
 				else{
 					strncpy((char*)udp_client_data.server_ip, inet_ntoa(client_addr.sin_addr), (strlen(inet_ntoa(client_addr.sin_addr))) );
 					udp_client_data.port = ntohl(client_hdr.mPort);
@@ -630,7 +645,7 @@ int udp_server_func(struct iperf_data_t iperf_data)
 		while ( ((end_time - start_time) <= (configTICK_RATE_HZ * client_hdr.mAmount )) && (!g_udp_terminate) ) {
 			recv_size = recvfrom(iperf_data.server_fd,udp_server_buffer,iperf_data.buf_size,0,(struct sockaddr *) &client_addr,(u32_t*)&addrlen);
 			if( recv_size < 0){
-				printf("\n\r[ERROR] %s: Receive data failed",__func__);
+				tcp_test_log("\n\r[ERROR] %s: Receive data failed",__func__);
 				goto Exit1;
 			}
 
@@ -642,7 +657,7 @@ int udp_server_func(struct iperf_data_t iperf_data)
 			total_size+=recv_size;
 			report_size+=recv_size;
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))) {
-				printf("\n\r%s: Receive %d KBytes in %d ms, %d Kbits/sec",__func__,(uint32_t) (report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
+				tcp_test_log("\n\r%s: Receive %d KBytes in %d ms, %d Kbits/sec",__func__,(uint32_t) (report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
 				report_size = 0;
 			}
@@ -651,7 +666,7 @@ int udp_server_func(struct iperf_data_t iperf_data)
 		while ( (total_size < client_hdr.mAmount) && (!g_udp_terminate) ) {
 			recv_size = recvfrom(iperf_data.server_fd,udp_server_buffer,iperf_data.buf_size,0,(struct sockaddr *) &client_addr,(u32_t*)&addrlen);
 			if( recv_size < 0){
-				printf("\n\r[ERROR] %s: Receive data failed",__func__);
+				tcp_test_log("\n\r[ERROR] %s: Receive data failed",__func__);
 				goto Exit1;
 			}
 
@@ -663,13 +678,13 @@ int udp_server_func(struct iperf_data_t iperf_data)
 			total_size+=recv_size;
 			report_size+=recv_size;
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))) {
-				printf("\n\r%s: Receive %d KBytes in %d ms, %d Kbits/sec",__func__,(uint32_t) (report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
+				tcp_test_log("\n\r%s: Receive %d KBytes in %d ms, %d Kbits/sec",__func__,(uint32_t) (report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
 				report_size = 0;
 			}
 		}
 	}
-	printf("\n\r%s: [END] Totally receive %d KBytes in %d ms, %d Kbits/sec",__func__,(uint32_t) (total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));
+	tcp_test_log("\n\r%s: [END] Totally receive %d KBytes in %d ms, %d Kbits/sec",__func__,(uint32_t) (total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));
 
 Exit1:
 	// close the listening socket
@@ -690,15 +705,21 @@ static void tcp_client_handler(void *param)
 	
 	vTaskDelay(100);
 
-	printf("\n\rTCP: Start TCP client!");
+	tcp_test_log("\n\rTCP: Start TCP client!");
+    if(NULL == tcp_test_log_mutex){
+        rtw_mutex_init(&tcp_test_log_mutex);
+    }
 	tcp_client_func(tcp_client_data);
 
 #if defined(INCLUDE_uxTaskGetStackHighWaterMark) && (INCLUDE_uxTaskGetStackHighWaterMark == 1)
-	printf("\n\rMin available stack size of %s = %d * %d bytes\n\r", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
+	tcp_test_log("\n\rMin available stack size of %s = %d * %d bytes\n\r", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
 #endif
-	printf("\n\rTCP: TCP client stopped!");
+	tcp_test_log("\n\rTCP: TCP client stopped!");
 
 	g_tcp_client_task = NULL;
+    if(HAVE_NO_TCP_TEST_NOW()){
+        rtw_mutex_free(&tcp_test_log_mutex);
+    }
 	vTaskDelete(NULL);
 }
 
@@ -709,14 +730,21 @@ static void tcp_server_handler(void *param)
 	
 	vTaskDelay(100);
 
-	printf("\n\rTCP: Start TCP server!");
+	tcp_test_log("\n\rTCP: Start TCP server!");
+    if(NULL == tcp_test_log_mutex){
+        rtw_mutex_init(&tcp_test_log_mutex);
+    }
 	tcp_server_func(tcp_server_data);
 
 #if defined(INCLUDE_uxTaskGetStackHighWaterMark) && (INCLUDE_uxTaskGetStackHighWaterMark == 1)
-	printf("\n\rMin available stack size of %s = %d * %d bytes\n\r", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
+	tcp_test_log("\n\rMin available stack size of %s = %d * %d bytes\n\r", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
 #endif
-	printf("\n\rTCP: TCP server stopped!");
+	tcp_test_log("\n\rTCP: TCP server stopped!");
 	g_tcp_server_task = NULL;
+    if(HAVE_NO_TCP_TEST_NOW()){
+        rtw_mutex_free(&tcp_test_log_mutex);
+    }
+
 	vTaskDelete(NULL);
 }
 
@@ -727,16 +755,23 @@ static void udp_client_handler(void *param)
 	
 	vTaskDelay(100);
 
-	printf("\n\rUDP: Start UDP client!");
+	tcp_test_log("\n\rUDP: Start UDP client!");
+    if(NULL == tcp_test_log_mutex){
+        rtw_mutex_init(&tcp_test_log_mutex);
+    }
 	udp_client_func(udp_client_data);
 
 #if defined(INCLUDE_uxTaskGetStackHighWaterMark) && (INCLUDE_uxTaskGetStackHighWaterMark == 1)
-	printf("\n\rMin available stack size of %s = %d * %d bytes", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
+	tcp_test_log("\n\rMin available stack size of %s = %d * %d bytes", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
 #endif
 
-	printf("\n\rUDP: UDP client stopped!");
+	tcp_test_log("\n\rUDP: UDP client stopped!");
 	memset(&udp_client_data, 0, sizeof(udp_client_data));
 	g_udp_client_task = NULL;
+    if(HAVE_NO_TCP_TEST_NOW()){
+        rtw_mutex_free(&tcp_test_log_mutex);
+    }
+
 	vTaskDelete(NULL);	
 }
 
@@ -747,16 +782,23 @@ static void udp_server_handler(void *param)
 	
 	vTaskDelay(100);
 
-	printf("\n\rUDP: Start UDP server!");
+	tcp_test_log("\n\rUDP: Start UDP server!");
+    if(NULL == tcp_test_log_mutex){
+        rtw_mutex_init(&tcp_test_log_mutex);
+    }
 	udp_server_func(udp_server_data);
 
 #if defined(INCLUDE_uxTaskGetStackHighWaterMark) && (INCLUDE_uxTaskGetStackHighWaterMark == 1)
-	printf("\n\rMin available stack size of %s = %d * %d bytes", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
+	tcp_test_log("\n\rMin available stack size of %s = %d * %d bytes", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
 #endif
 
-	printf("\n\rUDP: UDP server stopped!");
+	tcp_test_log("\n\rUDP: UDP server stopped!");
 	memset(&udp_server_data, 0, sizeof(udp_server_data));
 	g_udp_server_task = NULL;
+    if(HAVE_NO_TCP_TEST_NOW()){
+        rtw_mutex_free(&tcp_test_log_mutex);
+    }
+
 	vTaskDelete(NULL);	
 }
 
@@ -811,7 +853,7 @@ void cmd_tcp(int argc, char **argv)
 		if(argv_count == 2){
 			if(strcmp(argv[argv_count-1], "-s") == 0){
 				if(g_tcp_server_task){
-					printf("\n\rTCP: TCP Server is already running.");
+					tcp_test_log("\n\rTCP: TCP Server is already running.");
 					return;
 				}else{
 					memset(&tcp_server_data,0,sizeof(struct iperf_data_t));
@@ -838,7 +880,7 @@ void cmd_tcp(int argc, char **argv)
 							vPortFree(tcp_server_buffer);
 							tcp_server_buffer = NULL;
 						}
-						printf("\n\rTCP server stopped!\n");
+						tcp_test_log("\n\rTCP server stopped!\n");
 						vTaskDelete(g_tcp_server_task);
 						g_tcp_server_task = NULL;
 					}
@@ -850,7 +892,7 @@ void cmd_tcp(int argc, char **argv)
 			}
 			else if(strcmp(argv[argv_count-1], "-c") == 0){
 				if(g_tcp_client_task){
-					printf("\n\rTCP: TCP client is already running. Please enter \"ATWT=stop\" to stop it.");
+					tcp_test_log("\n\rTCP: TCP client is already running. Please enter \"ATWT=stop\" to stop it.");
 					return;
 				}else{
 					if(argc < (argv_count+1))
@@ -939,7 +981,7 @@ void cmd_tcp(int argc, char **argv)
 
 	if(tcp_server_data.start && (NULL == g_tcp_server_task)){
 		if(xTaskCreate(tcp_server_handler, "tcp_server_handler", BSD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 + PRIORITIE_OFFSET, &g_tcp_server_task) != pdPASS)
-			printf("\n\rTCP ERROR: Create TCP server task failed.");
+			tcp_test_log("\n\rTCP ERROR: Create TCP server task failed.");
 		else{
 			if(tcp_server_data.port == 0)
 				tcp_server_data.port = DEFAULT_PORT;
@@ -952,7 +994,7 @@ void cmd_tcp(int argc, char **argv)
 
 	if(tcp_client_data.start && (NULL == g_tcp_client_task)){
 		if(xTaskCreate(tcp_client_handler, "tcp_client_handler", BSD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 + PRIORITIE_OFFSET, &g_tcp_client_task) != pdPASS)
-			printf("\n\rTCP ERROR: Create TCP client task failed.");
+			tcp_test_log("\n\rTCP ERROR: Create TCP client task failed.");
 		else{
 			if(tcp_client_data.port == 0)
 				tcp_client_data.port = DEFAULT_PORT;
@@ -967,23 +1009,23 @@ void cmd_tcp(int argc, char **argv)
 
 	return;
 Exit:
-	printf("\n\r[ATWT] Command format ERROR!\n");
-	printf("\n\r[ATWT] Usage: ATWT=[-s|-c,host|stop],[options]\n");
-	printf("\n\r   Client/Server:\n");
-	printf("  \r     stop           terminate client & server\n");
-	printf("  \r     -i    #        seconds between periodic bandwidth reports\n");
-	printf("  \r     -l    #        length of buffer to read or write (default 1460 Bytes)\n");
-	printf("  \r     -p    #        server port to listen on/connect to (default 5001)\n");
-	printf("\n\r   Server specific:\n");
-	printf("  \r     -s             run in server mode\n");
-	printf("\n\r   Client specific:\n");
-	printf("  \r     -c    <host>   run in client mode, connecting to <host>\n");
-	printf("  \r     -d             Do a bidirectional test simultaneously\n");
-	printf("  \r     -t    #        time in seconds to transmit for (default 10 secs)\n");
-	printf("  \r     -n    #[KM]    number of bytes to transmit (instead of -t)\n");
-	printf("\n\r   Example:\n");
-	printf("  \r     ATWT=-s,-p,5002\n");
-	printf("  \r     ATWT=-c,192.168.1.2,-t,100,-p,5002\n");
+	tcp_test_log("\n\r[ATWT] Command format ERROR!\n");
+	tcp_test_log("\n\r[ATWT] Usage: ATWT=[-s|-c,host|stop],[options]\n");
+	tcp_test_log("\n\r   Client/Server:\n");
+	tcp_test_log("  \r     stop           terminate client & server\n");
+	tcp_test_log("  \r     -i    #        seconds between periodic bandwidth reports\n");
+	tcp_test_log("  \r     -l    #        length of buffer to read or write (default 1460 Bytes)\n");
+	tcp_test_log("  \r     -p    #        server port to listen on/connect to (default 5001)\n");
+	tcp_test_log("\n\r   Server specific:\n");
+	tcp_test_log("  \r     -s             run in server mode\n");
+	tcp_test_log("\n\r   Client specific:\n");
+	tcp_test_log("  \r     -c    <host>   run in client mode, connecting to <host>\n");
+	tcp_test_log("  \r     -d             Do a bidirectional test simultaneously\n");
+	tcp_test_log("  \r     -t    #        time in seconds to transmit for (default 10 secs)\n");
+	tcp_test_log("  \r     -n    #[KM]    number of bytes to transmit (instead of -t)\n");
+	tcp_test_log("\n\r   Example:\n");
+	tcp_test_log("  \r     ATWT=-s,-p,5002\n");
+	tcp_test_log("  \r     ATWT=-c,192.168.1.2,-t,100,-p,5002\n");
 	return;
 }
 
@@ -1006,7 +1048,7 @@ void cmd_udp(int argc, char **argv)
 		if(argv_count == 2){
 			if(strcmp(argv[argv_count-1], "-s") == 0){
 				if(g_udp_server_task){
-					printf("\n\rUDP: UDP Server is already running.");
+					tcp_test_log("\n\rUDP: UDP Server is already running.");
 					return;
 				}else{
 					memset(&udp_server_data,0,sizeof(struct iperf_data_t));
@@ -1030,7 +1072,7 @@ void cmd_udp(int argc, char **argv)
 							vPortFree(udp_server_buffer);
 							udp_server_buffer = NULL;
 						}
-						printf("\n\rUDP server stopped!\n");
+						tcp_test_log("\n\rUDP server stopped!\n");
 						vTaskDelete(g_udp_server_task);
 						g_udp_server_task = NULL;
 					}
@@ -1042,7 +1084,7 @@ void cmd_udp(int argc, char **argv)
 			}
 			else if(strcmp(argv[argv_count-1], "-c") == 0){
 				if(g_udp_client_task){
-					printf("\n\rUDP: UDP client is already running. Please enter \"ATWU=stop\" to stop it.");
+					tcp_test_log("\n\rUDP: UDP client is already running. Please enter \"ATWU=stop\" to stop it.");
 					return;
 				}else{
 					if(argc < (argv_count+1))
@@ -1166,7 +1208,7 @@ void cmd_udp(int argc, char **argv)
 
 	if(udp_server_data.start && (NULL == g_udp_server_task)){
 		if(xTaskCreate(udp_server_handler, "udp_server_handler", BSD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 2 + PRIORITIE_OFFSET, &g_udp_server_task) != pdPASS)
-			printf("\r\nUDP ERROR: Create UDP server task failed.");
+			tcp_test_log("\r\nUDP ERROR: Create UDP server task failed.");
 		else{
 			if(udp_server_data.port == 0)
 				udp_server_data.port = DEFAULT_PORT;
@@ -1182,7 +1224,7 @@ void cmd_udp(int argc, char **argv)
 	
 	if(udp_client_data.start && (NULL == g_udp_client_task)){
 		if(xTaskCreate(udp_client_handler, "udp_client_handler", BSD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 1 + PRIORITIE_OFFSET, &g_udp_client_task) != pdPASS)
-			printf("\r\nUDP ERROR: Create UDP client task failed.");
+			tcp_test_log("\r\nUDP ERROR: Create UDP client task failed.");
 		else{
 			if(udp_client_data.port == 0)
 				udp_client_data.port = DEFAULT_PORT;
@@ -1203,26 +1245,26 @@ void cmd_udp(int argc, char **argv)
 	return;
 
 Exit:
-	printf("\n\r[ATWU] Command format ERROR!\n");
-	printf("\n\r[ATWU] Usage: ATWU=[-s|-c,host|stop][options]\n");
-	printf("\n\r   Client/Server:\n");
-	printf("  \r     stop           terminate client & server\n");
-	printf("  \r     -i    #        seconds between periodic bandwidth reports\n");
-	printf("  \r     -l    #        length of buffer to read or write (default 1460 Bytes)\n");
-	printf("  \r     -p    #        server port to listen on/connect to (default 5001)\n");
-	printf("\n\r   Server specific:\n");
-	printf("  \r     -s             run in server mode\n");
-	printf("\n\r   Client specific:\n");
-	printf("  \r     -b    #[KM]    for UDP, bandwidth to send at in bits/sec (default 1 Mbit/sec)\n");
-	printf("  \r     -c    <host>   run in client mode, connecting to <host>\n");
-	printf("  \r     -d             Do a bidirectional test simultaneously\n");
-	printf("  \r     -t    #        time in seconds to transmit for (default 10 secs)\n");
-	printf("  \r     -n    #[KM]    number of bytes to transmit (instead of -t)\n");
+	tcp_test_log("\n\r[ATWU] Command format ERROR!\n");
+	tcp_test_log("\n\r[ATWU] Usage: ATWU=[-s|-c,host|stop][options]\n");
+	tcp_test_log("\n\r   Client/Server:\n");
+	tcp_test_log("  \r     stop           terminate client & server\n");
+	tcp_test_log("  \r     -i    #        seconds between periodic bandwidth reports\n");
+	tcp_test_log("  \r     -l    #        length of buffer to read or write (default 1460 Bytes)\n");
+	tcp_test_log("  \r     -p    #        server port to listen on/connect to (default 5001)\n");
+	tcp_test_log("\n\r   Server specific:\n");
+	tcp_test_log("  \r     -s             run in server mode\n");
+	tcp_test_log("\n\r   Client specific:\n");
+	tcp_test_log("  \r     -b    #[KM]    for UDP, bandwidth to send at in bits/sec (default 1 Mbit/sec)\n");
+	tcp_test_log("  \r     -c    <host>   run in client mode, connecting to <host>\n");
+	tcp_test_log("  \r     -d             Do a bidirectional test simultaneously\n");
+	tcp_test_log("  \r     -t    #        time in seconds to transmit for (default 10 secs)\n");
+	tcp_test_log("  \r     -n    #[KM]    number of bytes to transmit (instead of -t)\n");
 #if CONFIG_WLAN
-	printf("  \r     -S    #        set the IP 'type of service'\n");
+	tcp_test_log("  \r     -S    #        set the IP 'type of service'\n");
 #endif
-	printf("\n\r   Example:\n");
-	printf("  \r     ATWU=-s,-p,5002\n");
-	printf("  \r     ATWU=-c,192.168.1.2,-t,100,-p,5002\n");
+	tcp_test_log("\n\r   Example:\n");
+	tcp_test_log("  \r     ATWU=-s,-p,5002\n");
+	tcp_test_log("  \r     ATWU=-c,192.168.1.2,-t,100,-p,5002\n");
 	return;
 }

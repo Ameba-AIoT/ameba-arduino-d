@@ -143,6 +143,19 @@ void  analogin_deinit(analogin_t *obj)
 	/* Disable ADC  */
 	ADC_Cmd(DISABLE);
 }
+
+/**
+  * @brief  Read resistor value
+  * @retval -1: invalid value
+            0: efuse not program
+            others: resistor value
+  */
+extern int rtw_resistor_read();
+int analogin_resistor_read()
+{
+	return rtw_resistor_read();
+}
+
 /** 
   * @}
   */

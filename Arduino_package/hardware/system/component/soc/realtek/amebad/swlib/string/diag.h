@@ -65,6 +65,7 @@ typedef enum {
 	MODULE_BT			= 25,
 	MODULE_IPC			= 26,
 	MODULE_KM4		= 27,
+	MODULE_USB_CLASS  = 28,
 
 	MODULE_NUMs		= 32 /**< Module Number */
 } MODULE_DEFINE;

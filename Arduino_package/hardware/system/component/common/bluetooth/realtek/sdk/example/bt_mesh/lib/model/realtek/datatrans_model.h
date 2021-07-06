@@ -98,6 +98,9 @@ typedef struct
      * app modify status and success written length if need to,
      * the default value is DATATRANS_SUCCESS and data_len
      */
+#if defined(CONFIG_BT_MESH_TEST) && CONFIG_BT_MESH_TEST
+    uint16_t src;
+#endif
     datatrans_stat_t status;
     uint16_t written_len;
 } datatrans_server_write_t;;

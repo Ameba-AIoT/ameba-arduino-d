@@ -105,6 +105,60 @@ bool prov_device_public_key_set(uint8_t public_key[64]);
   */
 bool prov_auth_random_conf_set(uint8_t random[16], uint8_t conf[16]);
 
+/**
+  * @brief disconnect the prov bearer
+  *
+  * The spec requires the provisioner to disconnect the bearer after the provision procedure.
+  * The mesh stack leaves the app to decide whether to disconnect at the case @ref PROV_CB_TYPE_COMPLETE.
+  * @param[in] reason: pb-adv bearer need the disconnect reason
+  * @return operation result
+  */
+bool prov_disconnect_prov(pb_adv_link_close_reason_t reason);
+
+/**
+  * @brief set the auth random value
+  *
+  * The function shall be called at the appropriate time.
+  * @param[in] random: random value
+  * @return operation result
+  */
+bool prov_auth_random_set_prov(uint8_t random[16]);
+
+/**
+  * @brief change the auth value
+  *
+  * The function shall be called at the appropriate time. The auth value will changed immediately
+  * @param[in] pvalue: auth value
+  * @param[in] len: value length
+  * @return operation result
+  */
+bool prov_auth_value_change_prov(uint8_t *pvalue, uint8_t len);
+
+/**
+  * @brief set the auth value
+  *
+  * The function shall be called at the appropriate time. The auth value shall be
+  * set with the appropriate length and data format.
+  * @param[in] pvalue: auth value
+  * @param[in] len: value length
+  * @return operation result
+  */
+bool prov_auth_value_set_prov(uint8_t *pvalue, uint8_t len);
+
+/**
+ * @brief provisioner send data
+ * @param[in] pdata: provision data to send
+ * @param[in] len: provision data length
+ * @return send result
+ */
+bool prov_send_prov(uint8_t *pdata, uint16_t len);
+
+/**
+ * @brief initialize provision resources
+ */
+void prov_init_prov(void);
+
+
 /** @} */
 /** @} */
 

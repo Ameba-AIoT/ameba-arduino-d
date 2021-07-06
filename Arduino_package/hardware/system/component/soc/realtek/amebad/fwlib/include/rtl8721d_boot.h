@@ -124,6 +124,7 @@ extern void PendSV_Handler( void );
 
 extern u32 BOOT_ROM_CM4PON(u32 pwr_cmd_addr);
 extern void BOOT_FLASH_Image1(void);
+extern void BOOT_FLASH_Image1_2nd(void);
 extern void BOOT_FLASH_WakeFromPG(void);
 extern void BOOT_RAM_FuncEnable(void);
 extern u32 BOOT_RAM_FLASH_Calibration(u8 read_mode);

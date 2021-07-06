@@ -138,7 +138,6 @@ typedef struct
     proxy_client_cb_content_t cb_content;
 } proxy_client_cb_data_t;
 
-extern uint8_t proxy_client_conn_id;
 extern T_CLIENT_ID proxy_client_id;
 /** @} */
 

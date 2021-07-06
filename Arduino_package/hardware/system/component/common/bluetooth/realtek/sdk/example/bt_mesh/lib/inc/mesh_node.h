@@ -71,6 +71,10 @@ typedef struct
     uint16_t prov_interval; //!< unit: 100 millisecond, 0: use stack default value
     uint16_t proxy_interval; //!< unit: 100 millisecond, 0: use stack default value
     uint16_t identity_interval; //!< unit: 100 millisecond, 0: use stack default value
+#if MESH_PRB
+    uint16_t prb_interval; //!< unit: 100 millisecond, 0: use stack default value
+    uint32_t prb_random_update_interval; //!< unit: 100 millisecond, 0: use stack default value
+#endif
 } mesh_node_cfg_t, *mesh_node_cfg_p;
 
 typedef struct
@@ -98,7 +102,10 @@ typedef struct
     uint32_t flash: 1; //!< enable/disable flash storage
     uint32_t flash_rpl: 1; //!< rpl has an cascade flash storage control above flash bit
 
-    uint32_t rfu: 14;
+    uint32_t prb : 1; //!< state can be changed by private beacon set
+    uint32_t private_proxy: 2; //!< Mesh Private Proxy
+
+    uint32_t rfu: 11;
 } mesh_node_features_t;
 
 /** @defgroup Mesh_Address Mesh Address
@@ -298,12 +305,19 @@ typedef struct
     uint8_t net_id[8];
     uint8_t beacon_key[MESH_COMMON_KEY_SIZE];
     uint8_t identity_key[MESH_COMMON_KEY_SIZE];
+#if MESH_PRB
+    /** keys used in prb */
+    uint8_t private_beacon_key[MESH_COMMON_KEY_SIZE];
+#endif
 } net_key_t, *net_key_p;
 
 typedef struct
 {
     mesh_key_state_t key_state;
     uint8_t identity; //!< Binding with GATT Proxy state
+#if MESH_PRB
+    uint8_t private_identity; //!< Binding with GATT Pirvate Proxy state
+#endif
     uint16_t net_key_index_g; //!< index of global NetKey list, bit15 represent wheather it is a frnd key
     net_key_p pnet_key[2];
 } net_key_list_t, *net_key_list_p;
@@ -383,6 +397,8 @@ typedef struct _mesh_msg_t
     uint8_t net_trans_count;
     uint8_t net_trans_steps;
     uint32_t delay_time; //!< message send delay time, unit is ms
+    bearer_field_t bearer_field; //!< indicate which bearers sending to, or which bearer receiving from
+    gap_sched_link_t link; //!< indicate which links sending to, or which link receiving from
 } mesh_msg_t;
 
 typedef struct
@@ -415,12 +431,19 @@ typedef struct
     uint16_t prov_interval; //!< 100ms
     uint16_t proxy_interval; //!< 100ms
     uint16_t identity_interval; //!< 100ms
+    uint16_t identity_credit; //!< identity times in each interval
+#if MESH_PRB
+    uint16_t prb_interval; //!< unit: 100 millisecond, 0: use stack default value
+    uint32_t prb_random_update_interval; //!< unit: 1 second, 0: use stack default value
+    uint16_t private_proxy_interval; //!< 100ms
+    uint16_t private_identity_interval; //!< 100ms
+#endif
     uint16_t unicast_addr;
     plt_list_t element_queue; //!< @ref mesh_element_t
     uint8_t model_num;
     uint8_t sub_addr_num; //!< per model
-    uint8_t *compo_data[1];
-    uint16_t compo_data_size[1];
+    uint8_t *compo_data[3]; //!< 0: page 0, 1: page 1, 2: page 128
+    uint16_t compo_data_size[3];
     /** element attention */
     plt_timer_t attn_timer;
     uint32_t attn_interval; //!< ms, range of 10ms ~ 1000ms
@@ -455,6 +478,13 @@ typedef struct
     uint8_t frnd_tx_ahead; //!< range: 0x00–0xFF ms (default 15ms), set by the fn
     uint8_t frnd_poll_times; //!< default 1 times, set by the lpn
     uint8_t frnd_upd_times; //!< default 11 times, set by the fn
+    uint16_t frnd_offer_rx_delay; //!< range: 0x01-0xFFFF ms (default 90ms), set by the lpn
+    uint16_t frnd_offer_wait_period; //!< range: 0x01-0xFFFF ms (default 1100ms), set by the lpn
+    uint16_t frnd_offer_choose_delay; //!< range: 0x01-0xFFFF ms (default 400ms), set by the lpn
+    uint16_t frnd_poll_retry_interval; //!< range: 0x01-0xFFFF ms (default 300ms), set by the lpn
+    uint8_t frnd_poll_retry_times; //!< range: 0x01-0xFF times (default 8times), set by the lpn
+    uint8_t frnd_poll_failed_times; //!< range: 0x01-0xFF times (default 1times), set by the lpn
+    uint32_t frnd_scan_delay_time; //!< range: 0x00-0xFFFFFFFF us (default 0 us), set by the lpn
     /** beacon params */
     union
     {
@@ -472,6 +502,24 @@ typedef struct
     uint8_t iv_test_flag : 1;
     uint8_t uri_flag : 1; //!< flag to indicate URI Hash field in udb
     uint8_t adv_bearer: 1; //!< default on
+    uint8_t node_uncheck_group_addr: 1; //!< default off
+    uint8_t check_reprov: 1; //!< default off
+    uint8_t cccd_not_check: 1; //!< default off
+
+    /* configurable parameters */
+#if MESH_PARAM_CONFIGURABLE
+    uint16_t inner_msg_num;
+    uint32_t pb_generic_timeout;
+    uint32_t pb_adv_link_idle_timeout;
+    uint16_t pb_adv_retry_period;
+    uint32_t prov_timeout;
+    uint32_t proxy_sar_timeout;
+    uint8_t proxy_sar_buffer_len;
+    uint8_t frnd_queue_min_ttl;
+    uint8_t frnd_sub_list_size;
+    uint16_t frnd_timeout_period;
+    uint16_t seq_num_step;
+#endif
 } mesh_node_t, *mesh_node_p;
 
 extern mesh_node_t mesh_node;
@@ -628,6 +676,9 @@ void mesh_key_refresh(uint8_t key_refresh, uint16_t net_key_index);
   * @retval false: fail
   */
 bool compo_data_page0_gen(compo_data_page0_header_p pcompo_data_page0_header);
+bool compo_data_page128_gen(compo_data_page0_header_t *pcompo_data_page0_header);
+bool compo_data_page128_valid(void);
+bool compo_data_page128_to_page0(void);
 
 /** @brief
   * @{
@@ -676,6 +727,8 @@ void attn_timer_handle_timeout(void);
 bool mesh_node_sub_check(uint16_t addr);
 void mesh_node_init(void);
 void mesh_node_deinit(void);
+bool mesh_node_check_reprov(uint16_t unicast_address, uint32_t iv_index, bool iv_update_flag,
+                            uint16_t net_key_index_g, uint8_t key[MESH_COMMON_KEY_SIZE]);
 ///@endcond
 
 /**
@@ -716,6 +769,25 @@ void mesh_node_reset(void);
   */
 void mesh_node_restore(void);
 
+/**
+  * @brief When the feature is enabled, the node will receive all group messages even the models haven't
+  * subscribe the group address.
+  *
+  * @return none
+  */
+void mesh_node_unckeck_group_addr(bool enable);
+
+/**
+  * @brief When the feature is enabled, the node will reuse the old mesh parameters if it is reprovisioned.
+  *
+  * The device can be reprovisioned with the same mesh address without worry about the seq number is duplicate so that
+  * the message is filtered by other device.
+  * The api shall be called after @ref mesh_node_cfg.
+  * @return none
+  */
+void mesh_node_set_reprov(bool enable);
+
+void mesh_node_set_cccd_not_check(bool enable);
 /** @} */
 
 /** @brief
@@ -829,6 +901,7 @@ bool mesh_model_sub_check(mesh_model_p pmodel, uint16_t addr);
   * @return the realistic count of group addresses subscribed
   */
 uint16_t mesh_model_sub_dump(mesh_model_p pmodel, uint16_t addr[], uint16_t max_count);
+uint16_t mesh_model_sub_dump_internal(mesh_model_p pmodel, uint16_t addr[], uint16_t max_count);
 
 /**
   * @brief subscribe many group addresses of the model

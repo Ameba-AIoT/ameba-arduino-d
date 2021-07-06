@@ -2,6 +2,10 @@
 /*
  * Release Note
  */
+	v1.0.1.147
+	2021/05/10
+	1. le_disconnect() will check the device disconnecting state. Application can't disconnect two BLE links at the same time.
+	
 	v1.0.1.130
 	2021/02/04
 	1. Open secure context.

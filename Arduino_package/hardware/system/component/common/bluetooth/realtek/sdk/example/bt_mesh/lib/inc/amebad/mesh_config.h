@@ -31,12 +31,11 @@ BEGIN_DECLS
 
 /** setting */
 #define MESH_USE_RANDOM_ADDR                    0 //!< random bt address
-#define MESH_RMT_PRO_SERVER                     0 //!< remote provisioning server
-#define MESH_RMT_PRO_CLIENT                     0 //!< remote provisioning client
 #define MESH_SUPPORT_TRANS_PING                 1 //!< transport layer ping
 #define MESH_CENTRAL_ROLE_SUPPORT               1 //!< central role
 #define MESH_CONFIGURATION_MODEL_USE_APP_KEY    1 //!< violate the spec to use app key, shall also set mesh_node.features.cfg_model_use_app_key.
 #define MESH_PROXY_ADV_WITH_BT_ADDR             1 //!< adv
+#define MESH_PARAM_CONFIGURABLE                 0 //!< configurable parameters
 
 /** !!! For test purpose. If don't know well, please do not modify in case of wrong operation !!! */
 #define MESH_MUTE_MODE                          0 //!< just scan to Receive all mesh data pkts even not sent to me playing a role as a monitor.
@@ -44,24 +43,29 @@ BEGIN_DECLS
 #define MESH_PROVISIONING_SAMPLE_DATA           0 //!< Provisioning Protocol
 #define MESH_UNPROVISIONING_SUPPORT             0 //!< Support unprovisioning cmd in pb-gatt
 
-#if defined(MESH_DEVICE) && MESH_DEVICE
-//#warning "current project is device lib"
-#define MESH_DATA_UART_DEBUG                    1
-#define MESH_LPN                                1 //!< low power node
-#define MESH_FN                                 1 //!< friend node
-#define MESH_GENERATE_ECC_KEY_PAIR_EACH_SESSION 1 //!< only mandatory in the device?
-#define MESH_DEVICE_ONLY_ONE_DEV_KEY            0 //!< Device may send configuration client msgs using other device's DevKey
-#define MESH_DEVICE_PROV_PROXY_SERVER_COEXIST   1 //!< Why not?
-#define MESH_BEARER_ADV                         1
-#define MESH_BEARER_GATT                        1
-#endif
-
-#if defined(MESH_PROVISIONER) && MESH_PROVISIONER
-//#warning "current project is provisioner lib"
+/* mesh features */
 #define MESH_DATA_UART_DEBUG                    1 //!< Data uart debug
 #define MESH_FN                                 1 //!< friend relay
 #define MESH_BEARER_ADV                         1
 #define MESH_BEARER_GATT                        1
+
+/* mesh profile 1.1 */
+#define MESH_1_1_SUPPORT                        0
+#define MESH_PRB                                (MESH_1_1_SUPPORT && 0)
+#define MESH_BLOB                               (MESH_1_1_SUPPORT && 1)
+#define MESH_DFU                                (MESH_1_1_SUPPORT && MESH_BLOB && 1)
+#define MESH_RPR                                (MESH_1_1_SUPPORT && 1)
+
+#if defined(MESH_DEVICE) && MESH_DEVICE
+//#warning "current project is device lib"
+#define MESH_LPN                                1 //!< low power node
+#define MESH_GENERATE_ECC_KEY_PAIR_EACH_SESSION 1 //!< only mandatory in the device?
+#define MESH_DEVICE_ONLY_ONE_DEV_KEY            0 //!< Device may send configuration client msgs using other device's DevKey
+#define MESH_DEVICE_PROV_PROXY_SERVER_COEXIST   1 //!< Why not?
+#endif
+
+#if defined(MESH_PROVISIONER) && MESH_PROVISIONER
+//#warning "current project is provisioner lib"
 #define MESH_PROV_WO_AUTH_VALUE                 0
 #endif
 
@@ -77,16 +81,17 @@ BEGIN_DECLS
 //#error "Can't support both Friend Node and Low Power Node at the same time!"
 #endif
 
-#if MESH_RMT_PRO_SERVER && MESH_RMT_PRO_CLIENT
-#error "Can't support both Remote Provision Server and Client at the same time!"
-#endif
-
 /** Networking parameters */
 #define MESH_UDB_PERIOD                         3000 //!< in units of millisecond
 #define MESH_SNB_PERIOD                         10000 //!< in units of millisecond
 #define MESH_PROV_ADV_PERIOD                    3000 //!< in units of millisecond
 #define MESH_PROXY_ADV_PERIOD                   3000 //!< in units of millisecond
-#define MESH_ID_ADV_PERIOD                      3000 //!< in units of millisecond
+#define MESH_ID_ADV_PERIOD                      300 //!< in units of millisecond
+#if MESH_PRB
+#define MESH_PRB_PERIOD                         10000 //!< in units of millisecond
+#define MESH_PRB_RANDOM_UPDATE_PERIOD           600 //!< in units of seconds 
+#define MESH_PID_ADV_PERIOD                     300 //!< in units of millisecond
+#endif
 
 /** Mesh stored message parameters */
 #define MESH_NET_MSG_CACHE_SIZE                 30 //!< The number of devices to check duplicate packets
@@ -127,11 +132,12 @@ BEGIN_DECLS
 #define MESH_LPN_RX_DELAY                       10
 #define MESH_LPN_RX_WIDEN                       0
 #define MESH_LPN_FRND_OFFER_RX_DELAY            90 //!< 100ms defined by spec
-#define MESH_LPN_FRND_OFFER_TIMEOUT_PERIOD      1010 //!< in units of millisecond
 #define MESH_LPN_FRND_WAIT_PERIOD               1100 //!< offer range
 #define MESH_LPN_FRND_OFFER_CHOOSE_DELAY        400 //!< 6 times, total 1s
-#define MESH_LPN_FRND_POLL_TIMEOUT_PERIOD       300
-#define MESH_LPN_FRND_POLL_TIMES                8
+#define MESH_LPN_FRND_POLL_RETRY_INTERVAL       300
+#define MESH_LPN_FRND_POLL_RETRY_TIMES          8
+#define MESH_LPN_FRND_POLL_FAILED_TIMES         1
+#define MESH_LPN_FRND_SCAN_DELAY_TIME           0
 
 /** Remote Provisioning server parameters */
 #define MESH_RMT_PRO_SERVER_UNPRO_DEVICE_NUM    3 //!<
@@ -150,6 +156,8 @@ BEGIN_DECLS
 /** net key default value */
 #define MESH_NET_KEY                            {0x7d, 0xd7, 0x36, 0x4c, 0xd8, 0x42, 0xad, 0x18, 0xc1, 0x7c, 0x2b, 0x82, 0x0c, 0x84, 0xc3, 0xd6}
 #define MESH_NET_KEY1                           {0xef, 0xb2, 0x25, 0x5e, 0x64, 0x22, 0xd3, 0x30, 0x08, 0x8e, 0x09, 0xbb, 0x01, 0x5e, 0xd7, 0x07}
+
+#define MESH_IDENTITY_CREDIT                    2 //!< shall be >= 1 && <= mesh_node.net_key_num
 
 /** network source address default value */
 #if MESH_MUTE_MODE

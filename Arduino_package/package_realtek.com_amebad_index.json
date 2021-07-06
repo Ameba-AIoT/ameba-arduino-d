@@ -18,14 +18,15 @@
           "help": {
             "online": "https://www.amebaiot.com/"
           },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8.tar.gz",
-          "archiveFileName": "ameba_d-3.0.8.tar.gz",
-          "checksum": "SHA-256:44b0aa15b3853415d882c8658c8f94bdfc0d4758e30dc2f6b963479754b8ddaf",
-          "size": "36592991",
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8-v02.tar.gz",
+          "archiveFileName": "ameba_d-3.0.8-v02.tar.gz",
+          "checksum": "SHA-256:140e5c103550f9b001f68ad156ecd6af61c5987678c08331bb85194012abcbbe",
+          "size": "43665373",
           "boards": [
             {"name": "RTL8722DM"},
             {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"}
+            {"name": "RTL8722DM_MINI"},
+            {"name": "RTL8720DN_BW16"}
           ],
           "toolsDependencies": [
             {

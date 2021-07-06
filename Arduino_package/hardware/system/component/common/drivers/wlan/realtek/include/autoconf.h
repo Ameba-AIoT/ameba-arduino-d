@@ -136,19 +136,10 @@
 
 #define BAD_MIC_COUNTERMEASURE 1
 #define DEFRAGMENTATION 1
+#define RX_AGGREGATION 1
+#define RX_AMSDU 1
 
 #define WIFI_LOGO_CERTIFICATION 0
-#if WIFI_LOGO_CERTIFICATION
-    #define RX_AGGREGATION 1
-	#define RX_AMSDU 1
-#else
-	#ifdef CONFIG_HIGH_TP_TEST
-    		#define RX_AGGREGATION 1
-	#else
-		#define RX_AGGREGATION 1
-	#endif
-	#define RX_AMSDU 0
-#endif
 
 #if defined(CONFIG_PLATFORM_8711B)
 	#define CONFIG_FW_C2H_PKT
@@ -243,6 +234,11 @@
 #endif
 
 
+/* For repeater mode */
+#define CONFIG_REPEATER		0
+#if defined(CONFIG_REPEATER) && CONFIG_REPEATER
+#define NOT_SUPPORT_40M
+#endif
 
 /* For promiscuous mode */
 #define CONFIG_PROMISC
@@ -261,6 +257,8 @@
 /* For multicast */
 #define CONFIG_MULTICAST
 #endif
+
+#define CONFIG_RX_PACKET_APPEND_FCS
 
 /* For STA+AP Concurrent MODE */
 #define CONFIG_CONCURRENT_MODE
@@ -862,13 +860,12 @@ extern unsigned int g_ap_sta_num;
 
 #define TIME_THRES	20
 
-// zzw
 /* 80211 - K V R */
-//#define CONFIG_IEEE80211K
-//#define CONFIG_LAYER2_ROAMING
+#define CONFIG_IEEE80211K
+#define CONFIG_LAYER2_ROAMING
 #ifdef CONFIG_LAYER2_ROAMING
-    //#define CONFIG_RTW_WNM
-    //#define CONFIG_IEEE80211R
+    #define CONFIG_RTW_WNM
+    #define CONFIG_IEEE80211R
 #endif
 
 #endif //WLANCONFIG_H

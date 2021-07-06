@@ -35,8 +35,6 @@
 #define APP_MAX_LINKS  1
 /** @brief  Config airplane mode support: 0-Not built in, 1-built in, use user command to set*/
 #define F_BT_AIRPLANE_MODE_SUPPORT          0
-/** @brief  Config device name characteristic and appearance characteristic property: 0-Not writeable, 1-writeable, save to flash*/
-#define F_BT_GAPS_CHAR_WRITEABLE            0
 /** @brief  Config set physical: 0-Not built in, 1-built in, use user command to set*/
 #define F_BT_LE_5_0_SET_PHY_SUPPORT         0
 

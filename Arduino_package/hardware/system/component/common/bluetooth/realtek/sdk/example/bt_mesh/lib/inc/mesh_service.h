@@ -28,14 +28,14 @@ BEGIN_DECLS
 /** @defgroup Mesh_Service_Exported_Macros Exported Macros
   * @{
   */
-#if defined(MESH_PROVISIONER) && MESH_PROVISIONER
-#define MESH_GATT_SERVER_COUNT                              0
-#else
+#if defined(MESH_DEVICE) && MESH_DEVICE
 #if MESH_DEVICE_PROV_PROXY_SERVER_COEXIST
 #define MESH_GATT_SERVER_COUNT                              2
 #else
 #define MESH_GATT_SERVER_COUNT                              1
 #endif
+#else
+#define MESH_GATT_SERVER_COUNT                              0
 #endif
 
 #if defined(MESH_PROVISIONER) && MESH_PROVISIONER
@@ -60,8 +60,12 @@ typedef struct
 
 enum
 {
-    PROXY_ADV_TYPE_NET_ID,
-    PROXY_ADV_TYPE_NODE_IDENTITY
+    PROXY_ADV_TYPE_NET_ID = 0,
+    PROXY_ADV_TYPE_NODE_IDENTITY = 1,
+#if MESH_PRB
+    PROXY_ADV_TYPE_PRIVATE_NET_ID = 2,
+    PROXY_ADV_TYPE_PRIVATE_NODE_IDENTITY = 3,
+#endif
 } _SHORT_ENUM_;
 typedef uint8_t proxy_adv_type_t;
 
@@ -87,11 +91,15 @@ typedef union
 
 typedef enum
 {
-    MESH_SERVCIE_ADV_CFG_TYPE_PROV_RETRANS_COUNT, //!< uint8_t
-    MESH_SERVCIE_ADV_CFG_TYPE_PROV_RETRANS_INTERVAL, //!< uint16_t, unit: ms
-    MESH_SERVCIE_ADV_CFG_TYPE_PROXY_RETRANS_COUNT, //!< uint8_t
-    MESH_SERVCIE_ADV_CFG_TYPE_PROXY_RETRANS_INTERVAL, //!< uint16_t, unit: ms
-    MESH_SERVCIE_ADV_CFG_TYPE_PROXY_WITH_BT_ADDR //!< bool
+    MESH_SERVCIE_ADV_CFG_TYPE_PROV_RETRANS_COUNT = 0, //!< uint8_t
+    MESH_SERVCIE_ADV_CFG_TYPE_PROV_RETRANS_INTERVAL = 1, //!< uint16_t, unit: ms
+    MESH_SERVCIE_ADV_CFG_TYPE_PROXY_RETRANS_COUNT = 2, //!< uint8_t
+    MESH_SERVCIE_ADV_CFG_TYPE_PROXY_RETRANS_INTERVAL = 3, //!< uint16_t, unit: ms
+    MESH_SERVCIE_ADV_CFG_TYPE_PROXY_WITH_BT_ADDR = 4, //!< bool
+#if MESH_PRB
+    MESH_SERVCIE_ADV_CFG_TYPE_PRIVATE_PROXY_RETRANS_COUNT = 5, //!< uint8_t
+    MESH_SERVCIE_ADV_CFG_TYPE_PRIVATE_PROXY_RETRANS_INTERVAL = 6, //!< uint16_t, unit: ms
+#endif
 } mesh_service_adv_cfg_type_t;
 /** @} */
 
@@ -107,6 +115,15 @@ void mesh_service_identity_adv_send(uint16_t net_key_index);
 void mesh_service_identity_adv_rr(void);
 void mesh_service_identity_adv_start(void);
 void mesh_service_identity_adv_trigger(bool on_off);
+#if MESH_PRB
+void mesh_private_service_adv_start(void);
+void mesh_private_service_adv_stop(void);
+void mesh_private_service_adv_send(void);
+void mesh_private_service_identity_adv_send(uint16_t net_key_index);
+void mesh_private_service_identity_adv_rr(void);
+void mesh_private_service_identity_adv_start(void);
+void mesh_private_service_identity_adv_trigger(bool on_off);
+#endif
 void mesh_service_init(void);
 void mesh_service_deinit(void);
 ///@endcond

@@ -128,6 +128,10 @@ mesh_node_state_t mesh_flash_restore_node_state(void);
 void mesh_flash_store(flash_params_type_t param_type, void *param);
 void mesh_flash_restore(void);
 void mesh_flash_clear(void);
+bool mesh_flash_restore_msg_id(uint16_t *unicast_addr, uint32_t *iv_index, uint32_t *seq,
+                               bool *iv_update_flag);
+bool mesh_flash_retore_net_key(uint16_t net_key_index, uint16_t *net_key_index_g,
+                               uint8_t key[MESH_COMMON_KEY_SIZE]);
 uint32_t mesh_flash_total_size(void);
 ///@endcond
 

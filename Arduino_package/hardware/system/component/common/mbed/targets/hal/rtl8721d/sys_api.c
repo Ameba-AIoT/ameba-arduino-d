@@ -236,7 +236,116 @@ void sys_cpu_reset(void)
 	while(1);
 #endif
 }
+
+/**
+  * @brief read chip package type
+  * @retval 0: efuse not program
+            1: RTL8720
+            2: RTL8721
+            3: RTL8722
+            -1: UNKNOWN
+  */
+extern int rtw_chip_package_read();
+int sys_chip_package_read()
+{
+	return rtw_chip_package_read();
+}
+
+/**
+  * @brief check chip MCM PSRAM existance
+  * @retval 0: efuse not program
+            1: not exist
+            2: exist
+            -1: unknown
+  */
+extern int rtw_chip_psram_check();
+int sys_chip_psram_check()
+{
+	return rtw_chip_psram_check();
+}
+
+/**
+  * @brief check chip MCM FLASH existance
+  * @retval 0: efuse not program
+            1: not exist
+            2: exist
+            -1: unknown
+  */
+extern int rtw_chip_flash_check();
+int sys_chip_flash_check()
+{
+	return rtw_chip_flash_check();
+}
+
 /** 
+  * @brief check chip band type
+  * @retval 0: efuse not program
+            1: single band
+            2: dual band
+            -1: unknown
+  */
+extern int rtw_chip_band_type_check();
+int sys_chip_band_type_check()
+{
+	return rtw_chip_band_type_check();
+}
+
+static enum amebad_chip_model_number chip_model_number_array[] = {
+	// RTL8720
+	CHIP_RTL8720CS,
+	CHIP_RTL8720CSM,
+	CHIP_RTL8720CSF,
+	CHIP_RTL8720DN,
+	CHIP_RTL8720DM,
+	CHIP_RTL8720DF,
+	// RTL8721
+	CHIP_RTL8721CS,
+	CHIP_RTL8721CSM,
+	CHIP_RTL8721CSF,
+	CHIP_RTL8721DN,
+	CHIP_RTL8721DM,
+	CHIP_RTL8721DF,
+	// RTL8722
+	CHIP_RTL8722CS,
+	CHIP_RTL8722CSM,
+	CHIP_RTL8722CSF,
+	CHIP_RTL8722DN,
+	CHIP_RTL8722DM,
+	CHIP_RTL8722DF,
+};
+
+/**
+  * @brief get chip model number
+  * @retval CHIP_NUMBER_UNKNOWN: efuse not program or incorrect value
+  *         other: chip model number
+  */
+enum amebad_chip_model_number sys_get_chip_model_number()
+{
+	int index = 0;
+
+	int package_num = sys_chip_package_read();
+	int band_type = sys_chip_band_type_check();
+	int psram_exist = sys_chip_psram_check();
+	int flash_exist = sys_chip_flash_check();
+
+	if (package_num > 0 && band_type > 0 && psram_exist > 0 && flash_exist > 0) {
+		index = (package_num - 1) * 6 + (band_type - 1) * 3;
+		if (psram_exist == 1 && flash_exist == 1) {
+			index = index + 0;
+		} else if (psram_exist == 2 && flash_exist == 1) {
+			index = index + 1;
+		} else if (psram_exist == 1 && flash_exist == 2) {
+			index = index + 2;
+		} else {
+			return CHIP_NUMBER_UNKNOWN;
+		}
+		return chip_model_number_array[index];
+	} else {
+		return CHIP_NUMBER_UNKNOWN;
+	}
+}
+
+/**
   * @}
   */
 
