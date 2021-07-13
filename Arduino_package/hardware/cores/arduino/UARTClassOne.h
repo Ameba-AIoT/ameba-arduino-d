@@ -46,6 +46,6 @@ class UARTClassOne : public HardwareSerial
         friend bool Serial1_available();
 };
 
-extern UARTClassOne Serial1;
+//extern UARTClassOne Serial1; 
 
 #endif // _LOGUART_CLASS_

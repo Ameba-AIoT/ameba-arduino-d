@@ -10,6 +10,7 @@
  */
 
 #include "SPI.h"
+#include "Arduino.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,14 +76,32 @@ void SPIClass::endTransaction(void)
 
 void SPIClass::begin(void)
 {
+#if defined(BOARD_RTL8722D)
     if (pinMOSI == 11) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if ((pinMOSI == 21) || (pinMOSI == 9)) {
+    } else if (pinMOSI == 21) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
-        printf("spi_init: error, wrong spi_idx \r\n");
+        printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
+#elif defined(BOARD_RTL8722DM_MINI)
+    if ((pinMOSI == 9) || (pinMOSI == 4)) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
+#elif defined(BOARD_RTL8720DN_BW16)
+    if (pinMOSI == 12) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
+#else
+#error chack the SPI pin connections
+#endif
 
     spi_init(
         (spi_t *)pSpiMaster, 
@@ -97,7 +116,8 @@ void SPIClass::begin(void)
 
 void SPIClass::begin(int ss)
 {
-    if ((pinMOSI == 11) || (pinMOSI == 9)) {
+#if defined(BOARD_RTL8722D)
+    if (pinMOSI == 11) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == 21) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
@@ -105,6 +125,23 @@ void SPIClass::begin(int ss)
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
+#elif defined(BOARD_RTL8722DM_MINI)
+    if ((pinMOSI == 9) || (pinMOSI == 4)) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
+#elif defined(BOARD_RTL8720DN_BW16)
+    if (pinMOSI == 12) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
+#else
+#error chack the SPI pin connections
+#endif
 
     spi_init(
         (spi_t *)pSpiMaster, 
@@ -273,6 +310,10 @@ SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
 
 #elif defined(BOARD_RTL8722DM_MINI)
 SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
+
+#elif defined(BOARD_RTL8720DN_BW16)
+//SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
+SPIClass SPI((void *)(&spi_obj0), 12, 11, 10, 9);
 
 #else
 #error chack the borad supported

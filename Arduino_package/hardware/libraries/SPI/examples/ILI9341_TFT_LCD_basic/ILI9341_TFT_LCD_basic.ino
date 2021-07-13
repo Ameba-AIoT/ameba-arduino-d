@@ -25,6 +25,10 @@
 #define TFT_RESET       8
 #define TFT_DC          9
 #define TFT_CS          10
+#elif defined(BOARD_RTL8722DM_MINI)
+#define TFT_RESET       8
+#define TFT_DC          13
+#define TFT_CS          12
 #endif
 
 AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);

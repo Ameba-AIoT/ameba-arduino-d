@@ -133,19 +133,25 @@ IRDevice::IRDevice() {
 }
 
 void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
-    if (receivePin == 3) {
-        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
+    /* there are three groups of pinmux and pad settings:
+    *  |  IR_TX  |  _PA_25  |  _PB_23 |  _PB_31 |
+    *  |  IR_RX  |  _PA_26  |  _PB_22 |  _PB_29 |
+    */
+    if (receivePin == 6) {
+        PAD_PullCtrl(_PB_29, PullNone);
+        Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
     } else if (receivePin == 8) {
         Pinmux_Config(_PB_22, PINMUX_FUNCTION_IR);
     } else if (receivePin == 17) {
+        PAD_PullCtrl(_PA_26, PullNone);
         Pinmux_Config(_PA_26, PINMUX_FUNCTION_IR);
     } else {
         printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
         return;
     }
 
-    if (transmitPin == 6) {
-        Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
+    if (transmitPin == 3) {
+        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
     } else if (transmitPin == 9) {
         Pinmux_Config(_PB_23, PINMUX_FUNCTION_IR);
     } else if (transmitPin == 16) {
@@ -186,59 +192,35 @@ void IRDevice::end() {
     Pinmux_Config(_transmitPin, PINMUX_FUNCTION_GPIO);
 }
 
-/*!
-* @ brief:NEC protocol structure.
-* @ note: Store parameters of NEC protocol.
-* @ Carrier frequency = 38000Hz
-* @ duty factor = 1/2
-* @ first pulse : 9.5ms 4.5ms
-* @ Address (8 bits) is sent first, then ~Address
-* @ Command (8 bits) follows, then ~Command
-* @ LSB is sent first !
-*/
-const IR_ProtocolTypeDef NEC_PROTOCOL =
-    {
-        38000,                                        /* Carrier freqency */
-        2,                                            /* headerLen */
-        {PULSE_HIGH | 9000, PULSE_LOW | (4500 - 26)}, /* headerBuf unit: us*/
-        {PULSE_HIGH | 560, PULSE_LOW | (560 - 26)},   /* log0Buf */
-        {PULSE_HIGH | 560, PULSE_LOW | (1690 - 26)},  /* log1Buf */
-        PULSE_HIGH | 560,                             /* stopBuf */
-        30                                            /* tolerance percentage is 10% */
-};
-
 static IR_DataType ConvertToCarrierCycle(uint32_t time, uint32_t freq) {
     return ((time & PULSE_HIGH) | ((time & IR_DATA_MSK) * freq / 1000000));
 }
 
 void IRDevice::send(const unsigned int buf[], uint16_t len) {
     u32 tx_count = 0;
-    const u8 tx_thres = 1;
+    const u8 tx_thres = 15;
     uint16_t bufLen = 0;
     uint32_t inputTime = 0;
 
     IR_DataStruct.carrierFreq = IR_InitStruct.IR_Freq;
     IR_DataStruct.codeLen = len;
-
-    for (unsigned int i = 1; i <= IR_DataStruct.codeLen; i++) {
-        IR_DataStruct.irBuf[i] = buf[i - 1];
-
-        if ((i & 1) == 1) {
-            inputTime = IR_DataStruct.irBuf[i] | PULSE_HIGH;
+    IR_DataStruct.bufLen = bufLen;
+ 
+    for (unsigned int i = 0; i <= (IR_DataStruct.codeLen - 1); i++) {
+       // assuming a logical bit comprises of a time duration with pulses followed by another duration with no pulses
+        if((i % 2) == 0){ 
+            inputTime = buf[i] | PULSE_HIGH;
             IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
         } else {
-            inputTime = (IR_DataStruct.irBuf[i] - 26) | PULSE_LOW;
+            inputTime = (buf[i]) | PULSE_LOW;
             IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
         }
-        bufLen += MAX_LOG_WAVFORM_SIZE;
+        bufLen += 1;
     }
-
-    bufLen++;
     IR_DataStruct.bufLen = bufLen;
 
     IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE);
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
-
     tx_count += IR_TX_FIFO_SIZE;
 
     while ((IR_DataStruct.bufLen - tx_count) > 0) {
@@ -328,7 +310,7 @@ uint8_t IRDevice::recvNEC(uint8_t &adr, uint8_t &cmd, uint32_t timeout) {
     adr = 0;
     cmd = 0;
     uint8_t data[4] = {0, 0, 0, 0};
-    // uint8_t result;
+    //uint8_t result;
     uint8_t data_received = 0;
 
     IR_DataStruct.bufLen = 0;
@@ -350,7 +332,9 @@ uint8_t IRDevice::recvNEC(uint8_t &adr, uint8_t &cmd, uint32_t timeout) {
         if (IR_RX_INVERTED) {
             InvertPulse(IR_DataStruct.irBuf, IR_DataStruct.bufLen);
         }
+
         // result = IR_NECDecode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
+        IR_NECDecode(IR_InitStruct.IR_Freq, (uint8_t *)&data, &IR_DataStruct);
         adr = data[0];
         cmd = data[2];
         //printf("result %d RX %2x%2x\n",result, adr, cmd);

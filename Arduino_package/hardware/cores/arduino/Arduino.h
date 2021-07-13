@@ -47,6 +47,10 @@ extern uint32_t SystemCoreClock;
 
 void yield(void);
 
+#ifndef yield
+#define yield(x) {}
+#endif
+
 extern uint32_t                     DiagPrintf(const char *fmt, ...);
 extern int                          _rtl_printf(const char *fmt, ...);
 extern int                          _rtl_sprintf(char* str, const char* fmt, ...);
