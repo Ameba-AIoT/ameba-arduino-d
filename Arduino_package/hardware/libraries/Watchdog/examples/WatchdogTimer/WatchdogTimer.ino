@@ -21,8 +21,8 @@ void setup() {
 #endif
 
     wdt.StartWatchdog();  // enable watchdog timer
-    successfulTask();
-    failedTask();
+    Small_Task();
+    Big_Task();
     while(1);
 }
 
@@ -30,21 +30,19 @@ void loop() {
     delay(1000);
 }
 
-void successfulTask(void) {
+void Small_Task(void) {
     Serial.println("......doing small task......");
-    for (int i = 0; i < 50000000; i++)  // dummy task
+    for (int i = 0; i < 50000000; i++) {  // dummy task
         asm(" nop");
-    Serial.println("refresh watchdog");
+    }
+    Serial.println("Small_Task finished refresh watchdog.");
     wdt.RefreshWatchdog();
 }
 
-/**
- * Doing this task will lead to failed refresh the 
- * watchdog timer within the time limits of 5 seconds
-*/
-void failedTask(void) {
-    Serial.println("......doing big task......");
-    for (int i = 0; i < 10; i++) {
+/* If Big_Task unable to reach #10, watchdog barks. */
+void Big_Task(void) {
+    Serial.println("......doing big task, up to 10......");
+    for (int i = 1; i <= 10; i++) {
         Serial.print("doing dummy task #");
         Serial.println(i, DEC);
 
@@ -52,11 +50,11 @@ void failedTask(void) {
             asm(" nop");
         }
     }
-    Serial.println("refresh watchdog");
+    Serial.println("Big_Task finished refresh watchdog.");
     wdt.RefreshWatchdog();
 }
 
 void my_watchdog_irq_handler(uint32_t id) {
-    printf("watchdog barks!!!\r\n");
-    WDG_Cmd(DISABLE);
+    Serial.println("watchdog barks!!!");
+    wdt.StopWatchdog();
 }
