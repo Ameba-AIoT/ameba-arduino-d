@@ -90,10 +90,11 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
             gpio_init(pGpio_t, g_APinDescription[ulPin].pinname);
             g_APinDescription[ulPin].ulPinType = PIO_GPIO;
         }
-        g_APinDescription[ulPin].ulPinMode = ulMode;
+        //g_APinDescription[ulPin].ulPinMode = ulMode;
     } else {
         pGpio_t = gpio_pin_struct[ulPin];
     }
+    g_APinDescription[ulPin].ulPinMode = ulMode;
 
     switch (ulMode)
     {

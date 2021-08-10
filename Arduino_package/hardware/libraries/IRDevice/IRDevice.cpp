@@ -206,7 +206,7 @@ void IRDevice::send(const unsigned int buf[], uint16_t len) {
     IR_DataStruct.codeLen = len;
     IR_DataStruct.bufLen = bufLen;
  
-    for (unsigned int i = 0; i <= (IR_DataStruct.codeLen - 1); i++) {
+    for (int i = 0; i <= (IR_DataStruct.codeLen - 1); i++) {
        // assuming a logical bit comprises of a time duration with pulses followed by another duration with no pulses
         if((i % 2) == 0){ 
             inputTime = buf[i] | PULSE_HIGH;
