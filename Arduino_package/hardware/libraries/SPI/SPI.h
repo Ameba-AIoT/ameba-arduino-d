@@ -107,7 +107,7 @@ private:
     int defaultFrequency; 
 };
 
-#if defined(BOARD_RTL8722D)
+#if defined(BOARD_RTL8722DM)
 extern SPIClass SPI;
 extern SPIClass SPI1;
 #elif defined(BOARD_RTL8722DM_MINI)

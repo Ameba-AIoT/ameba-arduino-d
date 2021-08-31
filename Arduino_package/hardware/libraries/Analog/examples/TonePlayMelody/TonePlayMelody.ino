@@ -111,11 +111,11 @@ void play(int *melody, int *noteDurations, int num) {
     for (int note = 0; note < num; note++) {
         int noteDuration = 3000 / noteDurations[note];
 
-#if defined(BOARD_RTL8195A)
+#if defined(BOARD_RTL8195AM)
         tone(8, melody[note], noteDuration);
-#elif defined(BOARD_RTL8710)
+#elif defined(BOARD_RTL8710AF)
         tone(10, melody[note], noteDuration);
-#elif defined(BOARD_RTL8722D)
+#elif defined(BOARD_RTL8722DM)
         tone(8, melody[note], noteDuration);
 #else
         tone(8, melody[note], noteDuration);
