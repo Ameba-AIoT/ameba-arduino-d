@@ -76,7 +76,7 @@ void SPIClass::endTransaction(void)
 
 void SPIClass::begin(void)
 {
-#if defined(BOARD_RTL8722D)
+#if defined(BOARD_RTL8722DM)
     if (pinMOSI == 11) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == 21) {
@@ -116,7 +116,7 @@ void SPIClass::begin(void)
 
 void SPIClass::begin(int ss)
 {
-#if defined(BOARD_RTL8722D)
+#if defined(BOARD_RTL8722DM)
     if (pinMOSI == 11) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == 21) {
@@ -304,7 +304,7 @@ void SPIClass::setDefaultFrequency(int _frequency)
     defaultFrequency = _frequency;
 }
 
-#if defined(BOARD_RTL8722D)
+#if defined(BOARD_RTL8722DM)
 SPIClass SPI((void *)(&spi_obj0), 11, 12, 13, 10);
 SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
 
