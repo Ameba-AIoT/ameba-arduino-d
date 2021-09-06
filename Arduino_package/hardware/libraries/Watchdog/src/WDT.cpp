@@ -1,6 +1,5 @@
 #include "WDT.h"
 
-#define RUN_CALLBACK_IF_WATCHDOG_BARKS (0)
 #define ENABLE 1
 #define DISABLE 0
 

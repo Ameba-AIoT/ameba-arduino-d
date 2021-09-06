@@ -19,13 +19,13 @@ AmebaServo myservo;
 int pos = 0;
 
 void setup() {
-#if defined(BOARD_RTL8195A)
+#if defined(BOARD_RTL8195AM)
     // attaches the servo on pin 9 to the servo object
     myservo.attach(9);
-#elif defined(BOARD_RTL8710)
+#elif defined(BOARD_RTL8710AF)
     // attaches the servo on pin 13 to the servo object
     myservo.attach(13);
-#elif defined(BOARD_RTL8722D)
+#elif defined(BOARD_RTL8722DM)
     // attaches the servo on pin 8 to the servo object
     myservo.attach(8);
 #else
