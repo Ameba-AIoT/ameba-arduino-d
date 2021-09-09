@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <WiFi.h>
+#include <AmebaWiFi.h>
 #include <NTPClient.h>
 #include <PubSubClient.h>
 #include "src/jwt.h"

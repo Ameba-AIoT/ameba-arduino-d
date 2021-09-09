@@ -2,7 +2,7 @@
  Basic Amazon AWS IoT example
 */
 
-#include <WiFi.h>
+#include <AmebaWiFi.h>
 #include <PubSubClient.h>
 
 // Update these with values suitable for your network.

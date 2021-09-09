@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg4590"
+   xml:space="preserve"
+   enable-background="new 0 0 36.584 21.321"
+   viewBox="0 0 86.399998 403.19998"
+   height="4.1999998in"
+   width="0.89999998in"
+   y="0px"
+   x="0px"
+   version="1.1"><metadata
+     id="metadata36"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs34">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</defs><g
+     transform="translate(0,307.20001)"
+     style="display:inline"
+     id="layer2"><g
+       id="schematic"
+       style="display:inline"
+       transform="translate(0,-3.3484621e-6)"><g
+         transform="translate(0,-3.3484621e-6)"
+         style="display:inline"
+         id="part_symbol"><rect
+           style="display:inline;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:0.95999998;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+           id="rect5188"
+           width="67.199997"
+           height="384"
+           x="9.5999994"
+           y="-297.60004"
+           ry="0" /><text
+           id="text6263-3-0-7-63"
+           y="-116.5718"
+           x="43.401821"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.66666651px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             y="-116.5718"
+             x="43.401821"
+             id="tspan7474">Realtek</tspan><tspan
+             y="-108.23846"
+             x="43.401821"
+             id="tspan7476">Ameba D</tspan><tspan
+             y="-99.905136"
+             x="43.401821"
+             id="tspan7478">RTL872X</tspan></text>
+</g><g
+         id="pins"><path
+           id="b11"
+           d="M 9.6,67.2 H 0"
+           style="fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="b10"
+           d="M 9.6,57.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="b9"
+           d="M 9.6,48 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="b8"
+           d="M 9.6,38.4 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a30"
+           d="M 9.6,28.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="b0"
+           d="M 9.6,19.2 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a31"
+           d="M 9.6,9.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a27"
+           d="M 9.6,0 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a9"
+           d="M 9.6,-9.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a10"
+           d="M 9.6,-19.2 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a11"
+           d="M 9.6,-28.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a12"
+           d="M 9.6,-38.4 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a13"
+           d="M 9.6,-48 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a14"
+           d="M 9.6,-57.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a15"
+           d="M 9.599999,-67.2 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a16"
+           d="M 9.6,-76.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a18"
+           d="M 9.6,-86.4 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a17"
+           d="M 9.6,-96 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d16"
+           d="M 9.6,-124.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d17"
+           d="M 9.6,-134.4 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d18"
+           d="M 9.6,-144 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d19"
+           d="M 9.6,-153.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d20"
+           d="M 9.599999,-163.2 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d21"
+           d="M 9.599999,-172.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d22"
+           d="M 9.6,-192 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d23"
+           d="M 9.599999,-201.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d24"
+           d="M 9.6,-211.2 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d25"
+           d="M 9.6,-220.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d26"
+           d="M 9.599999,-230.4 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d27"
+           d="M 9.6,-240 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d28"
+           d="M 9.6,-249.6 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="swclk"
+           d="M 9.6,-268.8 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="swdio"
+           d="M 9.6,-278.4 H 0"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a6"
+           d="M 86.4,-28.8 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a5"
+           d="M 86.4,-38.4 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a1"
+           d="M 86.4,-48 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a2"
+           d="M 86.4,-57.6 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a4"
+           d="M 86.4,-67.2 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="a0"
+           d="M 86.4,-76.8 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="b25"
+           d="M 86.4,-86.4 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="b2426"
+           d="M 86.4,-96 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d0"
+           d="M 86.4,-124.8 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d1"
+           d="M 86.4,-134.4 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d2"
+           d="M 86.4,-144 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d3"
+           d="M 86.4,-153.6 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d4"
+           d="M 86.4,-163.2 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d5"
+           d="M 86.4,-172.8 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d6"
+           d="M 86.4,-182.4 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="nc"
+           d="M 86.4,-192 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d8"
+           d="M 86.4,-211.2 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d9"
+           d="M 86.4,-220.8 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d10"
+           d="M 86.4,-230.4 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d11"
+           d="M 86.4,-240 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d12"
+           d="M 86.4,-249.6 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d13"
+           d="M 86.4,-259.2 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d14"
+           d="M 86.4,-268.8 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="d15"
+           d="M 86.4,-278.4 H 76.8"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="gnd1"
+           d="M 48,96 V 86.4"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="3v31"
+           d="m 38.4,-297.6 v -9.6"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /><path
+           id="5v1"
+           d="m 48,-297.6 v -9.6"
+           style="display:inline;fill:none;stroke:#555555;stroke-width:1px;stroke-linecap:round;stroke-linejoin:miter;stroke-opacity:1" /></g><g
+         id="pin_labels"><text
+           id="text6263"
+           y="-276.96933"
+           x="11.316875"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-276.96933"
+             x="11.316875"
+             id="tspan6261">SWDIO</tspan></text>
+<text
+           id="text6263-0"
+           y="-267.37128"
+           x="11.316875"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-267.37128"
+             x="11.316875"
+             id="tspan6261-4">SWCLK</tspan></text>
+<text
+           id="text6263-4"
+           y="-248.46622"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-248.46622"
+             x="11.131328"
+             id="tspan6261-0">D28 (PA_19)</tspan></text>
+<text
+           id="text6263-3"
+           y="-238.86621"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-238.86621"
+             x="11.131328"
+             id="tspan6261-2">D27 (PA_20)</tspan></text>
+<text
+           id="text6263-3-3"
+           y="-229.26816"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-229.26816"
+             x="11.131328"
+             id="tspan6261-2-6">D26 (PA_21)</tspan></text>
+<text
+           id="text6263-3-5"
+           y="-219.66817"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-219.66817"
+             x="11.131328"
+             id="tspan6261-2-8">D25 (PA_22)</tspan></text>
+<text
+           id="text6263-3-51"
+           y="-210.06816"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-210.06816"
+             x="11.131328"
+             id="tspan6261-2-7">D24 (PA_23)</tspan></text>
+<text
+           id="text6263-3-9"
+           y="-200.46817"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-200.46817"
+             x="11.131328"
+             id="tspan6261-2-87">D23 (PA_24)</tspan></text>
+<text
+           id="text6263-3-37"
+           y="-190.86621"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-190.86621"
+             x="11.131328"
+             id="tspan6261-2-5">D22 (PA_28)</tspan></text>
+<text
+           id="text6263-3-8"
+           y="-171.66621"
+           x="11.52"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-171.66621"
+             x="11.52"
+             id="tspan6261-2-79">ADC0 (PB_4)</tspan></text>
+<text
+           id="text6263-3-372"
+           y="-162.06816"
+           x="11.52"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-162.06816"
+             x="11.52"
+             id="tspan6261-2-9">ADC1 (PB_5)</tspan></text>
+<text
+           id="text6263-3-6"
+           y="-152.46817"
+           x="11.52"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-152.46817"
+             x="11.52"
+             id="tspan6261-2-2">ADC2 (PB_6)</tspan></text>
+<text
+           id="text6263-3-4"
+           y="-142.86816"
+           x="11.52"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-142.86816"
+             x="11.52"
+             id="tspan6261-2-4">ADC3 (PB_7)</tspan></text>
+<text
+           id="text6263-3-31"
+           y="-133.26816"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-133.26816"
+             x="11.131328"
+             id="tspan6261-2-43">D17 (PA_26)</tspan></text>
+<text
+           id="text6263-3-0"
+           y="-123.66817"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-123.66817"
+             x="11.131328"
+             id="tspan6261-2-72">D16 (PA_25)</tspan></text>
+<text
+           id="text6263-3-2"
+           y="-123.66621"
+           x="57.769608"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-123.66621"
+             x="57.769608"
+             id="tspan6261-2-46">(PB_2) D0</tspan></text>
+<text
+           id="text6263-3-2-7"
+           y="-133.28867"
+           x="58.396561"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-133.28867"
+             x="58.396561"
+             id="tspan6261-2-46-4">(PB_1) D1</tspan></text>
+<text
+           id="text6263-3-2-8"
+           y="-142.86816"
+           x="57.816483"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-142.86816"
+             x="57.816483"
+             id="tspan6261-2-46-5">(PB_3) D2</tspan></text>
+<text
+           id="text6263-3-2-82"
+           y="-152.46817"
+           x="55.617264"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-152.46817"
+             x="55.617264"
+             id="tspan6261-2-46-1">(PB_31) D3</tspan></text>
+<text
+           id="text6263-3-2-9"
+           y="-162.06621"
+           x="55.459061"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-162.06621"
+             x="55.459061"
+             id="tspan6261-2-46-7">(PB_30) D4</tspan></text>
+<text
+           id="text6263-3-2-4"
+           y="-171.66621"
+           x="55.601639"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-171.66621"
+             x="55.601639"
+             id="tspan6261-2-46-77">(PB_28) D5</tspan></text>
+<text
+           id="text6263-3-2-94"
+           y="-181.26816"
+           x="55.562576"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-181.26816"
+             x="55.562576"
+             id="tspan6261-2-46-2">(PB_29) D6</tspan></text>
+<text
+           id="text6263-3-2-1"
+           y="-210.06621"
+           x="55.582108"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-210.06621"
+             x="55.582108"
+             id="tspan6261-2-46-8">(PB_22) D8</tspan></text>
+<text
+           id="text6263-3-2-0"
+           y="-219.66817"
+           x="55.574295"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-219.66817"
+             x="55.574295"
+             id="tspan6261-2-46-9">(PB_23) D9</tspan></text>
+<text
+           id="text6263-3-2-98"
+           y="-229.2662"
+           x="53.363358"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-229.2662"
+             x="53.363358"
+             id="tspan6261-2-46-78">(PB_21) D10</tspan></text>
+<text
+           id="text6263-3-2-19"
+           y="-238.86621"
+           x="53.990311"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-238.86621"
+             x="53.990311"
+             id="tspan6261-2-46-48">(PB_18) D11</tspan></text>
+<text
+           id="text6263-3-2-83"
+           y="-248.46817"
+           x="53.410233"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-248.46817"
+             x="53.410233"
+             id="tspan6261-2-46-6">(PB_19) D12</tspan></text>
+<text
+           id="text6263-3-2-74"
+           y="-258.06622"
+           x="53.414139"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-258.06622"
+             x="53.414139"
+             id="tspan6261-2-46-0">(PB_20) D13</tspan></text>
+<text
+           id="text6263-3-2-80"
+           y="-267.68085"
+           x="55.669998"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-267.68085"
+             x="55.669998"
+             id="tspan6261-2-46-80">(PA_7) D14</tspan></text>
+<text
+           id="text6263-3-2-2"
+           y="-277.2662"
+           x="55.812576"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-277.2662"
+             x="55.812576"
+             id="tspan6261-2-46-3">(PA_8) D15</tspan></text>
+<text
+           id="text6263-3-2-94-1"
+           y="-190.57129"
+           x="69.394608"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-190.57129"
+             x="69.394608"
+             id="tspan6261-2-46-2-0">NC</tspan></text>
+<text
+           id="text6263-3-2-94-1-7"
+           y="-290.93668"
+           x="34.4459"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-290.93668"
+             x="34.4459"
+             id="tspan6261-2-46-2-0-7">3.3V</tspan></text>
+<text
+           id="text6263-3-2-94-1-5"
+           y="-290.9191"
+           x="45.634766"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#555555;fill-opacity:1"
+             y="-290.9191"
+             x="45.634766"
+             id="tspan6261-2-46-2-0-1">5V</tspan></text>
+<text
+           id="text6263-3-0-7"
+           y="-94.882812"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             y="-94.882812"
+             x="11.131328"
+             id="tspan7202">PA_17</tspan></text>
+<text
+           id="text6263-3-0-7-1"
+           y="-85.266212"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-5"
+             x="11.131328"
+             y="-85.266212">PA_18</tspan></text>
+<text
+           id="text6263-3-0-7-8"
+           y="-75.668167"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-0"
+             x="11.131328"
+             y="-75.668167">PA_16</tspan></text>
+<text
+           id="text6263-3-0-7-17"
+           y="-66.082809"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-3"
+             x="11.131328"
+             y="-66.082809">PA_15</tspan></text>
+<text
+           id="text6263-3-0-7-4"
+           y="-56.480858"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-07"
+             x="11.131328"
+             y="-56.480858">PA_14</tspan></text>
+<text
+           id="text6263-3-0-7-81"
+           y="-46.868164"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-39"
+             x="11.131328"
+             y="-46.868164">PA_13</tspan></text>
+<text
+           id="text6263-3-0-7-9"
+           y="-37.268166"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-4"
+             x="11.131328"
+             y="-37.268166">PA_12</tspan></text>
+<text
+           id="text6263-3-0-7-0"
+           y="-27.682812"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-01"
+             x="11.131328"
+             y="-27.682812">PA_11</tspan></text>
+<text
+           id="text6263-3-0-7-06"
+           y="-18.066212"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-6"
+             x="11.131328"
+             y="-18.066212">PA_10</tspan></text>
+<text
+           id="text6263-3-0-7-80"
+           y="-8.4681644"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-1"
+             x="11.131328"
+             y="-8.4681644">PA_9</tspan></text>
+<text
+           id="text6263-3-0-7-97"
+           y="1.1318359"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-43"
+             x="11.131328"
+             y="1.1318359">PA_27</tspan></text>
+<text
+           id="text6263-3-0-7-3"
+           y="10.731836"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-67"
+             x="11.131328"
+             y="10.731836">PA_31</tspan></text>
+<text
+           id="text6263-3-0-7-2"
+           y="20.33379"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             y="20.33379"
+             x="11.131328"
+             id="tspan7318">PB_0</tspan></text>
+<text
+           id="text6263-3-0-7-6"
+           y="29.933788"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-2"
+             x="11.131328"
+             y="29.933788">PA_30</tspan></text>
+<text
+           id="text6263-3-0-7-2-7"
+           y="39.533791"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7318-2"
+             x="11.131328"
+             y="39.533791">PB_8</tspan></text>
+<text
+           id="text6263-3-0-7-2-4"
+           y="49.131836"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7318-7"
+             x="11.131328"
+             y="49.131836">PB_9</tspan></text>
+<text
+           id="text6263-3-0-7-2-40"
+           y="58.733788"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7318-20"
+             x="11.131328"
+             y="58.733788">PB_10</tspan></text>
+<text
+           id="text6263-3-0-7-2-0"
+           y="68.311325"
+           x="11.131328"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7318-6"
+             x="11.131328"
+             y="68.311325">PB_11</tspan></text>
+<text
+           id="text6263-3-0-7-2-48"
+           y="-94.868164"
+           x="49.531326"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7318-3"
+             x="49.531326"
+             y="-94.868164">PB_24 / PB_26</tspan></text>
+<text
+           id="text6263-3-0-7-2-6"
+           y="-85.268166"
+           x="63.984451"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7318-21"
+             x="63.984451"
+             y="-85.268166">PB_25</tspan></text>
+<text
+           id="text6263-3-0-7-49"
+           y="-75.666214"
+           x="66.363358"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-66"
+             x="66.363358"
+             y="-75.666214">PA_0</tspan></text>
+<text
+           id="text6263-3-0-7-31"
+           y="-66.080856"
+           x="66.255936"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-61"
+             x="66.255936"
+             y="-66.080856">PA_4</tspan></text>
+<text
+           id="text6263-3-0-7-27"
+           y="-56.468163"
+           x="66.410233"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-9"
+             x="66.410233"
+             y="-56.468163">PA_2</tspan></text>
+<text
+           id="text6263-3-0-7-12"
+           y="-46.882812"
+           x="66.990311"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-7"
+             x="66.990311"
+             y="-46.882812">PA_1</tspan></text>
+<text
+           id="text6263-3-0-7-492"
+           y="-37.282814"
+           x="66.398514"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-54"
+             x="66.398514"
+             y="-37.282814">PA_5</tspan></text>
+<text
+           id="text6263-3-0-7-813"
+           y="-27.668163"
+           x="66.359451"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             id="tspan7202-45"
+             x="66.359451"
+             y="-27.668163">PA_6</tspan></text>
+<text
+           id="text6263-3-2-94-1-5-4"
+           y="83.0009"
+           x="43.795898"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4px;line-height:1.25;font-family:DroidSans;-inkscape-font-specification:'DroidSans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555555;fill-opacity:1;stroke:none"
+           xml:space="preserve"><tspan
+             y="83.0009"
+             x="43.795898"
+             id="tspan7454">GND</tspan></text>
+</g></g></g></svg>
