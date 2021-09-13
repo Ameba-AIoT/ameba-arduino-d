@@ -72,7 +72,6 @@
             }
           ]
         },
-      "platforms": [
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
           "architecture": "AmebaD",
