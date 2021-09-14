@@ -157,14 +157,14 @@ size_t WiFiUDP::write(const uint8_t *buffer, size_t size) {
     return size;
 }
 
-size_t WiFiUDP::writeImmediately(const uint8_t *buffer, size_t size) {
+int WiFiUDP::writeImmediately(const uint8_t *buffer, size_t size) {
     _client_sock = 0;
     serverDrv.sendtoData(_client_sock, buffer, size, peer_ip, peer_port);
 
     return size;
 }
 
-size_t WiFiUDP::writeImmediately(const uint8_t *buffer, size_t size, uint32_t peer_ip, uint16_t peer_port) {
+int WiFiUDP::writeImmediately(const uint8_t *buffer, size_t size, uint32_t peer_ip, uint16_t peer_port) {
     _client_sock = 0;
     serverDrv.sendtoData(_client_sock, buffer, size, peer_ip, peer_port);
 

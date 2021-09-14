@@ -49,8 +49,8 @@ public:
     // Write size bytes from buffer into the packet
     virtual size_t write(const uint8_t* buffer, size_t size);
     // Send packet immediately from buffer
-    size_t writeImmediately(const uint8_t* buffer, size_t size);
-    size_t writeImmediately(const uint8_t* buffer, size_t size, uint32_t peer_ip, uint16_t peer_port);
+    int writeImmediately(const uint8_t* buffer, size_t size);
+    int writeImmediately(const uint8_t* buffer, size_t size, uint32_t peer_ip, uint16_t peer_port);
     // Start processing the next available incoming packet
     // Returns the size of the packet in bytes, or 0 if no packets are available
     virtual int parsePacket();

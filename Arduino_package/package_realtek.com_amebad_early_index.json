@@ -18,10 +18,10 @@
           "help": {
             "online": "https://www.amebaiot.com/"
           },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.0.9-build20210909.tar.gz",
-          "archiveFileName": "ameba_d-3.0.9-build20210909.tar.gz",
-          "checksum": "SHA-256:19b00989575e655f7d8b8273c75f08c84e67a7a9b44525e3c7d4deb89e29dbda",
-          "size": "48461106",
+          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.0.9-build20210909-v02.tar.gz",
+          "archiveFileName": "ameba_d-3.0.9-build20210909-v02.tar.gz",
+          "checksum": "SHA-256:e790a35f37c2880d19c4be83d1c8a1a594af339e8279315dbed07a0df08429bd",
+          "size": "48471425",
           "boards": [
             {"name": "RTL8722DM"},
             {"name": "RTL8722CSM"},
@@ -412,10 +412,10 @@
             },
             {
               "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.5.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_linux-1.0.5.tar.gz",
-              "checksum": "SHA-256:5bb57ffff6cdf75c0951ddcc4e23f14bf8f8445f88ec2697fa8350d97f2c6b72",
-              "size": "2526007"
+              "archiveFileName": "ameba_d_tools_linux-1.0.5-v02.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_linux-1.0.5-v02.tar.gz",
+              "checksum": "SHA-256:d790f242db750575d5307670bf106da69e63b19b77e3e46a59b7550ee0313555",
+              "size": "2496623"
             },
             {
               "host": "x86_64-apple-darwin",

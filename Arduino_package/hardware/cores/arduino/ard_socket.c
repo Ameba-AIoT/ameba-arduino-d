@@ -360,14 +360,14 @@ int get_available_v6(int sock) {
 int recv_data(int sock, const uint8_t *data, uint16_t len, int flag) {
     int ret;
 
-    ret = lwip_recv(sock, data, len, flag);
+    ret = lwip_recv(sock, (void *)data, len, flag);
 
     return ret;
 }
 
 int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
     int ret;
-    printf("[info] ard_socket.c send_data()\r\n");
+    //printf("[info] ard_socket.c send_data()\r\n");
     ret = lwip_send(sock, data, len, flag);
 
     return ret;
@@ -393,12 +393,15 @@ int sendto_data_v6(int sock, const void *send_data, size_t len, uint32_t peer_ip
     int ret = 0;
     struct sockaddr_in6 peer_addr;
 
+	peer_ip = peer_ip;
+	peer_port = peer_port;
+
     memset(&peer_addr, 0, sizeof(peer_addr));
     peer_addr.sin6_family = AF_INET6;
     peer_addr.sin6_port = htons(UDP_SERVER_PORT);
     inet_pton(AF_INET6, UDP_SERVER_IP, &(peer_addr.sin6_addr));
 
-    ret = lwip_sendto(sock, send_data, len, 0, ((struct sockaddr_in6 *)&peer_addr), sizeof(peer_addr));
+    ret = lwip_sendto(sock, send_data, len, 0, ((struct sockaddr *)&peer_addr), sizeof(peer_addr));
 
     return ret;
 }
@@ -445,9 +448,12 @@ int get_receive(int sock, uint8_t *data, int length, int flag, uint32_t *peer_ad
 int get_receive_v6(int sock, void *recv_data, int len, int flags, uint32_t *peer_ip, uint16_t *peer_port) {
     int ret = 0;
     struct sockaddr_in6 peer_addr;
-    int peer_len = sizeof(struct sockaddr_in6);
+    unsigned int peer_len = sizeof(struct sockaddr_in6);
 
-    ret = lwip_recvfrom(sock, recv_data, len, flags, ((struct sockaddr_in6 *)&peer_addr), &peer_len);
+	peer_ip = peer_ip;
+	peer_port = peer_port;
+
+    ret = lwip_recvfrom(sock, recv_data, len, flags, ((struct sockaddr *)&peer_addr), &peer_len);
     //printf("get_rec_v6 lwip_recvfrom: %d\r\n", ret);
     return ret;
 }
@@ -455,9 +461,9 @@ int get_receive_v6(int sock, void *recv_data, int len, int flags, uint32_t *peer
 
 void ipv6_udp_server(void) {
     int server_fd;
-    struct sockaddr_in6 ser_addr, client_addr;
+    struct sockaddr_in6 client_addr;
 
-    int addrlen = sizeof(struct sockaddr_in6);
+    unsigned int addrlen = sizeof(struct sockaddr_in6);
 
     char send_data[MAX_SEND_SIZE] = "Hi client!";
     char recv_data[MAX_RECV_SIZE];
