@@ -13,6 +13,37 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
           "architecture": "AmebaD",
+          "version": "3.0.9",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.0.8-v04.tar.gz",
+          "archiveFileName": "ameba_d-3.0.8-v04.tar.gz",
+          "checksum": "SHA-256:e790a35f37c2880d19c4be83d1c8a1a594af339e8279315dbed07a0df08429bd",
+          "size": "48471425",
+          "boards": [
+            {"name": "RTL8722DM"},
+            {"name": "RTL8722CSM"},
+            {"name": "RTL8722DM_MINI"},
+            {"name": "RTL8720DN/BW16"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.5"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "architecture": "AmebaD",
           "version": "3.0.8",
           "category": "Contributed",
           "help": {
@@ -329,10 +360,10 @@
             },
             {
               "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.5.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_linux-1.0.5.tar.gz",
-              "checksum": "SHA-256:5bb57ffff6cdf75c0951ddcc4e23f14bf8f8445f88ec2697fa8350d97f2c6b72",
-              "size": "2526007"
+              "archiveFileName": "ameba_d_tools_linux-1.0.5-v02.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d_tools_linux-1.0.5-v02.tar.gz",
+              "checksum": "SHA-256:d790f242db750575d5307670bf106da69e63b19b77e3e46a59b7550ee0313555",
+              "size": "2496623"
             },
             {
               "host": "x86_64-apple-darwin",

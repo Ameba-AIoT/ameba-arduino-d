@@ -1,4 +1,4 @@
-#include <WiFi.h>
+#include <AmebaWiFi.h>
 
 #define ACCESS_TOKEN ""     //paste your instance ID from android app
 #define SERVER_KEY  ""      //paste server key available on Firebase cloud messaging 

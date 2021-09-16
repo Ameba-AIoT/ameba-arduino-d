@@ -15,7 +15,7 @@
  */
 
 
-#include <WiFi.h>
+#include <AmebaWiFi.h>
 
 void setup() {
     //Initialize serial and wait for port to open:

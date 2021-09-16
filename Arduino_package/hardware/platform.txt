@@ -128,10 +128,10 @@ recipe.size.regex=^(?:bootloader_km0|bootloader_km4|image2)\s+([0-9]+).*
 
 
 ## Export bin
-recipe.hooks.objcopy.postobjcopy.1.pattern=xcopy {runtime.tools.ameba_d_tools.path}\km0_km4_image2.bin {build.path}
-recipe.hooks.objcopy.postobjcopy.1.pattern.windows=xcopy {runtime.tools.ameba_d_tools.path}\km0_km4_image2.bin {build.path}
-recipe.hooks.objcopy.postobjcopy.1.pattern.linux=cp {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path} 
-recipe.hooks.objcopy.postobjcopy.1.pattern.macosx=cp {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path} 
+recipe.hooks.objcopy.postobjcopy.1.pattern=rm -rf {build.path}/km0_km4_image2.bin 
+recipe.hooks.objcopy.postobjcopy.2.pattern.windows=cp {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path} 
+recipe.hooks.objcopy.postobjcopy.2.pattern.linux=cp {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path} 
+recipe.hooks.objcopy.postobjcopy.2.pattern.macosx=cp {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path} 
 recipe.output.tmp_file=km0_km4_image2.bin
 recipe.output.save_file=km0_km4_image2.bin
 

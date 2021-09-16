@@ -38,24 +38,8 @@
 #include <SPI.h>
 #include <AmebaILI9341.h>
 
-#if defined(BOARD_RTL8195AM)
 
-SoftwareSerial mySerial(0, 1); // RX, TX
-
-#define TFT_RESET       8
-#define TFT_DC          9
-#define TFT_CS          10
-
-#elif defined(BOARD_RTL8710AF)
-
-SoftwareSerial mySerial(17, 5); // RX, TX
-
-// IMPORTANT: Due to limit pin, we do not connect TFT_RESET pin.
-#define TFT_RESET       0xFFFFFFFF
-#define TFT_DC          2
-#define TFT_CS          10
-
-#elif defined(BOARD_RTL8722DM)
+#if defined(BOARD_RTL8722DM)
 // RTL8722DM -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
 SoftwareSerial mySerial(0, 1); // RX, TX
 

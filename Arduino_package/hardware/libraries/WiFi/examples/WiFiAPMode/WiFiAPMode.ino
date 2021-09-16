@@ -1,4 +1,4 @@
-#include <WiFi.h>
+#include <AmebaWiFi.h>
 
 char ssid[] = "yourNetwork";  //Set the AP's SSID
 char pass[] = "Password";     //Set the AP's password

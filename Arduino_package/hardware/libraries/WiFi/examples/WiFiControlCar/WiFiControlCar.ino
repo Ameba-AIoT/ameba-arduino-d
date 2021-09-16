@@ -12,7 +12,7 @@
  **/
 
 #include "Car2wd.h"
-#include <WiFi.h>
+#include <AmebaWiFi.h>
 
 char ssid[] = "YourWiFiSSID";        //  your network SSID (name)
 char pass[] = "WiFiPassword";        // your network password
