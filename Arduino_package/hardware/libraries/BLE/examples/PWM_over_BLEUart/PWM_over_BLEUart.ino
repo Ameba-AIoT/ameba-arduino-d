@@ -1,9 +1,16 @@
 
 #include "BLEDevice.h"
 
-#define LED_RED 13
-#define LED_GRN 12
-#define LED_BLU 11
+
+#if defined(BOARD_RTL8722DM)
+#define LED_RED      13
+#define LED_GRN      12
+#define LED_BLU      11
+#elif defined(BOARD_RTL8722DM_MINI)
+#define LED_RED      4
+#define LED_GRN      5
+#define LED_BLU      7
+#endif
 
 #define UART_SERVICE_UUID      "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"

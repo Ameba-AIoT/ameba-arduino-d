@@ -6,7 +6,7 @@
 # https://github.com/arduino/Arduino/wiki/Arduino-IDE-1.5-3rd-party-Hardware-specification
 
 name=AmebaD ARM (32-bits) Boards
-version=3.0.9
+version=3.0.X
 
 # Ameba project settings
 # ----------------------
@@ -125,6 +125,14 @@ recipe.size.pattern.linux="{runtime.tools.ameba_d_tools.path}/amebasize" "{runti
 recipe.size.pattern.macosx="{runtime.tools.ameba_d_tools.path}/amebasize" "{runtime.tools.ameba_d_tools.path}"
 
 recipe.size.regex=^(?:bootloader_km0|bootloader_km4|image2)\s+([0-9]+).*
+
+
+## Export bin
+recipe.hooks.objcopy.postobjcopy.pattern.windows=cmd /c copy /y {runtime.tools.ameba_d_tools.path}\km0_km4_image2.bin {build.path}
+recipe.hooks.objcopy.postobjcopy.pattern.linux=cp -f {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path}
+recipe.hooks.objcopy.postobjcopy.pattern.macosx=cp -f {runtime.tools.ameba_d_tools.path}/km0_km4_image2.bin {build.path}
+recipe.output.tmp_file=km0_km4_image2.bin
+recipe.output.save_file=km0_km4_image2.bin
 
 
 # Ameba Uploader tools
