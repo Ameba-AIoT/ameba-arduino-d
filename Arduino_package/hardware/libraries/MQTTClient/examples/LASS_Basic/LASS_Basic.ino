@@ -12,9 +12,9 @@
 
 */
 
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
-#include <AmebaWiFiUdp.h>
+#include <WiFiUdp.h>
 #include <PMS3003.h>
 
 char ssid[] = "yourNetwork";    // your network SSID (name)

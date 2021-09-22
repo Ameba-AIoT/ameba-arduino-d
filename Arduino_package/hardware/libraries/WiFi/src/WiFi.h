@@ -30,10 +30,10 @@ extern "C" {
 
 #include "IPAddress.h"
 #include "IPv6Address.h"
-#include "AmebaWiFiClient.h"
-#include "AmebaWiFiServer.h"
-#include "AmebaWiFiSSLClient.h"
-#include "AmebaWiFiUdp.h"
+#include "WiFiClient.h"
+#include "WiFiServer.h"
+#include "WiFiSSLClient.h"
+#include "WiFiUdp.h"
 
 class WiFiClass
 {

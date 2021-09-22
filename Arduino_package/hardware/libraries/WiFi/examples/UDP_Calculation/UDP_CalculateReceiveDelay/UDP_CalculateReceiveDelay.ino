@@ -5,8 +5,8 @@
    The second part is PC code wich play sender role. Please compile the second part and run it.
 */
 
-#include <AmebaWiFi.h>
-#include <AmebaWiFiUdp.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
 #include <stdio.h>
 
 int status = WL_IDLE_STATUS;
