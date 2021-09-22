@@ -14,8 +14,8 @@
  */
 
 
-#include <AmebaWiFi.h>
-#include <AmebaWiFiUdp.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
 
 int status = WL_IDLE_STATUS;
 char ssid[] = "yourNetwork";        //  your network SSID (name)

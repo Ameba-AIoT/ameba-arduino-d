@@ -12,7 +12,7 @@
  modified 31 May 2012
  by Tom Igoe
  */
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)
 char pass[] = "secretPassword";  // your network password

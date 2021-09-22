@@ -1,6 +1,6 @@
 #include <HttpClient.h>
-#include <AmebaWiFi.h>
-#include <AmebaWiFiClient.h>
+#include <WiFi.h>
+#include <WiFiClient.h>
 
 // This example downloads the URL "http://www.amebaiot.com"
 

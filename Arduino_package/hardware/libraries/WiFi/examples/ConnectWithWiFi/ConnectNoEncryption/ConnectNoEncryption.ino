@@ -12,7 +12,7 @@
  modified 31 May 2012
  by Tom Igoe
  */
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 
 char ssid[] = "yourNetwork";     // the name of your network
 int status = WL_IDLE_STATUS;     // the Wifi radio's status

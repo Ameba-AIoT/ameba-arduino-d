@@ -5,8 +5,8 @@
    The second part is PC code wich play receiver role. Please compile the second part and run it.
 */
 
-#include <AmebaWiFi.h>
-#include <AmebaWiFiUdp.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
 
 int status = WL_IDLE_STATUS;
 char ssid[] = "mynetwork";      // your network SSID (name)

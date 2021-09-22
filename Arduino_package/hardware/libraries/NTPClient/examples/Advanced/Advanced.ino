@@ -1,6 +1,6 @@
 #include <NTPClient.h>
-#include <AmebaWiFi.h>
-#include <AmebaWiFiUdp.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
 
 char ssid[] = "<SSID>";
 char pass[] = "<PASS>";
