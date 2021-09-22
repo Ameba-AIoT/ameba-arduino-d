@@ -1,4 +1,4 @@
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 
 #include "Arduino.h"
 

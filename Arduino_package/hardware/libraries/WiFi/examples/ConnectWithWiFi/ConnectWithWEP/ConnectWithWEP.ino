@@ -22,7 +22,7 @@
  modified 31 May 2012
  by Tom Igoe
  */
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
 #define password_type                           0

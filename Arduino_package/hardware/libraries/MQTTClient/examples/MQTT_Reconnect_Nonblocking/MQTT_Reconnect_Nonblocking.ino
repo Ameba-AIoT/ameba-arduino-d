@@ -8,7 +8,7 @@
 
 */
 
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 #include <PubSubClient.h>
 
 // Update these with values suitable for your hardware/network.

@@ -6,7 +6,7 @@
 
 */
 
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 #include <AmebaMDNS.h>
 
 char ssid[] = "yourNetwork";     //  your network SSID (name)

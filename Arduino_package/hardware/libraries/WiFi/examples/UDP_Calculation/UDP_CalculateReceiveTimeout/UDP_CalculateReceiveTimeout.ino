@@ -11,8 +11,8 @@
    If the sender side send packets frequently, then the Arduino side can have smaller receiving timeout value
 */
 
-#include <AmebaWiFi.h>
-#include <AmebaWiFiUdp.h>
+#include <WiFi.h>
+#include <WiFiUdp.h>
 #include <stdio.h>
 
 int status = WL_IDLE_STATUS;

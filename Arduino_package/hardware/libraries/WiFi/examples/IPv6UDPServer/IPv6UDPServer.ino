@@ -1,4 +1,4 @@
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 
 #define MAX_SEND_SIZE 256
 #define MAX_RECV_SIZE 1500
