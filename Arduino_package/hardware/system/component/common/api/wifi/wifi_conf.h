@@ -86,6 +86,7 @@ typedef enum _WL_BAND_TYPE{
 	WL_BAND_2_4G = 0,		
 	WL_BAND_5G,
 	WL_BAND_2_4G_5G_BOTH,
+	WL_BAND_NOT_MATCH,
 	WL_BANDMAX
 }WL_BAND_TYPE,*PWL_BAND_TYPE;
 
@@ -1134,11 +1135,12 @@ extern u32 rtw_get_tsf(u32 Port);
 #endif
 
 /*
- * @brief get band
+ *@brief get WIFI band type
  *@retval  the support band type.
- * 	WL_BAND_2_4G: only support 2.4G
+ *	WL_BAND_2_4G: only support 2.4G
  *	WL_BAND_5G: only support 5G
- *      WL_BAND_2_4G_5G_BOTH: support both 2.4G and 5G
+ *	WL_BAND_2_4G_5G_BOTH: support both 2.4G and 5G
+ *	WL_BAND_NOT_MATCH: channel plan is not match with chip band type
  */
 WL_BAND_TYPE wifi_get_band_type(void);
 
@@ -1155,6 +1157,15 @@ int wifi_set_null1_param(uint8_t check_period, uint8_t pkt_num, uint8_t limit, u
  * @return  RTW_ERROR: If switching channel is failed.
  */
 int wifi_ap_switch_chl_and_inform(unsigned char new_channel);
+
+/**
+ * @brief  Set initial gain index.
+ * @param[in]  igi: the new initial gain index value.
+ * @param[in]  enable: 1, fixed igi; 0, dynamic igi.
+ * @return 0: success.
+ * @return -1: fail.
+ */
+int wifi_set_igi(uint8_t igi, uint8_t enable);
 
 #ifdef __cplusplus
   }

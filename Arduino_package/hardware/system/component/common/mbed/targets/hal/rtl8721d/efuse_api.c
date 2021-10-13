@@ -16,6 +16,7 @@
   */
 #include "ameba_soc.h"
 #include "rom_aes.h"
+#include "osdep_service.h"
 //#ifdef CONFIG_EFUSE_EN
 
 /** @addtogroup AmebaD_Mbed_API 

@@ -150,7 +150,7 @@ bridgeif_fdb_get_dst_ports(void *fdb_ptr, struct eth_addr *dst_addr)
     }
   }
   BRIDGEIF_READ_UNPROTECT(lev);
-  if (dst_addr->addr[0] & 0x1 ==0)
+  if ((dst_addr->addr[0] & 0x1) ==0)
     printf("\n\rNOT found DST:%02X:%02X:%02X:%02X:%02X:%02X",dst_addr->addr[0], dst_addr->addr[1], dst_addr->addr[2],dst_addr->addr[3], dst_addr->addr[4],dst_addr->addr[5]);
   return BR_FLOOD;
 }

@@ -360,6 +360,11 @@ static void wps_config_wifi_setting(rtw_network_info_t *wifi, struct dev_credent
 	//printf("\r\nrelease wps_reconnect_semaphore");			
 }
 
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+extern char wps_profile_ssid[33];
+extern char wps_profile_password[65];
+#endif
+
 static int wps_connect_to_AP_by_certificate(rtw_network_info_t *wifi)
 {
 	int retry_count = WPS_CONNECT_RETRY_COUNT, ret;
@@ -384,6 +389,12 @@ static int wps_connect_to_AP_by_certificate(rtw_network_info_t *wifi)
 			if(RTW_SUCCESS == wifi_is_connected_to_ap( )){
 				//printf("\r\n[WPS]Ready to tranceive!!\n");
 				wps_check_and_show_connection_info();
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+				memset(wps_profile_ssid,0,33);
+				memset(wps_profile_password,0,65);
+				strncpy(wps_profile_ssid, wifi->ssid.val, wifi->ssid.len);
+				strncpy(wps_profile_password, wifi->password, wifi->password_len);
+#endif
 				break;
 			}
 		}
@@ -1142,7 +1153,7 @@ void wps_judge_staion_disconnect(void)
 	wext_get_mode(WLAN0_NAME, &mode);
 
 	switch(mode) {
-	case IW_MODE_MASTER:		//In AP mode
+	case RTW_MODE_MASTER:		//In AP mode
 //		rltk_wlan_deinit();
 //		rltk_wlan_init(0,RTW_MODE_STA);
 //		rltk_wlan_start(0);
@@ -1151,7 +1162,7 @@ void wps_judge_staion_disconnect(void)
 		vTaskDelay(20);
 		wifi_on(RTW_MODE_STA);
 		break;
-	case IW_MODE_INFRA:		//In STA mode
+	case RTW_MODE_INFRA:		//In STA mode
 		if(wext_get_ssid(WLAN0_NAME, ssid) > 0)
 			wifi_disconnect();
 	}	
@@ -1215,8 +1226,8 @@ void cmd_ap_wps(int argc, char **argv)
 		return;
 	}
 	wext_get_mode(WLAN0_NAME, &mode);
-	if(mode != IW_MODE_MASTER){
-		printf("\n\rOnly valid for IW_MODE_MASTER!\n\r");
+	if(mode != RTW_MODE_MASTER){
+		printf("\n\rOnly valid for RTW_MODE_MASTER!\n\r");
 		return;
 	}
 		

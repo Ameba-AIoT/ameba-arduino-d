@@ -676,9 +676,9 @@ void I2C_MasterReadDW(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
   * @param  len: the length of data that to be received.
   * @retval The length of data that have received from rx fifo.
   */
-u8 I2C_MasterRead(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
+u32 I2C_MasterRead(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
 {
-	u8 cnt = 0;
+	u32 cnt = 0;
 	
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));
@@ -716,9 +716,9 @@ u8 I2C_MasterRead(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
   * @param  len: the length of data that to be transmitted.
   * @retval None
   */
-void I2C_SlaveWrite(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
+void I2C_SlaveWrite(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
 {
-	u8 cnt = 0;
+	u32 cnt = 0;
 	
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));
@@ -745,9 +745,9 @@ void I2C_SlaveWrite(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
   * @param  len: the length of data that to be received.
   * @retval None
   */
-void I2C_SlaveRead(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
+void I2C_SlaveRead(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
 {
-	u8 cnt = 0;
+	u32 cnt = 0;
 	
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));
@@ -768,10 +768,10 @@ void I2C_SlaveRead(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
   * @param  Readlen: Byte number to be received.
   * @retval None
   */
-void I2C_MasterRepeatRead(I2C_TypeDef* I2Cx, u8* pWriteBuf, u8 Writelen, u8* pReadBuf, u8 Readlen)
+void I2C_MasterRepeatRead(I2C_TypeDef* I2Cx, u8* pWriteBuf, u32 Writelen, u8* pReadBuf, u32 Readlen)
 {
 
-	u8 cnt = 0;
+	u32 cnt = 0;
 
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));

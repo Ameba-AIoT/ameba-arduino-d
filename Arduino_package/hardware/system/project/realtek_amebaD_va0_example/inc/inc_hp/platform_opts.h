@@ -589,6 +589,12 @@ in lwip_opt.h for support uart adapter*/
 /* For rarp example */
 #define CONFIG_EXAMPLE_RARP				0
 
+/* For rtp server example */
+#define CONFIG_EXAMPLE_RTP_SERVER				0
+
+/* For rtp client example */
+#define CONFIG_EXAMPLE_RTP_CLIENT				0
+
 /* For ssl server example */
 #define CONFIG_EXAMPLE_SSL_SERVER		0
 

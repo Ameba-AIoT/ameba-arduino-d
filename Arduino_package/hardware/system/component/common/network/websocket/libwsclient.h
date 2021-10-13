@@ -63,6 +63,7 @@ struct rsv_bits_field{
 typedef struct send_buf_t{
 	uint8_t *txbuf;
 	int tx_len;
+	int send_offset;
 }send_buf;
 
 struct _wsclient_context;
@@ -104,6 +105,7 @@ typedef struct _wsclient_context{
 	struct rsv_bits_field rxRsvBits;
 	uint8_t *receivedData;
 	struct ws_fun_ops fun_ops;
+	_mutex queue_mutex;
 }wsclient_context;
 /*******************************************************************/
 

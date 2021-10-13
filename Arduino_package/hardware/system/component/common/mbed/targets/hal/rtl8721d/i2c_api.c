@@ -45,7 +45,7 @@ static u32 master_addr_retry = 1;
 /** @defgroup MBED_I2C_Exported_Functions MBED_I2C Exported Functions
   * @{
   */
-void i2c_send_restart(I2C_TypeDef *I2Cx, u8* pBuf, u8 len, u8 restart);
+void i2c_send_restart(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u8 restart);
 
 /**
   * @brief  Read data with special length in master mode through the I2Cx peripheral under in-house IP.
@@ -55,9 +55,9 @@ void i2c_send_restart(I2C_TypeDef *I2Cx, u8* pBuf, u8 len, u8 restart);
   * @note   deal with condition that master send address while slave no ack
   * @retval the length of data read. 
   */
-u8 I2C_MasterRead_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
+u32 I2C_MasterRead_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
 {
-	u8 cnt = 0;
+	u32 cnt = 0;
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));
 
@@ -90,9 +90,9 @@ u8 I2C_MasterRead_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
   * @note   deal with condition that master send address while slave no ack
   * @retval the length of data send. 
   */
-u8 I2C_MasterWrite_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
+u32 I2C_MasterWrite_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
 {
-	u8 cnt = 0;
+	u32 cnt = 0;
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));
 	
@@ -129,7 +129,7 @@ u8 I2C_MasterWrite_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u8 len)
   * @param  timeout_ms: specifies timeout time, unit is ms.  
   * @retval the length of data read. 
   */
-int I2C_MasterRead_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u8 len, u32 timeout_ms)
+int I2C_MasterRead_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u32 timeout_ms)
 {
 	int cnt = 0;
 	u32 InTimeoutCount = 0;
@@ -179,7 +179,7 @@ int I2C_MasterRead_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u8 len, u32 timeout_ms)
   * @param  timeout_ms: specifies timeout time, unit is ms.  
   * @retval the length of data send. 
   */
-int I2C_MasterWrite_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u8 len, u32 timeout_ms)
+int I2C_MasterWrite_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u32 timeout_ms)
 {
 	int cnt = 0;
 	u32 InTimeoutCount = 0;
@@ -591,9 +591,9 @@ int i2c_repeatread(i2c_t *obj, int address, uint8_t *pWriteBuf, int Writelen, ui
   * @param  restart: specifies whether a RESTART is issued after all the bytes are sent.
   * @retval none 
   */
-void i2c_send_restart(I2C_TypeDef *I2Cx, u8* pBuf, u8 len, u8 restart)
+void i2c_send_restart(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u8 restart)
 {
-	u8 cnt = 0;
+	u32 cnt = 0;
 	
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));

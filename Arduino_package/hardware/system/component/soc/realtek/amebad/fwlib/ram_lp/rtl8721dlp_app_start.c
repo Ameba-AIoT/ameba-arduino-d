@@ -294,7 +294,8 @@ void app_dslp_wake_check(void)
 
 static void app_gen_random_seed(void)
 {
-	u16 value, data;
+	u16 value;
+	u32 data;
 	int i = 0, j = 0;
 	u8 random[4], tmp;
 

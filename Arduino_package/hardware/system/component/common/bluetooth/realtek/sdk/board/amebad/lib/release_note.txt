@@ -2,6 +2,18 @@
 /*
  * Release Note
  */
+	v1.0.1.158
+	2021/07/23
+	1. Fix a bug for bte_deinit.
+	
+	v1.0.1.157
+	2021/07/22
+	1. Fix a bug for le_get_conn_info.
+
+  	v1.0.1.155
+	2021/07/15
+	1. Open F_BT_LE_4_0_DTM_SUPPORT. Open BT4.0 DTM APIs.
+	
 	v1.0.1.147
 	2021/05/10
 	1. le_disconnect() will check the device disconnecting state. Application can't disconnect two BLE links at the same time.

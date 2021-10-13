@@ -68,12 +68,12 @@ void judge_station_disconnect(void)
 	wext_get_mode(WLAN0_NAME, &mode);
 
 	switch(mode) {
-	case IW_MODE_MASTER:	//In AP mode
+	case RTW_MODE_MASTER:	//In AP mode
 		wifi_off();
 		vTaskDelay(20);
 		wifi_on(RTW_MODE_STA);
 		break;
-	case IW_MODE_INFRA:		//In STA mode
+	case RTW_MODE_INFRA:		//In STA mode
 		if(wext_get_ssid(WLAN0_NAME, ssid) > 0)
 			wifi_disconnect();
 	}	
