@@ -21,11 +21,13 @@
 // Connect the GPS RX (receive) pin to Digital 1
 
 #if defined(BOARD_RTL8722DM)
-        SoftwareSerial mySerial(0, 1); // RX, TX
+    SoftwareSerial mySerial(0, 1); // RX, TX
 #elif defined(BOARD_RTL8722DM_MINI)
-        SoftwareSerial mySerial(2, 1); // RX,TX
-#else 
-        SoftwareSerial mySerial(0, 1); // RX, TX
+    SoftwareSerial mySerial(2, 1); // RX,TX
+#elif defined(BOARD_RTL8720DN_BW16)
+    SoftwareSerial mySerial(PB2, PB1); // RX, TX
+#else
+    SoftwareSerial mySerial(0, 1); // RX, TX
 #endif
 
 Adafruit_GPS GPS(&mySerial);

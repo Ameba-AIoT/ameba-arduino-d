@@ -110,7 +110,11 @@ void PMUClass::RTCWakeSetup(uint32_t duration_d, uint32_t duration_h, uint32_t d
 
 void PMUClass::enable(void) {
     DSLP_Para.dlps_enable = TRUE;
+    asm volatile ("cpsid i" : : : "memory");
     ipc_send_message(IPC_INT_KM4_TICKLESS_INDICATION, (uint32_t)&DSLP_Para);
+    asm volatile ("wfe");
+    asm volatile ("wfe");
+    asm volatile ("cpsie i" : : : "memory");
 }
 
 uint32_t PMUClass::AONWakeReason(void) {

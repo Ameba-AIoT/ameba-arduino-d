@@ -14,22 +14,26 @@
  In this example, we only use Serial to get PM 2.5 value.
 
  The circuit: (BOARD RTL8722CSM / DM)
- * RX is digital pin 0 (connect to TX of PMS 3003)
- * TX is digital pin 1 (connect to RX of PMS 3003)
+ * RX is digital pin 0 (connect to PMS 3003 TX)
+ * TX is digital pin 1 (connect to PMS 3003 RX)
               (BOARD RTL8722DM_MINI)
- * RX is digital pin 2 (connect to TX of PMS 3003)
- * TX is digital pin 1 (connect to RX of PMS3003)
-
+ * RX is digital pin 2 (connect to PMS 3003 TX)
+ * TX is digital pin 1 (connect to PMS 3003 RX)
+              (BOARD RTL8720DN / BW16)
+ * RX is digital pin PB2 (connect to PMS 3003 TX)
+ * TX is digital pin PB1 (connect to PMS 3003 RX)
  */
 
 #include <SoftwareSerial.h>
 
 #if defined(BOARD_RTL8722DM)
-        SoftwareSerial mySerial(0, 1); // RX, TX
+    SoftwareSerial mySerial(0, 1); // RX, TX
 #elif defined(BOARD_RTL8722DM_MINI)
-        SoftwareSerial mySerial(2, 1); // RX, TX
-#else 
-        SoftwareSerial mySerial(0, 1); // RX, TX
+    SoftwareSerial mySerial(2, 1); // RX, TX
+#elif defined(BOARD_RTL8720DN_BW16)
+    SoftwareSerial mySerial(PB2, PB1); // RX, TX
+#else
+    SoftwareSerial mySerial(0, 1); // RX, TX
 #endif
 
 

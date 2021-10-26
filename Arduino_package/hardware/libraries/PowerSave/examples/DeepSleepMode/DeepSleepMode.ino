@@ -4,6 +4,12 @@
 #include "ameba_soc.h"
 #include <PowerSave.h>
 
+#if defined(BOARD_RTL8720DN_BW16)
+#error TBD for RTL8720DN/BW16
+#elif defined(BOARD_RTL8722DM_MINI)
+#error TBD for RTL8722DM_MINI
+#endif
+
 #define DEEPSLEEP_MODE                  11
 #define SET_DS_AON_TIMER_WAKEUP         0
 #define SET_DS_AON_WAKEPIN_WAKEUP       1

@@ -8,7 +8,7 @@
    width="86.308151mm"
    height="45.672085mm"
    viewBox="0 0 326.20403 172.6189"
-   sodipodi:docname="Pinmap RTL8722DM_mini 27-09-2021.svg"
+   sodipodi:docname="Pinmap RTL8722DM_mini 21-10-2021.svg"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -118,13 +118,13 @@
      inkscape:window-height="837"
      id="namedview1716"
      showgrid="false"
-     inkscape:zoom="2.7106489"
-     inkscape:cx="92.966668"
-     inkscape:cy="89.093057"
+     inkscape:zoom="2.9960135"
+     inkscape:cx="212.28209"
+     inkscape:cy="58.911616"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="g47881"
+     inkscape:current-layer="svg1714"
      inkscape:snap-text-baseline="false"
      units="mm"
      fit-margin-top="1"
@@ -20705,7 +20705,7 @@
          sodipodi:role="line"
          id="tspan19274"
          x="230.50664"
-         y="35.929878">A1</tspan></text>
+         y="35.929878">A5</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -20822,7 +20822,7 @@
          sodipodi:role="line"
          id="tspan19272"
          x="230.44463"
-         y="30.563402">A0</tspan></text>
+         y="30.563402">A4</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -20850,7 +20850,7 @@
   </g>
   <g
      id="g15752"
-     transform="translate(111.35774,-102.24635)"
+     transform="translate(135.0559,-101.24502)"
      inkscape:export-xdpi="96.357231"
      inkscape:export-ydpi="96.357231">
     <g
@@ -22271,7 +22271,7 @@
          sodipodi:role="line"
          id="tspan19276"
          x="224.7955"
-         y="41.311344">A2</tspan></text>
+         y="41.311344">A6</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -22559,7 +22559,7 @@
          sodipodi:role="line"
          id="tspan19284"
          x="224.77908"
-         y="62.733971">A6</tspan></text>
+         y="62.733971">A3</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -22700,7 +22700,7 @@
          sodipodi:role="line"
          id="tspan19278"
          x="224.81119"
-         y="46.6502">A3</tspan></text>
+         y="46.6502">A0</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -22841,7 +22841,7 @@
          sodipodi:role="line"
          id="tspan19280"
          x="224.77011"
-         y="52.012192">A4</tspan></text>
+         y="52.012192">A1</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -23006,7 +23006,7 @@
          sodipodi:role="line"
          id="tspan19282"
          x="224.80447"
-         y="57.351044">A5</tspan></text>
+         y="57.351044">A2</tspan></text>
     <ellipse
        ry="1.0158954"
        rx="0.913665"

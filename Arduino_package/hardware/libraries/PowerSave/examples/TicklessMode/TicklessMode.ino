@@ -4,6 +4,12 @@
 #include "ameba_soc.h"
 #include <PowerSave.h>
 
+#if defined(BOARD_RTL8720DN_BW16)
+#error TBD for RTL8720DN/BW16
+#elif defined(BOARD_RTL8722DM_MINI)
+#error TBD for RTL8722DM_MINI
+#endif
+
 #define TICKLESS_MODE                   22
 #define SET_TL_UART_WAKEUP              0
 #define SET_TL_RTC_WAKEUP               1

@@ -8,6 +8,12 @@
 #include <LiquidCrystal_I2C.h>
 #include "DHT.h"
 
+#if defined(BOARD_RTL8720DN_BW16)
+#error TBD for RTL8720DN/BW16
+#elif defined(BOARD_RTL8722DM_MINI)
+#error TBD for RTL8722DM_MINI
+#endif
+
 LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
 
 #define DHTPIN 8                        // DHT data digital pin
