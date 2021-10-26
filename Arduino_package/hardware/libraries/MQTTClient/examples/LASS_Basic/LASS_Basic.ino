@@ -47,11 +47,13 @@ static  const uint8_t monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30,
 uint32_t epochSystem = 0; // timestamp of system boot up
 
 #if defined(BOARD_RTL8722DM)
-PMS3003 pms(0, 1);  // SoftwareSerial RX/TX
+PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
 #elif defined(BOARD_RTL8722DM_MINI)
-PMS3003 pms(2, 1); // SoftwareSerial RX/TX
+PMS3003 pms(2, 1);      // SoftwareSerial RX/TX
+#elif defined(BOARD_RTL8720DN_BW16)
+PMS3003 pms(PB2, PB1);  // SoftwareSerial RX/TX
 #else
-PMS3003 pms(0, 1);  // SoftwareSerial RX/TX
+PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
 #endif
 
 void reconnectWiFi() {

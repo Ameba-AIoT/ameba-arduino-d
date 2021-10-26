@@ -1,7 +1,7 @@
 #include "AudioCodec.h"
 
 #if defined(BOARD_RTL8720DN_BW16)
-#error Sorry, RTL8720DN do not support AudioCodec.
+#error Sorry, RTL8720DN/BW16 do not support AudioCodec.
 #endif
 
 #ifdef __cplusplus

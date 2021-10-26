@@ -10,6 +10,10 @@
 #define LED_RED      4
 #define LED_GRN      5
 #define LED_BLU      7
+#elif defined(BOARD_RTL8720DN_BW16)
+#define LED_RED      PA25
+#define LED_GRN      PA12
+#define LED_BLU      PA13
 #endif
 
 #define UART_SERVICE_UUID      "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -63,14 +67,14 @@ void notifCB (BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
 void setup() {
     Serial.begin(115200);
 
-    pinMode(LED_RED,OUTPUT);
-    pinMode(LED_GRN,OUTPUT);
-    pinMode(LED_BLU,OUTPUT);
+    pinMode(LED_RED, OUTPUT);
+    pinMode(LED_GRN, OUTPUT);
+    pinMode(LED_BLU, OUTPUT);
 
-    analogWrite(LED_RED,255);
-    analogWrite(LED_GRN,255);
-    analogWrite(LED_BLU,255);
-    
+    analogWrite(LED_RED, 255);
+    analogWrite(LED_GRN, 255);
+    analogWrite(LED_BLU, 255);
+
     advdata.addFlags(GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED);
     advdata.addCompleteName("AMEBA_BLE_DEV");
     scndata.addCompleteServices(BLEUUID(UART_SERVICE_UUID));

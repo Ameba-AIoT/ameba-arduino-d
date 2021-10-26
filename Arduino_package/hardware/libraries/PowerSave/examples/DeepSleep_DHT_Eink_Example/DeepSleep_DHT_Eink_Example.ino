@@ -10,6 +10,12 @@
 
 #include "DHT.h"
 
+#if defined(BOARD_RTL8720DN_BW16)
+#error TBD for RTL8720DN/BW16
+#elif defined(BOARD_RTL8722DM_MINI)
+#error TBD for RTL8722DM_MINI
+#endif
+
 #define COLOR_BLACK        0
 #define COLOR_WHITE        1
 EpdIf EPD;
