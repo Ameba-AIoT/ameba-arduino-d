@@ -19,8 +19,6 @@ BLEService::BLEService(const char* uuid) {
 }
 
 BLEService::~BLEService() {
-    // Call delete for each characteristic pointer
-    // Alternative: do not allow creation of new characteristics with method
     free(_service_attr_tbl);
 }
 
@@ -80,7 +78,7 @@ T_ATTRIB_APPL* BLEService::generateServiceAttrTable() {
     memset(_service_attr_tbl, 0, _total_attr_count * sizeof(T_ATTRIB_APPL));
 
     // Generate first attribute for service
-    uint8_t _attr_count = 0;    // Pass in as handle?
+    uint8_t _attr_count = 0;
     _attr_count += generateAttrServiceDeclaration(&(_service_attr_tbl[0]), _attr_count);
 
     // Pass in index to subsequent empty elements for characteristics to fill in attributes
@@ -117,9 +115,11 @@ uint8_t BLEService::generateAttrServiceDeclaration(T_ATTRIB_APPL* attr_tbl, uint
 void BLEService::printAttr() {
     uint8_t i;
     printf("Service attribute table for service %s with %d number of attributes:\n", _uuid.str(), _total_attr_count);
+    printf("--------------------------------------------------------\n");
     for (i = 0; i < _total_attr_count; i++) {
         printf("Attribute num %d:\n", i);
-        printf("Flags: \t %4x \n", _service_attr_tbl[i].flags);
+        printf("Flags: \t 0x%4x \n", _service_attr_tbl[i].flags);
+        printf("Value Length: \t 0x%4x \n", _service_attr_tbl[i].value_len);
         printf("Type Value: \t %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x\n",
             _service_attr_tbl[i].type_value[0],
             _service_attr_tbl[i].type_value[1],
@@ -137,14 +137,57 @@ void BLEService::printAttr() {
             _service_attr_tbl[i].type_value[13],
             _service_attr_tbl[i].type_value[14],
             _service_attr_tbl[i].type_value[15]);
-        printf("Value Length: \t %4x \n", _service_attr_tbl[i].value_len);
+        if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_PRIMARY_SERVICE)) && 
+            (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_PRIMARY_SERVICE))) {
+            printf("Type Value: GATT UUID Primary Service (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+        }
+        if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHARACTERISTIC)) && 
+            (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHARACTERISTIC))) {
+            printf("Type Value: GATT UUID Characteristic (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            uint8_t char_props = _service_attr_tbl[i].type_value[2];
+            printf("Characteristic Properties: (0x%2x)\n", char_props);
+            printf("Read %d | WriteNR %d | Write %d | Notif %d | Indicate %d\n",
+                (char_props & GATT_CHAR_PROP_READ) != 0,
+                (char_props & GATT_CHAR_PROP_WRITE_NO_RSP) != 0,
+                (char_props & GATT_CHAR_PROP_WRITE) != 0,
+                (char_props & GATT_CHAR_PROP_NOTIFY) != 0,
+                (char_props & GATT_CHAR_PROP_INDICATE) != 0);
+        }
+        if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_CLIENT_CONFIG)) && 
+            (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_CLIENT_CONFIG))) {
+            printf("Type Value: GATT UUID CCCD (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+        }
+        if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_USER_DESCR)) && 
+            (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_USER_DESCR))) {
+            printf("Type Value: GATT UUID Char User Descriptor (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+        }
+        if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_FORMAT)) && 
+            (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_FORMAT))) {
+            printf("Type Value: GATT UUID Char Format (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+        }
+        if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_REPORT_REFERENCE)) && 
+            (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_REPORT_REFERENCE))) {
+            printf("Type Value: GATT UUID Char Report Ref (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+        }
         if (_service_attr_tbl[i].p_value_context != NULL) {
             printf("Context Value Pointer as string: %s \n", (char*)(_service_attr_tbl[i].p_value_context));
         } else {
             printf("Context Value Pointer: NULL \n");
         }
-        printf("Permissions: \t %4x %4x \n", (uint16_t)((_service_attr_tbl[i].permissions & 0xFFFF0000) >> 16),
-                                             (uint16_t)(_service_attr_tbl[i].permissions & 0xFFFF));
+        uint32_t attr_perms = _service_attr_tbl[i].permissions;
+        printf("Permissions: 0x%4x %4x\n", (uint16_t)(attr_perms >> 16), (uint16_t)(attr_perms & 0xFFFF));
+        printf("Read %d | Authen %d | Author %d | Encrypted %d | Authen SC Req %d \n",
+            (attr_perms & GATT_PERM_READ) != 0,
+            (attr_perms & GATT_PERM_READ_AUTHEN_REQ) != 0,
+            (attr_perms & GATT_PERM_READ_AUTHOR_REQ) != 0,
+            (attr_perms & GATT_PERM_READ_ENCRYPTED_REQ) != 0,
+            (attr_perms & GATT_PERM_READ_AUTHEN_SC_REQ) != 0);
+        printf("Write %d | Authen %d | Author %d | Encrypted %d | Authen SC Req %d \n",
+            (attr_perms & GATT_PERM_WRITE) != 0,
+            (attr_perms & GATT_PERM_WRITE_AUTHEN_REQ) != 0,
+            (attr_perms & GATT_PERM_WRITE_AUTHOR_REQ) != 0,
+            (attr_perms & GATT_PERM_WRITE_ENCRYPTED_REQ) != 0,
+            (attr_perms & GATT_PERM_READ_AUTHEN_SC_REQ) != 0);
         printf("--------------------------------------------------------\n");
     }
 }
