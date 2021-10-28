@@ -1,8 +1,16 @@
 #include "IRDevice.h"
 
 // User defined txPin, rxPin and carrier frequency
-#define IR_RX_PIN         8
-#define IR_TX_PIN         9
+#if defined(BOARD_RTL8722DM)
+#define IR_RX_PIN       8
+#define IR_TX_PIN       9
+#elif defined(BOARD_RTL8722DM_MINI)
+#error Sorry, RTL8722DM_MINI do not support.
+#elif defined(BOARD_RTL8720DN_BW16)
+#define IR_RX_PIN       PA26
+#define IR_TX_PIN       PA25
+#endif
+
 #define CARRIER_FREQ  40000
 
 void setup() {

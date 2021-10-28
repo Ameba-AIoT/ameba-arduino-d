@@ -137,6 +137,7 @@ void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
     *  |  IR_TX  |  _PA_25  |  _PB_23 |  _PB_31 |
     *  |  IR_RX  |  _PA_26  |  _PB_22 |  _PB_29 |
     */
+#if defined(BOARD_RTL8722DM)
     if (receivePin == 6) {
         PAD_PullCtrl(_PB_29, PullNone);
         Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
@@ -160,6 +161,27 @@ void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
         printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
         return;
     }
+#elif defined(BOARD_RTL8720DN_BW16)
+//    if (receivePin == 10) {
+    if (receivePin == PA26) {
+        PAD_PullCtrl(_PA_26, PullNone);
+        Pinmux_Config(_PA_26, PINMUX_FUNCTION_IR);
+    } else {
+        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
+        return;
+    }
+
+//    if (transmitPin == 3) {
+    if (transmitPin == PA25) {
+        Pinmux_Config(_PA_25, PINMUX_FUNCTION_IR);
+    } else {
+        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
+        return;
+    }
+#else
+#error
+#endif
+
     _receivePin = receivePin;
     _transmitPin = transmitPin;
 }

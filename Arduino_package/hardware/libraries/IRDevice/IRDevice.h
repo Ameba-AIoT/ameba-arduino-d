@@ -13,7 +13,7 @@
 
 typedef struct
 {
-	uint16_t        carrierFreq;
+    uint16_t        carrierFreq;
     uint8_t         headerLen;
     uint32_t        headerBuf[MAX_HEADDER_LEN];
     IR_DataType     log0Buf[MAX_LOG_WAVFORM_SIZE];
@@ -22,7 +22,7 @@ typedef struct
 
 typedef struct
 {
-	uint16_t        carrierFreq;
+    uint16_t        carrierFreq;
     uint8_t         headerLen;
     uint32_t        headerBuf[MAX_HEADDER_LEN];
     IR_DataType     log0Buf[MAX_LOG_WAVFORM_SIZE];

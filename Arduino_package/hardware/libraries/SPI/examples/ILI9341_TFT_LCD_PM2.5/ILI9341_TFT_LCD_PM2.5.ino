@@ -21,17 +21,25 @@
     VCC  : connect to 3V3
     GND  : connect to GND
 
-
   For RTL8722DM_MINI, ILI9341 TFT LCD with SPI interface has these pins:
     RST  : connect to pin 8
+    D/C  : connect to pin 13
+    CS   : connect to pin 12
     MOSI : connect to pin 9
     MISO : connect to pin 10
     CLK  : connect to pin 11
-    CS   : connect to pin 12
-    D/C  : connect to pin 13    
     VCC  : connect to 3V3
     GND  : connect to GND
 
+  For RTL8720DN/BW16, ILI9341 TFT LCD with SPI interface has these pins:
+    RST  : connect to pin PA27
+    D/C  : connect to pin PA26
+    CS   : connect to pin PA15
+    MOSI : connect to pin PA12
+    MISO : connect to pin PA13
+    CLK  : connect to pin PA14
+    VCC  : connect to 3V3
+    GND  : connect to GND
  */
 
 #include <SoftwareSerial.h>
@@ -50,13 +58,19 @@ SoftwareSerial mySerial(0, 1); // RX, TX
 
 #elif defined(BOARD_RTL8722DM_MINI)
 // RTL8722DM_MINI -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
-SoftwareSerial mySerial(0, 1); // RX, TX
+SoftwareSerial mySerial(2, 1); // RX, TX
 #define TFT_RESET       8
 #define TFT_DC          13
 #define TFT_CS          12
 
-#endif
+#elif defined(BOARD_RTL8720DN_BW16)
+// RTL8720DN/BW16 -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
+SoftwareSerial mySerial(PB2, PB1); // RX, TX
+#define TFT_RESET       PA27
+#define TFT_DC          PA26
+#define TFT_CS          PA15
 
+#endif
 
 AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
 

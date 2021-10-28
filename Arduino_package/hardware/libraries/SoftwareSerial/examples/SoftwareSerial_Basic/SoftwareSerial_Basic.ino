@@ -4,21 +4,26 @@
  Receives from serial RX, and then sends to serial TX
 
  The circuit: (BOARD RTL8722CSM / DM)
- * RX is digital pin 0 (connect to TX of other device)
- * TX is digital pin 1 (connect to RX of other device)
-               (BOARD_RTL8722DM_MINI)
- * RX is digtal pin 2 (connect to TX of other device)
- * TX is digital pin 1 (Connect to RX of other device)
-
+ * RX is digital pin 0 (connect to the other device TX)
+ * TX is digital pin 1 (connect to the other device RX)
+              (BOARD RTL8722DM_MINI)
+ * RX is digital pin 2 (connect to the other device TX)
+ * TX is digital pin 1 (connect to the other device RX)
+              (BOARD RTL8720DN / BW16)
+ * RX is digital pin PB2 (connect to the other device TX)
+ * TX is digital pin PB1 (connect to the other device RX)
  */
+
 #include <SoftwareSerial.h>
 
 #if defined(BOARD_RTL8722DM)
-        SoftwareSerial mySerial(0, 1); // RX, TX
+    SoftwareSerial mySerial(0, 1); // RX, TX
 #elif defined(BOARD_RTL8722DM_MINI)
-        SoftwareSerial mySerial(2, 1); // RX, TX
-#else 
-        SoftwareSerial mySerial(0, 1); // RX, TX
+    SoftwareSerial mySerial(2, 1); // RX, TX
+#elif defined(BOARD_RTL8720DN_BW16)
+    SoftwareSerial mySerial(PB2, PB1); // RX, TX
+#else
+    SoftwareSerial mySerial(0, 1); // RX, TX
 #endif
 
 
