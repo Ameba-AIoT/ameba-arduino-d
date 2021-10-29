@@ -120,13 +120,13 @@ void PMUClass::enable(void) {
 uint32_t PMUClass::AONWakeReason(void) {
     uint32_t aon_wake_event = SOCPS_AONWakeReason();
     if (BIT_GPIO_WAKE_STS & aon_wake_event) {
-        return 11;
+        return AONWakeReason_AON_GPIO;
     }
     if (BIT_AON_WAKE_TIM0_STS & aon_wake_event) {
-        return 22;
+        return AONWakeReason_AON_TIMER;
     }
     if (BIT_RTC_WAKE_STS & aon_wake_event) {
-        return 33;
+        return AONWakeReason_RTC;
     }
     return 0;
 }
@@ -150,7 +150,7 @@ int PMUClass::WakePinCheck(void) {
     if (checkpin_number == 8) {
         return 17;
     }
-    return 111;
+    return 27;
 }
 
 void PMUClass::AONWakeClear(void) {
@@ -177,8 +177,49 @@ void PMUClass::TL_wakelock(uint32_t select_lock) {
     }
 }
 
-//void TL_sleep_callback(uint32_t *suspend, uint32_t *resume) {
-    //pmu_register_sleep_callback(PMU_LOGUART_DEVICE, (PSM_HOOK_FUN)suspend, NULL, (PSM_HOOK_FUN)resume, NULL);
-//}
+void PMUClass::TL_sleep_callback(uint32_t suspend(void), uint32_t resume(void)) {
+    TL_wakelock(1);
+    pmu_register_sleep_callback(PMU_LOGUART_DEVICE, (PSM_HOOK_FUN)suspend, NULL, (PSM_HOOK_FUN)resume, NULL);
+    TL_wakelock(0);
+}
+
+
+void PMUClass::DS_AON_TIMER_WAKEUP(void) {
+    printf("Set Deepsleep wakeup AON timer.    \r\n");
+}
+void PMUClass::DS_AON_WAKEPIN_WAKEUP_D16(void) {
+    printf("Set Deepsleep wakeup AON pin D16.    \r\n");
+}
+void PMUClass::DS_AON_WAKEPIN_WAKEUP_D17(void) {
+    printf("Set Deepsleep wakeup AON pin D17.    \r\n");
+}
+void PMUClass::DS_AON_WAKEPIN_WAKEUP_D26(void) {
+    printf("Set Deepsleep wakeup AON pin D26.    \r\n");
+}
+void PMUClass::DS_AON_WAKEPIN_WAKEUP_D27(void) {
+    printf("Set Deepsleep wakeup AON pin D27.    \r\n");
+}
+void PMUClass::DS_RTC_WAKEUP(void) {
+    printf("Set Deepsleep wakeup RTC.    \r\n");
+}
+
+void PMUClass::TL_UART_WAKEUP(void) {
+    printf("Set Tickless wakeup LOGUART.    \r\n");
+}
+void PMUClass::TL_RTC_WAKEUP(void) {
+    printf("Set Tickless wakeup RTC.    \r\n");
+}
+void PMUClass::TL_AON_WAKEPIN_WAKEUP_D16(void) {
+    printf("Set Tickless wakeup AON wake pin D16.    \r\n");
+}
+void PMUClass::TL_AON_WAKEPIN_WAKEUP_D17(void) {
+    printf("Set Tickless wakeup AON wake pin D17.    \r\n");
+}
+void PMUClass::TL_AON_WAKEPIN_WAKEUP_D26(void) {
+    printf("Set Tickless wakeup AON wake pin D26.    \r\n");
+}
+void PMUClass::TL_AON_WAKEPIN_WAKEUP_D27(void) {
+    printf("Set Tickless wakeup AON wake pin D27.    \r\n");
+}
 
 PMUClass PowerSave;
