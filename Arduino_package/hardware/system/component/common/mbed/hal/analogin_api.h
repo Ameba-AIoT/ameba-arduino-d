@@ -38,6 +38,9 @@ extern "C" {
 
 ///@name Ameba Common 
 ///@{
+	
+#define INTER_MEAS      (0x3<<5|2)
+#define AD_10           INTER_MEAS
 
 typedef struct analogin_s analogin_t;
 

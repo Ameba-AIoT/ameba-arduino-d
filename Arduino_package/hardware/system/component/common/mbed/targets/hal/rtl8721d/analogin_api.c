@@ -30,6 +30,7 @@ static const PinMap PinMap_ADC[] = {
 	{PB_2,			ADC_CH5,		0},
 	{PB_3,			ADC_CH6,		0},
 	{VBAT_MEAS,		ADC_CH7,		0},
+	{INTER_MEAS, 	ADC_CH10,		0},
 	{NC,			NC,				0}
 };
 

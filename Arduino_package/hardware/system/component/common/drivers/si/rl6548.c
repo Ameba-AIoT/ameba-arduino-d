@@ -194,7 +194,8 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 
 	reg_value = AUDIO_SI_ReadReg(0x03);		//VREF voltage selection
 	reg_value &= 0xf3ff;
-	reg_value |= 0x0800;
+	//mute micin and linein
+	reg_value |= 0x08f0;
 	AUDIO_SI_WriteReg(0x03, reg_value);
 
 

@@ -91,6 +91,13 @@ extern "C"
 #define GAP_MSG_LE_ADV_UPDATE_PARAM                 0x40 //!<Response msg type for le_adv_update_param
 #endif
 
+//gap_dtm.h
+#if F_BT_LE_4_0_DTM_SUPPORT
+#define GAP_MSG_LE_DTM_RECEIVER_TEST                0x70 //!<Response msg type for le_dtm_receiver_test
+#define GAP_MSG_LE_DTM_TRANSMITTER_TEST             0x71 //!<Response msg type for le_dtm_transmitter_test
+#define GAP_MSG_LE_DTM_TEST_END                     0x72 //!<Response msg type for le_dtm_test_end
+#endif
+
 #define GAP_MSG_LE_GAP_STATE_MSG                    0xB0
 
 /** End of GAP_LE_MSG_Types
@@ -231,6 +238,15 @@ typedef struct
 } T_LE_GATT_SIGNED_STATUS_INFO;
 #endif
 
+#if F_BT_LE_4_0_DTM_SUPPORT
+/** @brief  Response of le receiver test request. */
+typedef struct
+{
+    uint16_t        cause;
+    uint16_t        num_pkts;
+} T_LE_DTM_TEST_END_RSP;
+#endif
+
 //gap_scan.h
 #if F_BT_LE_GAP_SCAN_SUPPORT
 /** @brief  Information of le scan information.  */
@@ -309,6 +325,10 @@ typedef union
 //gap_adv.h
 #if F_BT_LE_GAP_PERIPHERAL_SUPPORT
     T_LE_ADV_UPDATE_PARAM_RSP                *p_le_adv_update_param_rsp;
+#endif
+//gap_dtm.h
+#if F_BT_LE_4_0_DTM_SUPPORT
+    T_LE_DTM_TEST_END_RSP                    *p_le_dtm_test_end_rsp;
 #endif
     void                                     *p_gap_state_msg;
 } T_LE_CB_DATA;

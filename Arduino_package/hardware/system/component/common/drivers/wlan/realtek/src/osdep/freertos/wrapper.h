@@ -416,7 +416,7 @@ struct net_device {
 	int (*open)(struct net_device *dev);
 	int (*stop)(struct net_device *dev);
 	int (*hard_start_xmit)(struct sk_buff *skb, struct net_device *dev);
-	int (*do_ioctl)(struct net_device *dev, struct iwreq *ifr, int cmd);
+	int (*do_ioctl)(struct net_device *dev, struct rtwreq *ifr, int cmd);
 	struct net_device_stats* (*get_stats)(struct net_device *dev);
 };
 

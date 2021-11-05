@@ -812,8 +812,14 @@ static void _freertos_delete_task(struct task_struct *ptask)
 		return;
 	}
 
-	vTaskDelete(ptask->task);
-	ptask->task = 0;
+	if(xTaskGetCurrentTaskHandle() == ptask->task) {
+		ptask->task = 0;
+		vTaskDelete(ptask->task);
+	}else {
+		vTaskDelete(ptask->task);
+		ptask->task = 0;
+	}
+
 	
 	DBG_TRACE("Delete Task \"%s\"\n", ptask->task_name);
 }

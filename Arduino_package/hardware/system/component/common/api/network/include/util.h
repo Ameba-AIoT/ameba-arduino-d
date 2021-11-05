@@ -34,7 +34,7 @@ int wext_set_scan(const char *ifname, char *buf, __u16 buf_len);
 int wext_get_scan(const char *ifname, char *buf, __u16 buf_len);
 int wext_mp_command(const char *ifname, char *cmd, int show_msg);
 int wext_wifi_priv(const char *ifname, int argc, char **argv);
-void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra);
+void wext_wlan_indicate(unsigned int cmd, union rtwreq_data *wrqu, char *extra);
 #endif
 
 #define wext_handshake_done rltk_wlan_handshake_done

@@ -102,7 +102,7 @@ void spi_bus_tx_done_callback(VOID *spi_obj)
 
 	if (obj->bus_tx_done_handler) {
 		handler = (spi_irq_handler)obj->bus_tx_done_handler;
-		handler(obj->bus_tx_done_irq_id, 0);
+		handler(obj->bus_tx_done_irq_id, SpiTxIrq);
 	}
 }
 

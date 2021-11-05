@@ -23,24 +23,67 @@
 #include "WiFiClient.h"
 #include "WiFiServer.h"
 
-WiFiServer::WiFiServer(uint16_t port)
-{
+WiFiServer::WiFiServer(uint16_t port) {
     _port = port;
 }
 
-void WiFiServer::begin()
-{
-    _sock_ser = serverfd.startServer(_port);
+void WiFiServer::begin() {
+    _is_connected = false;
+    _sock_ser = serverdrv.startServer(_port);
+    if (_sock_ser < 0) {
+        _is_connected = false;
+        printf("\n[ERROR] Socket conntect failed \n\r");
+    } else {
+        _is_connected = true;
+        printf("\n[INFO] Socket conntect successfully \n\r");
+    }
 }
 
-WiFiClient WiFiServer::available(uint8_t* status)
-{
-    //int client_fd;
+WiFiClient WiFiServer::available(uint8_t* status) {
     int client_fd = (int)(status);
 
-    client_fd = serverfd.getAvailable(_sock_ser);
+    client_fd = serverdrv.getAvailable(_sock_ser);
 
     return WiFiClient(client_fd);
+}
+
+int WiFiServer::available(int server_fd) {
+    int client_fd;
+
+    client_fd = serverdrv.getAvailable(server_fd);
+    _sock_ser = client_fd;
+
+    return client_fd;
+}
+
+uint8_t WiFiServer::connected() {
+    if ((_sock_ser < 0) || (_sock_ser == 0xFF)) {
+        _is_connected = false;
+        return 0;
+    } else {
+        if (_is_connected) {
+            return 1;
+        } else {
+            stop();
+            return 0;
+        }
+    }
+}
+
+int WiFiServer::recv(uint8_t* buf, size_t size) {
+    uint16_t _size = size;
+    int ret;
+    int err;
+
+    ret = serverdrv.recvData(_sock_ser, buf, _size);
+    if (ret <= 0) {
+        err = serverdrv.getLastErrno(_sock_ser);
+        if (err != 0) {
+            _is_connected = false;
+        }
+    }
+
+    return ret;
 }
 
 size_t WiFiServer::write(uint8_t b) {
@@ -57,7 +100,7 @@ size_t WiFiServer::write(const uint8_t *buf, size_t size) {
         return 0;
     }
 
-    if (!serverfd.sendData(_sock_ser, buf, size)) {
+    if (!serverdrv.sendData(_sock_ser, buf, size)) {
         setWriteError();
         return 0;
     }
@@ -65,29 +108,38 @@ size_t WiFiServer::write(const uint8_t *buf, size_t size) {
     return size;
 }
 
-#if 0
-uint8_t WiFiServer::status() {
-    return ServerDrv::getServerState(0);
-}
-
-
-size_t WiFiServer::write(uint8_t b)
-{
-    return write(&b, 1);
-}
-
-size_t WiFiServer::write(const uint8_t *buffer, size_t size)
-{
-    size_t n = 0;
-
-    for (int sock = 0; sock < MAX_SOCK_NUM; sock++) {
-        if (WiFiClass::_server_port[sock] != 0) {
-            WiFiClient client(sock);
-            if ((WiFiClass::_server_port[sock] == _port) && (client.status() == ESTABLISHED)) {
-                n += client.write(buffer, size);
-            }
-        }
+void WiFiServer::stop() {
+    if (_sock_ser < 0) {
+        return;
     }
-    return n;
+    serverdrv.stopSocket(_sock_ser);
+    _is_connected = false;
+    _sock_ser = -1;
 }
-#endif
+
+void WiFiServer::end() {
+    stop();
+}
+
+void WiFiServer::close() {
+    stop();
+}
+
+// extend API from RTK
+int WiFiServer::setTimeout(int timeout) {
+    if (connected()) {
+        recvTimeout = timeout;
+        serverdrv.setSockRecvTimeout(_sock_ser, recvTimeout);
+    }
+    return 0;
+}
+
+// IPv6 related
+int WiFiServer::enableIPv6() {
+    return serverdrv.enableIPv6();
+}
+
+int WiFiServer::getIPv6Status() {
+    return serverdrv.getIPv6Status();
+}
+

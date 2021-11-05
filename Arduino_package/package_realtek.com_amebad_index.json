@@ -11,7 +11,38 @@
 
       "platforms": [
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
+          "version": "3.1.0",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.1.0.tar.gz",
+          "archiveFileName": "ameba_d-3.1.0.tar.gz",
+          "checksum": "SHA-256:0f455b2717c17c0d9769c11427cb07ba725aa6ea0dd743c608677d9510bb45ba",
+          "size": "36334135",
+          "boards": [
+            {"name": "RTL8722DM"},
+            {"name": "RTL8722CSM"},
+            {"name": "RTL8722DM_MINI"},
+            {"name": "RTL8720DN/BW16"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.6"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.11",
           "category": "Contributed",
@@ -42,7 +73,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.10",
           "category": "Contributed",
@@ -73,7 +104,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.9",
           "category": "Contributed",
@@ -104,7 +135,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.8",
           "category": "Contributed",
@@ -135,7 +166,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.7",
           "category": "Contributed",
@@ -164,7 +195,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.6",
           "category": "Contributed",
@@ -193,7 +224,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.5",
           "category": "Contributed",
@@ -222,7 +253,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.4",
           "category": "Contributed",
@@ -251,7 +282,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.3",
           "category": "Contributed",
@@ -280,7 +311,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.2",
           "category": "Contributed",
@@ -309,7 +340,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.1",
           "category": "Contributed",
@@ -338,7 +369,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.0",
           "category": "Contributed",

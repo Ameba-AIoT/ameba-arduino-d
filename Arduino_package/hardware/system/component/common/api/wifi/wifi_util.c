@@ -5,7 +5,7 @@
 #include <wifi/wifi_ind.h>
 #include <osdep_service.h>
 
-int iw_ioctl(const char * ifname, unsigned long request, struct iwreq *	pwrq)
+int iw_ioctl(const char * ifname, unsigned long request, struct rtwreq *	pwrq)
 {
 	memcpy(pwrq->ifr_name, ifname, 5);
 	return rltk_wlan_control(request, (void *) pwrq);
@@ -13,16 +13,16 @@ int iw_ioctl(const char * ifname, unsigned long request, struct iwreq *	pwrq)
 
 int wext_get_ssid(const char *ifname, __u8 *ssid)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.essid.pointer = ssid;
 	iwr.u.essid.length = 32;
 
-	if (iw_ioctl(ifname, SIOCGIWESSID, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCGIWESSID, &iwr) < 0) {
 #if defined(CONFIG_EXAMPLE_BT_CONFIG) && (CONFIG_EXAMPLE_BT_CONFIG!=1)
-		RTW_API_INFO("\n\rioctl[SIOCGIWESSID] ssid = NULL, not connected"); //do not use perror
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWESSID] ssid = NULL, not connected"); //do not use perror
 #endif
 		ret = -1;
 	} else {
@@ -43,7 +43,7 @@ int wext_get_ssid(const char *ifname, __u8 *ssid)
 
 int wext_set_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
@@ -51,8 +51,8 @@ int wext_set_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 	iwr.u.essid.length = ssid_len;
 	iwr.u.essid.flags = (ssid_len != 0);
 
-	if (iw_ioctl(ifname, SIOCSIWESSID, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWESSID] error");
+	if (iw_ioctl(ifname, RTKIOCSIWESSID, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWESSID] error");
 		ret = -1;
 	}
 	
@@ -61,7 +61,7 @@ int wext_set_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 
 int wext_set_bssid(const char *ifname, const __u8 *bssid)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
@@ -72,8 +72,8 @@ int wext_set_bssid(const char *ifname, const __u8 *bssid)
 		memcpy(iwr.u.ap_addr.sa_data + ETH_ALEN, bssid + ETH_ALEN, 6);
 	}
 
-	if (iw_ioctl(ifname, SIOCSIWAP, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWAP] error");
+	if (iw_ioctl(ifname, RTKIOCSIWAP, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWAP] error");
 		ret = -1;
 	}
 
@@ -82,13 +82,13 @@ int wext_set_bssid(const char *ifname, const __u8 *bssid)
 
 int wext_get_bssid(const char*ifname, __u8 *bssid)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
-	if (iw_ioctl(ifname, SIOCGIWAP, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWAP] error");
+	if (iw_ioctl(ifname, RTKIOCGIWAP, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWAP] error");
 		ret = -1;
 	} else {
 		memcpy(bssid, iwr.u.ap_addr.sa_data, ETH_ALEN);
@@ -104,15 +104,15 @@ int is_broadcast_ether_addr(const unsigned char *addr)
 
 int wext_set_auth_param(const char *ifname, __u16 idx, __u32 value)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
-	iwr.u.param.flags = idx & IW_AUTH_INDEX;
+	iwr.u.param.flags = idx & RTW_AUTH_INDEX;
 	iwr.u.param.value = value;
 
-	if (iw_ioctl(ifname, SIOCSIWAUTH, &iwr) < 0) {
-		RTW_API_INFO("\n\rWEXT: SIOCSIWAUTH(param %d value 0x%x) failed)", idx, value);
+	if (iw_ioctl(ifname, RTKIOCSIWAUTH, &iwr) < 0) {
+		RTW_API_INFO("\n\rWEXT: RTKIOCSIWAUTH(param %d value 0x%x) failed)", idx, value);
 	}
 
 	return ret;
@@ -121,13 +121,13 @@ int wext_set_auth_param(const char *ifname, __u16 idx, __u32 value)
 int wext_set_mfp_support(const char *ifname, __u8 value)
 {
 	int ret = 0;
-	struct iwreq iwr;
+	struct rtwreq iwr;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.param.value = value;
 
-	if (iw_ioctl(ifname, SIOCSIWMFP, &iwr) < 0) {
-		RTW_API_INFO("\n\rWEXT: SIOCSIWMFP(value 0x%x) failed)", value);
+	if (iw_ioctl(ifname, RTKIOCSIWMFP, &iwr) < 0) {
+		RTW_API_INFO("\n\rWEXT: RTKIOCSIWMFP(value 0x%x) failed)", value);
 	}
 
 	return ret;
@@ -137,13 +137,13 @@ int wext_set_mfp_support(const char *ifname, __u8 value)
 int wext_set_group_id(const char *ifname, __u8 value)
 {
 	int ret = 0;
-	struct iwreq iwr;
+	struct rtwreq iwr;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.param.value = value;
 
-	if (iw_ioctl(ifname, SIOCSIWGRPID, &iwr) < 0) {
-		RTW_API_INFO("\n\rWEXT: SIOCSIWGRPID(value 0x%x) failed)", value);
+	if (iw_ioctl(ifname, RTKIOCSIWGRPID, &iwr) < 0) {
+		RTW_API_INFO("\n\rWEXT: RTKIOCSIWGRPID(value 0x%x) failed)", value);
 	}
 
 	return ret;
@@ -168,13 +168,13 @@ unsigned char wext_get_support_wpa3(void)
 int wext_set_pmk_cache_enable(const char *ifname, __u8 value)
 {
 	int ret = 0;
-	struct iwreq iwr;
+	struct rtwreq iwr;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.param.value = value;
 
-	if (iw_ioctl(ifname, SIOCSIWPMKSA, &iwr) < 0) {
-		RTW_API_INFO("\n\rWEXT: SIOCSIWPMKSA(value 0x%x) failed)", value);
+	if (iw_ioctl(ifname, RTKIOCSIWPMKSA, &iwr) < 0) {
+		RTW_API_INFO("\n\rWEXT: RTKIOCSIWPMKSA(value 0x%x) failed)", value);
 	}
 
 	return ret;
@@ -183,30 +183,30 @@ int wext_set_pmk_cache_enable(const char *ifname, __u8 value)
 
 int wext_set_key_ext(const char *ifname, __u16 alg, const __u8 *addr, int key_idx, int set_tx, const __u8 *seq, __u16 seq_len, __u8 *key, __u16 key_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
-	struct iw_encode_ext *ext;
+	struct rtw_encode_ext *ext;
 
-	ext = (struct iw_encode_ext *) malloc(sizeof(struct iw_encode_ext) + key_len);
+	ext = (struct rtw_encode_ext *) malloc(sizeof(struct rtw_encode_ext) + key_len);
 	if (ext == NULL)
 		return -1;
 	else
-		memset(ext, 0, sizeof(struct iw_encode_ext) + key_len);
+		memset(ext, 0, sizeof(struct rtw_encode_ext) + key_len);
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.encoding.flags = key_idx + 1;
-	iwr.u.encoding.flags |= IW_ENCODE_TEMP;
+	iwr.u.encoding.flags |= RTW_ENCODE_TEMP;
 	iwr.u.encoding.pointer = ext;
-	iwr.u.encoding.length = sizeof(struct iw_encode_ext) + key_len;
+	iwr.u.encoding.length = sizeof(struct rtw_encode_ext) + key_len;
 
-	if (alg == IW_ENCODE_DISABLED)
-		iwr.u.encoding.flags |= IW_ENCODE_DISABLED;
+	if (alg == RTW_ENCODE_DISABLED)
+		iwr.u.encoding.flags |= RTW_ENCODE_DISABLED;
 
 	if (addr == NULL || is_broadcast_ether_addr(addr))
-		ext->ext_flags |= IW_ENCODE_EXT_GROUP_KEY;
+		ext->ext_flags |= RTW_ENCODE_EXT_GROUP_KEY;
 
 	if (set_tx)
-		ext->ext_flags |= IW_ENCODE_EXT_SET_TX_KEY;
+		ext->ext_flags |= RTW_ENCODE_EXT_SET_TX_KEY;
 
 	ext->addr.sa_family = ARPHRD_ETHER;
 
@@ -223,13 +223,13 @@ int wext_set_key_ext(const char *ifname, __u16 alg, const __u8 *addr, int key_id
 	ext->alg = alg;
 
 	if (seq && seq_len) {
-		ext->ext_flags |= IW_ENCODE_EXT_RX_SEQ_VALID;
+		ext->ext_flags |= RTW_ENCODE_EXT_RX_SEQ_VALID;
 		memcpy(ext->rx_seq, seq, seq_len);
 	}
 
-	if (iw_ioctl(ifname, SIOCSIWENCODEEXT, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCSIWENCODEEXT, &iwr) < 0) {
 		ret = -2;
-		RTW_API_INFO("\n\rioctl[SIOCSIWENCODEEXT] set key fail");
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWENCODEEXT] set key fail");
 	}
 
 	free(ext);
@@ -239,20 +239,20 @@ int wext_set_key_ext(const char *ifname, __u16 alg, const __u8 *addr, int key_id
 
 int wext_get_enc_ext(const char *ifname, __u16 *alg, __u8 *key_idx, __u8 *passphrase)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
-	struct iw_encode_ext *ext;
+	struct rtw_encode_ext *ext;
 
-	ext = (struct iw_encode_ext *) malloc(sizeof(struct iw_encode_ext) + 16);
+	ext = (struct rtw_encode_ext *) malloc(sizeof(struct rtw_encode_ext) + 16);
 	if (ext == NULL)
 		return -1;
 	else
-		memset(ext, 0, sizeof(struct iw_encode_ext) + 16);
+		memset(ext, 0, sizeof(struct rtw_encode_ext) + 16);
 
 	iwr.u.encoding.pointer = ext;
 
-	if (iw_ioctl(ifname, SIOCGIWENCODEEXT, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCGIWENCODEEXT] error");
+	if (iw_ioctl(ifname, RTKIOCGIWENCODEEXT, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWENCODEEXT] error");
 		ret = -1;
 	}
 	else
@@ -272,7 +272,7 @@ int wext_get_enc_ext(const char *ifname, __u16 *alg, __u8 *key_idx, __u8 *passph
 
 int wext_set_passphrase(const char *ifname, const __u8 *passphrase, __u16 passphrase_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
@@ -280,8 +280,8 @@ int wext_set_passphrase(const char *ifname, const __u8 *passphrase, __u16 passph
 	iwr.u.passphrase.length = passphrase_len;
 	iwr.u.passphrase.flags = (passphrase_len != 0);
 
-	if (iw_ioctl(ifname, SIOCSIWPRIVPASSPHRASE, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWESSID+0x1f] error");
+	if (iw_ioctl(ifname, RTKIOCSIWPRIVPASSPHRASE, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWESSID+0x1f] error");
 		ret = -1;
 	}
 	
@@ -290,14 +290,14 @@ int wext_set_passphrase(const char *ifname, const __u8 *passphrase, __u16 passph
 
 int wext_get_passphrase(const char *ifname, __u8 *passphrase)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.passphrase.pointer = (void *) passphrase;
 
-	if (iw_ioctl(ifname, SIOCGIWPRIVPASSPHRASE, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCGIWPRIVPASSPHRASE] error");
+	if (iw_ioctl(ifname, RTKIOCGIWPRIVPASSPHRASE, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWPRIVPASSPHRASE] error");
 		ret = -1;
 	}
 	else {
@@ -332,7 +332,7 @@ int wext_get_mac_address(const char *ifname, char * mac)
 
 int wext_enable_powersave(const char *ifname, __u8 ips_mode, __u8 lps_mode)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -359,7 +359,7 @@ int wext_enable_powersave(const char *ifname, __u8 ips_mode, __u8 lps_mode)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -370,7 +370,7 @@ int wext_enable_powersave(const char *ifname, __u8 ips_mode, __u8 lps_mode)
 
 int wext_resume_powersave(const char *ifname)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -392,7 +392,7 @@ int wext_resume_powersave(const char *ifname)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -403,7 +403,7 @@ int wext_resume_powersave(const char *ifname)
 
 int wext_disable_powersave(const char *ifname)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -430,7 +430,7 @@ int wext_disable_powersave(const char *ifname)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -442,7 +442,7 @@ int wext_disable_powersave(const char *ifname)
 
 int wext_set_tdma_param(const char *ifname, __u8 slot_period, __u8 rfon_period_len_1, __u8 rfon_period_len_2, __u8 rfon_period_len_3)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -467,7 +467,7 @@ int wext_set_tdma_param(const char *ifname, __u8 slot_period, __u8 rfon_period_l
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -478,7 +478,7 @@ int wext_set_tdma_param(const char *ifname, __u8 slot_period, __u8 rfon_period_l
 
 int wext_set_lps_dtim(const char *ifname, __u8 lps_dtim)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -500,7 +500,7 @@ int wext_set_lps_dtim(const char *ifname, __u8 lps_dtim)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -512,7 +512,7 @@ int wext_set_lps_dtim(const char *ifname, __u8 lps_dtim)
 int wext_get_lps_dtim(const char *ifname, __u8 *lps_dtim)
 {
 
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -534,7 +534,7 @@ int wext_get_lps_dtim(const char *ifname, __u8 *lps_dtim)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMGET] error");
 		ret = -1;
 		goto exit;
@@ -553,7 +553,7 @@ exit:
 }
 
 int wext_set_lps_thresh(const char *ifname, u8 low_thresh) {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -575,7 +575,7 @@ int wext_set_lps_thresh(const char *ifname, u8 low_thresh) {
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -586,7 +586,7 @@ int wext_set_lps_thresh(const char *ifname, u8 low_thresh) {
 
 #ifdef LONG_PERIOD_TICKLESS
 int wext_set_lps_smartps(const char *ifname, __u8 smartps) {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -608,7 +608,7 @@ int wext_set_lps_smartps(const char *ifname, __u8 smartps) {
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -619,7 +619,7 @@ int wext_set_lps_smartps(const char *ifname, __u8 smartps) {
 }
 #endif
 int wext_set_beacon_mode(const char *ifname, __u8 mode) {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -641,7 +641,7 @@ int wext_set_beacon_mode(const char *ifname, __u8 mode) {
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -651,7 +651,7 @@ int wext_set_beacon_mode(const char *ifname, __u8 mode) {
 }
 
 int wext_set_lps_level(const char *ifname, __u8 lps_level) {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -673,7 +673,7 @@ int wext_set_lps_level(const char *ifname, __u8 lps_level) {
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVPMSET] error");
 		ret = -1;
 	}
@@ -685,7 +685,7 @@ int wext_set_lps_level(const char *ifname, __u8 lps_level) {
 
 int wext_set_tos_value(const char *ifname, __u8 *tos_value)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = sizeof("set_tos_value");
@@ -723,8 +723,8 @@ int wext_set_tos_value(const char *ifname, __u8 *tos_value)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = cmd_len + 4;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_set_tos_value():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_set_tos_value():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 
@@ -734,7 +734,7 @@ int wext_set_tos_value(const char *ifname, __u8 *tos_value)
 
 int wext_get_tx_power(const char *ifname, __u8 *poweridx)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = sizeof("get_tx_power");
@@ -749,8 +749,8 @@ int wext_get_tx_power(const char *ifname, __u8 *poweridx)
 
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = cmd_len + 20;
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_get_tx_power():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_get_tx_power():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 
@@ -803,13 +803,13 @@ int wext_get_ap_info(const char *ifname, rtw_bss_info_t * ap_info, rtw_security_
 
 int wext_set_mode(const char *ifname, int mode)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.mode = mode;
-	if (iw_ioctl(ifname, SIOCSIWMODE, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWMODE] error");
+	if (iw_ioctl(ifname, RTKIOCSIWMODE, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWMODE] error");
 		ret = -1;
 	}
 
@@ -818,13 +818,13 @@ int wext_set_mode(const char *ifname, int mode)
 
 int wext_get_mode(const char *ifname, int *mode)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
-	if (iw_ioctl(ifname, SIOCGIWMODE, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCGIWMODE] error");
+	if (iw_ioctl(ifname, RTKIOCGIWMODE, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWMODE] error");
 		ret = -1;
 	}
 	else
@@ -835,7 +835,7 @@ int wext_get_mode(const char *ifname, int *mode)
 
 int wext_set_ap_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	if(ssid_len > 32){
@@ -848,8 +848,8 @@ int wext_set_ap_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 	iwr.u.essid.length = ssid_len;
 	iwr.u.essid.flags = (ssid_len != 0);
 
-	if (iw_ioctl(ifname, SIOCSIWPRIVAPESSID, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVAPESSID] error");
+	if (iw_ioctl(ifname, RTKIOCSIWPRIVAPESSID, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWPRIVAPESSID] error");
 		ret = -1;
 	}
 	
@@ -858,15 +858,15 @@ int wext_set_ap_ssid(const char *ifname, const __u8 *ssid, __u16 ssid_len)
 
 int wext_set_country(const char *ifname, rtw_country_code_t country_code)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
 	iwr.u.param.value = country_code;
 	
-	if (iw_ioctl(ifname, SIOCSIWPRIVCOUNTRY, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVCOUNTRY] error");
+	if (iw_ioctl(ifname, RTKIOCSIWPRIVCOUNTRY, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWPRIVCOUNTRY] error");
 		ret = -1;
 	}
 	return ret;
@@ -874,13 +874,13 @@ int wext_set_country(const char *ifname, rtw_country_code_t country_code)
 
 int wext_get_rssi(const char *ifname, int *rssi)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
-	if (iw_ioctl(ifname, SIOCGIWSENS, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCGIWSENS] error");
+	if (iw_ioctl(ifname, RTKIOCGIWSENS, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWSENS] error");
 		ret = -1;
 	} else {
 		*rssi = 0 - iwr.u.sens.value;
@@ -890,13 +890,13 @@ int wext_get_rssi(const char *ifname, int *rssi)
 
 int wext_get_bcn_rssi(const char *ifname, int *rssi)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
-	if (iw_ioctl(ifname, SIOCGIWBCNSENS, &iwr) < 0) {
-		printf("\n\rioctl[SIOCGIWBCNSENS] error");
+	if (iw_ioctl(ifname, RTKIOCGIWBCNSENS, &iwr) < 0) {
+		printf("\n\rioctl[RTKIOCGIWBCNSENS] error");
 		ret = -1;
 	} else {
 		*rssi = 0 - iwr.u.bcnsens.value;
@@ -906,7 +906,7 @@ int wext_get_bcn_rssi(const char *ifname, int *rssi)
 
 int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u8 length)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int i =0;
@@ -927,8 +927,8 @@ int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u
 	
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = (length + length + 1) + 12;
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_set_pscan_channel():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_set_pscan_channel():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 	rtw_free(para);
@@ -936,7 +936,7 @@ int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u
 }
 int wext_set_channel(const char *ifname, __u8 ch)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
@@ -944,8 +944,8 @@ int wext_set_channel(const char *ifname, __u8 ch)
 	iwr.u.freq.e = 0;
 	iwr.u.freq.i = ch;
 
-	if (iw_ioctl(ifname, SIOCSIWFREQ, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWFREQ] error");
+	if (iw_ioctl(ifname, RTKIOCSIWFREQ, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWFREQ] error");
 		ret = -1;
 	}
 
@@ -954,13 +954,13 @@ int wext_set_channel(const char *ifname, __u8 ch)
 
 int wext_get_channel(const char *ifname, __u8 *ch)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
-	if (iw_ioctl(ifname, SIOCGIWFREQ, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCGIWFREQ] error");
+	if (iw_ioctl(ifname, RTKIOCGIWFREQ, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWFREQ] error");
 		ret = -1;
 	}
 	else
@@ -995,7 +995,7 @@ int wext_unregister_multicast_address(const char *ifname, rtw_mac_t *mac)
 
 int wext_set_scan(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
@@ -1006,8 +1006,8 @@ int wext_set_scan(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 	iwr.u.data.pointer = buf;
 	iwr.u.data.flags = flags;
 	iwr.u.data.length = buf_len;
-	if (iw_ioctl(ifname, SIOCSIWSCAN, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWSCAN] error");
+	if (iw_ioctl(ifname, RTKIOCSIWSCAN, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWSCAN] error");
 		ret = -1;
 	}
 	return ret;
@@ -1015,13 +1015,13 @@ int wext_set_scan(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 
 int wext_get_scan(const char *ifname, char *buf, __u16 buf_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	iwr.u.data.pointer = buf;
 	iwr.u.data.length = buf_len;
-	if (iw_ioctl(ifname, SIOCGIWSCAN, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCGIWSCAN] error");
+	if (iw_ioctl(ifname, RTKIOCGIWSCAN, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWSCAN] error");
 		ret = -1;
 	}else
 		ret = iwr.u.data.flags;
@@ -1030,7 +1030,7 @@ int wext_get_scan(const char *ifname, char *buf, __u16 buf_len)
 
 int wext_private_command_with_retval(const char *ifname, char *cmd, char *ret_buf, int ret_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	unsigned int buf_size;
 	char *buf;
@@ -1050,8 +1050,8 @@ int wext_private_command_with_retval(const char *ifname, char *cmd, char *ret_bu
 	iwr.u.data.length = buf_size;
 	iwr.u.data.flags = 0;
 
-	if ((ret = iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr)) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCDEVPRIVATE] error. ret=%d\n", ret);
+	if ((ret = iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr)) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCDEVPRIVATE] error. ret=%d\n", ret);
 	}
 	if(ret_buf){
 		if(ret_len > iwr.u.data.length)
@@ -1064,7 +1064,7 @@ int wext_private_command_with_retval(const char *ifname, char *cmd, char *ret_bu
 
 int wext_private_command(const char *ifname, char *cmd, int show_msg)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	unsigned int buf_size;
 	char *buf;
@@ -1095,8 +1095,8 @@ int wext_private_command(const char *ifname, char *cmd, int show_msg)
 	iwr.u.data.length = buf_size;
 	iwr.u.data.flags = 0;
 
-	if ((ret = iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr)) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCDEVPRIVATE] error. ret=%d\n", ret);
+	if ((ret = iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr)) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCDEVPRIVATE] error. ret=%d\n", ret);
 	}
 	if (show_msg && iwr.u.data.length) {
 		if(iwr.u.data.length > buf_size)
@@ -1107,13 +1107,13 @@ int wext_private_command(const char *ifname, char *cmd, int show_msg)
 	return ret;
 }
 
-void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra)
+void wext_wlan_indicate(unsigned int cmd, union rtwreq_data *wrqu, char *extra)
 {
 	unsigned char null_mac[6] = {0};
 
 	switch(cmd)
 	{
-		case SIOCGIWAP:
+		case RTKIOCGIWAP:
 			if(wrqu->ap_addr.sa_family == ARPHRD_ETHER)
 			{
 				if(!memcmp(wrqu->ap_addr.sa_data, null_mac, sizeof(null_mac)))
@@ -1123,7 +1123,7 @@ void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra)
 			}			
 			break;
 
-		case IWEVCUSTOM:
+		case RTWEVCUSTOM:
 			if(extra)
 			{
 				if(!memcmp(IW_EXT_STR_FOURWAY_DONE, extra, strlen(IW_EXT_STR_FOURWAY_DONE)))
@@ -1150,21 +1150,21 @@ void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra)
 #endif
 			}
 			break;
-		case SIOCGIWSCAN:
+		case RTKIOCGIWSCAN:
 			if(wrqu->data.pointer == NULL)
 				wifi_indication(WIFI_EVENT_SCAN_DONE, NULL, 0, 0);
 			else
 				wifi_indication(WIFI_EVENT_SCAN_RESULT_REPORT, wrqu->data.pointer, wrqu->data.length, 0);
 			break;
-		case IWEVMGNTRECV:
+		case RTWEVMGNTRECV:
 			wifi_indication(WIFI_EVENT_RX_MGNT, wrqu->data.pointer, wrqu->data.length, wrqu->data.flags);
 			break;
 #ifdef REPORT_STA_EVENT
-		case IWEVREGISTERED:
+		case RTWEVREGISTERED:
 			if(wrqu->addr.sa_family == ARPHRD_ETHER)
 				wifi_indication(WIFI_EVENT_STA_ASSOC, wrqu->addr.sa_data, sizeof(null_mac), 0);
 			break;
-		case IWEVEXPIRED:
+		case RTWEVEXPIRED:
 			if(wrqu->addr.sa_family == ARPHRD_ETHER)
 				wifi_indication(WIFI_EVENT_STA_DISASSOC, wrqu->addr.sa_data, sizeof(null_mac), 0);
 			break;
@@ -1179,15 +1179,15 @@ void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra)
 
 int wext_send_eapol(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.data.pointer = buf;
 	iwr.u.data.length = buf_len;
 	iwr.u.data.flags = flags;	
-	if (iw_ioctl(ifname, SIOCSIWEAPOLSEND, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWEAPOLSEND] error");
+	if (iw_ioctl(ifname, RTKIOCSIWEAPOLSEND, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWEAPOLSEND] error");
 		ret = -1;
 	}
 	return ret;
@@ -1195,15 +1195,15 @@ int wext_send_eapol(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 
 int wext_send_mgnt(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.data.pointer = buf;
 	iwr.u.data.length = buf_len;
 	iwr.u.data.flags = flags;	
-	if (iw_ioctl(ifname, SIOCSIWMGNTSEND, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWMGNTSEND] error");
+	if (iw_ioctl(ifname, RTKIOCSIWMGNTSEND, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWMGNTSEND] error");
 		ret = -1;
 	}
 	return ret;
@@ -1211,15 +1211,15 @@ int wext_send_mgnt(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 
 int wext_set_gen_ie(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 	iwr.u.data.pointer = buf;
 	iwr.u.data.length = buf_len;
 	iwr.u.data.flags = flags;	
-	if (iw_ioctl(ifname, SIOCSIWGENIE, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIWGENIE] error");
+	if (iw_ioctl(ifname, RTKIOCSIWGENIE, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIWGENIE] error");
 		ret = -1;
 	}
 	return ret;
@@ -1227,7 +1227,7 @@ int wext_set_gen_ie(const char *ifname, char *buf, __u16 buf_len, __u16 flags)
 
 int wext_set_autoreconnect(const char *ifname, __u8 mode, __u8 retry_times, __u16 timeout)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1246,8 +1246,8 @@ int wext_set_autoreconnect(const char *ifname, __u8 mode, __u8 retry_times, __u1
 	
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = (4) + cmd_len;
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_set_autoreconnect():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_set_autoreconnect():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 	rtw_free(para);
@@ -1256,7 +1256,7 @@ int wext_set_autoreconnect(const char *ifname, __u8 mode, __u8 retry_times, __u1
 
 int wext_get_autoreconnect(const char *ifname, __u8 *mode)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1270,8 +1270,8 @@ int wext_get_autoreconnect(const char *ifname, __u8 *mode)
 	
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = cmd_len;
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_get_autoreconnect():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_get_autoreconnect():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 	*mode = *(__u8 *)(iwr.u.data.pointer);
@@ -1295,7 +1295,7 @@ int wext_get_drv_ability(const char *ifname, __u32 *ability)
 #ifdef CONFIG_CUSTOM_IE
 int wext_add_custom_ie(const char *ifname, void *cus_ie, int ie_num)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1318,8 +1318,8 @@ int wext_add_custom_ie(const char *ifname, void *cus_ie, int ie_num)
 
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = (4)* 2 + cmd_len;// 2 input
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_add_custom_ie():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_add_custom_ie():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 	rtw_free(para);
@@ -1329,7 +1329,7 @@ int wext_add_custom_ie(const char *ifname, void *cus_ie, int ie_num)
 
 int wext_update_custom_ie(const char *ifname, void * cus_ie, int ie_index)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1352,8 +1352,8 @@ int wext_update_custom_ie(const char *ifname, void * cus_ie, int ie_index)
 
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = (4)* 2 + cmd_len;// 2 input
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_update_custom_ie():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_update_custom_ie():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 	rtw_free(para);
@@ -1364,7 +1364,7 @@ int wext_update_custom_ie(const char *ifname, void * cus_ie, int ie_index)
 
 int wext_del_custom_ie(const char *ifname)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1377,8 +1377,8 @@ int wext_del_custom_ie(const char *ifname)
 	
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = cmd_len;
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_del_custom_ie():ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_del_custom_ie():ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 	rtw_free(para);
@@ -1393,7 +1393,7 @@ int wext_del_custom_ie(const char *ifname)
 #ifdef CONFIG_AP_MODE
 int wext_enable_forwarding(const char *ifname)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1410,8 +1410,8 @@ int wext_enable_forwarding(const char *ifname)
 	iwr.u.essid.pointer = para;
 	iwr.u.essid.length = cmd_len + 1;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_enable_forwarding(): ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_enable_forwarding(): ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 
@@ -1421,7 +1421,7 @@ int wext_enable_forwarding(const char *ifname)
 
 int wext_disable_forwarding(const char *ifname)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u8 *para = NULL;
 	int cmd_len = 0;
@@ -1438,8 +1438,8 @@ int wext_disable_forwarding(const char *ifname)
 	iwr.u.essid.pointer = para;
 	iwr.u.essid.length = cmd_len + 1;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
-		RTW_API_INFO("\n\rwext_disable_forwarding(): ioctl[SIOCDEVPRIVATE] error");
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
+		RTW_API_INFO("\n\rwext_disable_forwarding(): ioctl[RTKIOCDEVPRIVATE] error");
 		ret = -1;
 	}
 
@@ -1683,6 +1683,7 @@ void wext_suspend_softap_beacon(const char *ifname)
 {
 	rltk_suspend_softap_beacon(ifname);
 }
+extern int rtw_ap_switch_chl_and_inform(unsigned char new_channel);
 int wext_ap_switch_chl_and_inform(unsigned char new_channel)
 {
 	if(rtw_ap_switch_chl_and_inform(new_channel))
@@ -1695,15 +1696,15 @@ int wext_ap_switch_chl_and_inform(unsigned char new_channel)
 #ifdef CONFIG_SW_MAILBOX_EN
 int wext_mailbox_to_wifi(const char *ifname, char *buf, __u16 buf_len)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 
 	memset(&iwr, 0, sizeof(iwr));
 
 	iwr.u.data.pointer = buf;
 	iwr.u.data.length = buf_len;
-	if (iw_ioctl(ifname, SIOCSIMAILBOX, &iwr) < 0) {
-		RTW_API_INFO("\n\rioctl[SIOCSIMAILBOX] error");
+	if (iw_ioctl(ifname, RTKIOCSIMAILBOX, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCSIMAILBOX] error");
 		ret = -1;
 	}
 	return ret;
@@ -1712,7 +1713,7 @@ int wext_mailbox_to_wifi(const char *ifname, char *buf, __u16 buf_len)
 
 #ifdef CONFIG_WOWLAN
 int wext_wowlan_ctrl(const char *ifname, int enable){
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -1735,7 +1736,7 @@ int wext_wowlan_ctrl(const char *ifname, int enable){
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVWWCTL] error");
 		ret = -1;
 	}
@@ -1747,7 +1748,7 @@ int wext_wowlan_ctrl(const char *ifname, int enable){
 
 int wext_wowlan_set_pattern(const char *ifname, wowlan_pattern_t pattern)
 {
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -1768,7 +1769,7 @@ int wext_wowlan_set_pattern(const char *ifname, wowlan_pattern_t pattern)
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCDEVPRIVWWPTN] error");
 		ret = -1;
 	}
@@ -1779,7 +1780,7 @@ int wext_wowlan_set_pattern(const char *ifname, wowlan_pattern_t pattern)
 }
 
 int wext_wlan_redl_fw(const char *ifname){
-	struct iwreq iwr;
+	struct rtwreq iwr;
 	int ret = 0;
 	__u16 pindex = 0;
 	__u8 *para = NULL;
@@ -1801,7 +1802,7 @@ int wext_wlan_redl_fw(const char *ifname){
 	iwr.u.data.pointer = para;
 	iwr.u.data.length = pindex;
 
-	if (iw_ioctl(ifname, SIOCDEVPRIVATE, &iwr) < 0) {
+	if (iw_ioctl(ifname, RTKIOCDEVPRIVATE, &iwr) < 0) {
 		RTW_API_INFO("\n\rioctl[SIOCSIWPRIVREDLFW] error");
 		ret = -1;
 	}

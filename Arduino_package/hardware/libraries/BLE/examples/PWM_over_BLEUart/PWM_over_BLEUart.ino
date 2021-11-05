@@ -74,7 +74,7 @@ void setup() {
     analogWrite(LED_RED, 255);
     analogWrite(LED_GRN, 255);
     analogWrite(LED_BLU, 255);
-
+    
     advdata.addFlags(GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED);
     advdata.addCompleteName("AMEBA_BLE_DEV");
     scndata.addCompleteServices(BLEUUID(UART_SERVICE_UUID));

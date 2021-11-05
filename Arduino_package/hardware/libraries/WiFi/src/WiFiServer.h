@@ -7,21 +7,44 @@
 class WiFiClient;
 
 class WiFiServer : public Server {
-    private:
-        uint16_t _port;
-        int _sock_ser;
-        ServerDrv serverfd;
+public:
+    WiFiServer(uint16_t);
 
-    public:
-        WiFiServer(uint16_t);
-        WiFiClient available(uint8_t* status = NULL);
+    virtual void begin();
 
-        void begin();
-        virtual size_t write(uint8_t b);
-        virtual size_t write(const uint8_t *buf, size_t size);
-        //uint8_t status();
+    WiFiClient available(uint8_t* status = NULL);
 
-        using Print::write;
+    virtual int available(int server_fd);
+
+    virtual uint8_t connected();
+
+    virtual int recv(uint8_t* buf, size_t size);
+
+    virtual size_t write(uint8_t b);
+
+    virtual size_t write(const uint8_t* buf, size_t size);
+
+    virtual void stop();
+
+    virtual void end();
+
+    virtual void close();
+    // extend API from RTK
+    virtual int setTimeout(int timeout);
+    // IPv6 related
+    int enableIPv6();
+
+    int getIPv6Status();
+
+    using Print::write;
+
+private:
+    ServerDrv serverdrv;
+    uint16_t _port;
+    int _sock_ser;
+    bool _is_connected;
+    uint8_t data[DATA_LENTH];
+    int recvTimeout;
 };
 
 #endif
