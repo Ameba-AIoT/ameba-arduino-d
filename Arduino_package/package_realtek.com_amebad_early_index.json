@@ -11,7 +11,38 @@
 
       "platforms": [
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
+          "version": "3.1.1-build20211119",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.1-build20211119.tar.gz",
+          "archiveFileName": "ameba_d-3.1.1-build20211119.tar.gz",
+          "checksum": "SHA-256:10f5f0e09dcae3db43a8ddb0db5a70901e29fccebc41625f878881655b1c47d0",
+          "size": "36366572",
+          "boards": [
+            {"name": "RTL8722DM"},
+            {"name": "RTL8722CSM"},
+            {"name": "RTL8722DM_MINI"},
+            {"name": "RTL8720DN/BW16"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.7"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.1.0-build20211029",
           "category": "Contributed",
@@ -42,7 +73,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.1.0-build20211013",
           "category": "Contributed",
@@ -73,7 +104,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.1.0-build20210915",
           "category": "Contributed",
@@ -104,7 +135,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.9-build20210810",
           "category": "Contributed",
@@ -135,7 +166,7 @@
           ]
         },
 		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M4 @200MHz)",
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
           "version": "3.0.8-build20210401",
           "category": "Contributed",
@@ -216,6 +247,33 @@
               "url":"https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_toolchain_windows-1.0.0v2.tar.gz",
               "checksum":"SHA-256:4c1079e3a8b0ff570e428e0f74c1c291263f0e80709dd17e1ffaf7ca7a575029",
               "size":"130531123"
+            }
+          ]
+        },
+		{
+          "name": "ameba_d_tools",
+          "version": "1.0.7",
+          "systems": [
+            {
+              "host": "i686-mingw32",
+              "archiveFileName": "ameba_d_tools_windows-1.0.7.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.7.tar.gz",
+              "checksum": "SHA-256:b2d5ed48ef5490f6692a8a249a569b33a2911e4745e9ad13c056c548b48b70a9",
+              "size": "6768547"
+            },
+            {
+              "host": "x86_64-pc-linux-gnu",
+              "archiveFileName": "ameba_d_tools_linux-1.0.7.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_linux-1.0.7.tar.gz",
+              "checksum": "SHA-256:ac1215e0cf86a95344bf518b7a165b898f52187de579cda0e2fc43c52abe14b4",
+              "size": "2923950"
+            },
+            {
+              "host": "x86_64-apple-darwin",
+              "archiveFileName": "ameba_d_tools_macos-1.0.7.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.0.7.tar.gz",
+              "checksum": "SHA-256:e3b92b950fce29bf8f47674957e376f3dfd106fda5100286f38e6780002cdf89",
+              "size": "1079434"
             }
           ]
         },

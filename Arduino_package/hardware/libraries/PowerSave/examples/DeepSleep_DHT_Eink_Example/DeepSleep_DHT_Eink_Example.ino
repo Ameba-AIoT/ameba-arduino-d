@@ -9,9 +9,31 @@
 
 #include "DHT.h"
 
+// SPI Pin definition
+#if defined(BOARD_RTL8722DM)
+#define EPD_BUSY_Pin        8
+#define EPD_RES_Pin         9
+#define EPD_SPI_CS_Pin      10
+#define EPD_SPI_MOSI_Pin    11
+#define EPD_SPI_MISO_Pin    12
+#define EPD_SPI_CLK_Pin     13
+
+#elif defined(BOARD_RTL8722DM_MINI)
+#define EPD_BUSY_Pin        21
+#define EPD_RES_Pin         20
+#define EPD_SPI_CS_Pin      12
+#define EPD_SPI_MOSI_Pin    9
+#define EPD_SPI_MISO_Pin    10
+#define EPD_SPI_CLK_Pin     11
+
+#else
+#error check the board supported
+#endif
+
+
 #define COLOR_BLACK        0
 #define COLOR_WHITE        1
-EpdIf EPD;
+EpdIf EPD(EPD_BUSY_Pin, EPD_RES_Pin, EPD_SPI_CS_Pin, EPD_SPI_MOSI_Pin, EPD_SPI_MISO_Pin, EPD_SPI_CLK_Pin);
 unsigned char image[1024];
 Paint paint(image, 0, 0);     // width should be the multiple of 8
 
@@ -21,10 +43,29 @@ DHT dht(DHTPIN, DHTTYPE);
 
 //SET_DS_AON_TIMER_WAKEUP
 //SET_DS_RTC_WAKEUP
-//SET_DS_AON_GPIO_WAKEUP_D16
-//SET_DS_AON_GPIO_WAKEUP_D17
-//SET_DS_AON_GPIO_WAKEUP_D26
-//SET_DS_AON_GPIO_WAKEUP_D27
+//For RTL8722DM only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_GPIOA25       //D16
+    //SET_AON_GPIO_WAKEUP_GPIOA26       //D17
+    //SET_AON_GPIO_WAKEUP_GPIOA21       //D26
+    //SET_AON_GPIO_WAKEUP_GPIOA20       //D27
+    //SET_AON_GPIO_WAKEUP_GPIOA19       //D28
+//For RTL8722DM_MINI only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_GPIOA12       //D9
+    //SET_AON_GPIO_WAKEUP_GPIOA13       //D10
+    //SET_AON_GPIO_WAKEUP_GPIOA14       //D11
+    //SET_AON_GPIO_WAKEUP_GPIOA15       //D12
+    //SET_AON_GPIO_WAKEUP_GPIOA16       //D13
+    //SET_AON_GPIO_WAKEUP_GPIOA18       //D15
+    //SET_AON_GPIO_WAKEUP_GPIOA19       //D16
+    //SET_AON_GPIO_WAKEUP_GPIOA21       //D18
+//For RTL8720DN_BW16 only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_GPIOA25       //D7
+    //SET_AON_GPIO_WAKEUP_GPIOA26       //D8
+    //SET_AON_GPIO_WAKEUP_GPIOA15       //D9
+    //SET_AON_GPIO_WAKEUP_GPIOA14       //D10
+    //SET_AON_GPIO_WAKEUP_GPIOA13       //D11
+    //SET_AON_GPIO_WAKEUP_GPIOA12       //D12
+
 #define DS_WAKEUP_SOURCE                SET_DS_AON_TIMER_WAKEUP
 
 #define AON_TIMER_SLEEP_DURATION        5000
@@ -92,12 +133,12 @@ void setup() {
     }
 
     // SPI setup
-    pinMode(BUSY_Pin, INPUT);   // BUSY_Pin    8
-    pinMode(RES_Pin, OUTPUT);   // RES_Pin     9
-    pinMode(DC_Pin, OUTPUT);    // DC_Pin     10
-    pinMode(CS_Pin, OUTPUT);    // CS_Pin     11
-    pinMode(SCK_Pin, OUTPUT);   // SCK_Pin    12
-    pinMode(SDI_Pin, OUTPUT);   // SDI_Pin    13
+    pinMode(EPD_BUSY_Pin, INPUT);       // EPD_BUSY_Pin
+    pinMode(EPD_RES_Pin, OUTPUT);       // EPD_RES_Pin
+    pinMode(EPD_SPI_CS_Pin, OUTPUT);    // EPD_SPI_CS_Pin
+    pinMode(EPD_SPI_MOSI_Pin, OUTPUT);  // EPD_SPI_MOSI_Pin
+    pinMode(EPD_SPI_MISO_Pin, OUTPUT);  // EPD_SPI_MISO_Pin
+    pinMode(EPD_SPI_CLK_Pin, OUTPUT);   // EPD_SPI_CLK_Pin
 
     PowerSave.begin(DEEPSLEEP_MODE);
 
@@ -118,21 +159,45 @@ void setup() {
             PowerSave.DS_AON_TIMER_WAKEUP();
             PowerSave.AONTimerDuration(AON_TIMER_SLEEP_DURATION);
             break;
-        case SET_DS_AON_GPIO_WAKEUP_D16:
-            PowerSave.DS_AON_WAKEPIN_WAKEUP_D16();
-            break;
-        case SET_DS_AON_GPIO_WAKEUP_D17:
-            PowerSave.DS_AON_WAKEPIN_WAKEUP_D17();
-            break;
-        case SET_DS_AON_GPIO_WAKEUP_D26:
-            PowerSave.DS_AON_WAKEPIN_WAKEUP_D26();
-            break;
-        case SET_DS_AON_GPIO_WAKEUP_D27:
-            PowerSave.DS_AON_WAKEPIN_WAKEUP_D27();
-            break;
         case SET_DS_RTC_WAKEUP:
             PowerSave.DS_RTC_WAKEUP();
             PowerSave.RTCWakeSetup(DS_RTC_ALARM_DAY, DS_RTC_ALARM_HOUR, DS_RTC_ALARM_MIN, DS_RTC_ALARM_SEC);
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA12:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA12();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA13:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA13();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA14:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA14();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA15:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA15();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA16:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA16();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA17:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA17();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA18:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA18();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA19:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA19();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA20:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA20();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA21:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA21();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA25:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA25();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA26:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA26();
             break;
         default:
             printf("Unknown wakeup source.    \r\n");

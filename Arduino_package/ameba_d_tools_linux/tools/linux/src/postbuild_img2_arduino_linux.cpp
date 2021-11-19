@@ -154,17 +154,22 @@ int main(int argc, char *argv[]) {
         //4.1 power save bin handling
         //DS_AON_TIMER_WAKEUP               101
         //DS_RTC_WAKEUP                     102
-        //DS_AON_WAKEPIN_WAKEUP_D16         103
-        //DS_AON_WAKEPIN_WAKEUP_D17         104
-        //DS_AON_WAKEPIN_WAKEUP_D26         105
-        //DS_AON_WAKEPIN_WAKEUP_D27         106
 
         //TL_UART_WAKEUP                    201
         //TL_RTC_WAKEUP                     202
-        //TL_AON_WAKEPIN_WAKEUP_D16         203
-        //TL_AON_WAKEPIN_WAKEUP_D17         204
-        //TL_AON_WAKEPIN_WAKEUP_D26         205
-        //TL_AON_WAKEPIN_WAKEUP_D27         206
+
+        //AON_WAKEPIN_WAKEUP_GPIOA12        312
+        //AON_WAKEPIN_WAKEUP_GPIOA13        313
+        //AON_WAKEPIN_WAKEUP_GPIOA14        314
+        //AON_WAKEPIN_WAKEUP_GPIOA15        315
+        //AON_WAKEPIN_WAKEUP_GPIOA16        316
+        //AON_WAKEPIN_WAKEUP_GPIOA17        317
+        //AON_WAKEPIN_WAKEUP_GPIOA18        318
+        //AON_WAKEPIN_WAKEUP_GPIOA19        319
+        //AON_WAKEPIN_WAKEUP_GPIOA20        320
+        //AON_WAKEPIN_WAKEUP_GPIOA21        321
+        //AON_WAKEPIN_WAKEUP_GPIOA25        325
+        //AON_WAKEPIN_WAKEUP_GPIOA26        326
 
         pos = line.find("DS_AON_TIMER_WAKEUP");
         if (pos != string::npos) {
@@ -174,26 +179,6 @@ int main(int argc, char *argv[]) {
         pos = line.find("DS_RTC_WAKEUP");
         if (pos != string::npos) {
             check_powersavemode = 102;
-        }
-
-        pos = line.find("DS_AON_WAKEPIN_WAKEUP_D16");
-        if (pos != string::npos) {
-            check_powersavemode = 103;
-        }
-
-        pos = line.find("DS_AON_WAKEPIN_WAKEUP_D17");
-        if (pos != string::npos) {
-            check_powersavemode = 104;
-        }
-
-        pos = line.find("DS_AON_WAKEPIN_WAKEUP_D26");
-        if (pos != string::npos) {
-            check_powersavemode = 105;
-        }
-
-        pos = line.find("DS_AON_WAKEPIN_WAKEUP_D27");
-        if (pos != string::npos) {
-            check_powersavemode = 106;
         }
 
         pos = line.find("TL_UART_WAKEUP");
@@ -206,24 +191,64 @@ int main(int argc, char *argv[]) {
             check_powersavemode = 202;
         }
 
-        pos = line.find("TL_AON_WAKEPIN_WAKEUP_D16");
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA12");
         if (pos != string::npos) {
-            check_powersavemode = 203;
+            check_powersavemode = 312;
         }
 
-        pos = line.find("TL_AON_WAKEPIN_WAKEUP_D17");
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA13");
         if (pos != string::npos) {
-            check_powersavemode = 204;
+            check_powersavemode = 313;
         }
 
-        pos = line.find("TL_AON_WAKEPIN_WAKEUP_D26");
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA14");
         if (pos != string::npos) {
-            check_powersavemode = 205;
+            check_powersavemode = 314;
         }
 
-        pos = line.find("TL_AON_WAKEPIN_WAKEUP_D27");
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA15");
         if (pos != string::npos) {
-            check_powersavemode = 206;
+            check_powersavemode = 315;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA16");
+        if (pos != string::npos) {
+            check_powersavemode = 316;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA17");
+        if (pos != string::npos) {
+            check_powersavemode = 317;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA18");
+        if (pos != string::npos) {
+            check_powersavemode = 318;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA19");
+        if (pos != string::npos) {
+            check_powersavemode = 319;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA20");
+        if (pos != string::npos) {
+            check_powersavemode = 320;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA21");
+        if (pos != string::npos) {
+            check_powersavemode = 321;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA25");
+        if (pos != string::npos) {
+            check_powersavemode = 325;
+        }
+
+        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA26");
+        if (pos != string::npos) {
+            check_powersavemode = 326;
         }
     }
 
@@ -320,127 +345,122 @@ int main(int argc, char *argv[]) {
     // 7.1 power save mode bins
     //DS_AON_TIMER_WAKEUP               101
     //DS_RTC_WAKEUP                     102
-    //DS_AON_WAKEPIN_WAKEUP_D16         103
-    //DS_AON_WAKEPIN_WAKEUP_D17         104
-    //DS_AON_WAKEPIN_WAKEUP_D26         105
-    //DS_AON_WAKEPIN_WAKEUP_D27         106
 
     //TL_UART_WAKEUP                    201
     //TL_RTC_WAKEUP                     202
-    //TL_AON_WAKEPIN_WAKEUP_D16         203
-    //TL_AON_WAKEPIN_WAKEUP_D17         204
-    //TL_AON_WAKEPIN_WAKEUP_D26         205
-    //TL_AON_WAKEPIN_WAKEUP_D27         206
+
+    //AON_WAKEPIN_WAKEUP_GPIOA12        312
+    //AON_WAKEPIN_WAKEUP_GPIOA13        313
+    //AON_WAKEPIN_WAKEUP_GPIOA14        314
+    //AON_WAKEPIN_WAKEUP_GPIOA15        315
+    //AON_WAKEPIN_WAKEUP_GPIOA16        316
+    //AON_WAKEPIN_WAKEUP_GPIOA17        317
+    //AON_WAKEPIN_WAKEUP_GPIOA18        318
+    //AON_WAKEPIN_WAKEUP_GPIOA19        319
+    //AON_WAKEPIN_WAKEUP_GPIOA20        320
+    //AON_WAKEPIN_WAKEUP_GPIOA21        321
+    //AON_WAKEPIN_WAKEUP_GPIOA25        325
+    //AON_WAKEPIN_WAKEUP_GPIOA26        326
 
     cmd = "rm -f bsp/image/*.bin";
     cout << cmd << endl;
     system(cmd.c_str());
 
     if (check_powersavemode == 101) {
-        cmd = "cp bsp/image/PMU_bins/NONE/km0_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/NONE/km4_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
+        //cmd = "cp bsp/image/PMU_bins/NONE/km0_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
+        //cmd = "cp bsp/image/PMU_bins/NONE/km4_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
         cmd = "cp bsp/image/PMU_bins/NONE/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
     } else if (check_powersavemode == 102) {
-        cmd = "cp bsp/image/PMU_bins/DS_RTC/km0_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/DS_RTC/km4_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
+        //cmd = "cp bsp/image/PMU_bins/DS_RTC/km0_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
+        //cmd = "cp bsp/image/PMU_bins/DS_RTC/km4_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
         cmd = "cp bsp/image/PMU_bins/DS_RTC/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
     } else if (check_powersavemode == 201) {
-        cmd = "cp bsp/image/PMU_bins/TL_UART/km0_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/TL_UART/km4_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
+        //cmd = "cp bsp/image/PMU_bins/TL_UART/km0_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
+        //cmd = "cp bsp/image/PMU_bins/TL_UART/km4_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
         cmd = "cp bsp/image/PMU_bins/TL_UART/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
     } else if (check_powersavemode == 202) {
-        cmd = "cp bsp/image/PMU_bins/TL_RTC/km0_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/TL_RTC/km4_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
+        //cmd = "cp bsp/image/PMU_bins/TL_RTC/km0_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
+        //cmd = "cp bsp/image/PMU_bins/TL_RTC/km4_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
         cmd = "cp bsp/image/PMU_bins/TL_RTC/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-    } else if ((check_powersavemode == 103) || (check_powersavemode == 203)) {
-        cmd = "cp bsp/image/PMU_bins/D16_PA25/km0_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 312) {
+        cmd = "cp bsp/image/PMU_bins/PA12/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D16_PA25/km4_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 313) {
+        cmd = "cp bsp/image/PMU_bins/PA13/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D16_PA25/km0_image2_all.bin bsp/image";
+    } else if (check_powersavemode == 314) {
+        cmd = "cp bsp/image/PMU_bins/PA14/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-    } else if ((check_powersavemode == 104) || (check_powersavemode == 204)) {
-        cmd = "cp bsp/image/PMU_bins/D17_PA26/km0_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 315) {
+        cmd = "cp bsp/image/PMU_bins/PA15/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D17_PA26/km4_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 316) {
+        cmd = "cp bsp/image/PMU_bins/PA16/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D17_PA26/km0_image2_all.bin bsp/image";
+    } else if (check_powersavemode == 317) {
+        cmd = "cp bsp/image/PMU_bins/PA17/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-    } else if ((check_powersavemode == 105) || (check_powersavemode == 205)) {
-        cmd = "cp bsp/image/PMU_bins/D26_PA21/km0_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 318) {
+        cmd = "cp bsp/image/PMU_bins/PA18/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D26_PA21/km4_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 319) {
+        cmd = "cp bsp/image/PMU_bins/PA19/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D26_PA21/km0_image2_all.bin bsp/image";
+    } else if (check_powersavemode == 320) {
+        cmd = "cp bsp/image/PMU_bins/PA20/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-    } else if ((check_powersavemode == 106) || (check_powersavemode == 206)) {
-        cmd = "cp bsp/image/PMU_bins/D27_PA20/km0_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 321) {
+        cmd = "cp bsp/image/PMU_bins/PA21/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D27_PA20/km4_boot_all.bin bsp/image";
+    } else if (check_powersavemode == 325) {
+        cmd = "cp bsp/image/PMU_bins/PA25/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/D27_PA20/km0_image2_all.bin bsp/image";
+    } else if (check_powersavemode == 326) {
+        cmd = "cp bsp/image/PMU_bins/PA26/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
     } else {
-        cmd = "cp bsp/image/PMU_bins/NONE/km0_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
-        cmd = "cp bsp/image/PMU_bins/NONE/km4_boot_all.bin bsp/image";
-        cout << cmd << endl;
-        system(cmd.c_str());
-
+        //cmd = "cp bsp/image/PMU_bins/NONE/km0_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
+        //cmd = "cp bsp/image/PMU_bins/NONE/km4_boot_all.bin bsp/image";
+        //cout << cmd << endl;
+        //system(cmd.c_str());
         cmd = "cp bsp/image/PMU_bins/NONE/km0_image2_all.bin bsp/image";
         cout << cmd << endl;
         system(cmd.c_str());
@@ -448,11 +468,11 @@ int main(int argc, char *argv[]) {
 
     check_powersavemode = 0;
 
-    cmd = "cp bsp/image/km0_boot_all.bin ./";
+    cmd = "cp bsp/image/PMU_bins/NONE/km0_boot_all.bin ./";
     cout << cmd << endl;
     system(cmd.c_str());
 
-    cmd = "cp bsp/image/km4_boot_all.bin ./";
+    cmd = "cp bsp/image/PMU_bins/NONE/km4_boot_all.bin ./";
     cout << cmd << endl;
     system(cmd.c_str());
 
