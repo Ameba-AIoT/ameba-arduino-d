@@ -67,7 +67,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
     }
 	
     if (g_APinDescription[ulPin].ulPinType == PIO_GPIO && 
-            (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE)) {
+            (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE || ulMode == INPUT_IRQ_CHANGE)) {
         // Pin mode changes from gpio_t to gpio_irq_t
         pinRemoveMode(ulPin);
     }
@@ -79,7 +79,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
     }
 
     if (g_APinDescription[ulPin].ulPinType == NOT_INITIAL) {
-        if (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE || ulMode == INPUT_IRQ_LOW || ulMode == INPUT_IRQ_HIGH) {
+        if (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE || ulMode == INPUT_IRQ_LOW || ulMode == INPUT_IRQ_HIGH || ulMode == INPUT_IRQ_CHANGE) {
             gpio_pin_struct[ulPin] = malloc (sizeof(gpio_irq_t));
             pGpio_t = gpio_pin_struct[ulPin];
             gpio_irq_init(pGpio_t, g_APinDescription[ulPin].pinname, gpioIrqHandler, ulPin);
@@ -143,7 +143,12 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
             gpio_irq_enable((gpio_irq_t *)pGpio_t);
             break;
 
-        default:
+        case INPUT_IRQ_CHANGE:
+            gpio_irq_set((gpio_irq_t *)pGpio_t, IRQ_FALL_RISE, 1);
+            gpio_irq_enable((gpio_irq_t *)pGpio_t);
+            break;
+
+	default:
             break ;
     }
 }
