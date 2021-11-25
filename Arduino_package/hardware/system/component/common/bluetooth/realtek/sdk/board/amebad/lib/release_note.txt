@@ -2,6 +2,14 @@
 /*
  * Release Note
  */
+	v1.0.1.165
+	2021/10/27
+	1. Add customer API: gap_get_bt_version_info.
+
+	v1.0.1.162
+	2021/09/18
+	1. Fix a bug for H4 when receive error data.
+	
 	v1.0.1.158
 	2021/07/23
 	1. Fix a bug for bte_deinit.

@@ -178,6 +178,14 @@ static inline unsigned int wpa_swap_32(unsigned int v)
 
 #endif /* __CYGWIN__ || CONFIG_NATIVE_WINDOWS */
 
+#ifndef bswap_32
+#define bswap_32(a) ((((u32) (a) << 24) & 0xff000000) | \
+		     (((u32) (a) << 8) & 0xff0000) | \
+     		     (((u32) (a) >> 8) & 0xff00) | \
+     		     (((u32) (a) >> 24) & 0xff))
+#endif
+
+
 #ifndef WPA_BYTE_SWAP_DEFINED
 #if 0
 	#ifndef __BYTE_ORDER
@@ -448,7 +456,7 @@ int hex2byte(const char *hex);
 int hexstr2bin(const char *hex, u8 *buf, size_t len);
 void inc_byte_array(u8 *counter, size_t len);
 void wpa_get_ntp_timestamp(u8 *buf);
-//int wpa_snprintf_hex(char *buf, size_t buf_size, const u8 *data, size_t len);
+int wpa_snprintf_hex(char *buf, size_t buf_size, const u8 *data, size_t len);
 int wpa_snprintf_hex_uppercase(char *buf, size_t buf_size, const u8 *data,
 			       size_t len);
 

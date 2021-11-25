@@ -30,6 +30,7 @@ typedef struct {
 
 void pin_function(PinName pin, int function);
 void pin_mode    (PinName pin, PinMode mode);
+void pin_strength(PinName pin, uint32_t DrvStrength);
 
 uint32_t pinmap_peripheral(PinName pin, const PinMap* map);
 uint32_t pinmap_merge     (uint32_t a, uint32_t b);

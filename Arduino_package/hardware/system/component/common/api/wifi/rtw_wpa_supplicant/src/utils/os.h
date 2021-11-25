@@ -274,6 +274,17 @@ static inline int os_memcmp_const(const void *a, const void *b, size_t len)
 	return res;
 }
 
+/**
+ * os_memdup - Allocate duplicate of passed memory chunk
+ * @src: Source buffer to duplicate
+ * @len: Length of source buffer
+ * Returns: %NULL if allocation failed, copy of src buffer otherwise
+ *
+ * This function allocates a memory block like os_malloc() would, and
+ * copies the given source buffer into it.
+ */
+void * os_memdup(const void *src, size_t len);
+
 /*
  * The following functions are wrapper for standard ANSI C or POSIX functions.
  * By default, they are just defined to use the standard function name and no
@@ -508,14 +519,14 @@ int os_snprintf(char *str, size_t size, const char *format, ...);
 		#define os_memset(pbuf, c, sz) rtw_memset(pbuf, c, sz)
 	#endif
 	#ifndef os_memcmp
-		#define os_memcmp(s1, s2, n) rtw_memcmp(((void*)(s1)), ((void*)(s2)), (n))
+		#define os_memcmp(s1, s2, n) !rtw_memcmp(((void*)(s1)), ((void*)(s2)), (n)) //TODO freertos return 1 if same
 	#endif
 	#ifndef os_memcmp_p2p
 		#define os_memcmp_p2p(s1, s2, n) memcmp((s1), (s2), (n))
 	#endif
 	#ifndef os_get_random_bytes
 		#define os_get_random_bytes(d,sz) rtw_get_random_bytes(((void*)(d)), (sz))
-	#endif	
+	#endif
 	#ifndef os_strlen
 		#define os_strlen(s) strlen(s)
 	#endif
@@ -579,6 +590,11 @@ int os_snprintf(char *str, size_t size, const char *format, ...);
 #endif /* OS_NO_C_LIB_DEFINES */
 
 
+static inline int os_snprintf_error(size_t size, int res)
+{
+	return res < 0 || (unsigned int) res >= size;
+}
+
 static inline void * os_realloc_array(void *ptr, size_t nmemb, size_t size)
 {
 	if (size && nmemb > (~(size_t) 0) / size)
@@ -590,6 +606,18 @@ static inline void * os_realloc_array(void *ptr, size_t nmemb, size_t size)
 		return os_realloc(ptr, nmemb * size, nmemb * size);
 	}
 }
+
+/**
+ * os_strlcpy - Copy a string with size bound and NUL-termination
+ * @dest: Destination
+ * @src: Source
+ * @siz: Size of the target buffer
+ * Returns: Total length of the target string (length of src) (not including
+ * NUL-termination)
+ *
+ * This function matches in behavior with the strlcpy(3) function in OpenBSD.
+ */
+size_t os_strlcpy(char *dest, const char *src, size_t siz);
 
 void *os_xqueue_create(unsigned long uxQueueLength, unsigned long uxItemSize) ;
 

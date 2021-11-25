@@ -136,9 +136,9 @@ extern char* ltoa(long l, char * buffer, int radix);
 #endif
 
 #ifdef __cplusplus
-extern LOGUARTClass Serial1;  //This should be Serial1 for this board
+extern LOGUARTClass Serial;  //This should be Serial1 for this board
 //extern UARTClassOne Serial; //Not available
-extern UARTClassTwo Serial;
+extern UARTClassTwo Serial1;
 #endif
 
 #endif /* _VARIANT_ARDUINO_AMEBA_ */

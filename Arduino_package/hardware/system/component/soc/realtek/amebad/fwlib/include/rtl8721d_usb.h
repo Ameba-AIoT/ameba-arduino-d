@@ -620,19 +620,13 @@
 #define USB_OTG_DVBUSDIS_VBUSDT_Msk              (0xFFFFUL << USB_OTG_DVBUSDIS_VBUSDT_Pos) /*!< 0x0000FFFF */
 #define USB_OTG_DVBUSDIS_VBUSDT                  USB_OTG_DVBUSDIS_VBUSDT_Msk   /*!< Device VBUS discharge time */
 
-/********************  Bit definition for OTG register  ********************/
-#define USB_OTG_NPTXFSA_Pos                      (0U)
-#define USB_OTG_NPTXFSA_Msk                      (0xFFFFUL << USB_OTG_NPTXFSA_Pos) /*!< 0x0000FFFF */
-#define USB_OTG_NPTXFSA                          USB_OTG_NPTXFSA_Msk           /*!< Nonperiodic transmit RAM start address */
-#define USB_OTG_NPTXFD_Pos                       (16U)
-#define USB_OTG_NPTXFD_Msk                       (0xFFFFUL << USB_OTG_NPTXFD_Pos) /*!< 0xFFFF0000 */
-#define USB_OTG_NPTXFD                           USB_OTG_NPTXFD_Msk            /*!< Nonperiodic TxFIFO depth */
-#define USB_OTG_TX0FSA_Pos                       (0U)
-#define USB_OTG_TX0FSA_Msk                       (0xFFFFUL << USB_OTG_TX0FSA_Pos) /*!< 0x0000FFFF */
-#define USB_OTG_TX0FSA                           USB_OTG_TX0FSA_Msk            /*!< Endpoint 0 transmit RAM start address  */
-#define USB_OTG_TX0FD_Pos                        (16U)
-#define USB_OTG_TX0FD_Msk                        (0xFFFFUL << USB_OTG_TX0FD_Pos) /*!< 0xFFFF0000 */
-#define USB_OTG_TX0FD                            USB_OTG_TX0FD_Msk             /*!< Endpoint 0 TxFIFO depth */
+/********************  Bit definition for GNPTXFSIZ register  ********************/
+#define USB_OTG_GNPTXFSIZ_NPTXFSTADDR_Pos        (0U)
+#define USB_OTG_GNPTXFSIZ_NPTXFSTADDR_Msk        (0xFFFFUL << USB_OTG_GNPTXFSIZ_NPTXFSTADDR_Pos) /*!< 0x0000FFFF */
+#define USB_OTG_GNPTXFSIZ_NPTXFSTADDR            USB_OTG_GNPTXFSIZ_NPTXFSTADDR_Msk  /*!< Nonperiodic transmit RAM start address */
+#define USB_OTG_GNPTXFSIZ_NPTXFDEP_Pos           (16U)
+#define USB_OTG_GNPTXFSIZ_NPTXFDEP_Msk           (0xFFFFUL << USB_OTG_GNPTXFSIZ_NPTXFDEP_Pos) /*!< 0xFFFF0000 */
+#define USB_OTG_GNPTXFSIZ_NPTXFDEP               USB_OTG_GNPTXFSIZ_NPTXFDEP_Msk     /*!< Nonperiodic TxFIFO depth */
 
 /********************  Bit definition forUSB_OTG_DVBUSPULSE register  ********************/
 #define USB_OTG_DVBUSPULSE_DVBUSP_Pos            (0U)
@@ -927,13 +921,13 @@
 /********************  Bit definition for PCGCCTL register  ********************/
 #define USB_OTG_PCGCCTL_STOPCLK_Pos              (0U)
 #define USB_OTG_PCGCCTL_STOPCLK_Msk              (0x1UL << USB_OTG_PCGCCTL_STOPCLK_Pos) /*!< 0x00000001 */
-#define USB_OTG_PCGCCTL_STOPCLK                  USB_OTG_PCGCCTL_STOPCLK_Msk   /*!< SETUP packet count */
+#define USB_OTG_PCGCCTL_STOPCLK                  USB_OTG_PCGCCTL_STOPCLK_Msk   /*!< Stop PHY clock */
 #define USB_OTG_PCGCCTL_GATECLK_Pos              (1U)
 #define USB_OTG_PCGCCTL_GATECLK_Msk              (0x1UL << USB_OTG_PCGCCTL_GATECLK_Pos) /*!< 0x00000002 */
-#define USB_OTG_PCGCCTL_GATECLK                  USB_OTG_PCGCCTL_GATECLK_Msk   /*!<Bit 0 */
+#define USB_OTG_PCGCCTL_GATECLK                  USB_OTG_PCGCCTL_GATECLK_Msk   /*!< Gate HCLK */
 #define USB_OTG_PCGCCTL_PHYSUSP_Pos              (4U)
 #define USB_OTG_PCGCCTL_PHYSUSP_Msk              (0x1UL << USB_OTG_PCGCCTL_PHYSUSP_Pos) /*!< 0x00000010 */
-#define USB_OTG_PCGCCTL_PHYSUSP                  USB_OTG_PCGCCTL_PHYSUSP_Msk   /*!<Bit 1 */
+#define USB_OTG_PCGCCTL_PHYSUSP                  USB_OTG_PCGCCTL_PHYSUSP_Msk   /*!< PHY suspended */
 
 /* Exported types ------------------------------------------------------------*/
 
@@ -949,7 +943,7 @@ typedef struct {
 	__IO u32 GRXSTSR;              /*!< Receive Sts Q Read Register                         01Ch */
 	__IO u32 GRXSTSP;              /*!< Receive Sts Q Read & POP Register                   020h */
 	__IO u32 GRXFSIZ;              /*!< Receive FIFO Size Register                          024h */
-	__IO u32 DIEPTXF0_HNPTXFSIZ;   /*!< EP0 / Non Periodic Tx FIFO Size Register            028h */
+	__IO u32 GNPTXFSIZ;            /*!< Non Periodic Tx FIFO Size Register                  028h */
 	__IO u32 GNPTXSTS;             /*!< Non Periodic Tx FIFO/Queue Sts reg                  02Ch */
 	u32 Reserved30;                /*!< Reserved                                            030h */
 	__IO u32 GPVNDCTL;             /*!< Reserved                                            034h */
@@ -964,7 +958,7 @@ typedef struct {
 	__IO u32 GPWRDN;               /*!< Reserved                                            058h */
 	u32  Reserved5C[41];           /*!< Reserved                                       05Ch-0FFh */
 	__IO u32 HPTXFSIZ;             /*!< Host Periodic Tx FIFO Size Reg                      100h */
-	__IO u32 DIEPTXF[0x0F];        /*!< dev Periodic Transmit FIFO                          */
+	__IO u32 DPTXFSIZ[15];         /*!< Device Periodic Transmit FIFO                            */
 } USB_OTG_GlobalTypeDef;
 
 /* USB OTG Device Registers */

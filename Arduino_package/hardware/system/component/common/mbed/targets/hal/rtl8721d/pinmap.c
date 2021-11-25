@@ -64,3 +64,20 @@ void pin_mode(PinName pin, PinMode mode)
 	PAD_PullCtrl((u32)pin, (u32)pull_type);
 
 }
+
+void pin_strength(PinName pin, uint32_t DrvStrength)
+{
+	u32 Temp = 0;
+
+	/* get PADCTR */
+	Temp = PINMUX->PADCTR[pin];
+
+	/* clear Pin_Num DrvStrength contrl */
+	Temp &= ~(PAD_BIT_MASK_DRIVING_STRENGTH << PAD_BIT_SHIFT_DRIVING_STRENGTH);
+
+	/* set needs DrvStrength */
+	Temp |= (DrvStrength & PAD_BIT_MASK_DRIVING_STRENGTH) << PAD_BIT_SHIFT_DRIVING_STRENGTH;
+	
+	/* set PADCTR register */
+	PINMUX->PADCTR[pin] = Temp;
+}

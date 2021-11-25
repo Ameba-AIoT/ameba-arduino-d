@@ -32,6 +32,10 @@ const unsigned char *eap_ca_cert = NULL;
 const unsigned char *eap_client_cert = NULL;
 const unsigned char *eap_client_key = NULL;
 char *eap_client_key_pwd = NULL;
+int eap_fast_max_pac_list_len = 10;
+int eap_fast_provisioning_mode = 2;
+int eap_fast_use_binary_pac = 0;
+char * eap_fast_machine_pac = "";
 
 void eap_eapol_recvd_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
 void eap_eapol_start_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
@@ -58,9 +62,13 @@ void reset_config(void){
 	eap_client_cert = NULL;
 	eap_client_key = NULL;
 	eap_client_key_pwd = NULL;
+	eap_fast_max_pac_list_len = 10;
+	eap_fast_provisioning_mode = 2;
+	eap_fast_use_binary_pac = 0;
+	eap_fast_machine_pac = "";
 }
 
-void judge_station_disconnect(void) 
+void judge_station_disconnect(void)
 {
 	int mode = 0;
 	unsigned char ssid[33];
@@ -209,6 +217,12 @@ int eap_start(char *method)
 	}
 #endif
 
+#if CONFIG_ENABLE_FAST
+	if(strcmp(method,"fast") == 0){
+		ret = set_eap_fast_method();
+	}
+#endif
+
 	if(ret == -1){
 		printf("\r\neap method %s not supported\r\n", method);
 		return -1;
@@ -320,6 +334,9 @@ void eap_autoreconnect_hdl(u8 method_id)
 			break;
 		case 21: // EAP_TYPE_TTLS
 			method = "ttls";
+			break;
+		case 43: // EAP_TYPE_FAST
+			method = "fast";
 			break;
 		default:
 			printf("invalid eap method\n");
