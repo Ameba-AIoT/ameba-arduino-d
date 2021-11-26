@@ -371,7 +371,7 @@ uint8_t BLECharacteristic::generateAttrDescriptorDeclaration(T_ATTRIB_APPL* attr
         _desc_write_permissions |= GATT_PERM_WRITE_ENCRYPTED_REQ;
     }
     // Apply open permissions if no stricter permissions are found
-    if ((_char_attr_read_permissions == GATT_PERM_NONE) && (_char_attr_write_permissions == GATT_PERM_NONE)) {
+    if ((_desc_read_permissions == GATT_PERM_NONE) && (_desc_write_permissions == GATT_PERM_NONE)) {
         _desc_read_permissions |= GATT_PERM_READ;
         _desc_write_permissions |= GATT_PERM_WRITE;
     }
@@ -385,7 +385,7 @@ uint8_t BLECharacteristic::generateAttrDescriptorDeclaration(T_ATTRIB_APPL* attr
         attr_tbl[index].type_value[3] = HI_WORD(GATT_CLIENT_CHAR_CONFIG_DEFAULT);
         attr_tbl[index].value_len = 2;
         attr_tbl[index].p_value_context = NULL;
-        attr_tbl[index].permissions = (_desc_read_permissions | _desc_write_permissions);
+        attr_tbl[index].permissions = (GATT_PERM_READ | GATT_PERM_WRITE);
         index += 1;
     }
     if (_includeUserDescriptor) {

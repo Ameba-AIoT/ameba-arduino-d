@@ -18,9 +18,12 @@ uint8_t ble_hid_report_descriptor[] =
 };
 
 void HIDnotifCB (BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
+    (void) connID;
     if (chr->getUUID() == BLEUUID(REPORT_CHAR_UUID)) {
         uint8_t id = chr->getReportRefID();
         uint8_t type = chr->getReportRefType();
+        (void) id;
+        (void) type;
         if (cccd & GATT_CLIENT_CHAR_CONFIG_NOTIFY) {
             //printf("Notifications enabled on Characteristic %s ID %d Type %d for connection %d \n", chr->getUUID().str(), id, type, connID);
         } else {
@@ -36,9 +39,12 @@ void HIDnotifCB (BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
 }
 
 void HIDwriteCB (BLECharacteristic* chr, uint8_t connID) {
+    (void) connID;
     if (chr->getUUID() == BLEUUID(REPORT_CHAR_UUID)) {
         uint8_t id = chr->getReportRefID();
         uint8_t type = chr->getReportRefType();
+        (void) id;
+        (void) type;
         //printf("Data written on Characteristic %s ID %d Type %d for connection %d \n", chr->getUUID().str(), id, type, connID);
     } else {
         //printf("Data written on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
@@ -46,9 +52,12 @@ void HIDwriteCB (BLECharacteristic* chr, uint8_t connID) {
 }
 
 void HIDreadCB (BLECharacteristic* chr, uint8_t connID) {
+    (void) connID;
     if (chr->getUUID() == BLEUUID(REPORT_CHAR_UUID)) {
         uint8_t id = chr->getReportRefID();
         uint8_t type = chr->getReportRefType();
+        (void) id;
+        (void) type;
         //printf("Data read on Characteristic %s ID %d Type %d for connection %d \n", chr->getUUID().str(), id, type, connID);
     } else {
         //printf("Data read from Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
