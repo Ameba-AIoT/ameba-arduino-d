@@ -365,7 +365,7 @@ int udp_client_func(struct iperf_data_t iperf_data)
 	struct sockaddr_in  ser_addr;
 	uint32_t                 i=0;
 	int                 addrlen = sizeof(struct sockaddr_in);
-	uint32_t            start_time, end_time, bandwidth_time,report_start_time;
+	uint32_t            start_time, end_time, bandwidth_time,report_start_time,end_time2;
 	uint64_t            total_size=0, bandwidth_size=0, report_size=0;
 	struct iperf_udp_client_hdr client_hdr = {0};
     	u32_t now; 
@@ -415,6 +415,17 @@ int udp_client_func(struct iperf_data_t iperf_data)
 		client_hdr.mAmount = htonl(~(iperf_data.time*100) + 1);		
 		memcpy(udp_client_buffer, &client_hdr, sizeof(client_hdr));
 	}
+
+	uint32_t delay_target;
+
+	printf("buf_size:%d\n",iperf_data.buf_size);
+
+	uint64_t x = iperf_data.buf_size * (1000 * 8);
+	uint64_t y = iperf_data.bandwidth * 8 / MB;
+
+	delay_target = (uint32_t)x/y; //delay us
+
+	printf("bandwidth:%d,delay_target:%d\n",(uint32_t)iperf_data.bandwidth,delay_target);
 		
 	if(iperf_data.total_size == 0){
 		start_time = xTaskGetTickCount();
@@ -435,15 +446,17 @@ int udp_client_func(struct iperf_data_t iperf_data)
 				total_size+=iperf_data.buf_size;
 				bandwidth_size+=iperf_data.buf_size;
 				report_size+=iperf_data.buf_size;
+				id_cnt++;
 			}
 			end_time = xTaskGetTickCount();
-			id_cnt++;
+			#if 0
 			if( (bandwidth_size >= iperf_data.bandwidth) && ((end_time - bandwidth_time) < (configTICK_RATE_HZ*1)) ){
 				vTaskDelay(configTICK_RATE_HZ * 1 - (end_time - bandwidth_time));
 				end_time = xTaskGetTickCount();
 				bandwidth_time = end_time;
 				bandwidth_size = 0;
 			}
+			#endif
 
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))){
 				tcp_test_log("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
@@ -452,6 +465,14 @@ int udp_client_func(struct iperf_data_t iperf_data)
 				report_size = 0;
 				bandwidth_size = 0;
 			}
+
+			end_time2 = xTaskGetTickCount();
+
+			/* modify delay */
+			int32_t delay = (delay_target/1000 - (end_time2-now)%1000 * 1000);
+			if(delay > 0)
+				DelayUs(delay);
+			
 		}
 	}
 	else{
@@ -472,16 +493,17 @@ int udp_client_func(struct iperf_data_t iperf_data)
 				total_size+=iperf_data.buf_size;
 				bandwidth_size+=iperf_data.buf_size;
 				report_size+=iperf_data.buf_size;
+				id_cnt++;
 			}
 			end_time = xTaskGetTickCount();
-			id_cnt++;
+			#if 0
 			if( (bandwidth_size >= iperf_data.bandwidth) && ((end_time - bandwidth_time) < (configTICK_RATE_HZ*1)) ){
 				vTaskDelay(configTICK_RATE_HZ * 1 - (end_time - bandwidth_time));
 				end_time = xTaskGetTickCount();
 				bandwidth_time = end_time;
 				bandwidth_size = 0;
 			}
-			
+			#endif
 			if( (iperf_data.report_interval != DEFAULT_REPORT_INTERVAL) && ((end_time - report_start_time) >= (configTICK_RATE_HZ * iperf_data.report_interval))) {
 				tcp_test_log("\n\r%s: Send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(report_size/KB),(uint32_t)(end_time-report_start_time),((uint32_t)(report_size*8)/(end_time - report_start_time)));
 				report_start_time = end_time;
@@ -489,6 +511,13 @@ int udp_client_func(struct iperf_data_t iperf_data)
 				report_size = 0;
 				bandwidth_size = 0;
 			}
+
+			end_time2 = xTaskGetTickCount();
+
+			/* modify delay */
+			int32_t delay = (delay_target/1000 - (end_time2-now)%1000 * 1000);
+			if(delay > 0)
+				DelayUs(delay);
 		}
 	}
 	tcp_test_log("\n\r%s: [END] Totally send %d KBytes in %d ms, %d Kbits/sec",__func__, (uint32_t)(total_size/KB),(uint32_t)(end_time-start_time),((uint32_t)(total_size*8)/(end_time - start_time)));

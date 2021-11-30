@@ -40,6 +40,8 @@ extern "C" {
 #define WL_DELAY_START_CONNECTION   5000
 // firmware version string length
 #define WL_FW_VER_LENGTH            6
+// Host name length limit
+#define HOSTNAME_LEN            20
 
 class WiFiDrv
 {
@@ -64,6 +66,7 @@ class WiFiDrv
         static IPAddress _arduinoDns1;
         static IPAddress _arduinoDns2;
         static bool _useStaticIp;
+        static char _hostname[HOSTNAME_LEN+1];
 
     public:
         /*
@@ -287,7 +290,10 @@ class WiFiDrv
         static int disablePowerSave();
 
         static int getIPv6Status();
-       
+
+        static void setHostname(const char* hostname);
+
+        static const char* getHostname();
 };
 
 extern WiFiDrv wiFiDrv;

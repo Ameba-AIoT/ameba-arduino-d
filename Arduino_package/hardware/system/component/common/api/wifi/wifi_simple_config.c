@@ -462,11 +462,11 @@ static int SC_softAP_find_ap_from_scan_buf(char*buf, int buflen, char *target_ss
 			pwifi->channel = *(buf + plen + 13);
 			// security_mode offset = 11
 			security_mode = (u8)*(buf + plen + 11);
-			if(security_mode == IW_ENCODE_ALG_NONE)
+			if(security_mode == RTW_ENCODE_ALG_NONE)
 				pwifi->security_type = RTW_SECURITY_OPEN;
-			else if(security_mode == IW_ENCODE_ALG_WEP)
+			else if(security_mode == RTW_ENCODE_ALG_WEP)
 				pwifi->security_type = RTW_SECURITY_WEP_PSK;
-			else if(security_mode == IW_ENCODE_ALG_CCMP)
+			else if(security_mode == RTW_ENCODE_ALG_CCMP)
 				pwifi->security_type = RTW_SECURITY_WPA2_AES_PSK;
 			break;
 		}
@@ -691,13 +691,13 @@ rtw_security_t	SC_translate_iw_security_mode(u8 security_type) {
 
 
 	switch (security_type) {
-	case IW_ENCODE_ALG_NONE:
+	case RTW_ENCODE_ALG_NONE:
 		security_mode = RTW_SECURITY_OPEN;
 	break;
-	case IW_ENCODE_ALG_WEP:
+	case RTW_ENCODE_ALG_WEP:
 		security_mode = RTW_SECURITY_WEP_PSK;
 	break;
-	case IW_ENCODE_ALG_CCMP:
+	case RTW_ENCODE_ALG_CCMP:
 		security_mode = RTW_SECURITY_WPA2_AES_PSK;
 	break;
 	default:
@@ -1729,8 +1729,8 @@ static void simple_config_channel_control(void *para)
 #if SC_SOFTAP_EN
 #if defined(CONFIG_BT_CONFIG) && CONFIG_BT_CONFIG
 	int mode;
-	wext_get_mode(WLAN0_NAME, &mode); // mode is equal to IW_MODE_INFRA if breaked by BT Config  
-	if(mode != IW_MODE_INFRA)
+	wext_get_mode(WLAN0_NAME, &mode); // mode is equal to RTW_MODE_INFRA if breaked by BT Config  
+	if(mode != RTW_MODE_INFRA)
     	simple_config_kick_STA();
 #else
 	simple_config_kick_STA();

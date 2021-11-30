@@ -65,6 +65,10 @@ void PLL_I2S_Set(u32 new_state)
 
 
 	if (ENABLE == new_state){
+		//avoid repeated pll enable operation
+		if((HAL_READ32(SYSTEM_CTRL_BASE_HP, REG_HS_PLL_TEST) & BIT_PLL_I2S_RDY)){
+			return ;
+		}
 		//enable 98.304M PLL
 		Tmp = HAL_READ32(SYSTEM_CTRL_BASE_LP, REG_LP_FUNC_EN0);
 		Tmp |= BIT_SYS_AMACRO_EN;
@@ -129,6 +133,9 @@ void PLL_PCM_Set(u32 new_state)
 
 
 	if (ENABLE == new_state){
+		if(HAL_READ32(SYSTEM_CTRL_BASE_HP, REG_HS_PLL_TEST) & BIT_PLL_PCM_RDY){
+			return ;
+		}
 		//enable 45.1584M PLL
 		Tmp = HAL_READ32(SYSTEM_CTRL_BASE_LP, REG_LP_FUNC_EN0);
 		Tmp |= BIT_SYS_AMACRO_EN;

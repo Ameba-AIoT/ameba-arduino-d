@@ -281,6 +281,7 @@
 #define CONFIG_TLS	1
 #define CONFIG_PEAP	1
 #define CONFIG_TTLS	1
+#define CONFIG_FAST	1
 
 // DO NOT change the below config of EAP
 #ifdef PRE_CONFIG_EAP
@@ -290,15 +291,17 @@
 #define CONFIG_PEAP	1
 #undef CONFIG_TTLS
 #define CONFIG_TTLS	1
+#undef CONFIG_FAST
+#define CONFIG_FAST	1
 #endif
 
 // enable 1X code in lib_wlan as default (increase 380 bytes)
 #define CONFIG_EAP
 
-#if CONFIG_TLS || CONFIG_PEAP || CONFIG_TTLS
+#if CONFIG_TLS || CONFIG_PEAP || CONFIG_TTLS || CONFIG_FAST
 #define EAP_REMOVE_UNUSED_CODE 1
-#endif	     
-	     
+#endif
+
 #define EAP_SSL_VERIFY_SERVER
 
 #if CONFIG_TLS

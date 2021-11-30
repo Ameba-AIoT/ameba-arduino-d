@@ -27,7 +27,8 @@ void attachInterrupt(uint32_t pin, void (*callback)(void), uint32_t mode) {
             break;
 
         case CHANGE:
-            // TODO
+            pinMode(pin, INPUT_IRQ_CHANGE);
+            digitalSetIrqHandler(pin, (void*)callback);
             break;
     }
 }

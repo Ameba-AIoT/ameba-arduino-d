@@ -84,18 +84,6 @@ T_APP_RESULT BLEDevice::gapCallbackDefault(uint8_t cb_type, void *p_cb_data) {
             break;
         }
         case GAP_MSG_LE_SCAN_INFO: {
-            /*if (BTDEBUG) printf("GAP_MSG_LE_SCAN_INFO:adv_type 0x%x, bd_addr %02x:%02x:%02x:%02x:%02x:%02x, remote_addr_type %d, rssi %d, data_len %d",
-                            p_data->p_le_scan_info->adv_type,
-                            (p_data->p_le_scan_info->bd_addr)[5],
-                            (p_data->p_le_scan_info->bd_addr)[4],
-                            (p_data->p_le_scan_info->bd_addr)[3],
-                            (p_data->p_le_scan_info->bd_addr)[2],
-                            (p_data->p_le_scan_info->bd_addr)[1],
-                            (p_data->p_le_scan_info->bd_addr)[0],
-                            p_data->p_le_scan_info->remote_addr_type,
-                            p_data->p_le_scan_info->rssi,
-                            p_data->p_le_scan_info->data_len);*/
-
             if (_pScanCB != nullptr) {
                 _pScanCB(p_data);
             } else {
@@ -161,20 +149,25 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
         }
     // cases below relate to bonding requests from devices
     // defaults are set up to accept all bonding requests from all methods
-    // add in user functions here to deal with bonding verification
         case GAP_MSG_LE_BOND_PASSKEY_DISPLAY: {
             uint32_t display_value = 0;
             conn_id = gap_msg.msg_data.gap_bond_passkey_display.conn_id;
             le_bond_get_display_key(conn_id, &display_value);
-            le_bond_passkey_display_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_DISPLAY:passkey %ld\r\n", display_value);
+            if ((_pBLESecurity->_pKeyDisplayCB) != nullptr) {                   // Check if a passkey display callback function is set
+                (_pBLESecurity->_pKeyDisplayCB)(conn_id, display_value);        // Call function to display bonding key
+            }
+            le_bond_passkey_display_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);     // If no callback function is set, default to accept connection
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_DISPLAY\r\n");
             break;
         }
         case GAP_MSG_LE_BOND_PASSKEY_INPUT: {
-            uint32_t passkey = 888888;
+            uint32_t passkey = 0;
             conn_id = gap_msg.msg_data.gap_bond_passkey_input.conn_id;
+            if ((_pBLESecurity->_pKeyInputCB) != nullptr) {                     // Check if a passkey input callback function is set
+                passkey = (_pBLESecurity->_pKeyInputCB)(conn_id);               // Call function to get bonding passkey
+            }
             le_bond_passkey_input_confirm(conn_id, passkey, GAP_CFM_CAUSE_ACCEPT);
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_INPUT: conn_id %d\r\n", conn_id);
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_INPUT\r\n");
             break;
         }
         case GAP_MSG_LE_BOND_OOB_INPUT: {
@@ -189,8 +182,16 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
             uint32_t display_value = 0;
             conn_id = gap_msg.msg_data.gap_bond_user_conf.conn_id;
             le_bond_get_display_key(conn_id, &display_value);
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_USER_CONFIRMATION: passkey %ld\r\n", display_value);
-            le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
+            if ((_pBLESecurity->_pNumCompareCB) != nullptr) {                   // Check if a numeric comparison callback function exists
+                if ((_pBLESecurity->_pNumCompareCB)(conn_id, display_value)) {  // Call function to determine bonding request acceptance
+                    le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
+                } else {
+                    le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_REJECT);
+                }
+            } else { // If no callback function is set, default to accept connection
+                le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
+            }
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_USER_CONFIRMATION\r\n");
             break;
         }
         case GAP_MSG_LE_BOND_JUST_WORK: {

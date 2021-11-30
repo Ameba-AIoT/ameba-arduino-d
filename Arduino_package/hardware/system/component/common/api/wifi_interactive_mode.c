@@ -200,11 +200,11 @@ static void cmd_wifi_sta_and_ap(int argc, char **argv)
 	wext_get_mode(WLAN0_NAME, &mode);
 
 	switch(mode) {
-		case IW_MODE_MASTER:	//In AP mode
+		case RTW_MODE_MASTER:	//In AP mode
 			cmd_wifi_off(0, NULL);
 			cmd_wifi_on(0, NULL);
 			break;
-		case IW_MODE_INFRA:		//In STA mode
+		case RTW_MODE_INFRA:		//In STA mode
 			if(wext_get_ssid(WLAN0_NAME, ssid) > 0)
 				cmd_wifi_disconnect(0, NULL);
 	}
@@ -342,11 +342,11 @@ static void cmd_wifi_ap(int argc, char **argv)
 	wext_get_mode(WLAN0_NAME, &mode);
 
 	switch(mode) {
-		case IW_MODE_MASTER:	//In AP mode
+		case RTW_MODE_MASTER:	//In AP mode
 			wifi_off();
 			wifi_on(1);
 			break;
-		case IW_MODE_INFRA:		//In STA mode
+		case RTW_MODE_INFRA:		//In STA mode
 			if(wext_get_ssid(WLAN0_NAME, ssid) > 0)
 				cmd_wifi_disconnect(0, NULL);
 	}
@@ -479,7 +479,7 @@ static void cmd_wifi_connect(int argc, char **argv)
 	//Check if in AP mode
 	wext_get_mode(WLAN0_NAME, &mode);
 
-	if(mode == IW_MODE_MASTER) {
+	if(mode == RTW_MODE_MASTER) {
 #if CONFIG_LWIP_LAYER
 #if defined(CONFIG_PLATFOMR_CUSTOMER_RTOS)
 		//TODO
@@ -582,7 +582,7 @@ static void cmd_wifi_connect_bssid(int argc, char **argv)
 	//Check if in AP mode
 	wext_get_mode(WLAN0_NAME, &mode);
 
-	if(mode == IW_MODE_MASTER) {
+	if(mode == RTW_MODE_MASTER) {
 #if CONFIG_LWIP_LAYER
 #if defined(CONFIG_PLATFOMR_CUSTOMER_RTOS)
 		//TODO
@@ -884,6 +884,7 @@ static void print_scan_result( rtw_scan_result_t* record )
 								 ( record->security == RTW_SECURITY_WPA_WPA2_MIXED_PSK) ? "WPA/WPA2 Mixed" :
 #ifdef CONFIG_SAE_SUPPORT
 								 ( record->security == RTW_SECURITY_WPA3_AES_PSK) ? "WP3-SAE AES" :
+								 ( record->security == RTW_SECURITY_WPA2_WPA3_MIXED) ? "WPA2/WPA3-SAE AES" :
 #endif
 								 "Unknown" );
 

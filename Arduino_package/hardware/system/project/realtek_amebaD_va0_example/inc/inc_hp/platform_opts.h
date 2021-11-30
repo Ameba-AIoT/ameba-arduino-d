@@ -496,12 +496,14 @@
 #define CONFIG_ENABLE_PEAP	0
 #define CONFIG_ENABLE_TLS	0
 #define CONFIG_ENABLE_TTLS	0
+#define CONFIG_ENABLE_FAST	0
 
 // optional feature: whether to verify the cert of radius server
 #define ENABLE_EAP_SSL_VERIFY_SERVER	0
 
-#if CONFIG_ENABLE_PEAP || CONFIG_ENABLE_TLS || CONFIG_ENABLE_TTLS
+#if CONFIG_ENABLE_PEAP || CONFIG_ENABLE_TLS || CONFIG_ENABLE_TTLS || CONFIG_ENABLE_FAST
 #define CONFIG_ENABLE_EAP
+#undef CONFIG_EXAMPLE_WLAN_FAST_CONNECT
 #define CONFIG_EXAMPLE_WLAN_FAST_CONNECT 0
 #endif
 
@@ -588,6 +590,12 @@ in lwip_opt.h for support uart adapter*/
 
 /* For rarp example */
 #define CONFIG_EXAMPLE_RARP				0
+
+/* For rtp server example */
+#define CONFIG_EXAMPLE_RTP_SERVER				0
+
+/* For rtp client example */
+#define CONFIG_EXAMPLE_RTP_CLIENT				0
 
 /* For ssl server example */
 #define CONFIG_EXAMPLE_SSL_SERVER		0

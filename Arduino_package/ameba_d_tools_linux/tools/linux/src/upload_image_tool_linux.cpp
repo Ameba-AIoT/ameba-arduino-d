@@ -2,7 +2,6 @@
 
 Compile:
 linux:
-g++ -o upload_image_tool_linux tools/linux/src/upload_image_tool_linux.cpp -lpthread
 g++ -o upload_image_tool_linux tools/linux/src/upload_image_tool_linux.cpp -static
 g++ -std=c++11 -o upload_image_tool_linux upload_image_tool_linux.cpp -static
 g++ -std=c++11 -o upload_image_tool_linux upload_image_tool_linux.cpp -lpthread

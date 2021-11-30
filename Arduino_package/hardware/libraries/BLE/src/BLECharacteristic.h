@@ -33,10 +33,15 @@ class BLECharacteristic {
         uint16_t getBufferLen();
         void setReadProperty(bool value);
         void setWriteProperty(bool value);
+        void setWriteNRProperty(bool value);
         void setNotifyProperty(bool value);
         void setIndicateProperty(bool value);
         void setProperties(uint8_t value);
         uint8_t getProperties();
+        void setReadPermissions(uint32_t value);
+        void setWritePermissions(uint32_t value);
+        void setPermissions(uint32_t value);
+        uint32_t getPermissions();
 
         //--------- Read Char Value --------//
         String readString();
@@ -63,6 +68,9 @@ class BLECharacteristic {
         //------------- Descriptors -------------//
         void setUserDescriptor(const char* description);               // Descriptor UUID 0x2901
         void setFormatDescriptor(uint8_t format, uint8_t exponent, uint16_t unit, uint16_t description);             // Descriptor UUID 0x2904
+        void setReportRefDescriptor(uint8_t id, uint8_t type);             // Descriptor UUID 0x2908
+        uint8_t getReportRefID();
+        uint8_t getReportRefType();
 
         //------------- Callbacks -------------//
         void setReadCallback(void (*fCallback) (BLECharacteristic* chr, uint8_t conn_id));              // Called when client reads value
@@ -94,7 +102,8 @@ class BLECharacteristic {
         BLEUUID _uuid;
         uint8_t _handle_index = 0xff;
         uint8_t _char_properties = 0x00;        // default = no properties
-        uint32_t _char_attr_permissions = GATT_PERM_NONE;
+        uint32_t _char_attr_read_permissions = GATT_PERM_NONE;
+        uint32_t _char_attr_write_permissions = GATT_PERM_NONE;
 
         uint8_t* _data_buf = nullptr;
         uint16_t _data_buf_len = 20;     // Default buffer size of 20 bytes = default MTU 23 - 3 headers
@@ -107,6 +116,7 @@ class BLECharacteristic {
         uint8_t _includeCCCDescriptor = 0;
         uint8_t _includeUserDescriptor = 0;
         uint8_t _includeFormatDescriptor = 0;
+        uint8_t _includeReportRefDescriptor = 0;
 
         char* _userDesc = nullptr;
         uint8_t _userDescSize = 0;
@@ -115,6 +125,9 @@ class BLECharacteristic {
         uint8_t _fDescExponent = 0;     // Default = zero
         uint16_t _fDescUnit = 0x2700;   // Default = unitless
         uint16_t _fDescDesc = 0;        // Default = unknown description
+
+        uint8_t _reportDescID = 0;
+        uint8_t _reportDescType = 0;
 
 };
 

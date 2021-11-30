@@ -132,11 +132,45 @@ void IR_rx_irq_handler(void) {
 IRDevice::IRDevice() {
 }
 
-void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
+IRDevice::~IRDevice() {
+    free(_pIrBuf);
+}
+
+void IRDevice::setTxPin(uint8_t transmitPin) {
     /* there are three groups of pinmux and pad settings:
     *  |  IR_TX  |  _PA_25  |  _PB_23 |  _PB_31 |
+    */
+#if defined(BOARD_RTL8722DM)
+    if (transmitPin == 3) {
+        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
+    } else if (transmitPin == 9) {
+        Pinmux_Config(_PB_23, PINMUX_FUNCTION_IR);
+    } else if (transmitPin == 16) {
+        Pinmux_Config(_PA_25, PINMUX_FUNCTION_IR);
+    } else {
+        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
+        return;
+    }
+#elif defined(BOARD_RTL8720DN_BW16)
+//    if (transmitPin == 3) {
+    if (transmitPin == PA25) {
+        Pinmux_Config(_PA_25, PINMUX_FUNCTION_IR);
+    } else {
+        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
+        return;
+    }
+#else
+#error
+#endif
+
+    _transmitPin = transmitPin;
+}
+
+void IRDevice::setRxPin(uint8_t receivePin) {
+    /* there are three groups of pinmux and pad settings:
     *  |  IR_RX  |  _PA_26  |  _PB_22 |  _PB_29 |
     */
+#if defined(BOARD_RTL8722DM)
     if (receivePin == 6) {
         PAD_PullCtrl(_PB_29, PullNone);
         Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
@@ -149,23 +183,51 @@ void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
         printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
         return;
     }
-
-    if (transmitPin == 3) {
-        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
-    } else if (transmitPin == 9) {
-        Pinmux_Config(_PB_23, PINMUX_FUNCTION_IR);
-    } else if (transmitPin == 16) {
-        Pinmux_Config(_PA_25, PINMUX_FUNCTION_IR);
+#elif defined(BOARD_RTL8720DN_BW16)
+//    if (receivePin == 10) {
+    if (receivePin == PA26) {
+        PAD_PullCtrl(_PA_26, PullNone);
+        Pinmux_Config(_PA_26, PINMUX_FUNCTION_IR);
     } else {
-        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
+        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
         return;
     }
+#else
+#error
+#endif
+
     _receivePin = receivePin;
-    _transmitPin = transmitPin;
+}
+
+void IRDevice::setPins(uint8_t receivePin, uint8_t transmitPin) {
+    /* there are three groups of pinmux and pad settings:
+    *  |  IR_TX  |  _PA_25  |  _PB_23 |  _PB_31 |
+    *  |  IR_RX  |  _PA_26  |  _PB_22 |  _PB_29 |
+    */
+    setTxPin(transmitPin);
+    setRxPin(receivePin);
 }
 
 uint8_t IRDevice::getFreq() {
     return _frequency;
+}
+
+void IRDevice::begin(uint8_t irPin, uint32_t irMode, uint32_t freq) {
+    if (irMode == IR_MODE_TX) {
+        setTxPin(irPin);
+    } else if (irMode == IR_MODE_RX) {
+        setRxPin(irPin);
+    } else {
+        printf("Invalid IR mode!\r\n");
+        return;
+    }
+    _mode = irMode;
+    _frequency = freq;
+    IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
+    IR_StructInit(&IR_InitStruct);
+    IR_InitStruct.IR_Mode = _mode;
+    IR_InitStruct.IR_Freq = _frequency;  //Hz
+    IR_Init(IR_DEV, &IR_InitStruct);
 }
 
 void IRDevice::begin(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode, uint32_t freq) {
@@ -185,6 +247,9 @@ void IRDevice::begin(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode, u
 }
 
 void IRDevice::end() {
+    free(_pIrBuf);
+    _pIrBuf = NULL;
+    _bufSize = 0;
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
     IR_INTConfig(IR_DEV, IR_RX_INT_ALL_EN, DISABLE);
     IR_INTConfig(IR_DEV, IR_TX_INT_ALL_EN, DISABLE);
@@ -197,46 +262,72 @@ static IR_DataType ConvertToCarrierCycle(uint32_t time, uint32_t freq) {
 }
 
 void IRDevice::send(const unsigned int buf[], uint16_t len) {
-    u32 tx_count = 0;
+    uint16_t tx_count = 0;
     const u8 tx_thres = 15;
-    uint16_t bufLen = 0;
     uint32_t inputTime = 0;
 
-    IR_DataStruct.carrierFreq = IR_InitStruct.IR_Freq;
-    IR_DataStruct.codeLen = len;
-    IR_DataStruct.bufLen = bufLen;
- 
-    for (int i = 0; i <= (IR_DataStruct.codeLen - 1); i++) {
-       // assuming a logical bit comprises of a time duration with pulses followed by another duration with no pulses
+    // If odd number of data, add in one last zero data to ensure transmission ends on PULSE_LOW with no carrier output
+    // Somehow this is necessary for the last data to transmit normally
+    if (len % 2) {
+        len = len + 1;
+    }
+
+    // Ensure code buffer has sufficient size to contain data
+    if ((_pIrBuf == NULL) && (_bufSize == 0)) {
+        _pIrBuf = (uint32_t*)malloc(len * sizeof(uint32_t));
+        _bufSize = len;
+    } else if (_bufSize < len) {
+        free(_pIrBuf);
+        _pIrBuf = (uint32_t*)malloc(len * sizeof(uint32_t));
+        _bufSize = len;
+    }
+
+    // Zero out sufficient code buffer space for data transmission
+    memset(_pIrBuf, 0, (len * sizeof(uint32_t)));
+
+    // Convert IR timings into carrier cycle counts for IR peripheral
+    // Assuming a logical bit comprises of a time duration with pulses followed by another duration with no pulses
+    for (int i = 0; i < len; i++) {
         if((i % 2) == 0){ 
             inputTime = buf[i] | PULSE_HIGH;
-            IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
+            _pIrBuf[i] = ConvertToCarrierCycle(inputTime, _frequency);
         } else {
             inputTime = (buf[i]) | PULSE_LOW;
-            IR_DataStruct.irBuf[i] = ConvertToCarrierCycle(inputTime, IR_DataStruct.carrierFreq);
+            _pIrBuf[i] = ConvertToCarrierCycle(inputTime, _frequency);
         }
-        bufLen += 1;
     }
-    IR_DataStruct.bufLen = bufLen;
 
-    IR_SendBuf(IR_DEV, IR_DataStruct.irBuf, IR_TX_FIFO_SIZE, FALSE);
+    IR_ClearTxFIFO(IR_DEV);
+    // Copy initial batch of data into IR peripheral and send
+    if (len > IR_TX_FIFO_SIZE) {
+        IR_SendBuf(IR_DEV, _pIrBuf, IR_TX_FIFO_SIZE, FALSE);
+        tx_count += IR_TX_FIFO_SIZE;
+    } else {
+        IR_SendBuf(IR_DEV, _pIrBuf, len, TRUE);
+        tx_count += len;
+    }
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, ENABLE);
-    tx_count += IR_TX_FIFO_SIZE;
 
-    while ((IR_DataStruct.bufLen - tx_count) > 0) {
+    // Check if there is remaining data to send
+    while ((len - tx_count) > 0) {
+        // Wait for IR peripheral to transmit data until FIFO is at least half empty (IR_TX_FIFO_SIZE = 32, tx_thres = 15)
         while (IR_GetTxFIFOFreeLen(IR_DEV) < tx_thres) {
             taskYIELD();
         }
-        if ((IR_DataStruct.bufLen - tx_count) > tx_thres) {
-            IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), tx_thres, FALSE);
+        // Top up IR peripheral FIFO with data
+        if ((len - tx_count) > tx_thres) {
+            IR_SendBuf(IR_DEV, (_pIrBuf + tx_count), tx_thres, FALSE);
             tx_count += tx_thres;
         } else {
-            IR_SendBuf(IR_DEV, (IR_DataStruct.irBuf + tx_count), (IR_DataStruct.bufLen - tx_count), TRUE);
-            tx_count = IR_DataStruct.bufLen;
+            IR_SendBuf(IR_DEV, (_pIrBuf + tx_count), (len - tx_count), TRUE);
+            tx_count = len;
         }
     }
 
-    vTaskDelay((200 / portTICK_RATE_MS));
+    // Wait for IR to finish transmitting all data in FIFO
+    while (IR_GetTxFIFOFreeLen(IR_DEV) != (IR_TX_FIFO_SIZE - 1)) {
+        taskYIELD();
+    }
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
 }
 

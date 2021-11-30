@@ -93,7 +93,7 @@ void SPIClass::begin(void)
         return;
     }
 #elif defined(BOARD_RTL8720DN_BW16)
-    if (pinMOSI == 12) {
+    if (pinMOSI == PA12) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
@@ -133,7 +133,7 @@ void SPIClass::begin(int ss)
         return;
     }
 #elif defined(BOARD_RTL8720DN_BW16)
-    if (pinMOSI == 12) {
+    if (pinMOSI == PA12) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
@@ -312,8 +312,7 @@ SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
 SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
 
 #elif defined(BOARD_RTL8720DN_BW16)
-//SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
-SPIClass SPI((void *)(&spi_obj0), 12, 11, 10, 9);
+SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
 
 #else
 #error chack the borad supported

@@ -163,4 +163,12 @@ int ws_handshake_header_custom_token(wsclient_context *wsclient, char *cus, int 
 ** Return         : result(0:ok, -1:fail)
 **************************************************************************************************/
 int ws_multisend_opts(wsclient_context *wsclient, int stable_buf_num);
+
+/*************************************************************************************************
+** Function Name  : ws_set_senddata_block_time
+** Description    : set ws_sendData block time. Default is non-block.
+** Input          : ms: the max block time
+** Return         : none
+**************************************************************************************************/
+void ws_set_senddata_block_time(uint32_t ms);
 #endif

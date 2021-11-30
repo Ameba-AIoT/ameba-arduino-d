@@ -36,7 +36,7 @@ extern "C"{
 #define INPUT_IRQ_RISE      0x06
 #define INPUT_IRQ_LOW       0x07
 #define INPUT_IRQ_HIGH      0x08
-
+#define INPUT_IRQ_CHANGE    0x09
 
 #define true                0x1
 #define false               0x0

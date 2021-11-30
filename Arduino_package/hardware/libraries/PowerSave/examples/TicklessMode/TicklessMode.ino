@@ -1,53 +1,91 @@
 /*
   This sketch shows how to use power save tickless mode
 */
-#include "ameba_soc.h"
 #include <PowerSave.h>
 
-#define TICKLESS_MODE                   22
-#define SET_TL_UART_WAKEUP              0
-#define SET_TL_RTC_WAKEUP               1
-#define SET_TL_AON_WAKEPIN_WAKEUP       16 // D16:16    D17:17    D26:26    D27:27
+//SET_TL_UART_WAKEUP
+//SET_TL_RTC_WAKEUP
+//For RTL8722DM only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_GPIOA25       //D16
+    //SET_AON_GPIO_WAKEUP_GPIOA26       //D17
+    //SET_AON_GPIO_WAKEUP_GPIOA21       //D26
+    //SET_AON_GPIO_WAKEUP_GPIOA20       //D27
+    //SET_AON_GPIO_WAKEUP_GPIOA19       //D28
+//For RTL8722DM_MINI only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_GPIOA12       //D9
+    //SET_AON_GPIO_WAKEUP_GPIOA13       //D10
+    //SET_AON_GPIO_WAKEUP_GPIOA14       //D11
+    //SET_AON_GPIO_WAKEUP_GPIOA15       //D12
+    //SET_AON_GPIO_WAKEUP_GPIOA16       //D13
+    //SET_AON_GPIO_WAKEUP_GPIOA18       //D15
+    //SET_AON_GPIO_WAKEUP_GPIOA19       //D16
+    //SET_AON_GPIO_WAKEUP_GPIOA21       //D18
+//For RTL8720DN_BW16 only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_GPIOA25       //D7
+    //SET_AON_GPIO_WAKEUP_GPIOA26       //D8
+    //SET_AON_GPIO_WAKEUP_GPIOA15       //D9
+    //SET_AON_GPIO_WAKEUP_GPIOA14       //D10
+    //SET_AON_GPIO_WAKEUP_GPIOA13       //D11
+    //SET_AON_GPIO_WAKEUP_GPIOA12       //D12
 
-//SET_TL_UART_WAKEUP:0; SET_TL_RTC_WAKEUP:1; SET_TL_AON_WAKEPIN_WAKEUP:16 or 17 or 26 or 27;
 #define TL_WAKEUP_SOURCE                SET_TL_UART_WAKEUP
 
 #define TL_SYSACTIVE_TIME               5000
+
 #define TL_RTC_ALARM_DAY                0
 #define TL_RTC_ALARM_HOUR               0
 #define TL_RTC_ALARM_MIN                0
 #define TL_RTC_ALARM_SEC                10
 
-#if (TL_WAKEUP_SOURCE == 0)
-    char TL_UART_WAKEUP[] = "Set Tickless wakeup LOGUART";
-#elif (TL_WAKEUP_SOURCE == 1)
-    char TL_RTC_WAKEUP[] = "Set Tickless wakeup RTC";
-#elif (TL_WAKEUP_SOURCE == 16)
-    char TL_AON_WAKEPIN_WAKEUP_D16[] = "Set Tickless wakeup AON wake pin D16";
-#elif (TL_WAKEUP_SOURCE == 17)
-    char TL_AON_WAKEPIN_WAKEUP_D17[] = "Set Tickless wakeup AON wake pin D17";
-#elif (TL_WAKEUP_SOURCE == 26)
-    char TL_AON_WAKEPIN_WAKEUP_D26[] = "Set Tickless wakeup AON wake pin D26";
-#elif (TL_WAKEUP_SOURCE == 27)
-    char TL_AON_WAKEPIN_WAKEUP_D27[] = "Set Tickless wakeup AON wake pin D27";
-#endif
-
-
 uint32_t TL_Suspend_function(void) {
-#if (TL_WAKEUP_SOURCE == 0)
-    printf("%s.    \r\n", TL_UART_WAKEUP);
-#elif (TL_WAKEUP_SOURCE == 1)
-    printf("%s.    \r\n", TL_RTC_WAKEUP);
-    PowerSave.RTCWakeSetup(TL_RTC_ALARM_DAY, TL_RTC_ALARM_HOUR, TL_RTC_ALARM_MIN, TL_RTC_ALARM_SEC);
-#elif (TL_WAKEUP_SOURCE == 16)
-    printf("%s.    \r\n", TL_AON_WAKEPIN_WAKEUP_D16);
-#elif (TL_WAKEUP_SOURCE == 17)
-    printf("%s.    \r\n", TL_AON_WAKEPIN_WAKEUP_D17);
-#elif (TL_WAKEUP_SOURCE == 26)
-    printf("%s.    \r\n", TL_AON_WAKEPIN_WAKEUP_D26);
-#elif (TL_WAKEUP_SOURCE == 27)
-    printf("%s.    \r\n", TL_AON_WAKEPIN_WAKEUP_D27);
-#endif
+    switch (TL_WAKEUP_SOURCE) {
+        case SET_TL_UART_WAKEUP:
+            PowerSave.TL_UART_WAKEUP();
+            break;
+        case SET_TL_RTC_WAKEUP:
+            PowerSave.TL_RTC_WAKEUP();
+            PowerSave.RTCWakeSetup(TL_RTC_ALARM_DAY, TL_RTC_ALARM_HOUR, TL_RTC_ALARM_MIN, TL_RTC_ALARM_SEC);
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA12:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA12();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA13:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA13();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA14:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA14();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA15:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA15();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA16:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA16();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA17:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA17();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA18:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA18();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA19:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA19();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA20:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA20();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA21:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA21();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA25:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA25();
+            break;
+        case SET_AON_GPIO_WAKEUP_GPIOA26:
+            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA26();
+            break;
+        default:
+            printf("Unknown wakeup source.    \r\n");
+        break;
+    }
 
     printf("\r\nSytem suspend. Tickless mode enabled.    \r\n");
     return TRUE;
@@ -62,9 +100,7 @@ uint32_t TL_Resume_fnction(void) {
 
 void setup() {
     PowerSave.begin(TICKLESS_MODE);
-    PowerSave.TL_wakelock(1);
-    pmu_register_sleep_callback(PMU_LOGUART_DEVICE, (PSM_HOOK_FUN)TL_Suspend_function, NULL, (PSM_HOOK_FUN)TL_Resume_fnction, NULL);
-    PowerSave.TL_wakelock(0);
+    PowerSave.TL_sleep_callback(TL_Suspend_function, TL_Resume_fnction);
 }
 
 void loop() {

@@ -15,7 +15,7 @@ PubSubClient client(wifiClient);
 
 #define THING_NAME "amebaDevBoard"
 
-char mqttServer[]     		= "a4adrtgyzxov42-ats.iot.ap-southeast-1.amazonaws.com";
+char mqttServer[]           = "a4adrtgyzxov42-ats.iot.ap-southeast-1.amazonaws.com";
 char clientId[]             = "amebaClient";
 char publishUpdateTopic[]   = "$aws/things/" THING_NAME "/shadow/update";
 char publishGetTopic[]      = "$aws/things/" THING_NAME "/shadow/get";

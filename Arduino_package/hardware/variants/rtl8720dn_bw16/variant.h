@@ -36,21 +36,71 @@ extern "C"{
 #define TOTAL_GPIO_PIN_NUM            (13)
 #define TOTAL_PWM_PIN_NUM             (4)
 
-#define LED_BUILTIN                   (10) //PA_14, Green
-#define LED_BUILTIN_G                 (10)
-#define LED_BUILTIN_R                 (12)
-#define LED_BUILTIN_B                 (11)
+#if 1
+//All gpios. This is actrually necessary.
+#define PA7     0
+#define PA8     1
+#define PA27    2
+#define PA30    3
+#define PB1     4
+#define PB2     5
+#define PB3     6
+#define PA25    7
+#define PA26    8
+#define PA15    9
+#define PA14    10
+#define PA13    11
+#define PA12    12
+
+#define LED_G                         PA14 //   PA14    Green
+#define LED_R                         PA12 //   PA12    Red
+#define LED_B                         PA13 //   PA13    Blue
+#define LED_BUILTIN                   LED_G
 
 #define FEATURE_ADC
 //#define FEATURE_DAC
 
 /* Analog pin mapping */
-#define A0                            4 //PB_1    3.3V    CH0
-#define A1                            5 //PB_2    3.3V    CH1
-#define A2                            6 //PB_3    3.3V    CH2
+#define A0                            PB1 //    3.3V    CH0
+#define A1                            PB2 //    3.3V    CH1
+#define A2                            PB3 //    3.3V    CH2
 
 /* DAC pin mapping */
 //#define DAC0    AD_3
+
+#else
+
+#define PA7     2
+#define PA8     9
+#define PA27    11
+#define PA30    6
+#define PB1     0
+#define PB2     1
+#define PB3     4
+#define PA25    3
+#define PA26    10
+#define PA15    12
+#define PA14    7
+#define PA13    8
+#define PA12    5
+
+#define LED_G                         PA14 //   PA14    Green
+#define LED_R                         PA12 //   PA12    Red
+#define LED_B                         PA13 //   PA13    Blue
+#define LED_BUILTIN                   LED_G
+
+#define FEATURE_ADC
+//#define FEATURE_DAC
+
+/* Analog pin mapping */
+#define A0                            PB1 //    3.3V    CH0
+#define A1                            PB2 //    3.3V    CH1
+#define A2                            PB3 //    3.3V    CH2
+
+/* DAC pin mapping */
+//#define DAC0    AD_3
+
+#endif
 
 //#define SS                            10
 
@@ -63,22 +113,6 @@ extern "C"{
 #define UART0_RX    PA_22    //PB_18  //Not available
 #define UART3_TX    PB_1    //PB_1
 #define UART3_RX    PB_2    //PB_2
-
-//All gpios. This is actrually necessary...
-#define PA7 0 
-#define PA8 1 
-#define PA27 2
-#define PA30 3
-#define PB1 4
-#define PB2 5 
-#define PB3 6 
-#define PA25 7 
-#define PA26 8 
-#define PA15 9 
-#define PA14 10 
-#define PA13 11 
-#define PA12 12 
-
 
 #ifdef __cplusplus
 extern "C"{
@@ -102,9 +136,9 @@ extern char* ltoa(long l, char * buffer, int radix);
 #endif
 
 #ifdef __cplusplus
-extern LOGUARTClass Serial1;  //This should be Serial1 for this board
+extern LOGUARTClass Serial;  //This should be Serial1 for this board
 //extern UARTClassOne Serial; //Not available
-extern UARTClassTwo Serial;
+extern UARTClassTwo Serial1;
 #endif
 
 #endif /* _VARIANT_ARDUINO_AMEBA_ */

@@ -267,4 +267,12 @@ void WiFiClass::setDNS(IPAddress dns_server1, IPAddress dns_server2) {
     WiFiDrv::setDNS(2, dns_server1, dns_server2);
 }
 
+void WiFiClass::setHostname(const char* hostname) {
+    return WiFiDrv::setHostname(hostname);
+}
+
+const char* WiFiClass::getHostname() {
+    return WiFiDrv::getHostname();
+}
+
 WiFiClass WiFi;

@@ -98,11 +98,13 @@ void LOGUARTClass::begin(const uint32_t dwBaudRate)
     // UART3
     //serial_init(&uart_obj, PB_1, PB_2);
     //serial_init(&uart_obj, PA_26, PA_25);
+    //serial_init(&uart_obj, PA_12, PA_13);
     //serial_init(&uart_obj, UART3_TX, UART3_RX);
 
     // UART0
     //serial_init(&uart_obj, PB_19, PB_18);
     //serial_init(&uart_obj, PA_21, PA_22);
+    //serial_init(&uart_obj, PA_18, PA_19);
     //serial_init(&uart_obj, UART0_TX, UART0_RX);
 
     serial_format(&log_uart_obj, 8, ParityNone, 1);
@@ -173,14 +175,7 @@ size_t LOGUARTClass::write(const uint8_t uc_data)
     return 1;
 }
 
-#if defined(BOARD_RTL8720DN_BW16)
-LOGUARTClass Serial1(UART_LOG_IRQ, &rx_buffer0);
-bool Serial1_available() {
-    return Serial1.available() > 0;
-}
-#else
 LOGUARTClass Serial(UART_LOG_IRQ, &rx_buffer0);
 bool Serial_available() {
     return Serial.available() > 0;
 }
-#endif

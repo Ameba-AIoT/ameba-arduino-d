@@ -1,5 +1,15 @@
 #include "IRDevice.h"
 
+#if defined(BOARD_RTL8722DM)
+#define IR_RX_PIN       8
+#define IR_TX_PIN       9
+#elif defined(BOARD_RTL8722DM_MINI)
+#error Sorry, RTL8722DM_MINI do not support.
+#elif defined(BOARD_RTL8720DN_BW16)
+#define IR_RX_PIN       PA26
+#define IR_TX_PIN       PA25
+#endif
+
 uint8_t adr = 0;
 uint8_t cmd = 0;
 
@@ -9,7 +19,7 @@ void setup() {
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
     }
-    IR.beginNEC(8, 9, IR_MODE_TX); // configure for NEC IR protocol
+    IR.beginNEC(IR_RX_PIN, IR_TX_PIN, IR_MODE_TX); // configure for NEC IR protocol
 }
 
 void loop() {

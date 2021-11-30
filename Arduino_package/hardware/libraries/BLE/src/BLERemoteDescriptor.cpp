@@ -146,6 +146,7 @@ BLERemoteDescriptor::BLERemoteDescriptor(BLEUUID uuid) {
 }
 
 BLERemoteDescriptor::~BLERemoteDescriptor() {
+    free(_data_buf);
     vSemaphoreDelete(_readSemaphore);
     vSemaphoreDelete(_writeSemaphore);
 }

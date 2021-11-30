@@ -50,6 +50,7 @@ IPAddress WiFiDrv::_arduinoApNetmaskAddr = IPAddress(255, 255, 255, 0);
 IPAddress WiFiDrv::_arduinoDns1;
 IPAddress WiFiDrv::_arduinoDns2;
 bool WiFiDrv::_useStaticIp = false;
+char WiFiDrv::_hostname[HOSTNAME_LEN+1] = {0};
 
 static void init_wifi_struct(void)
 {
@@ -129,6 +130,7 @@ int8_t WiFiDrv::wifiSetNetwork(char* ssid, uint8_t ssid_len) {
             }
             return WL_SUCCESS;
         } else {
+            netif_set_hostname(&xnetif[0], getHostname());
             dhcp_result = LwIP_DHCP(0, DHCP_START);
             if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
                 return WL_SUCCESS;
@@ -186,6 +188,7 @@ int8_t WiFiDrv::wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char* pass
             }
             return WL_SUCCESS;
         } else {
+            netif_set_hostname(&xnetif[0], getHostname());
             dhcp_result = LwIP_DHCP(0, DHCP_START);
             if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
                 return WL_SUCCESS;
@@ -271,6 +274,7 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
             }
             return WL_SUCCESS;
         } else {
+            netif_set_hostname(&xnetif[0], getHostname());
             dhcp_result = LwIP_DHCP(0, DHCP_START);
             if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
                 return WL_SUCCESS;
@@ -667,5 +671,18 @@ int WiFiDrv::getIPv6Status(){
     return get_ipv6_status();
 }
 
+void WiFiDrv::setHostname(const char* hostname) {
+    if(hostname){
+        snprintf(_hostname, HOSTNAME_LEN, "%s", hostname);
+    }
+}
 
+const char* WiFiDrv::getHostname() {
+    if(_hostname[0] == 0){
+        uint8_t* eth_mac = NULL;
+        eth_mac = getMacAddress();
+        snprintf(_hostname, HOSTNAME_LEN, "%s%02X%02X%02X", "Ameba_", eth_mac[3], eth_mac[4], eth_mac[5]);
+    }
+    return (const char *)_hostname;
+}
 

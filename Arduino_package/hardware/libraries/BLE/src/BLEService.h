@@ -5,7 +5,7 @@
 #include "BLEUUID.h"
 #include "BLECharacteristic.h"
 
-#define MAX_NUM_CHARS 10
+#define MAX_NUM_CHARS 15
 
 #ifdef __cplusplus
 extern "C" {

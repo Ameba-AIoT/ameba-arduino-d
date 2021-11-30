@@ -7,6 +7,7 @@
 #include "BLEScan.h"
 #include "BLEService.h"
 #include "BLEClient.h"
+#include "BLESecurity.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,6 +44,7 @@ class BLEDevice {
         BLEAdvert* configAdvert();
         BLEScan* configScan();
         BLEConnect* configConnection();
+        BLESecurity* configSecurity();
         void setScanCallback(void (*scanCB)(T_LE_CB_DATA*));
         void beginCentral(uint8_t connCount = BLE_CENTRAL_APP_MAX_LINKS);
         void beginPeripheral();
@@ -55,7 +57,6 @@ class BLEDevice {
 
     private:
         static void BLEMainTask(void *p_param);
-        void setupGAPBondManager();
 
         //---------------------------- Default handlers for core BLE functionality ----------------------------//
         static T_APP_RESULT gapCallbackDefault(uint8_t cb_type, void *p_cb_data);
@@ -98,6 +99,7 @@ class BLEDevice {
         static BLEScan* _pBLEScan;      // Pointer to scan object (central mode)
         static void (*_pScanCB)(T_LE_CB_DATA*); // Pointer to callback function for processing scan data
         static BLEConnect* _pBLEConn;   // Pointer to connect object (central mode)
+        static BLESecurity* _pBLESecurity;  // Pointer to security object
         static BLEService* _servicePtrList[BLE_MAX_SERVICE_COUNT];
         static uint8_t _serviceCount;
         static BLEClient* _clientPtrList[BLE_CENTRAL_APP_MAX_LINKS];
@@ -125,16 +127,6 @@ class BLEDevice {
         static T_GAP_DEV_STATE _gapDevState;
         static T_GAP_CONN_STATE _gapConnState;
         static T_APP_LINK _bleCentralAppLinkTable[BLE_CENTRAL_APP_MAX_LINKS];
-
-        // GAP Bond Manager default parameters
-        uint8_t  _authPairMode = GAP_PAIRING_MODE_NO_PAIRING;//GAP_PAIRING_MODE_PAIRABLE;
-        uint16_t _authFlags = GAP_AUTHEN_BIT_NONE;//GAP_AUTHEN_BIT_BONDING_FLAG;
-        uint8_t  _authIoCap = GAP_IO_CAP_NO_INPUT_NO_OUTPUT;
-        uint8_t  _authOob = false;
-        uint8_t  _authUseFixPasskey = false;
-        uint32_t _authFixPasskey = 0;
-        uint8_t  _authSecReqEnable = false;
-        uint16_t _authSecReqFlags = GAP_AUTHEN_BIT_NONE;//GAP_AUTHEN_BIT_BONDING_FLAG;
 
         // GAP PHY preference
         static uint8_t all_phys;

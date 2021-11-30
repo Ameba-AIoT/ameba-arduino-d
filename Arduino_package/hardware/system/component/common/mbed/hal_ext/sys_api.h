@@ -119,9 +119,10 @@ void sys_cpu_reset(void);
 /**
   * @brief read chip package type
   * @retval 0: efuse not program
-            1: RTL8720
-            2: RTL8721
-            3: RTL8722
+            1: PACKAGE_QFN48
+            2: PACKAGE_QFN68
+            3: PACKAGE_QFN88
+            4: PACKAGE_QFN56
             -1: UNKNOWN
   */
 int sys_chip_package_read(void);
@@ -152,35 +153,6 @@ int sys_chip_flash_check(void);
             -1: unknown
   */
 int sys_chip_band_type_check(void);
-
-enum amebad_chip_model_number {
-	CHIP_NUMBER_UNKNOWN = -1,
-	CHIP_RTL8720CS = 0,
-	CHIP_RTL8720CSM,
-	CHIP_RTL8720CSF,
-	CHIP_RTL8721CS,
-	CHIP_RTL8721CSM,
-	CHIP_RTL8721CSF,
-	CHIP_RTL8722CS,
-	CHIP_RTL8722CSM,
-	CHIP_RTL8722CSF,
-	CHIP_RTL8720DN,
-	CHIP_RTL8720DM,
-	CHIP_RTL8720DF,
-	CHIP_RTL8721DN,
-	CHIP_RTL8721DM,
-	CHIP_RTL8721DF,
-	CHIP_RTL8722DN,
-	CHIP_RTL8722DM,
-	CHIP_RTL8722DF,
-};
-
-/**
-  * @brief get chip model number
-  * @retval CHIP_NUMBER_UNKNOWN: efuse not program or incorrect value
-  *         other: chip model number
-  */
-enum amebad_chip_model_number sys_get_chip_model_number(void);
 
 /*\@}*/
 

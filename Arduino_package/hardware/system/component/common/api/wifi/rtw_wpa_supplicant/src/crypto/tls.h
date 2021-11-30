@@ -9,6 +9,8 @@
 #ifndef TLS_H
 #define TLS_H
 
+#include "utils/common.h"
+
 struct tls_connection;
 
 struct tls_random {
@@ -356,6 +358,22 @@ int __must_check  tls_connection_prf(void *tls_ctx,
 				     u8 *out, size_t out_len);
 
 /**
+ * tls_connection_get_eap_fast_key - Derive key material for EAP-FAST
+ * @tls_ctx: TLS context data from tls_init()
+ * @conn: Connection context data from tls_connection_init()
+ * @out: Buffer for output data from TLS-PRF
+ * @out_len: Length of the output buffer
+ * Returns: 0 on success, -1 on failure
+ *
+ * Exports key material after the normal TLS key block for use with
+ * EAP-FAST. Most callers will want tls_connection_export_key(), but EAP-FAST
+ * uses a different legacy mechanism.
+ */
+int __must_check tls_connection_get_eap_fast_key(void *tls_ctx,
+						 struct tls_connection *conn,
+						 u8 *out, size_t out_len);
+
+/**
  * tls_connection_handshake - Process TLS handshake (client side)
  * @tls_ctx: TLS context data from tls_init()
  * @conn: Connection context data from tls_connection_init()
@@ -456,7 +474,9 @@ enum {
 	TLS_CIPHER_RC4_SHA /* 0x0005 */,
 	TLS_CIPHER_AES128_SHA /* 0x002f */,
 	TLS_CIPHER_RSA_DHE_AES128_SHA /* 0x0031 */,
-	TLS_CIPHER_ANON_DH_AES128_SHA /* 0x0034 */
+	TLS_CIPHER_ANON_DH_AES128_SHA /* 0x0034 */,
+	TLS_CIPHER_RSA_DHE_AES256_SHA /* 0x0039 */,
+	TLS_CIPHER_AES256_SHA /* 0x0035 */,
 };
 
 /**

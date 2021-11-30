@@ -867,7 +867,7 @@ SD_RESULT SD_GetEXTCSD(u8 *pbuf)
 		if (ret != HAL_OK)
 			DBG_PRINTF(MODULE_SDIO, LEVEL_ERROR, "Stop transmission error !!\r\n");
 
-		return HAL_ERR_UNKNOWN;
+		return SD_ERROR;
 	}
 
 	DCache_Invalidate((u32)pbuf, SD_BLOCK_SIZE);

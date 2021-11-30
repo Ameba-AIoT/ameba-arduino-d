@@ -77,7 +77,7 @@ int wext_get_ap_info(const char *ifname, rtw_bss_info_t * ap_info, rtw_security_
 int wext_mp_command(const char *ifname, char *cmd, int show_msg);
 int wext_private_command(const char *ifname, char *cmd, int show_msg);
 int wext_private_command_with_retval(const char *ifname, char *cmd, char *ret_buf, int ret_len);
-void wext_wlan_indicate(unsigned int cmd, union iwreq_data *wrqu, char *extra);
+void wext_wlan_indicate(unsigned int cmd, union rtwreq_data *wrqu, char *extra);
 int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u8 length);
 int wext_set_autoreconnect(const char *ifname, __u8 mode, __u8 retry_times, __u16 timeout);
 int wext_get_autoreconnect(const char *ifname, __u8 *mode);
@@ -93,6 +93,10 @@ int wext_deinit_mac_filter(void);
 int wext_add_mac_filter(unsigned char* hwaddr);
 int wext_del_mac_filter(unsigned char* hwaddr);
 void wext_set_indicate_mgnt(int enable);
+int wext_get_bcn_rssi(const char *ifname, int *rssi);
+void wext_set_powersave_mode(__u8 ps_mode);
+int wext_set_ant_div_gpio(__u8 type);
+int wext_set_bw40_enable(__u8 enable);
 #ifdef CONFIG_SW_MAILBOX_EN
 int wext_mailbox_to_wifi(const char *ifname, char *buf, __u16 buf_len);
 #endif

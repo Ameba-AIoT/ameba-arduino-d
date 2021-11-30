@@ -34,6 +34,7 @@ void setup() {
     scandata.addCompleteServices(BLEUUID("180F"));
 
     battChar.setReadProperty(true);
+    battChar.setReadPermissions(GATT_PERM_READ);
     battChar.setReadCallback(readCB);
     battChar.setNotifyProperty(true);
     battChar.setCCCDCallback(notifCB);

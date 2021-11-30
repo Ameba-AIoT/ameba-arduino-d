@@ -37,6 +37,7 @@
 #define F_BT_LE_LOCAL_IRK_SETTING_SUPPORT   (F_BT_LE_SUPPORT && 0)
 
 //BT 4.0
+#define F_BT_LE_4_0_DTM_SUPPORT             (F_BT_LE_SUPPORT && 1)
 #define F_BT_LE_READ_REMOTE_FEATS           (F_BT_LE_SUPPORT && 1)
 #define F_BT_LE_ATT_SIGNED_WRITE_SUPPORT    (F_BT_LE_SUPPORT && 0)
 
