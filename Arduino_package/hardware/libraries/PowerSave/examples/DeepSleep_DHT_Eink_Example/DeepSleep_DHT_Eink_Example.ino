@@ -26,6 +26,14 @@
 #define EPD_SPI_MISO_Pin    10
 #define EPD_SPI_CLK_Pin     11
 
+#elif defined(BOARD_RTL8720DN_BW16)
+#define EPD_BUSY_Pin       PA27
+#define EPD_RES_Pin        PA30
+#define EPD_SPI_CS_Pin     PA15
+#define EPD_SPI_MOSI_Pin   PA12
+#define EPD_SPI_MISO_Pin   PA13
+#define EPD_SPI_CLK_Pin    PA14
+
 #else
 #error check the board supported
 #endif
