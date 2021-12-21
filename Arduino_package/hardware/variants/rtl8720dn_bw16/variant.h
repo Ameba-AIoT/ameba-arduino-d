@@ -36,7 +36,6 @@ extern "C"{
 #define TOTAL_GPIO_PIN_NUM            (13)
 #define TOTAL_PWM_PIN_NUM             (4)
 
-#if 1
 //All gpios. This is actrually necessary.
 #define PA7     0
 #define PA8     1
@@ -61,46 +60,12 @@ extern "C"{
 //#define FEATURE_DAC
 
 /* Analog pin mapping */
-#define A0                            PB1 //    3.3V    CH0
-#define A1                            PB2 //    3.3V    CH1
-#define A2                            PB3 //    3.3V    CH2
+#define A0                            PB1 // 4    PB1 3.3V    CH4
+#define A1                            PB2 // 5    PB2 3.3V    CH5
+#define A2                            PB3 // 6    PB3 3.3V    CH6
 
 /* DAC pin mapping */
 //#define DAC0    AD_3
-
-#else
-
-#define PA7     2
-#define PA8     9
-#define PA27    11
-#define PA30    6
-#define PB1     0
-#define PB2     1
-#define PB3     4
-#define PA25    3
-#define PA26    10
-#define PA15    12
-#define PA14    7
-#define PA13    8
-#define PA12    5
-
-#define LED_G                         PA14 //   PA14    Green
-#define LED_R                         PA12 //   PA12    Red
-#define LED_B                         PA13 //   PA13    Blue
-#define LED_BUILTIN                   LED_G
-
-#define FEATURE_ADC
-//#define FEATURE_DAC
-
-/* Analog pin mapping */
-#define A0                            PB1 //    3.3V    CH0
-#define A1                            PB2 //    3.3V    CH1
-#define A2                            PB3 //    3.3V    CH2
-
-/* DAC pin mapping */
-//#define DAC0    AD_3
-
-#endif
 
 //#define SS                            10
 
@@ -109,8 +74,8 @@ extern "C"{
 #define SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE    1
 #define UART2_TX    PA_7
 #define UART2_RX    PA_8
-#define UART0_TX    PA_21    //PB_19  //Not available
-#define UART0_RX    PA_22    //PB_18  //Not available
+//#define UART0_TX    PA_21    //PB_19  //Not available
+//#define UART0_RX    PA_22    //PB_18  //Not available
 #define UART3_TX    PB_1    //PB_1
 #define UART3_RX    PB_2    //PB_2
 
