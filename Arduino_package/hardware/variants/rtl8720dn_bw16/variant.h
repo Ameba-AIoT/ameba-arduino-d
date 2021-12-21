@@ -60,8 +60,8 @@ extern "C"{
 //#define FEATURE_DAC
 
 /* Analog pin mapping */
-#define A0                            PB1 // 4    PB1 3.3V    CH4
-#define A1                            PB2 // 5    PB2 3.3V    CH5
+//#define A0                            PB1 // 4    PB1 3.3V    CH4  //Not available connect with USB chip
+//#define A1                            PB2 // 5    PB2 3.3V    CH5  //Not available connect with USB chip
 #define A2                            PB3 // 6    PB3 3.3V    CH6
 
 /* DAC pin mapping */
