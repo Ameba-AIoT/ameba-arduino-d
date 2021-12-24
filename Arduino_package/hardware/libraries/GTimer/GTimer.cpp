@@ -25,7 +25,7 @@ void GTimerClass::begin(uint32_t timerid, uint32_t duration_us, void (*handler)(
     uint32_t tid;
     uint32_t backup_ConfigDebugErr;
 
-    if (timerid > GTIMER_MAX) {
+    if (timerid >= GTIMER_MAX) {
         return;
     }
 
@@ -45,7 +45,7 @@ void GTimerClass::begin(uint32_t timerid, uint32_t duration_us, void (*handler)(
 
 void GTimerClass::stop(uint32_t timerid)
 {
-    if (timerid > GTIMER_MAX) {
+    if (timerid >= GTIMER_MAX) {
         return;
     }
 
@@ -54,7 +54,7 @@ void GTimerClass::stop(uint32_t timerid)
 
 void GTimerClass::reload(uint32_t timerid, uint32_t duration_us)
 {
-    if (timerid > GTIMER_MAX) {
+    if (timerid >= GTIMER_MAX) {
         return;
     }
 
@@ -63,7 +63,7 @@ void GTimerClass::reload(uint32_t timerid, uint32_t duration_us)
 
 uint64_t GTimerClass::read_us(uint32_t timerid)
 {
-    if (timerid > GTIMER_MAX) {
+    if (timerid >= GTIMER_MAX) {
         return 0;
     }
 

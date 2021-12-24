@@ -177,9 +177,9 @@ size_t UARTClassTwo::write(const uint8_t uc_data)
 }
 
 #if defined(BOARD_RTL8720DN_BW16)
-UARTClassTwo Serial(&rx_buffer2);
-bool Serial_available() {
-    return Serial.available() > 0;
+UARTClassTwo Serial1(&rx_buffer2);
+bool Serial1_available() {
+    return Serial1.available() > 0;
 }
 #else
 UARTClassTwo Serial2(&rx_buffer2);

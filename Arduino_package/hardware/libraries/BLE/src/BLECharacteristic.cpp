@@ -63,20 +63,24 @@ uint16_t BLECharacteristic::getBufferLen() {
 void BLECharacteristic::setReadProperty(bool value) {
     if (value) {
         setProperties(getProperties() | GATT_CHAR_PROP_READ);
-        _char_attr_permissions = (_char_attr_permissions | GATT_PERM_READ);
     } else {
         setProperties(getProperties() & ~GATT_CHAR_PROP_READ);
-        _char_attr_permissions = (_char_attr_permissions & ~GATT_PERM_READ);
     }
 }
 
 void BLECharacteristic::setWriteProperty(bool value) {
     if (value) {
         setProperties(getProperties() | GATT_CHAR_PROP_WRITE);
-        _char_attr_permissions = (_char_attr_permissions | GATT_PERM_WRITE);
     } else {
         setProperties(getProperties() & ~GATT_CHAR_PROP_WRITE);
-        _char_attr_permissions = (_char_attr_permissions & ~GATT_PERM_WRITE);
+    }
+}
+
+void BLECharacteristic::setWriteNRProperty(bool value) {
+    if (value) {
+        setProperties(getProperties() | GATT_CHAR_PROP_WRITE_NO_RSP);
+    } else {
+        setProperties(getProperties() & ~GATT_CHAR_PROP_WRITE_NO_RSP);
     }
 }
 
@@ -114,6 +118,30 @@ void BLECharacteristic::setProperties(uint8_t value) {
 
 uint8_t BLECharacteristic::getProperties() {
     return _char_properties;
+}
+
+
+void BLECharacteristic::setReadPermissions(uint32_t value) {
+    // Check for valid read permission value
+    uint32_t all_read_perms = (GATT_PERM_READ | GATT_PERM_READ_AUTHEN_REQ | GATT_PERM_READ_AUTHOR_REQ | GATT_PERM_READ_ENCRYPTED_REQ | GATT_PERM_READ_AUTHEN_SC_REQ);
+    _char_attr_read_permissions = value & all_read_perms;
+}
+
+void BLECharacteristic::setWritePermissions(uint32_t value) {
+    // Check for valid read permission value
+    uint32_t all_write_perms = (GATT_PERM_WRITE | GATT_PERM_WRITE_AUTHEN_REQ | GATT_PERM_WRITE_AUTHOR_REQ | GATT_PERM_WRITE_ENCRYPTED_REQ | GATT_PERM_WRITE_AUTHEN_SC_REQ);
+    _char_attr_write_permissions = value & all_write_perms;
+}
+
+void BLECharacteristic::setPermissions(uint32_t value) {
+    uint32_t all_read_perms = (GATT_PERM_READ | GATT_PERM_READ_AUTHEN_REQ | GATT_PERM_READ_AUTHOR_REQ | GATT_PERM_READ_ENCRYPTED_REQ | GATT_PERM_READ_AUTHEN_SC_REQ);
+    uint32_t all_write_perms = (GATT_PERM_WRITE | GATT_PERM_WRITE_AUTHEN_REQ | GATT_PERM_WRITE_AUTHOR_REQ | GATT_PERM_WRITE_ENCRYPTED_REQ | GATT_PERM_WRITE_AUTHEN_SC_REQ);
+    _char_attr_read_permissions = value & all_read_perms;
+    _char_attr_write_permissions = value & all_write_perms;
+}
+
+uint32_t BLECharacteristic::getPermissions() {
+    return (_char_attr_read_permissions & _char_attr_write_permissions);
 }
 
 //--------- Read Char Value --------//
@@ -233,6 +261,20 @@ void BLECharacteristic::setFormatDescriptor(uint8_t format, uint8_t exponent, ui
     _fDescDesc = description;
 }
 
+void BLECharacteristic::setReportRefDescriptor(uint8_t id, uint8_t type) {
+    _includeReportRefDescriptor = 1;
+    _reportDescID = id;
+    _reportDescType = type;
+}
+
+uint8_t BLECharacteristic::getReportRefID() {
+    return _reportDescID;
+}
+
+uint8_t BLECharacteristic::getReportRefType() {
+    return _reportDescType;
+}
+
 //------------- Callbacks -------------//
 
 void BLECharacteristic::setReadCallback(void (*fCallback) (BLECharacteristic* chr, uint8_t conn_id)) {
@@ -261,6 +303,7 @@ uint8_t BLECharacteristic::getAttrCount() {
     if (_includeCCCDescriptor) _char_attr_count += 1;
     if (_includeUserDescriptor) _char_attr_count += 1;
     if (_includeFormatDescriptor) _char_attr_count += 1;
+    if (_includeReportRefDescriptor) _char_attr_count += 1;
     return _char_attr_count;
 }
 
@@ -293,7 +336,12 @@ uint8_t BLECharacteristic::generateAttrCharacteristicDeclaration(T_ATTRIB_APPL* 
     }
     attr_tbl[index+1].value_len = 0;
     attr_tbl[index+1].p_value_context = NULL;
-    attr_tbl[index+1].permissions = _char_attr_permissions;
+    if ((_char_properties & GATT_CHAR_PROP_READ) != 0) {
+        attr_tbl[index+1].permissions |= _char_attr_read_permissions;
+    }
+    if ((_char_properties & (GATT_CHAR_PROP_WRITE | GATT_CHAR_PROP_WRITE_NO_RSP | GATT_CHAR_PROP_WRITE_AUTHEN_SIGNED)) != 0) {
+        attr_tbl[index+1].permissions |= _char_attr_write_permissions;
+    }
 
     // Return number of attributes added
     return 2;
@@ -302,6 +350,31 @@ uint8_t BLECharacteristic::generateAttrCharacteristicDeclaration(T_ATTRIB_APPL* 
 // Generate required characteristic descriptor attributes
 uint8_t BLECharacteristic::generateAttrDescriptorDeclaration(T_ATTRIB_APPL* attr_tbl, uint8_t index) {
     uint8_t _desc_attr_count = 0;
+
+    // Descriptor attribute permissions should follow characteristic attribute permissions
+    uint32_t _desc_read_permissions = GATT_PERM_NONE;
+    uint32_t _desc_write_permissions = GATT_PERM_NONE;
+    if (GATT_PERM_READ_AUTHOR_GET(_char_attr_read_permissions) || GATT_PERM_WRITE_AUTHOR_GET(_char_attr_write_permissions)) {
+        _desc_read_permissions |= GATT_PERM_READ_AUTHOR_REQ;
+        _desc_write_permissions |= GATT_PERM_WRITE_AUTHOR_REQ;
+    }
+    if (GATT_PERM_READ_AUTHEN_SC_GET(_char_attr_read_permissions) || GATT_PERM_WRITE_AUTHEN_SC_GET(_char_attr_write_permissions)) {
+        _desc_read_permissions |= GATT_PERM_READ_AUTHEN_SC_REQ;
+        _desc_write_permissions |= GATT_PERM_WRITE_AUTHEN_SC_REQ;
+    }
+    if (GATT_PERM_READ_AUTHEN_GET(_char_attr_read_permissions) || GATT_PERM_WRITE_AUTHEN_GET(_char_attr_write_permissions)) {
+        _desc_read_permissions |= GATT_PERM_READ_AUTHEN_REQ;
+        _desc_write_permissions |= GATT_PERM_WRITE_AUTHEN_REQ;
+    }
+    if (GATT_PERM_READ_ENCRYPT_GET(_char_attr_read_permissions) || GATT_PERM_WRITE_ENCRYPT_GET(_char_attr_write_permissions)) {
+        _desc_read_permissions |= GATT_PERM_READ_ENCRYPTED_REQ;
+        _desc_write_permissions |= GATT_PERM_WRITE_ENCRYPTED_REQ;
+    }
+    // Apply open permissions if no stricter permissions are found
+    if ((_desc_read_permissions == GATT_PERM_NONE) && (_desc_write_permissions == GATT_PERM_NONE)) {
+        _desc_read_permissions |= GATT_PERM_READ;
+        _desc_write_permissions |= GATT_PERM_WRITE;
+    }
 
     if (_includeCCCDescriptor) {
         _desc_attr_count += 1;
@@ -322,7 +395,7 @@ uint8_t BLECharacteristic::generateAttrDescriptorDeclaration(T_ATTRIB_APPL* attr
         attr_tbl[index].type_value[1] = HI_WORD(GATT_UUID_CHAR_USER_DESCR);
         attr_tbl[index].value_len = (_userDescSize);
         attr_tbl[index].p_value_context = ((void *)_userDesc);
-        attr_tbl[index].permissions = GATT_PERM_READ;
+        attr_tbl[index].permissions = _desc_read_permissions;
         index += 1;
     }
     if (_includeFormatDescriptor) {
@@ -339,7 +412,19 @@ uint8_t BLECharacteristic::generateAttrDescriptorDeclaration(T_ATTRIB_APPL* attr
         attr_tbl[index].type_value[8] = HI_WORD(_fDescDesc);
         attr_tbl[index].value_len = 7;
         attr_tbl[index].p_value_context = NULL;
-        attr_tbl[index].permissions = GATT_PERM_READ;
+        attr_tbl[index].permissions = _desc_read_permissions;
+        index += 1;
+    }
+    if (_includeReportRefDescriptor) {
+        _desc_attr_count += 1;
+        attr_tbl[index].flags = (ATTRIB_FLAG_VALUE_INCL);
+        attr_tbl[index].type_value[0] = LO_WORD(GATT_UUID_CHAR_REPORT_REFERENCE);
+        attr_tbl[index].type_value[1] = HI_WORD(GATT_UUID_CHAR_REPORT_REFERENCE);
+        attr_tbl[index].type_value[2] = _reportDescID;
+        attr_tbl[index].type_value[3] = _reportDescType;
+        attr_tbl[index].value_len = 2;
+        attr_tbl[index].p_value_context = NULL;
+        attr_tbl[index].permissions = _desc_read_permissions;
         index += 1;
     }
     return _desc_attr_count;

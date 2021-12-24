@@ -30,6 +30,7 @@ extern "C" {
 #include "rtk_coex.h"
 #include "profile_server.h"
 #include "profile_client.h"
+#include "ftl_int.h"
 
 void wifi_btcoex_set_bt_on(void);
 void wifi_btcoex_set_bt_off(void);
@@ -45,6 +46,7 @@ BLEAdvert* BLEDevice::_pBLEAdvert = nullptr;
 BLEScan* BLEDevice::_pBLEScan = nullptr;
 void (*BLEDevice::_pScanCB)(T_LE_CB_DATA*) = nullptr;
 BLEConnect* BLEDevice::_pBLEConn = nullptr;
+BLESecurity* BLEDevice::_pBLESecurity = nullptr;
 BLEService* BLEDevice::_servicePtrList[BLE_MAX_SERVICE_COUNT] = {};
 uint8_t BLEDevice::_serviceCount = 0;
 BLEClient* BLEDevice::_clientPtrList[BLE_CENTRAL_APP_MAX_LINKS] = {};
@@ -59,12 +61,16 @@ uint8_t BLEDevice::tx_phys = GAP_PHYS_PREFER_2M_BIT;
 uint8_t BLEDevice::rx_phys = GAP_PHYS_PREFER_2M_BIT;
 T_GAP_PHYS_OPTIONS BLEDevice::phy_options = GAP_PHYS_OPTIONS_CODED_PREFER_NO;
 
+extern const u8 ftl_phy_page_num;
+extern const u32 ftl_phy_page_start_addr;
+
 BLEDevice::BLEDevice() {
 }
 
 // allocate memory and low level resources for BT
 // call this method before doing anything BT related
 void BLEDevice::init() {
+
     T_GAP_DEV_STATE new_state;
     if (!(wifi_is_up(RTW_STA_INTERFACE) || wifi_is_up(RTW_AP_INTERFACE))) {
         wiFiDrv.wifiDriverInit();
@@ -78,7 +84,8 @@ void BLEDevice::init() {
     if (new_state.gap_init_state == GAP_INIT_STATE_STACK_READY) {
         printf("BT Stack already on\r\n");
     } else {
-        //bt_trace_init();
+        bt_trace_init();
+        ftl_init(ftl_phy_page_start_addr, ftl_phy_page_num);
         bte_init();
     }
 }
@@ -92,7 +99,7 @@ void BLEDevice::deinit() {
     } else {
         BLEDevice::end();
         bte_deinit();
-        //bt_trace_uninit();
+        bt_trace_uninit();
         memset(&_gapDevState, 0, sizeof(T_GAP_DEV_STATE));
         printf("BT Stack deinitalized\r\n");
     }
@@ -151,6 +158,13 @@ BLEConnect* BLEDevice::configConnection() {
     return (_pBLEConn);
 }
 
+BLESecurity* BLEDevice::configSecurity() {
+    if(_pBLESecurity == nullptr) {
+        _pBLESecurity = new BLESecurity();
+    }
+    return (_pBLESecurity);
+}
+
 void BLEDevice::setScanCallback(void (*scanCB)(T_LE_CB_DATA*)) {
     _pScanCB = scanCB;
 }
@@ -187,7 +201,8 @@ void BLEDevice::beginCentral(uint8_t connCount) {
     configScan()->updateScanParams();
     if (BTDEBUG) printf("Scan update\r\n");
 
-    setupGAPBondManager();
+    // configure pairing and bonding parameters
+    configSecurity()->setupGAPBondManager();
 
     // register callback to handle app GAP message
     le_register_app_cb(gapCallbackDefault);
@@ -222,10 +237,10 @@ void BLEDevice::beginPeripheral() {
     } else {
         _bleState = 1;
     }
-    uint8_t  slave_init_mtu_req = true;//false;
+    uint8_t  slave_init_mtu_req = true;
 
     gap_config_max_le_link_num(1);
-    //gap_config_max_le_paired_device(BLE_CENTRAL_APP_MAX_LINKS);
+    gap_config_max_le_paired_device(3);
     le_gap_init(1);
 
     // Update GAP PHY preferences
@@ -242,7 +257,8 @@ void BLEDevice::beginPeripheral() {
     configAdvert()->updateAdvertParams();
     if (BTDEBUG) printf("Adv update\r\n");
 
-    setupGAPBondManager();
+    // configure pairing and bonding parameters
+    configSecurity()->setupGAPBondManager();
 
     // register callback to handle app GAP message
     le_register_app_cb(gapCallbackDefault);
@@ -335,6 +351,10 @@ void BLEDevice::end() {
         delete _pBLEConn;
         _pBLEConn = nullptr;
     }
+    if (_pBLESecurity != nullptr) {
+        delete _pBLESecurity;
+        _pBLESecurity = nullptr;
+    }
 }
 
 void BLEDevice::configServer(uint8_t maxServiceCount) {
@@ -404,23 +424,6 @@ void BLEDevice::getLocalAddr(uint8_t (&addr)[GAP_BD_ADDR_LEN]) {
     uint8_t  btaddr[GAP_BD_ADDR_LEN] = {0};
     gap_get_param(GAP_PARAM_BD_ADDR, btaddr);
     memcpy(addr, btaddr, sizeof(btaddr));
-}
-
-void BLEDevice::setupGAPBondManager() {
-    // Setup the GAP Bond Manager
-    gap_set_param(GAP_PARAM_BOND_PAIRING_MODE, sizeof(_authPairMode), &_authPairMode);
-    gap_set_param(GAP_PARAM_BOND_AUTHEN_REQUIREMENTS_FLAGS, sizeof(_authFlags), &_authFlags);
-    gap_set_param(GAP_PARAM_BOND_IO_CAPABILITIES, sizeof(_authIoCap), &_authIoCap);
-    gap_set_param(GAP_PARAM_BOND_OOB_ENABLED, sizeof(_authOob), &_authOob);
-    le_bond_set_param(GAP_PARAM_BOND_FIXED_PASSKEY, sizeof(_authFixPasskey), &_authFixPasskey);
-    le_bond_set_param(GAP_PARAM_BOND_FIXED_PASSKEY_ENABLE, sizeof(_authUseFixPasskey), &_authUseFixPasskey);
-    le_bond_set_param(GAP_PARAM_BOND_SEC_REQ_ENABLE, sizeof(_authSecReqEnable), &_authSecReqEnable);
-    le_bond_set_param(GAP_PARAM_BOND_SEC_REQ_REQUIREMENT, sizeof(_authSecReqFlags), &_authSecReqFlags);
-    //int ret = gap_set_pairable_mode();
-    //if(ret == GAP_CAUSE_SUCCESS)
-        //printf("\n\rSet pairable mode success!\r\n");
-    //else
-        //printf("\n\rSet pairable mode fail!\r\n");
 }
 
 void BLEDevice::BLEMainTask(void *p_param) {

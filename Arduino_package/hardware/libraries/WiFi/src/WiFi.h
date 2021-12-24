@@ -262,6 +262,10 @@ class WiFiClass
 
         int disablePowerSave();
 
+        void setHostname(const char* hostname);
+
+        const char* getHostname();
+
         friend class WiFiClient;
         friend class WiFiServer;
         friend class WiFiSSLClient;

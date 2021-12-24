@@ -3,27 +3,26 @@
 
 #include <inttypes.h>
 
-#if defined(BOARD_RTL8720DN_BW16)
-#error TBD for RTL8720DN/BW16
-#elif defined(BOARD_RTL8722DM_MINI)
-#error TBD for RTL8722DM_MINI
-#endif
+#define SET_AON_GPIO_WAKEUP_GPIOA12      12
+#define SET_AON_GPIO_WAKEUP_GPIOA13      13
+#define SET_AON_GPIO_WAKEUP_GPIOA14      14
+#define SET_AON_GPIO_WAKEUP_GPIOA15      15
+#define SET_AON_GPIO_WAKEUP_GPIOA16      16
+#define SET_AON_GPIO_WAKEUP_GPIOA17      17
+#define SET_AON_GPIO_WAKEUP_GPIOA18      18
+#define SET_AON_GPIO_WAKEUP_GPIOA19      19
+#define SET_AON_GPIO_WAKEUP_GPIOA20      20
+#define SET_AON_GPIO_WAKEUP_GPIOA21      21
+#define SET_AON_GPIO_WAKEUP_GPIOA25      25
+#define SET_AON_GPIO_WAKEUP_GPIOA26      26
 
 #define DEEPSLEEP_MODE                  11
 #define SET_DS_AON_TIMER_WAKEUP         0
-#define SET_DS_RTC_WAKEUP               2
-#define SET_DS_AON_GPIO_WAKEUP_D16      16
-#define SET_DS_AON_GPIO_WAKEUP_D17      17
-#define SET_DS_AON_GPIO_WAKEUP_D26      26
-#define SET_DS_AON_GPIO_WAKEUP_D27      27
+#define SET_DS_RTC_WAKEUP               1
 
 #define TICKLESS_MODE                   22
 #define SET_TL_UART_WAKEUP              0
 #define SET_TL_RTC_WAKEUP               1
-#define SET_TL_AON_GPIO_WAKEUP_D16      16
-#define SET_TL_AON_GPIO_WAKEUP_D17      17
-#define SET_TL_AON_GPIO_WAKEUP_D26      26
-#define SET_TL_AON_GPIO_WAKEUP_D27      27
 
 #define AONWakeReason_AON_TIMER         1111
 #define AONWakeReason_RTC               2222
@@ -70,17 +69,22 @@ public:
 
     void DS_AON_TIMER_WAKEUP(void);
     void DS_RTC_WAKEUP(void);
-    void DS_AON_WAKEPIN_WAKEUP_D16(void);
-    void DS_AON_WAKEPIN_WAKEUP_D17(void);
-    void DS_AON_WAKEPIN_WAKEUP_D26(void);
-    void DS_AON_WAKEPIN_WAKEUP_D27(void);
 
     void TL_UART_WAKEUP(void);
     void TL_RTC_WAKEUP(void);
-    void TL_AON_WAKEPIN_WAKEUP_D16(void);
-    void TL_AON_WAKEPIN_WAKEUP_D17(void);
-    void TL_AON_WAKEPIN_WAKEUP_D26(void);
-    void TL_AON_WAKEPIN_WAKEUP_D27(void);
+
+    void AON_WAKEPIN_WAKEUP_GPIOA12(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA13(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA14(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA15(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA16(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA17(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA18(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA19(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA20(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA21(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA25(void);
+    void AON_WAKEPIN_WAKEUP_GPIOA26(void);
 };
 
 extern PMUClass PowerSave;

@@ -16,16 +16,44 @@ extern int max_buf_bio_size;
 
 int ErrorCnt = 0;
 
+#define EAP_MBEDTLS_KEY_BLOCK_SIZE 256
+#define EAP_MBEDTLS_MASTER_SECRET_SIZE 48
+#define EAP_MBEDTLS_RANDOM_SIZE 32
+
 struct tls_connection {
 	// buffer BIO info (ptr, offset, len)
 	struct buf_BIO *buf_in;
 	struct buf_BIO *buf_out;
 
-	u8 client_random[32];
-	u8 server_random[32];
+	/*
+	key_block =
+		client_write_MAC_secret[hash_size]
+		server_write_MAC_secret[hash_size]
+		client_write_key[Key_material_length]
+		server_write_key[key_material_length]
+		client_write_IV[IV_size]
+		server_write_IV[IV_size]
+		session_key_seed[40]
+		ServerChallenge[16]
+		ClientChallenge[16]
+	*/
+	unsigned char keyblk[EAP_MBEDTLS_KEY_BLOCK_SIZE];
+	unsigned int keylen;
+	size_t maclen;
+	size_t ivlen;
+
+	u8 master_secret[EAP_MBEDTLS_MASTER_SECRET_SIZE];
+	u8 client_random[EAP_MBEDTLS_RANDOM_SIZE];
+	u8 server_random[EAP_MBEDTLS_RANDOM_SIZE];
+
 	int  (*tls_prf)(const unsigned char *, size_t, const char *,
                     const unsigned char *, size_t,
                     unsigned char *, size_t);
+
+	//EAP-FAST
+	tls_session_ticket_cb session_ticket_cb;
+	void *session_ticket_cb_ctx;
+
 };
 // buffer BIO info (ptr, len, len left), might improve the performance if using circular buffer
 struct buf_BIO{
@@ -548,6 +576,61 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 	return out_data;
 }
 
+
+int tls_connection_client_hello_ext(void *tls_ctx, struct tls_connection *conn,
+				    int ext_type, const u8 *data,
+				    size_t data_len)
+{
+	/* To avoid gcc warnings */
+	( void ) conn;
+	( void ) tls_ctx;
+	( void ) ext_type;
+	( void ) data;
+	( void ) data_len;
+
+	wpa_printf(MSG_DEBUG, "TLS: tls_connection_client_hello_ext");
+	return -1;
+}
+
+int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
+				   u8 *ciphers)
+{
+	/* To avoid gcc warnings */
+	( void ) conn;
+	( void ) tls_ctx;
+	( void ) ciphers;
+
+	wpa_printf(MSG_DEBUG, "TLS: tls_connection_set_cipher_list");
+	return -1;
+}
+
+
+int tls_get_version(void *ssl_ctx, struct tls_connection *conn,
+		    char *buf, size_t buflen)
+{
+	/* To avoid gcc warnings */
+	( void ) conn;
+	( void ) ssl_ctx;
+	( void ) buf;
+	( void ) buflen;
+
+	wpa_printf(MSG_DEBUG, "TLS: tls_get_version");
+	return -1;
+}
+
+
+int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
+		   char *buf, size_t buflen)
+{
+	/* To avoid gcc warnings */
+	( void ) conn;
+	( void ) tls_ctx;
+	( void ) buf;
+	( void ) buflen;
+
+	wpa_printf(MSG_DEBUG, "TLS: tls_get_cipher");
+	return -1;
+}
 #elif CONFIG_USE_MBEDTLS /* CONFIG_USE_POLARSSL */
 
 #include <mbedtls/ssl.h>
@@ -557,6 +640,26 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 
 struct buf_BIO *conn_buf_out, *conn_buf_in;
 
+static void mbedtls_debug(void *ctx, int level, const char *file, int line, const char *str)
+{
+	/* To avoid gcc warnings */
+	( void ) ctx;
+
+	int filename_idx = 0;
+	int cnt = 0;
+	
+	//get filename only
+	while(*(file+cnt) != '\0'){
+		if(*(file+cnt) == '/'){
+			filename_idx = cnt+1;
+		}
+		cnt++;
+	}
+
+	if(level <= DEBUG_LEVEL) {
+		printf("\n\r%s:%d: %s\n\r", file+filename_idx, line, str);
+	}
+}
 int buf_init(struct tls_connection * conn){
 	conn->buf_in = (struct buf_BIO *)os_zalloc(sizeof(struct buf_BIO));
 	if(conn->buf_in == NULL){
@@ -737,10 +840,56 @@ int tls_get_errors(void *tls_ctx)
 {
 	/* To avoid gcc warnings */
 	( void ) tls_ctx;
-	
+
 	wpa_printf(MSG_DEBUG, "TLS: tls_get_errors");
 	return ErrorCnt;
 }
+
+#if defined(MBEDTLS_SSL_EXPORT_KEYS)
+static int tls_connection_key_derivation( void *p_expkey,
+                                const unsigned char *ms,
+                                const unsigned char *kb,
+                                size_t maclen,
+                                size_t keylen,
+                                size_t ivlen ){
+
+	struct tls_connection *conn = (struct tls_connection *)p_expkey;
+
+	int i;
+
+	conn->keylen = keylen;
+	conn->ivlen = ivlen;
+	conn->maclen= maclen;
+
+	memcpy( conn->keyblk, kb, sizeof( conn->keyblk ) );
+	memcpy( conn->master_secret, ms, sizeof( conn->master_secret ) );
+
+	/*
+	if(ms){
+		printf("ms: ");
+		for(i=0; i<sizeof( conn->master_secret ); i++){
+			 printf("%02x ", conn->master_secret[i]);
+		}
+		printf("\r\n");
+	}
+
+	if(kb){
+		printf("kb: ");
+		for(i=0; i<sizeof( conn->keyblk ); i++){
+	    	 printf("%02x ", conn->keyblk[i]);
+		}
+		printf("\r\n");
+	}
+
+	if(maclen) printf("maclen: %d\r\n", conn->maclen);
+	if(ivlen) printf("ivlen: %d\r\n", conn->ivlen);
+	if(keylen) printf("keylen: %d\r\n", conn->keylen);
+	*/
+
+	return( 0 );
+
+}
+#endif
 
 struct tls_connection * tls_connection_init(void *tls_ctx)
 {
@@ -775,6 +924,8 @@ struct tls_connection * tls_connection_init(void *tls_ctx)
 
 	mbedtls_ssl_conf_authmode(tls_context->conf, MBEDTLS_SSL_VERIFY_NONE);
 	mbedtls_ssl_conf_rng(tls_context->conf, my_random, NULL);
+	//mbedtls_ssl_conf_dbg(tls_context->conf, mbedtls_debug, NULL);
+	//mbedtls_ssl_conf_min_version(tls_context->conf, MBEDTLS_SSL_MINOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_3);
 
 	if((ret = mbedtls_ssl_setup(tls_context->ssl, tls_context->conf)) != 0) {
 		wpa_printf(MSG_INFO, "TLS: mbedtls_ssl_setup() failed");
@@ -783,6 +934,13 @@ struct tls_connection * tls_connection_init(void *tls_ctx)
 
 #if defined(MBEDTLS_DEBUG_C)
 	mbedtls_debug_set_threshold(DEBUG_LEVEL);
+#endif
+
+#if defined(MBEDTLS_SSL_EXPORT_KEYS)
+	mbedtls_ssl_conf_export_keys_cb((mbedtls_ssl_config *)tls_context->conf, tls_connection_key_derivation, (void *)conn);
+#elif
+	wpa_printf(MSG_ERROR, "TLS: MBEDTLS_SSL_EXPORT_KEYS should be defined");
+	return NULL;
 #endif
 
 	ErrorCnt = 0;
@@ -943,6 +1101,90 @@ int tls_connection_prf(void *tls_ctx, struct tls_connection *conn,
 	return ret;
 }
 
+int tls_connection_get_eap_fast_key(void *tls_ctx, struct tls_connection *conn,
+				    u8 *out, size_t out_len)
+{
+
+
+	mbedtls_ssl_context *ssl = ((struct eap_tls *)tls_ctx)->ssl;
+	u8 *rnd;
+	int sks_offset = 0;
+	u8 *tmp_out = NULL;
+	u8 *_out = out;
+	u8 client_random[EAP_MBEDTLS_RANDOM_SIZE];
+	u8 server_random[EAP_MBEDTLS_RANDOM_SIZE];
+	unsigned char master_key[64];
+	size_t master_key_len;
+	int ret;
+
+	/*
+	 * TLS library did not support EAP-FAST key generation, so get the
+	 * needed TLS session parameters and use an internal implementation of
+	 * TLS PRF to derive the key.
+	 */
+
+	if (conn == NULL || ssl == NULL)
+		return -1;
+
+	// session_key_seed offset of key_blk
+	sks_offset = 2 * (conn->keylen + conn->maclen + conn->ivlen);
+	if (sks_offset < 0)
+		return -1;
+	tmp_out = os_malloc(sks_offset + out_len);
+	if (!tmp_out)
+		return -1;
+	_out = tmp_out;
+
+	rnd = os_malloc(2 * EAP_MBEDTLS_RANDOM_SIZE);
+	if (!rnd) {
+		os_free(tmp_out, 0);
+		return -1;
+	}
+
+	memcpy(client_random, conn->client_random, EAP_MBEDTLS_RANDOM_SIZE);
+	memcpy(server_random, conn->server_random, EAP_MBEDTLS_RANDOM_SIZE);
+	memcpy(master_key, conn->master_secret, EAP_MBEDTLS_MASTER_SECRET_SIZE);
+	master_key_len = EAP_MBEDTLS_MASTER_SECRET_SIZE;
+
+	os_memcpy(rnd, server_random, 32);
+	os_memcpy(rnd + 32, client_random, 32);
+
+	if(conn->tls_prf(master_key, master_key_len, "key expansion", rnd, 2 * 32,
+				    _out, sks_offset + out_len) == 0){
+		ret = 0;
+	}
+
+	os_free(rnd, 0);
+	if (ret == 0)
+		os_memcpy(out, _out + sks_offset, out_len);
+	bin_clear_free(tmp_out, sks_offset);
+
+	return 0;
+}
+
+static struct wpabuf * tls_get_appl_data(mbedtls_ssl_context *ssl, struct tls_connection *conn, size_t max_len)
+{
+	struct wpabuf *appl_data;
+	int res;
+
+	appl_data = wpabuf_alloc(max_len + 100);
+	if (appl_data == NULL)
+		return NULL;
+
+	res = mbedtls_ssl_read(ssl, wpabuf_mhead(appl_data), wpabuf_size(appl_data));
+	if(res < 0){
+		wpa_printf(MSG_INFO, "TLS: tls_connection_decrypt failed - ssl_read");
+		wpabuf_free(appl_data);
+		return NULL;
+	}
+	wpabuf_put(appl_data, res);
+	wpa_hexdump_buf_key(MSG_MSGDUMP, "SSL: Application Data in Finished "
+			    "message", appl_data);
+
+	return appl_data;
+}
+
+
 extern void eap_server_cert_free(void);
 extern void eap_client_cert_free(void);
 struct wpabuf * tls_connection_handshake(void *tls_ctx,
@@ -950,9 +1192,9 @@ struct wpabuf * tls_connection_handshake(void *tls_ctx,
 					 const struct wpabuf *in_data,
 					 struct wpabuf **appl_data)
 {
-	/* To avoid gcc warnings */
-	( void ) appl_data;
-	
+	if (appl_data)
+		*appl_data = NULL;
+
 	mbedtls_ssl_context *ssl = ((struct eap_tls*)tls_ctx)->ssl;
 
 	struct wpabuf * out_data;
@@ -990,8 +1232,13 @@ struct wpabuf * tls_connection_handshake(void *tls_ctx,
 			eap_client_cert_free();
 		}
 		// keep the tls_prf function pointer
-		else if(ssl->state == MBEDTLS_SSL_SERVER_CHANGE_CIPHER_SPEC)
+		else if(ssl->state == MBEDTLS_SSL_SERVER_CHANGE_CIPHER_SPEC){
 			conn->tls_prf = ssl->handshake->tls_prf;
+		}
+		//handle piggyback phase2 data
+		else if (ssl->state == MBEDTLS_SSL_HANDSHAKE_OVER && appl_data && conn->buf_in->len > 0){
+			*appl_data = tls_get_appl_data(ssl, conn, wpabuf_len(in_data));
+		}
 
 		// time to send data out or read data in
 		if(ret != 0){
@@ -1126,7 +1373,7 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 			   "decrypted output (%d bytes)", size);
 		return NULL;
 	}
-	
+
 	res = mbedtls_ssl_read(ssl, out_data->buf, size);
 	if(res < 0){
 		wpa_printf(MSG_INFO, "TLS: tls_connection_decrypt failed - ssl_read");
@@ -1140,8 +1387,171 @@ struct wpabuf * tls_connection_decrypt(void *tls_ctx,
 	// clear input and output buffer
 	buf_clear(conn->buf_out, 0);
 	buf_clear(conn->buf_in, 1);
-	
+
 	return out_data;
+}
+
+int tls_connection_set_session_ticket_cb(void *tls_ctx,
+					 struct tls_connection *conn,
+					 tls_session_ticket_cb cb,
+					 void *ctx)
+{
+	conn->session_ticket_cb = cb;
+	conn->session_ticket_cb_ctx = ctx;
+
+	//TODO to enable pac session resume, we need to add a callback function in parse hello to derive master
+	//key with PAC key rfc4851#section-5.1
+
+	return 0;
+}
+
+
+static int tls_set_session_ticket_ext(mbedtls_ssl_context *ssl, void *ext_data, int ext_len)
+{
+	wpa_printf(MSG_DEBUG, "TLS: tls_set_session_ticket_ext");
+
+	int ret;
+	if (ssl->conf->min_minor_ver >= MBEDTLS_SSL_MINOR_VERSION_1) {
+
+		mbedtls_ssl_session session;
+		mbedtls_ssl_session_init( &session );
+
+		if (ext_data) {
+			session.ticket_len = ext_len;
+			session.ticket = mbedtls_calloc( 1, ext_len );
+			if (!session.ticket) {
+				wpa_printf(MSG_ERROR, "TLS: ticket malloc error");
+				return 0;
+			}
+			memcpy(session.ticket, ext_data, ext_len);
+		} else {
+			session.ticket_len = 0;
+			session.ticket = NULL;
+		}
+
+		mbedtls_ssl_set_session(ssl, (const mbedtls_ssl_session *)&session );
+
+		mbedtls_ssl_session_free(&session);
+
+		return 1;
+	}
+
+	return 0;
+}
+
+
+int tls_connection_client_hello_ext(void *tls_ctx, struct tls_connection *conn,
+					int ext_type, const u8 *data,
+					size_t data_len)
+{
+	wpa_printf(MSG_DEBUG, "TLS: tls_connection_client_hello_ext");
+
+	mbedtls_ssl_context *ssl = ((struct eap_tls *)tls_ctx)->ssl;
+
+	if (conn == NULL || ssl == NULL || ext_type != 35)
+			return -1;
+
+	if (tls_set_session_ticket_ext(ssl, (void *) data,
+						data_len) != 1)
+		return -1;
+
+	return 0;
+}
+
+int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
+				   u8 *ciphers)
+{
+
+	wpa_printf(MSG_DEBUG, "TLS: tls_connection_set_cipher_list");
+
+	static int ciphersuites[10];
+	u8 *c;
+	int i, count;
+	mbedtls_ssl_context *ssl = ((struct eap_tls *)tls_ctx)->ssl;
+
+	if (conn == NULL || ssl == NULL || ciphers == NULL)
+		return -1;
+
+	c = ciphers;
+	count = 0;
+	while(*c != TLS_CIPHER_NONE){
+		switch(*c){
+			case TLS_CIPHER_RC4_SHA:
+				ciphersuites[count++] = MBEDTLS_TLS_RSA_WITH_RC4_128_SHA;
+				break;
+			case TLS_CIPHER_AES128_SHA:
+				ciphersuites[count++] = MBEDTLS_TLS_RSA_WITH_AES_128_CBC_SHA;
+				break;
+			case TLS_CIPHER_RSA_DHE_AES128_SHA:
+				ciphersuites[count++] = MBEDTLS_TLS_DHE_RSA_WITH_AES_128_CBC_SHA;
+				break;
+			case TLS_CIPHER_ANON_DH_AES128_SHA:
+				//Cipher not support in MbedTLS;
+				break;
+			case TLS_CIPHER_RSA_DHE_AES256_SHA:
+				ciphersuites[count++] = MBEDTLS_TLS_DHE_RSA_WITH_AES_256_CBC_SHA;
+				break;
+			case TLS_CIPHER_AES256_SHA:
+				ciphersuites[count++] = MBEDTLS_TLS_RSA_WITH_AES_256_CBC_SHA;
+				break;
+		}
+		c++;
+	}
+	ciphersuites[count] = 0;
+
+	if (!count) {
+		wpa_printf(MSG_DEBUG, "TLS: No ciphers listed");
+		return -1;
+	}
+
+	wpa_printf(MSG_DEBUG, "TLS: set %d cipher suites", count);
+
+	mbedtls_ssl_conf_ciphersuites((mbedtls_ssl_config *) ssl->conf, (const int *)ciphersuites );
+
+	return 0;
+}
+
+
+int tls_get_version(void *ssl_ctx, struct tls_connection *conn,
+		    char *buf, size_t buflen)
+{
+	wpa_printf(MSG_DEBUG, "TLS: tls_get_version");
+
+	const char *name;
+	mbedtls_ssl_context *ssl = ((struct eap_tls *)ssl_ctx)->ssl;
+
+	if (conn == NULL) {
+		return -1;
+	}
+
+	name = mbedtls_ssl_get_version(ssl);
+	if (name == NULL) {
+		return -1;
+	}
+
+	os_strlcpy(buf, name, buflen);
+
+	return 0;
+}
+
+
+int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
+		   char *buf, size_t buflen)
+{
+
+	wpa_printf(MSG_DEBUG, "TLS: tls_get_cipher");
+	const char *name;
+	mbedtls_ssl_context *ssl = ((struct eap_tls *)tls_ctx)->ssl;
+
+	if (conn == NULL || ssl == NULL)
+		return -1;
+
+	name = mbedtls_ssl_get_ciphersuite(ssl);
+	if (name == NULL)
+		return -1;
+
+	os_strlcpy(buf, name, buflen);
+	return 0;
 }
 #endif /*CONFIG_USE_POLARSSL*/
 
@@ -1150,52 +1560,10 @@ int tls_connection_resumed(void *tls_ctx, struct tls_connection *conn)
 	/* To avoid gcc warnings */
 	( void ) conn;
 	( void ) tls_ctx;
-	
+
 	wpa_printf(MSG_DEBUG, "TLS: tls_connection_resumed");
 	return 0;
 }
-
-
-int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
-				   u8 *ciphers)
-{
-	/* To avoid gcc warnings */
-	( void ) conn;
-	( void ) tls_ctx;
-	( void ) ciphers;
-
-	wpa_printf(MSG_DEBUG, "TLS: tls_connection_set_cipher_list");
-	return -1;
-}
-
-
-int tls_get_version(void *ssl_ctx, struct tls_connection *conn,
-		    char *buf, size_t buflen)
-{
-	/* To avoid gcc warnings */
-	( void ) conn;
-	( void ) ssl_ctx;
-	( void ) buf;
-	( void ) buflen;
-
-	wpa_printf(MSG_DEBUG, "TLS: tls_get_version");
-	return -1;
-}
-
-
-int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
-		   char *buf, size_t buflen)
-{
-	/* To avoid gcc warnings */
-	( void ) conn;
-	( void ) tls_ctx;
-	( void ) buf;
-	( void ) buflen;
-
-	wpa_printf(MSG_DEBUG, "TLS: tls_get_cipher");
-	return -1;
-}
-
 
 int tls_connection_enable_workaround(void *tls_ctx,
 				     struct tls_connection *conn)
@@ -1203,30 +1571,13 @@ int tls_connection_enable_workaround(void *tls_ctx,
 	/* To avoid gcc warnings */
 	( void ) conn;
 	( void ) tls_ctx;
-	
+
 	wpa_printf(MSG_DEBUG, "TLS: tls_connection_enable_workaround");
 	return -1;
 }
 
-
-int tls_connection_client_hello_ext(void *tls_ctx, struct tls_connection *conn,
-				    int ext_type, const u8 *data,
-				    size_t data_len)
-{
-	/* To avoid gcc warnings */
-	( void ) conn;
-	( void ) tls_ctx;
-	( void ) ext_type;
-	( void ) data;
-	( void ) data_len;
-	
-	wpa_printf(MSG_DEBUG, "TLS: tls_connection_client_hello_ext");
-	return -1;
-}
-
-
 int tls_connection_get_failed(void *tls_ctx, struct tls_connection *conn)
-{	
+{
 	/* To avoid gcc warnings */
 	( void ) conn;
 	( void ) tls_ctx;

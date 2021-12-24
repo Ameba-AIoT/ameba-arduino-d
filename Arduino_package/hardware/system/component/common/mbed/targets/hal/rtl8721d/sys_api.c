@@ -246,8 +246,8 @@ void sys_cpu_reset(void)
             4: PACKAGE_QFN56
             -1: UNKNOWN
   */
-extern int rtw_chip_package_read();
-int sys_chip_package_read()
+extern int rtw_chip_package_read(void);
+int sys_chip_package_read(void)
 {
 	return rtw_chip_package_read();
 }
@@ -259,8 +259,8 @@ int sys_chip_package_read()
             2: exist
             -1: unknown
   */
-extern int rtw_chip_psram_check();
-int sys_chip_psram_check()
+extern int rtw_chip_psram_check(void);
+int sys_chip_psram_check(void)
 {
 	return rtw_chip_psram_check();
 }
@@ -272,8 +272,8 @@ int sys_chip_psram_check()
             2: exist
             -1: unknown
   */
-extern int rtw_chip_flash_check();
-int sys_chip_flash_check()
+extern int rtw_chip_flash_check(void);
+int sys_chip_flash_check(void)
 {
 	return rtw_chip_flash_check();
 }
@@ -285,8 +285,8 @@ int sys_chip_flash_check()
             2: dual band
             -1: unknown
   */
-extern int rtw_chip_band_type_check();
-int sys_chip_band_type_check()
+extern int rtw_chip_band_type_check(void);
+int sys_chip_band_type_check(void)
 {
 	return rtw_chip_band_type_check();
 }

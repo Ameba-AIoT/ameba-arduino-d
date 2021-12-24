@@ -73,7 +73,7 @@
 /******************************************************
  *                    Constants
  ******************************************************/
-#define SCAN_LONGEST_WAIT_TIME  (4500)
+#define SCAN_LONGEST_WAIT_TIME  (12000)
 
 
 #define MAC_FMT "%02x:%02x:%02x:%02x:%02x:%02x"

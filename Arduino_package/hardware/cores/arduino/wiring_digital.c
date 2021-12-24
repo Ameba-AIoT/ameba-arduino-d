@@ -148,7 +148,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
             gpio_irq_enable((gpio_irq_t *)pGpio_t);
             break;
 
-	default:
+        default:
             break ;
     }
 }

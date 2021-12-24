@@ -52,9 +52,11 @@ void setup() {
     scndata.addCompleteServices(BLEUUID(UART_SERVICE_UUID));
 
     Rx.setWriteProperty(true);
+    Rx.setWritePermissions(GATT_PERM_WRITE);
     Rx.setWriteCallback(writeCB);
     Rx.setBufferLen(STRING_BUF_SIZE);
     Tx.setReadProperty(true);
+    Tx.setReadPermissions(GATT_PERM_READ);
     Tx.setNotifyProperty(true);
     Tx.setCCCDCallback(notifCB);
     Tx.setBufferLen(STRING_BUF_SIZE);

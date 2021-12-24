@@ -33,7 +33,9 @@ typedef struct
 class IRDevice {
     public:
         IRDevice();
+        ~IRDevice();
         uint8_t getFreq();
+        void begin(uint8_t irPin, uint32_t irMode, uint32_t freq);
         void begin(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode, uint32_t freq);
         void end();
         void send(const unsigned int buf[], uint16_t len);
@@ -48,8 +50,12 @@ class IRDevice {
         uint8_t _transmitPin = 9;       // default PB_23
         uint32_t _frequency = 38000;    // default 38kHz
         uint32_t _mode = IR_MODE_TX;    // default transmit
+        uint32_t* _pIrBuf = NULL;
+        uint16_t _bufSize = 0;
         void InvertPulse(IR_DataType * pBuf, uint16_t len);
         void setPins(uint8_t receivePin, uint8_t transmitPin);
+        void setTxPin(uint8_t transmitPin);
+        void setRxPin(uint8_t receivePin);
 };
 
 extern IRDevice IR;

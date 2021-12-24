@@ -225,6 +225,7 @@ BLERemoteCharacteristic::~BLERemoteCharacteristic() {
         delete _descriptorPtrList[i];
         _descriptorPtrList[i] = nullptr;
     }
+    free(_data_buf);
     vSemaphoreDelete(_readSemaphore);
     vSemaphoreDelete(_writeSemaphore);
 }
