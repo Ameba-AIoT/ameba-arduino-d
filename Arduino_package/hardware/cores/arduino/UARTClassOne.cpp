@@ -16,6 +16,10 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+#if defined(BOARD_RTL8720DN_BW16)
+//Not available
+#else
+
 #include "Arduino.h"
 
 #include <stdlib.h>
@@ -176,11 +180,9 @@ size_t UARTClassOne::write(const uint8_t uc_data)
     return 1;
 }
 
-#if defined(BOARD_RTL8720DN_BW16)
-//Not available
-#else
 UARTClassOne Serial1(UART0_IRQ, &rx_buffer1);
 bool Serial1_available() {
     return Serial1.available() > 0;
 }
+
 #endif
