@@ -98,12 +98,12 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
 
     switch (ulMode)
     {
-        case INPUT:
+        case INPUT_PULLDOWN:
             gpio_dir((gpio_t *)pGpio_t, PIN_INPUT);
             gpio_mode((gpio_t *)pGpio_t, PullDown);
             break;
 
-        case INPUT_PULLNONE:
+        case INPUT:
             gpio_dir((gpio_t *)pGpio_t, PIN_INPUT);
             gpio_mode((gpio_t *)pGpio_t, PullNone);
             break;
