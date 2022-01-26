@@ -7,9 +7,15 @@ int keyIndex = 0;                   // your network key Index number (needed onl
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
+#if defined(BOARD_RTL8720DN_BW16)
+#define LED_PIN 5
+#else
+#define LED_PIN 13
+#endif
+
 void setup() {
     Serial.begin(115200);         // initialize serial communication
-    pinMode(13, OUTPUT);        // set the LED pin mode
+    pinMode(LED_PIN, OUTPUT);        // set the LED pin mode
     // check for the presence of the shield:
     if (WiFi.status() == WL_NO_SHIELD) {
         Serial.println("WiFi shield not present");
@@ -53,8 +59,8 @@ void loop() {
                         client.println();
 
                         // the content of the HTTP response follows the header:
-                        client.print("Click <a href=\"/H\">here</a> turn the LED on pin 13 on<br>");
-                        client.print("Click <a href=\"/L\">here</a> turn the LED on pin 13 off<br>");
+                        client.print("Click <a href=\"/H\">here</a> turn the LED on LED_PIN on<br>");
+                        client.print("Click <a href=\"/L\">here</a> turn the LED on LED_PIN off<br>");
 
                         // The HTTP response ends with another blank line:
                         client.println();
@@ -69,10 +75,10 @@ void loop() {
 
                 // Check to see if the client request was "GET /H" or "GET /L":
                 if (currentLine.endsWith("GET /H")) {
-                    digitalWrite(13, HIGH);               // GET /H turns the LED on
+                    digitalWrite(LED_PIN, HIGH);               // GET /H turns the LED on
                 }
                 if (currentLine.endsWith("GET /L")) {
-                    digitalWrite(13, LOW);                // GET /L turns the LED off
+                    digitalWrite(LED_PIN, LOW);                // GET /L turns the LED off
                 }
             }
         }
