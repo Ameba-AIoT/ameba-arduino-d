@@ -8,7 +8,7 @@
    width="86.308151mm"
    height="45.672085mm"
    viewBox="0 0 326.20403 172.6189"
-   sodipodi:docname="Pinmap RTL8722DM_mini 21-10-2021.svg"
+   sodipodi:docname="Pinmap AMB23.svg"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -114,17 +114,17 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1600"
-     inkscape:window-height="837"
+     inkscape:window-width="1366"
+     inkscape:window-height="715"
      id="namedview1716"
      showgrid="false"
-     inkscape:zoom="2.9960135"
-     inkscape:cx="212.28209"
-     inkscape:cy="58.911616"
+     inkscape:zoom="11.984054"
+     inkscape:cx="258.9274"
+     inkscape:cy="60.288447"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg1714"
+     inkscape:current-layer="g19403"
      inkscape:snap-text-baseline="false"
      units="mm"
      fit-margin-top="1"
@@ -17949,7 +17949,7 @@
       <polygon
          id="polygon2580"
          gorn="0.6.0.0.4.1277"
-         points="2.075,10.074 1.934,9.934 1.704,10.164 1.705,10.172 1.841,10.309 "
+         points="1.934,9.934 1.704,10.164 1.705,10.172 1.841,10.309 2.075,10.074 "
          transform="matrix(0.50097263,0,0,0.50097263,76.045426,131.85408)" />
       <g
          transform="matrix(-0.35423775,0.35423775,-0.35423775,-0.35423775,81.996229,138.02727)"
@@ -19228,7 +19228,7 @@
       <polygon
          id="polygon2782"
          gorn="0.6.0.0.4.1378"
-         points="3.2,5.2 3.059,5.059 2.835,5.282 2.827,5.295 2.967,5.434 "
+         points="3.059,5.059 2.835,5.282 2.827,5.295 2.967,5.434 3.2,5.2 "
          transform="matrix(0.50097263,0,0,0.50097263,76.045426,131.85408)" />
       <g
          transform="matrix(-0.35423775,0.35423775,-0.35423775,-0.35423775,80.856116,134.36651)"
@@ -20603,8 +20603,8 @@
   </g>
   <text
      id="text1468-2"
-     y="12.171866"
-     x="101.63139"
+     y="12.488404"
+     x="132.73376"
      style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:11.5478px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:8.66079;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      xml:space="preserve"
      inkscape:export-xdpi="96.357231"
@@ -20612,8 +20612,8 @@
      transform="scale(0.94835073,1.0544622)"><tspan
        sodipodi:role="line"
        id="tspan1290"
-       x="101.63139"
-       y="12.171866">RTL8722DM MINI EVB</tspan></text>
+       x="132.73376"
+       y="12.488404">AMB23 EVB</tspan></text>
   <g
      id="g18770"
      transform="translate(26.044126)"
@@ -21629,7 +21629,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395-4-8"
        y="52.012188"
-       x="38.930691"
+       x="39.969875"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -21637,8 +21637,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5469"
-         x="38.930691"
-         y="52.012188">PWM6</tspan></text>
+         x="39.969875"
+         y="52.012188">PWM</tspan></text>
   </g>
   <g
      id="g19129"
@@ -21719,7 +21719,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395-4-88"
        y="68.098206"
-       x="38.944138"
+       x="39.969875"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -21727,8 +21727,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5475"
-         x="38.944138"
-         y="68.098206">PWM7</tspan></text>
+         x="39.969875"
+         y="68.098206">PWM</tspan></text>
   </g>
   <g
      id="g19168"
@@ -21809,7 +21809,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395-4-85"
        y="84.184219"
-       x="38.947124"
+       x="39.969875"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -21817,8 +21817,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5471"
-         x="38.947124"
-         y="84.184219">PWM2</tspan></text>
+         x="39.969875"
+         y="84.184219">PWM</tspan></text>
   </g>
   <g
      id="g19181"
@@ -21899,7 +21899,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395-4-4"
        y="89.546242"
-       x="38.962814"
+       x="39.969875"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -21907,8 +21907,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5473"
-         x="38.962814"
-         y="89.546242">PWM3</tspan></text>
+         x="39.969875"
+         y="89.546242">PWM</tspan></text>
   </g>
   <g
      id="g19194"
@@ -22286,7 +22286,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1372-1-4-4"
        y="41.288185"
-       x="236.92911"
+       x="236.92798"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -22294,7 +22294,7 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan18640"
-         x="236.92911"
+         x="236.92798"
          y="41.288185">SWCLK</tspan></text>
   </g>
   <g
@@ -22574,7 +22574,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395"
        y="62.739952"
-       x="236.82825"
+       x="238.82556"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -22582,8 +22582,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5481"
-         x="236.82825"
-         y="62.739952">PWM17</tspan></text>
+         x="238.82556"
+         y="62.739952">PWM</tspan></text>
     <ellipse
        ry="1.0158954"
        rx="0.913665"
@@ -22716,15 +22716,15 @@
        inkscape:export-xdpi="96.357231"
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       x="237.79572"
+       x="238.82556"
        y="46.6502"
        id="text1381"
        inkscape:transform-center-x="0.4463946"
        inkscape:transform-center-y="-1.489006"><tspan
          sodipodi:role="line"
          id="tspan5477"
-         x="237.79572"
-         y="46.6502">PWM8</tspan></text>
+         x="238.82556"
+         y="46.6502">PWM</tspan></text>
     <ellipse
        ry="1.0158954"
        rx="0.913665"
@@ -22856,7 +22856,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1377"
        y="52.012939"
-       x="237.80542"
+       x="238.82556"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -22864,8 +22864,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5479"
-         x="237.80542"
-         y="52.012939">PWM9</tspan></text>
+         x="238.82556"
+         y="52.012939">PWM</tspan></text>
     <ellipse
        ry="1.0158954"
        rx="0.913665"
@@ -23168,7 +23168,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395-47"
        y="30.564146"
-       x="30.513281"
+       x="31.47253"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -23176,8 +23176,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5463"
-         x="30.513281"
-         y="30.564146">PWM1</tspan></text>
+         x="31.47253"
+         y="30.564146">PWM</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"
@@ -23306,7 +23306,7 @@
        inkscape:transform-center-x="0.4463946"
        id="text1395-4"
        y="25.202137"
-       x="30.451273"
+       x="31.47253"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:2.295;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        xml:space="preserve"
        inkscape:export-xdpi="96.357231"
@@ -23314,8 +23314,8 @@
        transform="scale(0.94835073,1.0544622)"><tspan
          sodipodi:role="line"
          id="tspan5461"
-         x="30.451273"
-         y="25.202137">PWM0</tspan></text>
+         x="31.47253"
+         y="25.202137">PWM</tspan></text>
     <rect
        inkscape:export-ydpi="96.357231"
        inkscape:export-xdpi="96.357231"

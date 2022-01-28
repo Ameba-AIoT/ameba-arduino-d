@@ -2,7 +2,7 @@
  This sketch shows how to read and open HTML file saved in SD card.
  */
 
-#include <AmebaWiFi.h>
+#include <WiFi.h>
 #include "FatFs_SD.h"
 char ssid[] = "yourNetwork";        //  your network SSID (name)
 char pass[] = "Password";           // your network password
