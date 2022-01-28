@@ -48,22 +48,7 @@ void RTC::DeInit(void) {
   * @retval  none
   */
 void RTC::Write(long t) {
-    /* Convert the time in to a tm*/
-    struct tm *timeinfo = localtime(&t);
-
-    RTC_TimeTypeDef RTC_TimeStruct;
-
-    /*set time in RTC */
-    RTC_TimeStruct.RTC_H12_PMAM = RTC_H12_AM;
-    RTC_TimeStruct.RTC_Days = timeinfo->tm_yday;
-    RTC_TimeStruct.RTC_Hours = timeinfo->tm_hour;
-    RTC_TimeStruct.RTC_Minutes = timeinfo->tm_min;
-    RTC_TimeStruct.RTC_Seconds = timeinfo->tm_sec;
-
-    RTC_SetTime(RTC_Format_BIN, &RTC_TimeStruct);
-
-    /* Set rtc_timeinfo*/
-    _memcpy((void *)&rtc_timeinfo, (void *)timeinfo, sizeof(struct tm));
+    rtc_write(t);
 }
 
 /**
@@ -73,7 +58,7 @@ void RTC::Write(long t) {
   *              1970.1.1 00:00:00.
   */
 int32_t RTC::Read(void) {
-    return (rtc_read() - 508055296);
+    return (rtc_read());
 }
 
 /**
