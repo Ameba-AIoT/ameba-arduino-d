@@ -18,7 +18,7 @@
           "help": {
             "online": "https://www.amebaiot.com/"
           },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.2.tar.gz",
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.1.2.tar.gz",
           "archiveFileName": "ameba_d-3.1.2.tar.gz",
           "checksum": "SHA-256:5f66469471ec70511844ec2c73433d89fd13b213f85229f6a10d98d19ab78bae",
           "size": "36455744",
