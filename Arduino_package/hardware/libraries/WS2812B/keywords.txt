@@ -1,0 +1,24 @@
+#######################################
+# Syntax Coloring Map for WS2812B
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+WS2812B	KEYWORD1
+
+#######################################
+# Methods (KEYWORD2) & Constants (LITERAL1)
+#######################################
+
+begin	KEYWORD2
+show	KEYWORD2
+clear	KEYWORD2
+setLEDCount	KEYWORD2
+setPixelColor	KEYWORD2
+fill	KEYWORD2
+colorHSV	KEYWORD2
+rainbow	KEYWORD2
+
+
