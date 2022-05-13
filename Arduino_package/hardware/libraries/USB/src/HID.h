@@ -24,8 +24,8 @@
  * This file is part of the TinyUSB stack.
  */
 
-#ifndef _BLE_HID_H_
-#define _BLE_HID_H_
+#ifndef _USB_HID_H_
+#define _USB_HID_H_
 
 #ifdef __cplusplus
  extern "C" {

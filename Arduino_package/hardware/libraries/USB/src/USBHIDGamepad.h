@@ -1,8 +1,8 @@
-#ifndef _BLE_HIDGAMEPAD_H_
-#define _BLE_HIDGAMEPAD_H_
+#ifndef _USB_HIDGAMEPAD_H_
+#define _USB_HIDGAMEPAD_H_
 
 #include <Arduino.h>
-#include "BLEHIDDevice.h"
+#include "USBHIDDevice.h"
 #include "HID.h"
 
 #ifdef __cplusplus
@@ -14,9 +14,9 @@ extern "C" {
 #endif
 
 
-class BLEHIDGamepad {
+class USBHIDGamepad {
     public:
-        BLEHIDGamepad();
+        USBHIDGamepad();
 
         void setReportID(uint8_t reportID);
         void gamepadReport(hid_gamepad_report_t* report);
@@ -35,7 +35,7 @@ class BLEHIDGamepad {
 
 
     private:
-        BLEHIDDevice* _pHIDDev = NULL;
+        USBHIDDevice* _pHIDDev = NULL;
         hid_gamepad_report_t _report = {0, 0, 0, 0, 0, 0, 0, 0};
         uint8_t _reportID = 1;
 };
