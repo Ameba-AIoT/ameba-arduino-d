@@ -27,6 +27,14 @@
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
 #define password_type                           0
 
+// If you are connecting to an iPhone WiFi hotspot, the default SSID uses Unicode (U+2019) Right Single Quotation Mark instead of ASCII apostrophe
+// Modify the "Your Name" section in the SSID below to connect to an iPhone using a default SSID style
+// char ssid[] = "Your Name\xE2\x80\x99s iPhone";
+
+// UTF-8 encoding can also be used for SSID with emoji characters
+// Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
+// char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
+
 char ssid[] = "yourNetwork";                    // your network SSID (name)
 int keyIndex = 0;                               // your network key Index number
 #if (password_type == 0)
