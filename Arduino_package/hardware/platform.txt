@@ -85,11 +85,11 @@ build.usb_manufacturer="Unknown"
 # ---------------------
 
 ## Compile c files
-recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.c.extra_flags} {build.extra_flags} -Wl,--start-group {compiler.ameba.c.include} -Wl,--end-group {compiler.ameba.c.flags} {includes} "{source_file}" -o "{object_file}"
+recipe.c.o.pattern="{compiler.path}{compiler.c.cmd}" {compiler.c.flags} -mcpu={build.tarch} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.c.extra_flags} {build.extra_flags} -Wl,--start-group {compiler.ameba.c.include} -Wl,--end-group {compiler.ameba.c.flags} {includes} "{source_file}" -o "{object_file}"
 
 
 ## Compile c++ files
-recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.mcu} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.c.extra_flags} {build.extra_flags} -Wl,--start-group {compiler.ameba.c.include} -Wl,--end-group {compiler.ameba.c.flags} -std=c++11 -fno-use-cxa-atexit {includes} "{source_file}" -o "{object_file}"
+recipe.cpp.o.pattern="{compiler.path}{compiler.cpp.cmd}" {compiler.cpp.flags} -mcpu={build.tarch} -DF_CPU={build.f_cpu} -DARDUINO={runtime.ide.version} -DARDUINO_{build.board} -DARDUINO_ARCH_{build.arch} {compiler.c.extra_flags} {build.extra_flags} -Wl,--start-group {compiler.ameba.c.include} -Wl,--end-group {compiler.ameba.c.flags} -std=c++11 -fno-use-cxa-atexit {includes} "{source_file}" -o "{object_file}"
 
 
 ## Create archives
@@ -144,8 +144,11 @@ tools.ameba_d_tools.upload.params.quiet=
 ##tools.ameba_d_tools.upload.pattern.windows="{runtime.tools.ameba_d_tools.path}/ameba_d_arduino_image_tool_windows.exe" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
 
 tools.ameba_d_tools.upload.pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_image_tool_windows.exe" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
+###tools.ameba_d_tools.upload.pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_image_tool_windows.exe" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" "{board}" "{build.auto_upload_mode}" {upload.verbose}
 tools.ameba_d_tools.upload.pattern.linux="{runtime.tools.ameba_d_tools.path}/upload_image_tool_linux" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
+###tools.ameba_d_tools.upload.pattern.linux="{runtime.tools.ameba_d_tools.path}/upload_image_tool_linux" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" "{board}" "{build.auto_upload_mode}" {upload.verbose}
 tools.ameba_d_tools.upload.pattern.macosx="{runtime.tools.ameba_d_tools.path}/upload_image_tool_macos" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" {upload.verbose}
+###tools.ameba_d_tools.upload.pattern.macosx="{runtime.tools.ameba_d_tools.path}/upload_image_tool_macos" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" "{board}" "{build.auto_upload_mode}" {upload.verbose}
 
 #tools.ameba_d_tools.upload.network_pattern="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
 #tools.ameba_d_tools.upload.network_pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"

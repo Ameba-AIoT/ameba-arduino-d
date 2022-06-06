@@ -13,6 +13,37 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
+          "version": "3.1.2",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/release/ameba_d-3.1.2.tar.gz",
+          "archiveFileName": "ameba_d-3.1.2.tar.gz",
+          "checksum": "SHA-256:5f66469471ec70511844ec2c73433d89fd13b213f85229f6a10d98d19ab78bae",
+          "size": "36455744",
+          "boards": [
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.7"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
           "version": "3.1.1",
           "category": "Contributed",
           "help": {
@@ -23,10 +54,10 @@
           "checksum": "SHA-256:39a17186263e75ca46989a0ec70d46ac0e9dcd3790f0647bd18942e0d72311bf",
           "size": "36462447",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"},
-            {"name": "RTL8720DN/BW16"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
           ],
           "toolsDependencies": [
             {
@@ -54,10 +85,10 @@
           "checksum": "SHA-256:0f455b2717c17c0d9769c11427cb07ba725aa6ea0dd743c608677d9510bb45ba",
           "size": "36334135",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"},
-            {"name": "RTL8720DN/BW16"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
           ],
           "toolsDependencies": [
             {
@@ -85,10 +116,10 @@
           "checksum": "SHA-256:070f581f3be16c88012569143b38019e9983c19fdb348ff906aa236d927ddd37",
           "size": "43685048",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"},
-            {"name": "RTL8720DN/BW16"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
           ],
           "toolsDependencies": [
             {
@@ -116,10 +147,10 @@
           "checksum": "SHA-256:62593df946e8f4f4e02c3c9b23945fc94b28cf9030dc046d97f511dc1e22476e",
           "size": "48005290",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"},
-            {"name": "RTL8720DN/BW16"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
           ],
           "toolsDependencies": [
             {
@@ -147,10 +178,10 @@
           "checksum": "SHA-256:e790a35f37c2880d19c4be83d1c8a1a594af339e8279315dbed07a0df08429bd",
           "size": "48471425",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"},
-            {"name": "RTL8720DN/BW16"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
           ],
           "toolsDependencies": [
             {
@@ -178,10 +209,10 @@
           "checksum": "SHA-256:448a7719c7ec4b7cc7c06b163f96f9c8fb653cdd4645bae316ab656f47c84b91",
           "size": "43663389",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"},
-            {"name": "RTL8722DM_MINI"},
-            {"name": "RTL8720DN_BW16"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"}
           ],
           "toolsDependencies": [
             {
@@ -209,8 +240,8 @@
           "checksum": "SHA-256:dcded960bc3cb4418927a2b09e79d70c41ada743cdadc21f7dca94567d74a208",
           "size": "21372592",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -238,8 +269,8 @@
           "checksum": "SHA-256:f4c02d399e00e9d3e2e1688139543630a07f4db0ef29ae1ee68c47c84ab8968f",
           "size": "22466330",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -267,8 +298,8 @@
           "checksum": "SHA-256:9ae69471327776ee03c4caf0dda871e32874c352003a3f9fb8adec8677e044fb",
           "size": "44194206",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -296,8 +327,8 @@
           "checksum": "SHA-256:c2ec936e6e00c7f472ba0c6bb486706a326ddbcfb7e9b9bfd8a86a4d5e3fd796",
           "size": "56479000",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -325,8 +356,8 @@
           "checksum": "SHA-256:7983173652046052a7ddb1d9524b85dfbddb877e000a2bfd3d4e11f06a7a5535",
           "size": "48493734",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -354,8 +385,8 @@
           "checksum": "SHA-256:7983173652046052a7ddb1d9524b85dfbddb877e000a2bfd3d4e11f06a7a5535",
           "size": "48493734",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -383,8 +414,8 @@
           "checksum": "SHA-256:d3afa8dc5ffdc8579baa2d2dcfcac4ea0c539e6e7f7db83d84fc3d08396922d8",
           "size": "48495820",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
@@ -412,8 +443,8 @@
           "checksum": "SHA-256:af05e1078d494c350a98aaa3a6f13640579f992b7b539d0d5d96fc6052a083c7",
           "size": "48497899",
           "boards": [
-            {"name": "RTL8722DM"},
-            {"name": "RTL8722CSM"}
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"}
           ],
           "toolsDependencies": [
             {
