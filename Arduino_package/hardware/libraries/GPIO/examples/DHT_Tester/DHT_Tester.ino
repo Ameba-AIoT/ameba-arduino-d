@@ -15,7 +15,6 @@
 // Connect the VCC pin of the sensor to 3.3V
 // Connect the DATA pin of the sensor to whatever your DHTPIN is
 // Connect the GND pin of the sensor to GROUND
-// Connect a 1K resistor from DATA pin to VCC pin of the sensor
 
 
 // Initialize DHT sensor.
