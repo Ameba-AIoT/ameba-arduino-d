@@ -13,7 +13,7 @@
  **/
 
 const int trigger_pin = 12;
-const int echo_pin    = 13;
+const int echo_pin    = 11;
 
 void setup() {
     Serial.begin(115200);
