@@ -227,7 +227,7 @@ void SPIClass::transfer(byte _pin, void *_buf, size_t _count, SPITransferMode _m
         digitalWrite(_pin, 0);
     }
 
-    spi_master_write_stream((spi_t *)pSpiMaster , (char *)_buf, (uint32_t)_count);
+    spi_master_write_read_stream((spi_t *)pSpiMaster, (char *)_buf, (char *)_buf, (uint32_t)_count);
 
     if ((_pin != pinSS) && (_mode == SPI_LAST)) {
         digitalWrite(_pin, 1);
@@ -251,7 +251,7 @@ uint16_t SPIClass::transfer16(byte _pin, uint16_t _data, SPITransferMode _mode)
         t.msb = transfer(_pin, t.msb, SPI_CONTINUE);
         t.lsb = transfer(_pin, t.lsb, _mode);
     }
-
+    _data = t.val;
     return _data;
 }
 
