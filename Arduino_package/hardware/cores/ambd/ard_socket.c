@@ -9,7 +9,6 @@
 #define MAX_SEND_SIZE 256
 #define UDP_SERVER_PORT 5002
 #define TCP_SERVER_PORT 5003
-#define UDP_SERVER_IP "fe80:0000:0000:0000:02e0:4cff:fe10:0076"
 
 
 
@@ -399,7 +398,7 @@ int sendto_data_v6(int sock, const void *send_data, size_t len, uint32_t peer_ip
     memset(&peer_addr, 0, sizeof(peer_addr));
     peer_addr.sin6_family = AF_INET6;
     peer_addr.sin6_port = htons(UDP_SERVER_PORT);
-    inet_pton(AF_INET6, UDP_SERVER_IP, &(peer_addr.sin6_addr));
+	inet_pton(AF_INET6, (char*)peer_ip, &(peer_addr.sin6_addr));
 
     ret = lwip_sendto(sock, send_data, len, 0, ((struct sockaddr *)&peer_addr), sizeof(peer_addr));
 
