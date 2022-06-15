@@ -9,7 +9,7 @@
 */
 
 int button = 12;
-int led    = 13;
+int led    = 11;
 
 int ledState = 1;
 
