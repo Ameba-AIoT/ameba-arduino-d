@@ -114,7 +114,7 @@ int main(void)
     PAD_PullCtrl(_PB_3, GPIO_PuPd_NOPULL);
 
 #if 1
-    osThreadDef(main_task, osPriorityNormal, 1, MAIN_THREAD_STACK_SIZE);
+    osThreadDef(main_task, osPriorityLow, 1, MAIN_THREAD_STACK_SIZE);
     main_tid = osThreadCreate(osThread(main_task), NULL);
 
     osKernelStart();
