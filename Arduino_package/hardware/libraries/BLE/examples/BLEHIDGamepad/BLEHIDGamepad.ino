@@ -20,7 +20,7 @@ void setup() {
   advdata.addCompleteServices(BLEUUID(HID_SERVICE_UUID));
 
   BLEHIDDev.init();
-  // Replace the default HID report descriptor, and provide the HID Gamepad class with the corresponding HID report ID
+  // Replace the default HID report descriptor, and provide the HID gamepad report descriptor with the corresponding report ID
   BLEHIDDev.setReportMap(hid_gamepad_report_descriptor, sizeof(hid_gamepad_report_descriptor));
   padDev.setReportID(1);
 

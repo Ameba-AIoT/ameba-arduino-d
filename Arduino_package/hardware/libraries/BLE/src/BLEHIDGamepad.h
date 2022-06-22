@@ -36,14 +36,7 @@ class BLEHIDGamepad {
 
     private:
         BLEHIDDevice* _pHIDDev = NULL;
-        uint16_t _buttons = 0;
-        uint8_t _hat = 0;
-        int16_t _x = 0;
-        int16_t _y = 0;
-        int16_t _z = 0;
-        int16_t _Rz = 0;
-        int16_t _Rx = 0;
-        int16_t _Ry = 0;
+        hid_gamepad_report_t _report = {0, 0, 0, 0, 0, 0, 0, 0};
         uint8_t _reportID = 1;
 };
 

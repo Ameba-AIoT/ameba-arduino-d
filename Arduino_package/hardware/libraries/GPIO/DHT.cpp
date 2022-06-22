@@ -39,7 +39,7 @@ DHT::DHT(uint8_t pin, uint8_t type, uint8_t count) {
 
 void DHT::begin(void) {
     // set up the pins!
-    pinMode(_pin, INPUT_PULLUP);
+    //pinMode(_pin, INPUT_PULLUP);
     // Using this value makes sure that millis() - lastreadtime will be
     // >= MIN_INTERVAL right away. Note that this assignment wraps around, but so will the subtraction.
     _lastreadtime = -MIN_INTERVAL;
@@ -151,15 +151,13 @@ boolean DHT::read(bool force) {
 
     // Send start signal.  See DHT datasheet for full signal diagram:
     //http://www.adafruit.com/datasheets/Digital%20humidity%20and%20temperature%20sensor%20AM2302.pdf
-
     // Go into high impedence state to let pull-up raise data line level and start the reading process.
+    pinMode(_pin, OUTPUT);
     digitalWrite(_pin, HIGH);
     delay(250);
 
     // First set data line low for 20 milliseconds.
-    pinMode(_pin, OUTPUT);
     digitalWrite(_pin, LOW); 
-
     delay(20);
 
     uint32_t cycles[80];
@@ -169,12 +167,13 @@ boolean DHT::read(bool force) {
 
         // End the start signal by setting data line high for 20 microseconds.
         digitalWrite(_pin, HIGH); 
-        delayMicroseconds(20);
+        //delayMicroseconds(20);
 
         // Now start reading the data line to get the value from the DHT sensor.
-        pinMode(_pin,INPUT); 
+        pinMode(_pin, INPUT_PULLUP); 
         // Delay a bit to let sensor pull data line low.
-        delayMicroseconds(10);
+        //delayMicroseconds(10);
+        delayMicroseconds(40);
 
         // First expect a low signal for ~80 microseconds followed by a high signal for ~80 microseconds again.
         if (expectPulse(LOW) == 0) {
