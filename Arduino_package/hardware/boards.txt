@@ -1,5 +1,6 @@
 
 menu.AutoUploadMode=Auto Upload Mode
+menu.EraseFlash=Erase Flash
 
 ##############################################################
 # PLEASE DO NOT PUT BOARDS ABOVE THE OFFICIAL AMEBA BOARDS! ##
@@ -25,6 +26,11 @@ ameba_rtl8721d.build.core=ambd
 ameba_rtl8721d.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
 ameba_rtl8721d.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
 ameba_rtl8721d.build.variant=rtl8721d
+
+ameba_rtl8721d.menu.EraseFlash.Disable=Disable
+ameba_rtl8721d.menu.EraseFlash.Disable.build.erase_flash=Disable
+ameba_rtl8721d.menu.EraseFlash.Enable=Enable
+ameba_rtl8721d.menu.EraseFlash.Enable.build.erase_flash=Enable
 
 #ameba_rtl8721d.menu.AutoUploadMode.Disable=Disable
 #ameba_rtl8721d.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
@@ -54,6 +60,11 @@ ameba_rtl8722dm_mini.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MIN
 ameba_rtl8722dm_mini.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
 ameba_rtl8722dm_mini.build.variant=rtl8722dm_mini
 
+ameba_rtl8722dm_mini.menu.EraseFlash.Disable=Disable
+ameba_rtl8722dm_mini.menu.EraseFlash.Disable.build.erase_flash=Disable
+ameba_rtl8722dm_mini.menu.EraseFlash.Enable=Enable
+ameba_rtl8722dm_mini.menu.EraseFlash.Enable.build.erase_flash=Enable
+
 #ameba_rtl8722dm_mini.menu.AutoUploadMode.Disable=Disable
 #ameba_rtl8722dm_mini.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
 #ameba_rtl8722dm_mini.menu.AutoUploadMode.Enable=Enable
@@ -82,7 +93,14 @@ ameba_rtl8720dn_bw16.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW1
 ameba_rtl8720dn_bw16.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
 ameba_rtl8720dn_bw16.build.variant=rtl8720dn_bw16
 
-#ameba_rtl8720dn_bw16.menu.AutoUploadMode.Disable=Disable
-#ameba_rtl8720dn_bw16.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
-#ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable=Enable
-#ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+ameba_rtl8720dn_bw16.menu.EraseFlash.Disable=Disable
+ameba_rtl8720dn_bw16.menu.EraseFlash.Disable.build.erase_flash=Disable
+ameba_rtl8720dn_bw16.menu.EraseFlash.Enable=Enable
+ameba_rtl8720dn_bw16.menu.EraseFlash.Enable.build.erase_flash=Enable
+
+ameba_rtl8720dn_bw16.menu.AutoUploadMode.Disable=Disable
+ameba_rtl8720dn_bw16.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
+ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable=Enable
+ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+
+
