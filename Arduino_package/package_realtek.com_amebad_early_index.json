@@ -26,7 +26,7 @@
             {"name": "AMB21 (RTL8722DM)"},
             {"name": "AMB22 (RTL8722CSM)"},
             {"name": "AMB23 (RTL8722DM_MINI)"},
-            {"name": "BW16 (RTL8720DN)"}
+            {"name": "BW16 (RTL8720DN)"},
             {"name": "BW16-TypeC (RTL8720DN)"}
           ],
           "toolsDependencies": [
