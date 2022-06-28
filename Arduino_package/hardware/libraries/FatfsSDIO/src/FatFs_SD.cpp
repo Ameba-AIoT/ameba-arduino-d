@@ -54,7 +54,7 @@ int FatFsSD::begin() {
 
         drv_num = FATFS_RegisterDiskDriver(&SD_disk_Driver);
         if (drv_num < 0) {
-            printf("Rigester disk driver to FATFS fail.\n");
+            printf("Register disk driver to FATFS fail.\n");
             ret = FR_DISK_ERR;
             break;
         }
