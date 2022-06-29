@@ -104,3 +104,35 @@ ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable=Enable
 ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 
 
+##############################################################
+
+awcu488_thingplus.name=AW-CU488 Thing Plus (RTL8721DM)
+#awcu488_thingplus.vid.0=0x0403
+#awcu488_thingplus.pid.0=0x6001
+
+awcu488_thingplus.upload.tool=ameba_d_tools
+awcu488_thingplus.upload.protocol=usb_serial
+awcu488_thingplus.upload.maximum_size=2097152
+awcu488_thingplus.upload.use_1200bps_touch=false
+awcu488_thingplus.upload.wait_for_upload_port=false
+awcu488_thingplus.upload.native_usb=false
+
+awcu488_thingplus.build.tarch=cortex-m33
+awcu488_thingplus.build.mcu=RTL8722DM/CSM
+awcu488_thingplus.build.f_cpu=200000000L
+awcu488_thingplus.build.usb_product="FTDI"
+awcu488_thingplus.build.board=AMEBA
+awcu488_thingplus.build.core=ambd
+awcu488_thingplus.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
+awcu488_thingplus.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
+awcu488_thingplus.build.variant=awcu488_thingplus
+
+awcu488_thingplus.menu.EraseFlash.Disable=Disable
+awcu488_thingplus.menu.EraseFlash.Disable.build.erase_flash=Disable
+awcu488_thingplus.menu.EraseFlash.Enable=Enable
+awcu488_thingplus.menu.EraseFlash.Enable.build.erase_flash=Enable
+
+#awcu488_thingplus.menu.AutoUploadMode.Disable=Disable
+#awcu488_thingplus.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
+#awcu488_thingplus.menu.AutoUploadMode.Enable=Enable
+#awcu488_thingplus.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
