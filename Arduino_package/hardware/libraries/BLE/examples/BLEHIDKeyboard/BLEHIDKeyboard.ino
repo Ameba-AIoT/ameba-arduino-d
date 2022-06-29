@@ -43,6 +43,9 @@ void loop() {
     delay(2000);
     keyboardDev.keyReleaseAll();
     delay(500);
+    keyboardDev.consumerPress(HID_USAGE_CONSUMER_MUTE);
+    delay(500);
+    keyboardDev.consumerRelease();
   } else {
     delay(500);
   }

@@ -1,5 +1,9 @@
 #include <WiFi.h>
 
+// UTF-8 encoding can also be used for SSID with emoji characters
+// Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
+// char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
+
 char ssid[] = "yourNetwork";  //Set the AP's SSID
 char pass[] = "Password";     //Set the AP's password
 char channel[] = "1";         //Set the AP's channel
