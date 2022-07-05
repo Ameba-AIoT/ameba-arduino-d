@@ -85,6 +85,7 @@ next:
   *  @note should set pmap_func.SleepPuPd corectly based on your board.
   *  @retval None       
   */
+_OPTIMIZE_O3_
 CONFIG_FW_CRITICAL_CODE_SECTION
 void pinmap_sleep(void)
 {
@@ -153,6 +154,7 @@ next:
   *  @note should set pmap_func.FuncPuPd corectly based on your board.
   *  @retval None       
   */
+_OPTIMIZE_O3_
 CONFIG_FW_CRITICAL_CODE_SECTION
 void pinmap_wake(void)
 {

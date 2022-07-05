@@ -350,20 +350,51 @@ bridgeif_output(struct netif *netif, struct pbuf *p)
   return err;
 }
 
-typedef struct src_port_s {
+#include "linux_list.h"
+
+#define __TCP_NAT_RULE_NUMS	8
+#define __UDP_NAT_RULE_NUMS	16
+
+typedef struct tcp_src_port_s {
 	u16_t port;
 	u8_t flag;
-	u8_t type;
 	u32_t ts;
-}src_port_t;
-typedef struct bridgeif_nat_entry_s {
-	u8_t used;
-	src_port_t src_port[8];
-	u16_t dst_port;
+	u8_t fin;
+	u8_t finack;
+	u8_t synack;
+} tcp_src_port_t;
+
+typedef struct udp_src_port_s {
+	u16_t port;
+	u32_t ts;
+} udp_src_port_t;
+
+struct nat_rule_list_s {
+	struct list_head list;
+	void *rule;
+};
+
+typedef struct bridgeif_nat_tcp_entry_s {
+	tcp_src_port_t src_port[__TCP_NAT_RULE_NUMS];
+	/* free rule list */
+	struct nat_rule_list_s *f_list;
+	/* valid rule list */
+	struct nat_rule_list_s *v_list;
 	u8_t port_num;
 	u8_t ip_addr[4];
 	struct eth_addr mac;
-} bridgeif_nat_entry_t;
+} bridgeif_nat_tcp_entry_t;
+
+typedef struct bridgeif_nat_udp_entry_s {
+	udp_src_port_t src_port[__UDP_NAT_RULE_NUMS];
+	/* free rule list */
+	struct nat_rule_list_s *f_list;
+	/* valid rule list */
+	struct nat_rule_list_s *v_list;
+	u8_t port_num;
+	u8_t ip_addr[4];
+	struct eth_addr mac;
+} bridgeif_nat_udp_entry_t;
 
 typedef struct bridgeif_pkt_attrib_s {
 	u16_t protocol;
@@ -383,25 +414,175 @@ typedef struct bridgeif_pkt_attrib_s {
 #define ETH_HLEN	14		/* Total octets in header.	 */
 #define ETH_P_IP	0x0800		/* Internet Protocol packet	*/
 #define ETH_P_ARP	0x0806		/* Address Resolution packet	*/
+#define ETH_P_IPV6	0x86DD
 
-/* input port num == 0 (wlan0) case , port means tcp/udp port */
-#define PORT_TO_NONE	0x0   /* dst port == 0, send to all ports(br and sdio host) */
-#define PORT_TO_BR	0x1		  /* dst port == br's port, send to br netif */
-#define PORT_TO_HOST	0x2	  /* dst port == sdio host's port, send to sdio host */
+#define PORT_TO_NONE	0x0
+#define PORT_TO_BR	0x1
+#define PORT_TO_HOST	0x2
 
-/* input port num == 1 (sdio host) case */
-#define IP_TO_NONE	0x0       /* dst ip == NULL, send to all ports(br and wlan0)*/
-#define IP_TO_BR	0x1		  /* dst ip == br's ip, send to br netif */
-#define IP_TO_WLAN1	0x2		  /* dst ip == wlan1's ip, send to wlan1 netif */
-#define IP_TO_HOST	0x3       /* dst ip == sdio host's ip, send to sdio host */
+#define IP_TO_DROP	0x0
+#define IP_TO_BR	0x1
+#define IP_TO_WLAN1	0x2
+#define IP_TO_HOST	0x3
+#define IP_TO_NONE	0x4
 
-#define BR_NAT_TIMEOUT_SEC  (60*5) /* 5 minutes FDB timeout */
+#define BR_NAT_TIMEOUT_SEC  (60 * 5) /* 5 minutes FDB timeout */
+#define BR_NAT_TCP_CONNECT_TIMEOUT_SEC  60 /* tcp connect timeout */
+#define BR_NAT_UDP_TIMEOUT_SEC  (60 * 5) /* tcp connect timeout */
+#define BR_NAT_TIMEOUT_INFINITELY  0xffffffff /* used for permanent rules */
 
 
 
-bridgeif_nat_entry_t br_nat_entry[4] = {0};
+#define __NAT_DEBUG		LWIP_DBG_ON 
+bridgeif_nat_tcp_entry_t br_nat_tcp_entry = {0};
+bridgeif_nat_udp_entry_t br_nat_udp_entry = {0};
 
-void bridgeif_update_attrib(struct pbuf *p, bridgeif_pkt_attrib_t *pattrib)
+static inline void __nat_enter_critical(void)
+{
+	vTaskSuspendAll();
+}
+
+static inline void __nat_exit_critical(void)
+{
+	xTaskResumeAll();
+}
+
+static inline int __nat_rule_list_is_empty(struct list_head *head)
+{
+	return list_empty(head);
+}
+
+static inline void __nat_rule_list_add_head(struct list_head *list, struct list_head *head)
+{
+	return list_add(list, head);
+}
+
+static inline void __nat_rule_list_add_tail(struct list_head *list, struct list_head *head)
+{
+	return list_add_tail(list, head);
+}
+
+static inline void __nat_rule_list_del(struct list_head *list)
+{
+	return list_del(list);
+}
+
+#define __SAFE_FREE(x) do { \
+		if ((void *)(x)) \
+			free(x); \
+	} while (0)
+
+/* static int __nat_rule_list_find(struct list_head *head) */
+/* { */
+
+/* } */
+
+static int __nat_entry_init(void)
+{
+	struct nat_rule_list_s *tcp_f_list;
+	struct nat_rule_list_s *tcp_v_list;
+	struct nat_rule_list_s *udp_f_list;
+	struct nat_rule_list_s *udp_v_list;
+	struct nat_rule_list_s *nat_list;
+	int i;
+
+	memset(&br_nat_tcp_entry, 0, sizeof(br_nat_tcp_entry));
+	memset(&br_nat_udp_entry, 0, sizeof(br_nat_udp_entry));
+
+	tcp_f_list = (struct nat_rule_list_s *)calloc(1, sizeof(struct nat_rule_list_s));
+	tcp_v_list = (struct nat_rule_list_s *)calloc(1, sizeof(struct nat_rule_list_s));
+	udp_f_list = (struct nat_rule_list_s *)calloc(1, sizeof(struct nat_rule_list_s));
+	udp_v_list = (struct nat_rule_list_s *)calloc(1, sizeof(struct nat_rule_list_s));
+	if (!tcp_f_list || !tcp_v_list || !udp_f_list || !udp_v_list)
+		goto err_mem;
+
+	INIT_LIST_HEAD(&tcp_f_list->list);
+	INIT_LIST_HEAD(&tcp_v_list->list);
+	INIT_LIST_HEAD(&udp_f_list->list);
+	INIT_LIST_HEAD(&udp_v_list->list);
+
+	for (i = 0; i < __TCP_NAT_RULE_NUMS; i++) {
+		nat_list = (struct nat_rule_list_s *)calloc(1, sizeof(struct nat_rule_list_s));
+		if (!nat_list)
+			goto err_mem;
+		nat_list->rule = &br_nat_tcp_entry.src_port[i];
+		__nat_rule_list_add_tail(&nat_list->list, &tcp_f_list->list);
+	}
+
+	for (i = 0; i < __UDP_NAT_RULE_NUMS; i++) {
+		nat_list = (struct nat_rule_list_s *)calloc(1, sizeof(struct nat_rule_list_s));
+		if (!nat_list)
+			goto err_mem;
+		nat_list->rule = &br_nat_udp_entry.src_port[i];
+		__nat_rule_list_add_tail(&nat_list->list, &udp_f_list->list);
+	}
+
+	br_nat_tcp_entry.f_list = tcp_f_list;
+	br_nat_tcp_entry.v_list = tcp_v_list;
+	br_nat_udp_entry.f_list = udp_f_list;
+	br_nat_udp_entry.v_list = udp_v_list;
+	LWIP_DEBUGF(__NAT_DEBUG, ("####tcp_f_list[0x%8d]\n", tcp_f_list));
+	LWIP_DEBUGF(__NAT_DEBUG, ("####tcp_v_list[0x%8d]\n", tcp_v_list));
+	LWIP_DEBUGF(__NAT_DEBUG, ("####udp_f_list[0x%8d]\n", udp_f_list));
+	LWIP_DEBUGF(__NAT_DEBUG, ("####udp_v_list[0x%8d]\n", udp_v_list));
+
+	return 0;
+
+err_mem:
+	if (tcp_f_list &&
+		!__nat_rule_list_is_empty(&tcp_f_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		list_for_each_entry_safe(pos, n, &tcp_f_list->list, list)
+			__SAFE_FREE(pos);
+	}
+
+	if (udp_f_list &&
+		!__nat_rule_list_is_empty(&udp_f_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		list_for_each_entry_safe(pos, n, &udp_f_list->list, list)
+			__SAFE_FREE(pos);
+	}
+
+	__SAFE_FREE(tcp_f_list);
+	__SAFE_FREE(tcp_v_list);
+	__SAFE_FREE(udp_f_list);
+	__SAFE_FREE(udp_v_list);
+
+	return -1;
+}
+
+static void __nat_entry_deinit(void)
+{
+	struct nat_rule_list_s *tcp_f_list;
+	struct nat_rule_list_s *tcp_v_list;
+	struct nat_rule_list_s *udp_f_list;
+	struct nat_rule_list_s *udp_v_list;
+
+	tcp_f_list = br_nat_tcp_entry.f_list;
+	tcp_v_list = br_nat_tcp_entry.v_list;
+	udp_f_list = br_nat_udp_entry.f_list;
+	udp_v_list = br_nat_udp_entry.v_list;
+
+	if (tcp_f_list &&
+		!__nat_rule_list_is_empty(&tcp_f_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		list_for_each_entry_safe(pos, n, &tcp_f_list->list, list)
+			__SAFE_FREE(pos);
+	}
+
+	if (udp_f_list &&
+		!__nat_rule_list_is_empty(&udp_f_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		list_for_each_entry_safe(pos, n, &udp_f_list->list, list)
+			__SAFE_FREE(pos);
+	}
+}
+
+void bridgeif_validate_recv_packet(struct pbuf *p, bridgeif_pkt_attrib_t *pattrib)
 {
 	u16_t protocol, src_port = 0, dst_port = 0;
 	u8_t type = 0;
@@ -440,7 +621,7 @@ void bridgeif_update_attrib(struct pbuf *p, bridgeif_pkt_attrib_t *pattrib)
 				dst_port = PP_NTOHS(udph->dest);
 			}
 			break;
-		default:
+		default: //ICMP
 			src_port = 0;
 			dst_port = 0;
 		}
@@ -467,143 +648,492 @@ void bridgeif_update_attrib(struct pbuf *p, bridgeif_pkt_attrib_t *pattrib)
 
 }
 
-void bridgeif_nat_age_one_second()
+void bridgeif_nat_age_one_second(void)
 {
-  int i,j;
-  BRIDGEIF_DECL_PROTECT(lev);
+	struct nat_rule_list_s *udp_f_list;
+	struct nat_rule_list_s *udp_v_list;
+	struct nat_rule_list_s *tcp_f_list;
+	struct nat_rule_list_s *tcp_v_list;
+	udp_src_port_t *udp_rule;
+	tcp_src_port_t *tcp_rule;
 
-  BRIDGEIF_READ_PROTECT(lev);
+	udp_f_list = br_nat_udp_entry.f_list;
+	udp_v_list = br_nat_udp_entry.v_list;
+	tcp_f_list = br_nat_tcp_entry.f_list;
+	tcp_v_list = br_nat_tcp_entry.v_list;
 
-  for (i = 0; i < 4; i++) {
-    bridgeif_nat_entry_t *e = &br_nat_entry[i];
-    if (e->used) {
-		for(j = 0; j < 8 ; j++) {
-	      BRIDGEIF_WRITE_PROTECT(lev);
-	      /* check again when protected */
-	      if (e->src_port[j].ts) {
-		  	if(e->src_port[j].type == IP_PROTO_TCP)
-				continue;
-	        if (--e->src_port[j].ts == 0) {
-	          e->src_port[j].port = 0;
-	        }
-	      }
-	      BRIDGEIF_WRITE_UNPROTECT(lev);
+	if (udp_v_list &&
+		!__nat_rule_list_is_empty(&udp_v_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		__nat_enter_critical();
+
+		list_for_each_entry_safe(pos, n, &udp_v_list->list, list) {
+			udp_rule = pos->rule;
+			if ((udp_rule->ts != BR_NAT_TIMEOUT_INFINITELY) && (!--udp_rule->ts)) {
+				__nat_rule_list_del(&pos->list);
+				__nat_rule_list_add_head(&pos->list, &udp_f_list->list);
+			}
 		}
-    }
-  }
-  BRIDGEIF_READ_UNPROTECT(lev);
+		__nat_exit_critical();
+	}
+
+	if (tcp_v_list &&
+		!__nat_rule_list_is_empty(&tcp_v_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		__nat_enter_critical();
+
+		list_for_each_entry_safe(pos, n, &tcp_v_list->list, list) {
+			tcp_rule = pos->rule;
+			if ((tcp_rule->ts != BR_NAT_TIMEOUT_INFINITELY)
+					&& (!tcp_rule->synack || tcp_rule->fin)
+					&& (!--tcp_rule->ts)) {
+				__nat_rule_list_del(&pos->list);
+				__nat_rule_list_add_head(&pos->list, &tcp_f_list->list);
+			}
+		}
+		__nat_exit_critical();
+	}
+}
+
+static void __nat_udp_rule_dump(void)
+{
+	struct nat_rule_list_s *udp_f_list;
+	struct nat_rule_list_s *udp_v_list;
+	udp_src_port_t *udp_rule;
+
+	udp_f_list = br_nat_udp_entry.f_list;
+	udp_v_list = br_nat_udp_entry.v_list;
+
+	if (udp_v_list &&
+		!__nat_rule_list_is_empty(&udp_v_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		__nat_enter_critical();
+		LWIP_DEBUGF(__NAT_DEBUG, ("#####NAT UDP Rule Dump#####\n"));
+
+		list_for_each_entry_safe(pos, n, &udp_v_list->list, list) {
+			udp_rule = pos->rule;
+			LWIP_DEBUGF(__NAT_DEBUG, ("port:%d, ts:%d\n", udp_rule->port, udp_rule->ts));
+		}
+		LWIP_DEBUGF(__NAT_DEBUG, ("##################\n"));
+		__nat_exit_critical();
+	}
+}
+
+static void __nat_tcp_rule_dump(void)
+{
+	struct nat_rule_list_s *tcp_f_list;
+	struct nat_rule_list_s *tcp_v_list;
+	tcp_src_port_t *tcp_rule;
+
+	tcp_f_list = br_nat_tcp_entry.f_list;
+	tcp_v_list = br_nat_tcp_entry.v_list;
+
+	if (tcp_v_list &&
+		!__nat_rule_list_is_empty(&tcp_v_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		__nat_enter_critical();
+		LWIP_DEBUGF(__NAT_DEBUG, ("#####NAT TCP Rule Dump#####\n"));
+
+		list_for_each_entry_safe(pos, n, &tcp_v_list->list, list) {
+			tcp_rule = pos->rule;
+			LWIP_DEBUGF(__NAT_DEBUG, ("port:%d, ts:%d, fin:%d, finack:%d, synack:%d\n",
+					tcp_rule->port, tcp_rule->ts,
+					tcp_rule->fin, tcp_rule->finack,
+					tcp_rule->synack));
+		}
+		LWIP_DEBUGF(__NAT_DEBUG, ("##################\n"));
+		__nat_exit_critical();
+	}
+}
+
+/* lookup NAT UDP Rule
+ * dir: 0, outgoing; 1, incoming */
+static int __nat_udp_lookup(bridgeif_pkt_attrib_t *pattrib, int dir)
+{
+	struct nat_rule_list_s *udp_f_list;
+	struct nat_rule_list_s *udp_v_list;
+	udp_src_port_t *rule;
+	u16_t port = dir ? pattrib->dst_port : pattrib->src_port;
+
+	udp_f_list = br_nat_udp_entry.f_list;
+	udp_v_list = br_nat_udp_entry.v_list;
+
+	if (udp_v_list &&
+		!__nat_rule_list_is_empty(&udp_v_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		__nat_enter_critical();
+
+		list_for_each_entry_safe(pos, n, &udp_v_list->list, list) {
+			rule = pos->rule;
+			if (rule->port == port) {
+				/* update NAT UDP Rule */
+				if (rule->ts != BR_NAT_TIMEOUT_INFINITELY)
+					rule->ts = BR_NAT_UDP_TIMEOUT_SEC;
+
+				__nat_rule_list_del(&pos->list);
+				__nat_rule_list_add_head(&pos->list, &udp_v_list->list);
+
+				__nat_exit_critical();
+
+				return 0;
+			}
+		}
+		__nat_exit_critical();
+	}
+
+	LWIP_DEBUGF(__NAT_DEBUG, ("##[%s] fail, dir[%d]:0, outgoing;1, incoming\n", __func__, dir));
+
+	return -1;
+}
+
+/* lookup NAT TCP Rule
+ * dir: 0, outgoing; 1, incoming */
+static int __nat_tcp_lookup(bridgeif_pkt_attrib_t *pattrib, int dir)
+{
+	struct nat_rule_list_s *tcp_f_list;
+	struct nat_rule_list_s *tcp_v_list;
+	tcp_src_port_t *rule;
+	u16_t port = dir ? pattrib->dst_port : pattrib->src_port;
+
+	tcp_f_list = br_nat_tcp_entry.f_list;
+	tcp_v_list = br_nat_tcp_entry.v_list;
+
+	if (tcp_v_list &&
+		!__nat_rule_list_is_empty(&tcp_v_list->list)) {
+		struct nat_rule_list_s *pos, *n;
+
+		__nat_enter_critical();
+
+		list_for_each_entry_safe(pos, n, &tcp_v_list->list, list) {
+			rule = pos->rule;
+			if (rule->port == port) {
+				/* remove port if TCP FIN or TCP RST */
+				if(pattrib->flags & TCP_RST){
+					LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s, remove port %d\n",__func__, rule->port));
+					if (rule->ts != BR_NAT_TIMEOUT_INFINITELY) {
+						rule->port = 0;
+						__nat_rule_list_del(&pos->list);
+						__nat_rule_list_add_tail(&pos->list, &tcp_f_list->list);
+					}
+					else {
+						rule->flag = 0;
+						rule->fin = 0;
+						rule->finack = 0;
+						rule->synack = 0;
+					}
+
+					__nat_exit_critical();
+
+					return 0;
+				}
+				if (pattrib->flags & TCP_FIN) {
+					rule->fin++;
+					if (pattrib->flags & TCP_ACK)
+						rule->finack++;
+					if (rule->fin == 2)
+						rule->finack = 1;
+				} else  {
+					if (rule->fin) {
+						if (pattrib->flags & TCP_ACK)
+							rule->finack++;
+					}
+				}
+
+				if (rule->fin == 2 && rule->finack == 2) {
+					if (rule->ts != BR_NAT_TIMEOUT_INFINITELY) {
+						LWIP_DEBUGF(__NAT_DEBUG, ("#####Fin&ack ok, remove the tcp rule: port:%d package srcport %d dstport %d\n",
+								rule->port, pattrib->src_port, pattrib->dst_port));
+						rule->port = 0;
+						__nat_rule_list_del(&pos->list);
+						__nat_rule_list_add_tail(&pos->list, &tcp_f_list->list);
+					} else {
+						rule->flag = 0;
+						rule->fin = 0;
+						rule->finack = 0;
+						rule->synack = 0;
+					}
+
+					__nat_exit_critical();
+
+					return 0;
+				}
+				/* mark synack for incoming TCP packets */
+				if ((pattrib->flags & (TCP_SYN|TCP_ACK)) == (TCP_SYN|TCP_ACK))
+					rule->synack = 1;
+
+				/* update NAT TCP Rule */
+				rule->flag = pattrib->flags;
+				if ((rule->ts != BR_NAT_TIMEOUT_INFINITELY) &&
+						((!rule->synack) || rule->fin))
+					rule->ts = BR_NAT_TCP_CONNECT_TIMEOUT_SEC;
+
+				__nat_rule_list_del(&pos->list);
+				__nat_rule_list_add_head(&pos->list, &tcp_v_list->list);
+
+				__nat_exit_critical();
+
+				return 0;
+			}
+		}
+		__nat_exit_critical();
+	}
+
+	LWIP_DEBUGF(__NAT_DEBUG, ("##[%s] fail, dir[%d]:0, outgoing;1, incoming\n", __func__, dir));
+
+	return -1;
+}
+
+static int __nat_udp_incoming_lookup(bridgeif_pkt_attrib_t *pattrib)
+{
+	return __nat_udp_lookup(pattrib, 1);
+}
+
+static int __nat_tcp_incoming_lookup(bridgeif_pkt_attrib_t *pattrib)
+{
+	return __nat_tcp_lookup(pattrib, 1);
+}
+
+/* auto remove the oldest NAT UDP Rule(except NAT UDP Port Map Rule) and create new rule,
+ * if there's not space to stroe NAT UDP Rule*/
+static void __nat_udp_outgoing_replace(bridgeif_pkt_attrib_t *pattrib)
+{
+	struct nat_rule_list_s *udp_v_list;
+	struct nat_rule_list_s *rule_list;
+	udp_src_port_t *rule;
+
+	udp_v_list = br_nat_udp_entry.v_list;
+
+	if (udp_v_list &&
+		!__nat_rule_list_is_empty(&udp_v_list->list)) {
+		__nat_enter_critical();
+
+		/* get a rule from Valid NAT UDP Rule List tail(the oldest rule) */
+		rule_list = list_last_entry(&udp_v_list->list, struct nat_rule_list_s, list);
+		__nat_rule_list_del(&rule_list->list);
+
+		rule = rule_list->rule;
+
+		LWIP_DEBUGF(__NAT_DEBUG, ("#####Auto remove the oldest rule, and replace it with new rule####\n"));
+		LWIP_DEBUGF(__NAT_DEBUG, ("#####src_port:%d --> %d, ts:%d --> %d\n",
+				rule->port, pattrib->src_port,
+				rule->ts, BR_NAT_UDP_TIMEOUT_SEC));
+
+		rule->port = pattrib->src_port;
+		rule->ts = BR_NAT_UDP_TIMEOUT_SEC;
+
+		/* add the new rule to Valid NAT UDP Rule List Head*/
+		__nat_rule_list_add_head(&rule_list->list, &udp_v_list->list);
+
+		__nat_exit_critical();
+	}
+}
+
+/* create new nat rule */
+static int __nat_udp_outgoing_create(bridgeif_pkt_attrib_t *pattrib, u32_t ts)
+{
+	struct nat_rule_list_s *udp_f_list;
+	struct nat_rule_list_s *udp_v_list;
+	struct nat_rule_list_s *rule_list;
+	udp_src_port_t *rule;
+
+	LWIP_DEBUGF(__NAT_DEBUG, ("######%s %d\n", __func__, __LINE__));
+	udp_f_list = br_nat_udp_entry.f_list;
+	udp_v_list = br_nat_udp_entry.v_list;
+
+	/* initialize entry common information,
+	 * if we have never create any nat rule */
+	if (udp_v_list &&
+		__nat_rule_list_is_empty(&udp_v_list->list)) {
+		memcpy(&br_nat_udp_entry.mac, &pattrib->src_mac, sizeof(struct eth_addr));
+		memcpy(&br_nat_udp_entry.ip_addr, pattrib->src_ip, ETH_ILEN);
+		br_nat_udp_entry.port_num = pattrib->port_idx;
+	}
+
+	if (udp_f_list &&
+		!__nat_rule_list_is_empty(&udp_f_list->list)) {
+		/* get a rule from Free NAT UDP Rule List tail */
+		__nat_enter_critical();
+
+		rule_list = list_last_entry(&udp_f_list->list, struct nat_rule_list_s, list);
+		__nat_rule_list_del(&rule_list->list);
+
+		rule = rule_list->rule;
+
+		rule->port = pattrib->src_port;
+		rule->ts = ts;
+
+		/* add the new rule to Valid NAT UDP Rule List Head*/
+		__nat_rule_list_add_head(&rule_list->list, &udp_v_list->list);
+
+		__nat_exit_critical();
+
+		return 0;
+	}
+
+	LWIP_DEBUGF(__NAT_DEBUG, ("##[%s] fail\n", __func__));
+
+	return -1;
 }
 
 
+/* create new nat rule */
+static int __nat_tcp_outgoing_create(bridgeif_pkt_attrib_t *pattrib, u32_t ts)
+{
+	struct nat_rule_list_s *tcp_f_list;
+	struct nat_rule_list_s *tcp_v_list;
+	struct nat_rule_list_s *rule_list;
+	tcp_src_port_t *rule;
+
+	tcp_f_list = br_nat_tcp_entry.f_list;
+	tcp_v_list = br_nat_tcp_entry.v_list;
+
+	/* initialize entry common information,
+	 * if we have never create any nat rule */
+	if (tcp_v_list &&
+		__nat_rule_list_is_empty(&tcp_v_list->list)) {
+		memcpy(&br_nat_tcp_entry.mac, &pattrib->src_mac, sizeof(struct eth_addr));
+		memcpy(&br_nat_tcp_entry.ip_addr, pattrib->src_ip, ETH_ILEN);
+		br_nat_tcp_entry.port_num = pattrib->port_idx;
+	}
+
+	if (tcp_f_list &&
+		!__nat_rule_list_is_empty(&tcp_f_list->list)) {
+		__nat_enter_critical();
+
+		/* get a rule from Free NAT TCP Rule List tail */
+		rule_list = list_last_entry(&tcp_f_list->list, struct nat_rule_list_s, list);
+		__nat_rule_list_del(&rule_list->list);
+
+		rule = rule_list->rule;
+
+		rule->port = pattrib->src_port;
+		rule->flag = pattrib->flags;
+		rule->ts = ts;
+		rule->fin = 0;
+		rule->finack = 0;
+		rule->synack = 0;
+
+		/* add the new rule to Valid NAT TCP Rule List Head*/
+		__nat_rule_list_add_head(&rule_list->list, &tcp_v_list->list);
+
+		__nat_exit_critical();
+
+		return 0;
+	}
+
+	LWIP_DEBUGF(__NAT_DEBUG, ("##[%s] fail\n", __func__));
+
+	return -1;
+}
+
+/* find and update nat rule */
+static int __nat_udp_outgoing_update(bridgeif_pkt_attrib_t *pattrib)
+{
+	return __nat_udp_lookup(pattrib, 0);
+}
+
+/* find and update nat rule */
+static int __nat_tcp_outgoing_update(bridgeif_pkt_attrib_t *pattrib)
+{
+	return __nat_tcp_lookup(pattrib, 0);
+}
+
+static void __nat_lookup_outgoing(bridgeif_pkt_attrib_t *pattrib)
+{
+	int ret = 0;
+
+	if (pattrib->type == IP_PROTO_TCP) {
+		ret = __nat_tcp_outgoing_update(pattrib);
+		if (!ret)
+			return;
+		ret = __nat_tcp_outgoing_create(pattrib, BR_NAT_TCP_CONNECT_TIMEOUT_SEC);
+		if (!ret)
+			return;
+		LWIP_DEBUGF(__NAT_DEBUG, ("Warning: NAT tcp rule table out of memory\n"));
+	} else if (pattrib->type == IP_PROTO_UDP){
+		ret = __nat_udp_outgoing_update(pattrib);
+		if (!ret)
+			return;
+		ret = __nat_udp_outgoing_create(pattrib, BR_NAT_UDP_TIMEOUT_SEC);
+		if (!ret)
+			return;
+		__nat_udp_outgoing_replace(pattrib);
+	}
+	/* bridgeif nat would not process icmp data,
+	 * it's processed in other region */
+}
+
 void bridgeif_nat_update_src(bridgeif_pkt_attrib_t *pattrib)
 {
-	int i=0, j=0;
-	u8_t exist = 0;
-
-	BRIDGEIF_DECL_PROTECT(lev);
-  	
 	if(pattrib->port_idx == 0)
 		return;
 
 	if(pattrib->dst_ip == NULL || pattrib->src_ip == NULL)
 		return;
 
-	BRIDGEIF_READ_PROTECT(lev);
-	for(i=0; i<4; i++) {
-		bridgeif_nat_entry_t *e = &br_nat_entry[i];
-		if(e->used == 1) {
-			//update entry			
-			if(!memcmp(&e->mac, &pattrib->src_mac, sizeof(struct eth_addr))) {
-				BRIDGEIF_WRITE_PROTECT(lev);
-				memcpy(e->ip_addr, pattrib->src_ip, ETH_ILEN);
-				e->port_num = pattrib->port_idx;
-				e->dst_port = pattrib->dst_port;				
-
-				for(j=0; j<8; j++) {
-					if(e->src_port[j].port == pattrib->src_port) {
-						e->src_port[j].flag = pattrib->flags;
-						e->src_port[j].ts = BR_NAT_TIMEOUT_SEC;
-						e->src_port[j].type = pattrib->type;
-						exist = 1;
-						BRIDGEIF_WRITE_UNPROTECT(lev);
-        				BRIDGEIF_READ_UNPROTECT(lev);
-						return;
-					}
-				}
-
-				for(j=0; j<8; j++) {
-					if(e->src_port[j].port == 0){
-						e->src_port[j].port = pattrib->src_port;
-						e->src_port[j].flag = pattrib->flags;
-						e->src_port[j].ts = BR_NAT_TIMEOUT_SEC;
-						e->src_port[j].type = pattrib->type;
-						LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,src_port[%d]:%d\n",__func__,j,e->src_port[j].port));
-						BRIDGEIF_WRITE_UNPROTECT(lev);
-        				BRIDGEIF_READ_UNPROTECT(lev);
-						return;
-					}
-				}
-			}
-		}
-	}
-	// not found, create entry
-	for(i=0; i<4; i++) {
-		bridgeif_nat_entry_t *e = &br_nat_entry[i];
-		BRIDGEIF_WRITE_PROTECT(lev);
-		if(!e->used) {
-			printf("%s==> create src_port:%d,src_ip:%d.%d.%d.%d,src_mac:%02x:%02x:%02x:%02x:%02x:%02x\n",__func__, pattrib->src_port,
-					pattrib->src_ip[0], pattrib->src_ip[1], pattrib->src_ip[2], pattrib->src_ip[3],
-					pattrib->src_mac.addr[0],pattrib->src_mac.addr[1],pattrib->src_mac.addr[2],pattrib->src_mac.addr[3],pattrib->src_mac.addr[4],pattrib->src_mac.addr[5]);
-			
-			memcpy(&e->mac, &pattrib->src_mac, sizeof(struct eth_addr));
-			memcpy(e->ip_addr, pattrib->src_ip, ETH_ILEN);
-			e->src_port[0].port = pattrib->src_port;
-			e->src_port[0].flag = pattrib->flags;
-			e->src_port[0].ts = BR_NAT_TIMEOUT_SEC;
-			e->src_port[0].type = pattrib->type;
-			e->dst_port = pattrib->dst_port;
-			e->port_num = pattrib->port_idx;
-			e->used = 1;
-			BRIDGEIF_WRITE_UNPROTECT(lev);
-        	BRIDGEIF_READ_UNPROTECT(lev);
-			return;
-		}
-		BRIDGEIF_WRITE_UNPROTECT(lev);
-	}
-	BRIDGEIF_READ_UNPROTECT(lev);
+	__nat_lookup_outgoing(pattrib);
 }
 
-u16_t bridgeif_nat_find_dst(bridgeif_pkt_attrib_t *pattrib)
+void __nat_add_port_map(struct eth_addr *src_mac, u8_t *src_ip, u16_t src_port,
+					u8_t type)
 {
-	int i=0, j=0;
-	BRIDGEIF_DECL_PROTECT(lev);
+	bridgeif_pkt_attrib_t pattrib = {0};
 
+	pattrib.src_port = src_port;
+	pattrib.flags = 0;
+	pattrib.type = type;
+	pattrib.port_idx = 1; /* wlan1 */
+	memcpy(&pattrib.src_mac, src_mac, sizeof(struct eth_addr));
+	memcpy(pattrib.src_ip, src_ip, ETH_ILEN);
+
+	if (type == IP_PROTO_TCP)
+		__nat_tcp_outgoing_create(&pattrib, BR_NAT_TIMEOUT_INFINITELY);
+	if (type == IP_PROTO_UDP)
+		__nat_udp_outgoing_create(&pattrib, BR_NAT_TIMEOUT_INFINITELY);
+}
+
+u16_t bridgeif_nat_find_dst(bridgeif_private_t *br,  bridgeif_pkt_attrib_t *pattrib, struct pbuf *p)
+ {
+	int ret = -1;
+	struct ip_hdr *iphdr = (struct ip_hdr *)(p->payload + ETH_HLEN);
+	u8_t * dst_ip = (u8_t *)&(iphdr->dest.addr);
 	LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,src_port:%d,dst_port:%d\n",__func__,pattrib->src_port,pattrib->dst_port));
 
-	if(pattrib->src_port == 0 || pattrib->dst_port == 0)
+#define IP_ICMP_REQUEST 0x08
+#define IP_ICMP_REPLY	0x00
+	if (pattrib->type == IP_PROTO_ICMP) {
+		unsigned char icmp_type = *(unsigned char *)(p->payload + ETH_HLEN + sizeof(struct ip_hdr));
+
+		if (icmp_type == IP_ICMP_REQUEST)
+			return PORT_TO_BR;
+	}
+
+	if (pattrib->src_port == 0 || pattrib->dst_port == 0)
 		return PORT_TO_NONE;
 
-	BRIDGEIF_READ_PROTECT(lev);
-	for(i=0; i<4; i++) {
-		bridgeif_nat_entry_t *e = &br_nat_entry[i];
-		if(e->used == 1) {
-			for(j=0; j<8; j++) {
-				if(e->src_port[j].port == pattrib->dst_port) {
-					// remove port if TCP_FIN or TCP_RST
-					if(e->src_port[j].flag & TCP_FIN || e->src_port[j].flag & TCP_RST){
-						LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s, remove port %d\n",__func__, e->src_port[j].port));
-						BRIDGEIF_WRITE_PROTECT(lev);
-						e->src_port[j].port = 0;
-						BRIDGEIF_WRITE_UNPROTECT(lev);
-					}
-					return PORT_TO_HOST;
-				}
-			}
-		}
+	if(ip4_addr_ismulticast(&iphdr->dest) ||
+		ip4_addr_isbroadcast(&iphdr->dest, br->netif)) {
+		printf("####Ameba Eat the packet(dest_ip: broadcast/multicast)####\n");
+		printf("%d.%d.%d.%d\n", dst_ip[0], dst_ip[1], dst_ip[2], dst_ip[3]);
+		return PORT_TO_BR;
 	}
-	BRIDGEIF_READ_UNPROTECT(lev);
 
-	return PORT_TO_BR;
+	if (pattrib->type == IP_PROTO_TCP)
+		ret = __nat_tcp_incoming_lookup(pattrib);
+	else if (pattrib->type == IP_PROTO_UDP)
+		ret = __nat_udp_incoming_lookup(pattrib);
+	/* bridgeif nat would not process icmp data,
+	 * it's processed in other region */
+
+	if (!ret)
+		return PORT_TO_HOST;
+	else
+		return PORT_TO_BR;
 }
 
 static u8_t
@@ -612,8 +1142,7 @@ bridgeif_is_local_ip(bridgeif_private_t *br, bridgeif_pkt_attrib_t *pattrib)
 	u8_t *local_ip = LwIP_GetIP(br->netif);
 	u8_t *pri_ip = LwIP_GetIP(br->ports[1].port_netif);
 	struct udp_pcb *pcb;
-	u8_t for_us = 0;
-	
+
 	if(pattrib->dst_ip == NULL)
 		return IP_TO_NONE;
 
@@ -622,26 +1151,23 @@ bridgeif_is_local_ip(bridgeif_private_t *br, bridgeif_pkt_attrib_t *pattrib)
 	if(!memcmp(local_ip, pattrib->dst_ip, ETH_ILEN))
 		return IP_TO_BR;
 	else if (!memcmp(pri_ip, pattrib->dst_ip, ETH_ILEN)){
-		LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s==> pri_ip:%d.%d.%d.%d,dst_ip:%d.%d.%d.%d\n",__func__, 
+		LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s==> pri_ip:%d.%d.%d.%d,dst_ip:%d.%d.%d.%d\n",__func__,
 		pri_ip[0], pri_ip[1], pri_ip[2], pri_ip[3],
 		pattrib->dst_ip[0], pattrib->dst_ip[1], pattrib->dst_ip[2], pattrib->dst_ip[3]));
 
-		switch(pattrib->type) {
-		case IP_PROTO_UDP:
+		if (pattrib->type == IP_PROTO_UDP) {
 			pcb = NULL;
 			for(pcb = udp_pcbs; pcb != NULL; pcb = pcb->next) {
-				if(pcb->local_port == pattrib->dst_port) {
-					for_us = 1;
+				if(pcb->local_port == pattrib->dst_port)
 					return IP_TO_WLAN1;
-				}	
-					
 			}
-			if(!for_us)
+			if(pattrib->dst_port == DNS_SERVER_PORT)
 				return IP_TO_NONE;
-			break;
-		}
-
-		return IP_TO_WLAN1;
+			return IP_TO_DROP;
+		} else if (pattrib->type == IP_PROTO_ICMP) {
+			return IP_TO_WLAN1;
+		} else
+			return IP_TO_DROP;
 	}
 
 	return IP_TO_NONE;
@@ -726,74 +1252,58 @@ u32_t bridgeif_tcpiph_chksum(struct ip_hdr *iphdr, struct pbuf *p)
 
 u32_t bridgeif_ip_send_to_ports(bridgeif_private_t *br,  bridgeif_pkt_attrib_t *pattrib, struct pbuf *p)
 {
-	int i=0;
 	bridgeif_portmask_t dstports = 2;
 	u8_t *local_ip = LwIP_GetIP(br->netif);
 	u8_t *pri_ip = LwIP_GetIP(br->ports[1].port_netif);
-	u8_t last_ip[ETH_ILEN] = {0};
 	struct netif *portif;
 
 	struct ip_hdr *iphdr = (struct ip_hdr *)(p->payload + ETH_HLEN);
 
-	for(i=0; i<4; i++) {
-		if(br_nat_entry[i].used) {
-			if(!memcmp(last_ip, br_nat_entry[i].ip_addr, ETH_ILEN))
-				continue;
-			// replace src mac dst mac, dst ip
-			// AP->STA
-			if(pattrib->port_idx == 0) {
-				dstports = 1;
-				// dst mac
-				memcpy(p->payload, br_nat_entry[i].mac.addr, ETH_ALEN);
-				//dst ip
-				//broadcast or multicast not replace
-				if(!ip4_addr_ismulticast(&iphdr->dest) && 
-				   !ip4_addr_isbroadcast(&iphdr->dest, br->netif)) {
-					memcpy(&iphdr->dest, br_nat_entry[i].ip_addr, ETH_ILEN);
-				} else {
-					LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("broadcast or multicast packet!\n"));
-				}
-				// src mac
-				memcpy(p->payload + ETH_ALEN, br->netif->hwaddr, ETH_ALEN);
-				// src ip
-				if(pattrib->src_port == DNS_SERVER_PORT)
-					memcpy(&iphdr->src, pri_ip, ETH_ILEN);
-				
-			} else if (pattrib->port_idx == 1) {
-				dstports = 0;
-				/* STA->AP, replace src_ip as local_ip, replace src_mac as local_mac
-				  replace dst
-				*/
-				//src mac
-				memcpy(p->payload + ETH_ALEN, br->netif->hwaddr, ETH_ALEN);
-				//src ip
-				memcpy(&iphdr->src, local_ip, ETH_ILEN);	
+	if (pattrib->port_idx == 0) {
+		/* Ameba->RTS3916 */
+		dstports = 1;
+		/* dst mac*/
+		memcpy(p->payload, br_nat_tcp_entry.mac.addr, ETH_ALEN);
+		/* dst ip */
+		memcpy(&iphdr->dest, br_nat_tcp_entry.ip_addr, ETH_ILEN);
 
-				/* special case for DNS */
-				if(pattrib->dst_port == DNS_SERVER_PORT) {
-					u8 dns[4] = {0};
-					//struct ip_addr* dns;
-					LwIP_GetDNS((struct ip_addr* )dns);
-					LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,dns:%d.%d.%d.%d\n",__func__, dns[0],dns[1],dns[2],dns[3]));
-					memcpy(&iphdr->dest, dns, ETH_ILEN);
-				}
-			}
+		/* src mac */
+		memcpy(p->payload + ETH_ALEN, br->netif->hwaddr, ETH_ALEN);
+		/* src ip */
+		if((pattrib->type == IP_PROTO_UDP) &&
+			(pattrib->src_port == DNS_SERVER_PORT))
+			memcpy(&iphdr->src, pri_ip, ETH_ILEN);
+	} else if (pattrib->port_idx == 1) {
+		/* RTS3916->Ameba */
+		dstports = 0;
+		/* src mac */
+		memcpy(p->payload + ETH_ALEN, br->netif->hwaddr, ETH_ALEN);
+		/* src ip */
+		memcpy(&iphdr->src, local_ip, ETH_ILEN);
 
-			bridgeif_tcpiph_chksum(iphdr, p);
-			portif = br->ports[dstports].port_netif;
+		if((pattrib->type == IP_PROTO_UDP) &&
+				(pattrib->dst_port == DNS_SERVER_PORT)) {
+			u8 dns[4] = {0};
 
-			if(dstports == 0) {
-				//remove eth header
-				pbuf_header(p, -ETH_HLEN);
-				//send to etharp_output
-				
-				br->netif->output(br->netif, p, &iphdr->dest);
-			} else {
-				//direct send to sdio host
-				portif->linkoutput(portif, p);
-			}
-			memcpy(last_ip, br_nat_entry[i].ip_addr, ETH_ILEN);
-		}				
+			LwIP_GetDNS((struct ip_addr* )dns);
+			LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,dns:%d.%d.%d.%d\n",__func__, dns[0],dns[1],dns[2],dns[3]));
+			memcpy(&iphdr->dest, dns, ETH_ILEN);
+		}
+	}
+
+	bridgeif_tcpiph_chksum(iphdr, p);
+	portif = br->ports[dstports].port_netif;
+
+	if(dstports == 0) {
+		/* remove eth header */
+		pbuf_header(p, -ETH_HLEN);
+		/* send to etharp_output */
+		/* XXX ?? */
+		br->netif->output(br->netif, p, &iphdr->dest);
+	} else {
+		/* direct send to sdio host */
+		if (netif_is_link_up(portif))
+			portif->linkoutput(portif, p);
 	}
 
 	return 0;
@@ -801,48 +1311,57 @@ u32_t bridgeif_ip_send_to_ports(bridgeif_private_t *br,  bridgeif_pkt_attrib_t *
 
 u32_t bridgeif_arp_send_to_ports(bridgeif_private_t *br, bridgeif_pkt_attrib_t *pattrib, struct pbuf *p)
 {
-	int i=0;
 	bridgeif_portmask_t dstports;
 	u8_t *local_ip = LwIP_GetIP(br->netif);
-	u8_t last_ip[ETH_ILEN] = {0};
 	struct netif *portif;
-	
-	struct etharp_hdr *arphdr = (struct etharp_hdr *)(p->payload + ETH_HLEN);;
+	struct eth_addr *mac = NULL;
+	u8_t *ip_addr = NULL;
 
-	for(i=0; i<4; i++) {
-		if(br_nat_entry[i].used) {
-			if(!memcmp(last_ip, br_nat_entry[i].ip_addr, ETH_ILEN))
-				continue;
+	if (!__nat_rule_list_is_empty(&br_nat_tcp_entry.v_list->list)) {
+		mac = &br_nat_tcp_entry.mac;
+		ip_addr = br_nat_tcp_entry.ip_addr;
+	}
+	else if (!__nat_rule_list_is_empty(&br_nat_udp_entry.v_list->list)) {
+		mac = &br_nat_udp_entry.mac;
+		ip_addr = br_nat_udp_entry.ip_addr;
+	}
+	else {
+		LWIP_DEBUGF(__NAT_DEBUG, ("##[%s] nat entry have no rule(no src mac)\n"));
+		return 1;
+	}
 
-			// replace src mac dst mac, dst ip
-			memcpy(p->payload + ETH_ALEN, br->netif->hwaddr, ETH_ALEN);
-			memcpy(&arphdr->shwaddr, br->netif->hwaddr, ETH_ALEN);
-	
-			// AP->STA
-			if(pattrib->port_idx == 0) {
-				dstports = 1;
-				// dst mac					
-				memcpy(p->payload, br_nat_entry[i].mac.addr, ETH_ALEN);					
-				// dst mac arp
-				memcpy(&arphdr->dhwaddr, br_nat_entry[i].mac.addr, ETH_ALEN);
-				// dst ip arp
-				memcpy(&arphdr->dipaddr, br_nat_entry[i].ip_addr, ETH_ILEN);							
-			} else if (pattrib->port_idx == 1) {
-				dstports = 0;
-				// STA->AP, replace src_ip as local_ip
-				// replace src_mac as local_mac
-				memcpy(&arphdr->sipaddr, local_ip, ETH_ILEN);			
-			}
-			portif = br->ports[dstports].port_netif;
-			if(dstports == 0) {
-				br->netif->linkoutput(br->netif, p);
-			} else {
-				//direct send to sdio host
-				portif->linkoutput(portif, p);
-			}
-			memcpy(last_ip, br_nat_entry[i].ip_addr, ETH_ILEN);
-		}			
-	
+	struct etharp_hdr *arphdr = (struct etharp_hdr *)(p->payload + ETH_HLEN);
+
+	/* XXX FIXME ?? arp cannot forward between 2 network segment */
+
+	/* replace src mac dst mac, dst ip */
+	memcpy(p->payload + ETH_ALEN, br->netif->hwaddr, ETH_ALEN);
+	memcpy(&arphdr->shwaddr, br->netif->hwaddr, ETH_ALEN);
+
+	if(pattrib->port_idx == 0) {
+	/* Ameba->RTS3916*/
+		dstports = 1;
+		/* dst mac */
+		memcpy(p->payload, mac->addr, ETH_ALEN);
+		/* dst mac arp */
+		memcpy(&arphdr->dhwaddr, mac->addr, ETH_ALEN);
+		/* dst ip arp */
+		memcpy(&arphdr->dipaddr, ip_addr, ETH_ILEN);
+	} else if (pattrib->port_idx == 1) {
+	/* RTS3916->Ameba */
+		dstports = 0;
+		/* replace src_ip as local_ip,
+		 * replace src_mac as local_mac */
+		memcpy(&arphdr->sipaddr, local_ip, ETH_ILEN);
+	}
+
+	portif = br->ports[dstports].port_netif;
+	if(dstports == 0)
+		br->netif->linkoutput(br->netif, p);
+	else {
+		/* direct send to sdio host */
+		if (netif_is_link_up(portif))
+			portif->linkoutput(portif, p);
 	}
 
 	return 0;
@@ -872,15 +1391,16 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
   bridgeif_port_t *port;
   struct pbuf *q;
   bridgeif_pkt_attrib_t *pattrib;
-  
+
   if (p == NULL || netif == NULL) {
     return ERR_VAL;
   }
-  
+
   port = (bridgeif_port_t *)netif_get_client_data(netif, bridgeif_netif_client_id);
-  
+
   LWIP_ASSERT("port data not set", port != NULL);
   if (port == NULL || port->bridge == NULL) {
+    pbuf_free(p);
     return ERR_VAL;
   }
 
@@ -889,19 +1409,44 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
 
   /* store receive index in pbuf */
   p->if_idx = rx_idx;
- 
+
   dst = (struct eth_addr *)p->payload;
-  src = (struct eth_addr *)(((u8_t *)p->payload) + sizeof(struct eth_addr)); 
+  src = (struct eth_addr *)(((u8_t *)p->payload) + sizeof(struct eth_addr));
 
   pattrib = (bridgeif_pkt_attrib_t *)malloc(sizeof(bridgeif_pkt_attrib_t));
-  bridgeif_update_attrib(p, pattrib);
-
+  bridgeif_validate_recv_packet(p, pattrib);
+  if (pattrib->protocol == lwip_htons(ETH_P_IPV6)) {
+    pbuf_free(p);
+    pbuf_free(pattrib);
+    return ERR_VAL;
+  }
   pattrib->port_idx = port->port_num;
 
   if ((src->addr[0] & 1) == 0) {
     /* update src for all non-group addresses */
     bridgeif_fdb_update_src(br->fdbd, src, port->port_num);
-	bridgeif_nat_update_src(pattrib);	
+
+    if (pattrib->port_idx == 1 && pattrib->protocol == lwip_htons(ETH_P_IP)) {
+      u8_t flag = bridgeif_is_local_ip(br, pattrib);
+      if(flag == IP_TO_NONE)
+        bridgeif_nat_update_src(pattrib);
+      else if (flag == IP_TO_DROP) {
+#if 0
+	printf("%s need to drop:port:%d p 0x%x t 0x%x srcip %d.%d.%d.%d dstip %d.%d.%d.%d srcmac:%02x:%02x:%02x:%02x:%02x:%02x,dstmac:%02x:%02x:%02x:%02x:%02x:%02x\n",
+          __func__,
+          port->port_num,
+          pattrib->protocol,
+          pattrib->type,
+          pattrib->src_ip[0], pattrib->src_ip[1], pattrib->src_ip[2], pattrib->src_ip[3],
+          pattrib->dst_ip[0], pattrib->dst_ip[1], pattrib->dst_ip[2], pattrib->dst_ip[3],
+          src->addr[0],src->addr[1],src->addr[2],src->addr[3],src->addr[4],src->addr[5],
+          dst->addr[0],dst->addr[1],dst->addr[2],dst->addr[3],dst->addr[4],dst->addr[5]);
+#endif
+        pbuf_free(p);
+        pbuf_free(pattrib);
+        return ERR_VAL;
+      }
+    }
   }
 
   if (dst->addr[0] & 1) {
@@ -912,118 +1457,126 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
     if (dstports & (1 << BRIDGEIF_MAX_PORTS)) {
       /* we pass the reference to ->input or have to free it */
       LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-	  if (br->netif->input(p, br->netif) != ERR_OK) {
-		  pbuf_free(p);	
-	  }	  
+      if(port->port_num == 1) {
+        if (br->netif->input(p, br->ports[port->port_num].port_netif) != ERR_OK) {
+          pbuf_free(p);
+        }
+      } else {
+        if (br->netif->input(p, br->netif) != ERR_OK) {
+          pbuf_free(p);
+        }
+      }
     } else {
       /* all references done */
       pbuf_free(p);
     }
-	free(pattrib);
+    free(pattrib);
     /* always return ERR_OK here to prevent the caller freeing the pbuf */
     return ERR_OK;
   } else {
     /* is this for one of the local ports? */
-	LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("\n\r%s:port->port_num:%d,netif index:%d,%x,dst:%02x:%02x:%02x:%02x:%02x:%02x,src:%02x:%02x:%02x:%02x:%02x:%02x\n",
+    LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("\n\r%s:port->port_num:%d,netif index:%d,%x,dst:%02x:%02x:%02x:%02x:%02x:%02x,src:%02x:%02x:%02x:%02x:%02x:%02x\n",
   	__func__,
   	port->port_num,
   	rx_idx,
   	pattrib->protocol,
   	dst->addr[0],dst->addr[1],dst->addr[2],dst->addr[3],dst->addr[4],dst->addr[5],
-  	src->addr[0],src->addr[1],src->addr[2],src->addr[3],src->addr[4],src->addr[5])); 
-  
+  	src->addr[0],src->addr[1],src->addr[2],src->addr[3],src->addr[4],src->addr[5]));
+
     if (bridgeif_is_local_mac(br, dst)) {
-        #ifdef CONFIG_CONCURRENT_MODE  
+        #ifdef CONFIG_CONCURRENT_MODE
         br_rpt_handle_frame(br->netif, p);
-        if (bridgeif_is_local_mac(br, dst)) {	
-			/* input port num == 1, input from sdio host */
-			if(port->port_num == 1) {
-				u8_t flag = bridgeif_is_local_ip(br, pattrib);
-				LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,flag = %d\n",__func__,flag));
+        if (bridgeif_is_local_mac(br, dst)) {
+          if(port->port_num == 1) {
+            u8_t flag = bridgeif_is_local_ip(br, pattrib);
+            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,flag = %d\n",__func__,flag));
 
-				if(flag == IP_TO_BR || flag == IP_TO_WLAN1) {
+            if(flag == IP_TO_BR || flag == IP_TO_WLAN1) {
+              if (p->if_idx > 0) {
+                p->if_idx = 0;
+              }
+              /* yes, send to cpu port only */
+              LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+              free(pattrib);
+              return br->netif->input(p, br->ports[port->port_num].port_netif);
+            } else {
+              // AP->STA, transfer to all stas
+              bridgeif_nat_send_to_ports(br, pattrib, p);
+              pbuf_free(p);
+              free(pattrib);
+              return ERR_OK;
+            }
+          }
 
-					if (p->if_idx > 0) {
-		              p->if_idx = 0;
-		            }
-		            /* yes, send to cpu port only */
-		            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-					free(pattrib);
-					return br->netif->input(p, br->ports[port->port_num].port_netif);
-				} else {
-					//send to all stas						
-					bridgeif_nat_send_to_ports(br, pattrib, p);
-					pbuf_free(p);
-					free(pattrib);
-					return ERR_OK;
-				}
-			}
+	  	  u16_t tcp_port = bridgeif_nat_find_dst(br, pattrib, p);
+          LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,tcp port:%d\n",__func__,tcp_port));
 
-			/* input port num == 0, input from wlan0 */
-			u16_t tcp_port = bridgeif_nat_find_dst(pattrib);
-			LWIP_DEBUGF(BRIDGEIF_FW_DEBUG,("%s,tcp port:%d\n",__func__,tcp_port));
+          switch(tcp_port) {
+          case PORT_TO_NONE:
+            //pbuf copy
+            q = pbuf_alloc(PBUF_RAW, p->tot_len, PBUF_POOL);
+            if (q == NULL) {
+              LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("%s,pbuf alloc failed!\n",__func__));
+              return ERR_VAL;
+            }
 
-			switch(tcp_port) {
-				case PORT_TO_NONE: {
-					//pbuf copy
-					q = pbuf_alloc(PBUF_RAW, p->tot_len, PBUF_POOL);
-					if (q == NULL) {
-						LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("%s,pbuf alloc failed!\n",__func__));
-						return ERR_VAL;
-					}
+            if(ERR_OK != pbuf_copy(q, p)) {
+              LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("%s,pbuf copy failed!\n",__func__));
+              pbuf_free(q);
+              return ERR_VAL;
+            }
 
-					if(ERR_OK != pbuf_copy(q, p)) {
-						LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("%s,pbuf copy failed!\n",__func__));
-						pbuf_free(q);
-						return ERR_VAL; 
-					}
+            q->if_idx = rx_idx;
+            
+            if (p->if_idx > 0) {
+              p->if_idx = 0;
+            }
+            /* yes, send to cpu port only */
+            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+            if(br->netif->input(p, br->netif) != ERR_OK ) {
+              pbuf_free(p);
+            }
 
-					q->if_idx = rx_idx;
-
-					if (p->if_idx > 0) {
-		              p->if_idx = 0;
-		            }
-		            /* yes, send to cpu port only */
-		            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-					if(br->netif->input(p, br->netif) != ERR_OK ) {
-						pbuf_free(p);
-					}									
-					// AP->STA, send to all stas 	
-					bridgeif_nat_send_to_ports(br, pattrib, q);
-					free(pattrib);
-					pbuf_free(q);
-				}break;
-				case PORT_TO_BR: {
-					if (p->if_idx > 0) {
-		              p->if_idx = 0;
-		            }
-		            /* yes, send to cpu port only */
-		            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-					free(pattrib);
-					return br->netif->input(p, br->netif);
-				}break;
-				case PORT_TO_HOST: {
-					// AP->STA, send to sdio host 	
-					bridgeif_nat_send_to_ports(br, pattrib, p);
-					free(pattrib);
-					pbuf_free(p);
-				}break;
-			}
-            return ERR_OK;
-        } 
-        #else
-        /* yes, send to cpu port only */
-        LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
-        return br->netif->input(p, br->netif);
-        #endif
+            // AP->STA, transfer to all stas
+            bridgeif_nat_send_to_ports(br, pattrib, q);
+            free(pattrib);
+            pbuf_free(q);
+            break;
+          case PORT_TO_BR:
+            if (p->if_idx > 0) {
+              p->if_idx = 0;
+            }
+            /* yes, send to cpu port only */
+            LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+            free(pattrib);
+            return br->netif->input(p, br->netif);
+            break;
+          case PORT_TO_HOST:
+            // AP->STA, transfer to all stas
+            bridgeif_nat_send_to_ports(br, pattrib, p);
+            free(pattrib);
+            pbuf_free(p);
+            break;
+        }
+        return ERR_OK;
+      }
+      #else
+      /* yes, send to cpu port only */
+      LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+      return br->netif->input(p, br->netif);
+      #endif
     }
 
-	// AP->STA, send to all stas		
-	bridgeif_nat_send_to_ports(br, pattrib, p);
+    /* get dst port */
+    // dstports = bridgeif_find_dst_ports(br, dst);
+    //bridgeif_send_to_ports(br, p, dstports);
+
+    // AP->STA, transfer to all stas
+    bridgeif_nat_send_to_ports(br, pattrib, p);
     /* no need to send to cpu, flooding is for external ports only */
     /* by  this, we consumed the pbuf */
     pbuf_free(p);
-	free(pattrib);
+    free(pattrib);
     /* always return ERR_OK here to prevent the caller freeing the pbuf */
     return ERR_OK;
   }
@@ -1108,6 +1661,45 @@ bridgeif_init(struct netif *netif)
     mem_free(br);
     return ERR_MEM;
   }
+
+  int ret = 0;
+  ret = __nat_entry_init();
+  if (ret) {
+    LWIP_DEBUGF(__NAT_DEBUG, ("bridgeif_init: out of memory in nat entry init\n"));
+    __nat_entry_deinit();
+    return ERR_MEM;
+  }
+
+  do {
+    struct eth_addr src_mac;
+    u8_t src_ip[4];
+    u16_t src_port;
+    u8_t type;
+ 
+    /* RTS3916 MAC ADDRESS */
+    src_mac.addr[0] = 0x00;
+    src_mac.addr[1] = 0xe0;
+    src_mac.addr[2] = 0x4c;
+    src_mac.addr[3] = 0xB7;
+    src_mac.addr[4] = 0x23;
+    src_mac.addr[5] = 0x00;
+ 
+    /* RTS3916 IP ADDRESS */
+    src_ip[0] = 169;
+    src_ip[1] = 254;
+    src_ip[2] = 121;
+    src_ip[3] = 200;
+
+    /* RTS3916 SOURCE PORT */
+    src_port = 554;
+    /* IP PROTOCAL */
+    type = IP_PROTO_TCP;
+    __nat_add_port_map(&src_mac, src_ip, src_port, type);
+
+    /* RTS3916 SOURCE PORT */
+    src_port = 80;
+    __nat_add_port_map(&src_mac, src_ip, src_port, type);
+  } while (0);
 
 #if LWIP_NETIF_HOSTNAME
   /* Initialize interface hostname */

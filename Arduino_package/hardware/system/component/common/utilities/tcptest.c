@@ -589,6 +589,7 @@ int udp_server_func(struct iperf_data_t iperf_data)
 	struct sockaddr_in   ser_addr , client_addr;
 	int                  addrlen = sizeof(struct sockaddr_in);
 	int                  n = 1;
+	int                  datagram_id;
 	uint32_t             start_time, report_start_time, end_time;
 	int                  recv_size=0;
 	uint64_t             total_size=0,report_size=0;
@@ -681,6 +682,11 @@ int udp_server_func(struct iperf_data_t iperf_data)
 			// ack data to client
 			// Not send ack to prevent send fail due to limited skb, but it will have warning at iperf client
 			//sendto(server_fd,udp_server_buffer,ret,0,(struct sockaddr*)&client_addr,sizeof(client_addr));
+            datagram_id = ntohl(((struct iperf_udp_datagram*) udp_server_buffer)->id);
+			if (datagram_id < 0) {
+				sendto(iperf_data.server_fd,udp_server_buffer,0,0,(struct sockaddr*)&client_addr,sizeof(client_addr));
+				g_udp_terminate = 1;
+			}
 
 			end_time = xTaskGetTickCount();
 			total_size+=recv_size;
@@ -702,6 +708,11 @@ int udp_server_func(struct iperf_data_t iperf_data)
 			// ack data to client
 			// Not send ack to prevent send fail due to limited skb, but it will have warning at iperf client
 			//sendto(server_fd,udp_server_buffer,ret,0,(struct sockaddr*)&client_addr,sizeof(client_addr));
+            datagram_id = ntohl(((struct iperf_udp_datagram*) udp_server_buffer)->id);
+			if (datagram_id < 0) {
+				sendto(iperf_data.server_fd,udp_server_buffer,0,0,(struct sockaddr*)&client_addr,sizeof(client_addr));
+				g_udp_terminate = 1;
+			}
 
 			end_time = xTaskGetTickCount();
 			total_size+=recv_size;

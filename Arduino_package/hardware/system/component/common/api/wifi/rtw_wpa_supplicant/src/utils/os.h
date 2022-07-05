@@ -519,7 +519,7 @@ int os_snprintf(char *str, size_t size, const char *format, ...);
 		#define os_memset(pbuf, c, sz) rtw_memset(pbuf, c, sz)
 	#endif
 	#ifndef os_memcmp
-		#define os_memcmp(s1, s2, n) !rtw_memcmp(((void*)(s1)), ((void*)(s2)), (n)) //TODO freertos return 1 if same
+		#define os_memcmp(s1, s2, n) rtw_memcmp(((void*)(s1)), ((void*)(s2)), (n)) //TODO freertos return 1 if same
 	#endif
 	#ifndef os_memcmp_p2p
 		#define os_memcmp_p2p(s1, s2, n) memcmp((s1), (s2), (n))

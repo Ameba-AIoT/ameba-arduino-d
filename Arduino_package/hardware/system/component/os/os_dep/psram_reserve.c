@@ -10,6 +10,8 @@ static	_lock	Psram_heap_lock;
 #define configTOTAL_PSRAM_HEAP_SIZE		(0x200000)
 #define configBYTE_PSRAM_ALIGNMENT			32
 
+#if (defined(configUSE_PSRAM_FOR_HEAP_REGION) && ( configUSE_PSRAM_FOR_HEAP_REGION == 0 ))
+
 PSRAM_HEAP_SECTION 
 static unsigned char psRAMHeap[configTOTAL_PSRAM_HEAP_SIZE];
 
@@ -230,4 +232,4 @@ void Psram_reserve_free(void *mem)
 	}
 }
 
-
+#endif

@@ -18,6 +18,8 @@
 #include "ameba_soc.h"
 
 static u32 cpu_systick;
+static u32 lock_ticker;
+
 
 /**
   * @brief  This function is used to handle flash write ipc interrupt.
@@ -90,6 +92,7 @@ void FLASH_Write_Lock(void)
 		}
 #endif
 	}
+	lock_ticker = SYSTIMER_TickGet();
 }
 
 /**
@@ -104,6 +107,13 @@ void FLASH_Write_Unlock(void)
 	u32 cpu_id = IPC_CPUID();
 	u32 lp_sleep_state;
 	//u32 hp_sleep_state;
+
+	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
+		u32 duration = SYSTIMER_GetPassTime(lock_ticker);
+		for (int i = 0; i < duration; i++) {
+			xTaskIncrementTick();
+		}
+	}
 
 	/*send an event using "sev" instruction to let the other CPU wake up*/
 	asm volatile ("sev");
@@ -457,6 +467,7 @@ int  FLASH_WriteStream(u32 address, u32 len, u8 * data)
   * @param  Protection:  if disable interrupt when switch clock:
   * @retval   None
   */
+_OPTIMIZE_O3_
 IMAGE2_RAM_TEXT_SECTION
 void FLASH_ClockSwitch(u32 Source, u32 Protection)
 {

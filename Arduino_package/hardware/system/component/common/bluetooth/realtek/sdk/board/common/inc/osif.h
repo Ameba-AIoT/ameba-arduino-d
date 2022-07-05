@@ -60,6 +60,8 @@ bool osif_msg_queue_peek(void *p_handle, uint32_t *p_msg_num);
 bool osif_msg_send(void *p_handle, void *p_msg, uint32_t wait_ms);
 bool osif_msg_recv(void *p_handle, void *p_msg, uint32_t wait_ms);
 bool osif_msg_peek(void *p_handle, void *p_msg, uint32_t wait_ms);
+uint32_t osif_msg_queue_get_space(void *p_handle);
+uint32_t osif_msg_queue_get_capacity(void *p_handle);
 
 /* OS memory management interfaces */
 void *osif_mem_alloc(RAM_TYPE ram_type, size_t size);

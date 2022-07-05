@@ -28,14 +28,18 @@ char *eap_identity = NULL;
 char *eap_password = NULL;
 // if set eap_ca_cert and defined(EAP_SSL_VERIFY_SERVER), client will verify server's cert
 const unsigned char *eap_ca_cert = NULL;
+int eap_ca_cert_len = 0;
 // if set eap_client_cert, eap_client_key, and defined(EAP_SSL_VERIFY_CLIENT), client will send its cert to server
 const unsigned char *eap_client_cert = NULL;
 const unsigned char *eap_client_key = NULL;
+int eap_client_cert_len = 0;
+int eap_client_key_len = 0;
 char *eap_client_key_pwd = NULL;
 int eap_fast_max_pac_list_len = 10;
 int eap_fast_provisioning_mode = 2;
 int eap_fast_use_binary_pac = 0;
 char * eap_fast_machine_pac = "";
+const configSTACK_DEPTH_TYPE *eap_eapol_recvd_stack = NULL;
 
 void eap_eapol_recvd_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
 void eap_eapol_start_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
@@ -236,7 +240,10 @@ int eap_start(char *method)
 
 	set_eap_phase(ENABLE);
 	wifi_reg_event_handler(WIFI_EVENT_EAPOL_START, eap_eapol_start_hdl, NULL);
-	wifi_reg_event_handler(WIFI_EVENT_EAPOL_RECVD, eap_eapol_recvd_hdl, NULL);
+	if (eap_eapol_recvd_stack!=NULL)
+		wifi_reg_event_handler(WIFI_EVENT_EAPOL_RECVD, eap_eapol_recvd_hdl, eap_eapol_recvd_stack);	
+	else
+		wifi_reg_event_handler(WIFI_EVENT_EAPOL_RECVD, eap_eapol_recvd_hdl, NULL);
 
 	
 
@@ -622,13 +629,13 @@ int eap_cert_setup(struct eap_tls *tls_context)
 	( void ) tls_context;
 #if (defined(ENABLE_EAP_SSL_VERIFY_CLIENT) && ENABLE_EAP_SSL_VERIFY_CLIENT)
 	if(eap_client_cert != NULL && eap_client_key != NULL){
-		if(mbedtls_x509_crt_parse(_cli_crt, eap_client_cert, strlen(eap_client_cert)+1) != 0)
+		if(mbedtls_x509_crt_parse(_cli_crt, eap_client_cert, eap_client_cert_len) != 0)
 			return -1;
 		if(eap_client_key_pwd){
-			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, strlen(eap_client_key)+1, eap_client_key_pwd, strlen(eap_client_key_pwd)+1) != 0)
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd)+1) != 0)
 				return -1;
 		}else{
-			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, strlen(eap_client_key)+1, eap_client_key_pwd, 1) != 0)
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, 0) != 0)
 				return -1;
 		}
 
@@ -637,7 +644,7 @@ int eap_cert_setup(struct eap_tls *tls_context)
 #endif
 #if (defined(ENABLE_EAP_SSL_VERIFY_SERVER) && ENABLE_EAP_SSL_VERIFY_SERVER)
 	if(eap_ca_cert != NULL){
-		if(mbedtls_x509_crt_parse(_ca_crt, eap_ca_cert, strlen(eap_ca_cert)+1) != 0)
+		if(mbedtls_x509_crt_parse(_ca_crt, eap_ca_cert, eap_ca_cert_len) != 0)
 			return -1;
 		mbedtls_ssl_conf_ca_chain(tls_context->conf, _ca_crt, NULL);
 		mbedtls_ssl_conf_authmode(tls_context->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
