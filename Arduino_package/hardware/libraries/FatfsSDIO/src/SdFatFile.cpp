@@ -62,6 +62,22 @@ int SdFatFile::peek() {
     return c;
 }
 
+uint32_t SdFatFile::cursor_pos () {
+    uint32_t pos = 0;
+
+    pos = ((FIL *)m_file)->fptr;
+
+    return pos;
+}
+
+uint32_t SdFatFile::file_size () {
+    uint32_t size = 0;
+
+    size = ((FIL *)m_file)->fsize;
+
+    return size;
+}
+
 int SdFatFile::available() {
     return !(f_eof((FIL *)m_file));
 }
