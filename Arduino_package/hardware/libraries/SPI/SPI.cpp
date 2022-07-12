@@ -43,7 +43,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
 
     pinUserSS = -1;
 
-    defaultFrequency = 20000000;
+    defaultFrequency = 2000000;
 }
 
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
@@ -99,6 +99,15 @@ void SPIClass::begin(void)
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
+#elif defined(BOARD_RTL8721DM)
+    if (pinMOSI == 1) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
+    } else if (pinMOSI == 14) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }    
 #else
 #error chack the SPI pin connections
 #endif
@@ -139,6 +148,15 @@ void SPIClass::begin(int ss)
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
+#elif defined(BOARD_RTL8721DM)
+    if (pinMOSI == 1) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
+    } else if (pinMOSI == 14) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }    
 #else
 #error chack the SPI pin connections
 #endif
@@ -313,6 +331,10 @@ SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
 
 #elif defined(BOARD_RTL8720DN_BW16)
 SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
+
+#elif defined(BOARD_RTL8721DM)
+SPIClass SPI((void *)(&spi_obj0), 1, 2, 0, 8); // mosi, miso, clk , ss
+SPIClass SPI1((void *)(&spi_obj1), 14, 15, 16, 17); // mosi, miso, clk , ss
 
 #else
 #error chack the borad supported

@@ -285,6 +285,11 @@ TwoWire Wire  = TwoWire(PB_0, PA_31);
 // HW: I2C0
 TwoWire Wire  = TwoWire(PA_26, PA_25);
 
+#elif defined(BOARD_RTL8721DM)
+// SDA SCL
+// HW: I2C0
+TwoWire Wire  = TwoWire(PA_26, PA_25);
+
 #else
 #error check the board supported
 #endif
