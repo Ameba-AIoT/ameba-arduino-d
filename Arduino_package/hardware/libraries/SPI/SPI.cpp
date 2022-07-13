@@ -43,7 +43,12 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
 
     pinUserSS = -1;
 
-    defaultFrequency = 2000000;
+#if defined(BOARD_RTL8721DM)
+defaultFrequency = 2000000;
+#else
+defaultFrequency = 20000000;
+#endif
+
 }
 
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
