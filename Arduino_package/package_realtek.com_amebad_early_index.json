@@ -13,6 +13,39 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
+          "version": "3.1.4-build20220718",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.4-build20220718.tar.gz",
+          "archiveFileName": "ameba_d-3.1.4-build20220718.tar.gz",
+          "checksum": "SHA-256:f9ca7f8936117c2a9c4a2d82aa0b22ef43294d663665ffb467d4075877a9cbaa",
+          "size": "16114265",
+          "boards": [
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM_MINI)"},
+            {"name": "BW16 (RTL8720DN)"},
+            {"name": "BW16-TypeC (RTL8720DN)"},
+            {"name": "AW-CU488 Thing Plus (RTL8721DM)"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.0.9"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
           "version": "3.1.4-build20220705",
           "category": "Contributed",
           "help": {

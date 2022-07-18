@@ -46,6 +46,19 @@ void WS2812B::begin(void) {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
+#elif defined(BOARD_RTL8721DM)
+    if (_input_pin == 1) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
+        spi_addr = SPI0_REG_BASE;
+    } else if (_input_pin== 14) {
+        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+        spi_addr = SPI1_REG_BASE;
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
+#else
+#error chack the SPI pin connections
 #endif
 }
 

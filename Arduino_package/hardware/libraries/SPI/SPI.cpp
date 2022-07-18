@@ -112,7 +112,7 @@ void SPIClass::begin(void)
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
-    }    
+    }
 #else
 #error chack the SPI pin connections
 #endif

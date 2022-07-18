@@ -14,6 +14,10 @@ extern "C" {
 }
 #endif
 
+#if defined(BOARD_RTL8722DM_MINI)
+#error AMB23/RTL8722DM_MINI do not support IRDevice.
+#endif
+
 static IR_InitTypeDef IR_InitStruct;  // Structure to store configuration information
 static IR_DataTypeDef IR_DataStruct;  // Structure to store encoded data
 xSemaphoreHandle IR_Recv_end_sema = NULL;
@@ -159,6 +163,17 @@ void IRDevice::setTxPin(uint8_t transmitPin) {
         printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
         return;
     }
+#elif defined(BOARD_RTL8721DM)
+    if (transmitPin == 20) {
+        Pinmux_Config(_PB_31, PINMUX_FUNCTION_IR);
+    } else if (transmitPin == 10) {
+        Pinmux_Config(_PB_23, PINMUX_FUNCTION_IR);
+    } else if (transmitPin == 6) {
+        Pinmux_Config(_PA_25, PINMUX_FUNCTION_IR);
+    } else {
+        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
+        return;
+    }
 #else
 #error
 #endif
@@ -186,6 +201,19 @@ void IRDevice::setRxPin(uint8_t receivePin) {
 #elif defined(BOARD_RTL8720DN_BW16)
 //    if (receivePin == 10) {
     if (receivePin == PA26) {
+        PAD_PullCtrl(_PA_26, PullNone);
+        Pinmux_Config(_PA_26, PINMUX_FUNCTION_IR);
+    } else {
+        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
+        return;
+    }
+#elif defined(BOARD_RTL8721DM)
+    if (receivePin == 13) {
+        PAD_PullCtrl(_PB_29, PullNone);
+        Pinmux_Config(_PB_29, PINMUX_FUNCTION_IR);
+    } else if (receivePin == 11) {
+        Pinmux_Config(_PB_22, PINMUX_FUNCTION_IR);
+    } else if (receivePin == 5) {
         PAD_PullCtrl(_PA_26, PullNone);
         Pinmux_Config(_PA_26, PINMUX_FUNCTION_IR);
     } else {
