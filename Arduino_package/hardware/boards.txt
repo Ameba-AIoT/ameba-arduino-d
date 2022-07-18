@@ -73,8 +73,8 @@ ameba_rtl8722dm_mini.menu.EraseFlash.Enable.build.erase_flash=Enable
 ##############################################################
 
 ameba_rtl8720dn_bw16.name=BW16 (RTL8720DN)
-ameba_rtl8720dn_bw16.vid.0=0x1A86
-ameba_rtl8720dn_bw16.pid.0=0x7523
+#ameba_rtl8720dn_bw16.vid.0=0x1A86
+#ameba_rtl8720dn_bw16.pid.0=0x7523
 
 ameba_rtl8720dn_bw16.upload.tool=ameba_d_tools
 ameba_rtl8720dn_bw16.upload.protocol=usb_serial
@@ -107,8 +107,8 @@ ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 ##############################################################
 
 awcu488_thingplus.name=AW-CU488 Thing Plus (RTL8721DM)
-awcu488_thingplus.vid.0=0x10C4
-awcu488_thingplus.pid.0=0xEA60
+#awcu488_thingplus.vid.0=0x10C4
+#awcu488_thingplus.pid.0=0xEA60
 
 awcu488_thingplus.upload.tool=ameba_d_tools
 awcu488_thingplus.upload.protocol=usb_serial
