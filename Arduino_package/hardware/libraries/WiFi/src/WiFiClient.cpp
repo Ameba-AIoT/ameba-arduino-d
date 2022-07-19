@@ -54,12 +54,9 @@ int WiFiClient::available() {
             return 1;
         } else {
             err = clientdrv.getLastErrno(_sock);
-            if (err != 0) {
+            if ( !((err == 0) || (err == EAGAIN)) ) {
                 _is_connected = false;
             }
-            //if (err != EAGAIN) {
-                //_is_connected = false;
-            //}
             return 0;
         }
     }
