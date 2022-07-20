@@ -81,41 +81,14 @@ void SPIClass::endTransaction(void)
 
 void SPIClass::begin(void)
 {
-#if defined(BOARD_RTL8722DM)
-    if (pinMOSI == 11) {
+    if (pinMOSI == SPI_MOSI) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == 21) {
+    } else if (pinMOSI == SPI1_MOSI) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
-#elif defined(BOARD_RTL8722DM_MINI)
-    if ((pinMOSI == 9) || (pinMOSI == 4)) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8720DN_BW16)
-    if (pinMOSI == PA12) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8721DM)
-    if (pinMOSI == 1) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == 14) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#else
-#error chack the SPI pin connections
-#endif
 
     spi_init(
         (spi_t *)pSpiMaster, 
@@ -130,41 +103,14 @@ void SPIClass::begin(void)
 
 void SPIClass::begin(int ss)
 {
-#if defined(BOARD_RTL8722DM)
-    if (pinMOSI == 11) {
+    if (pinMOSI == SPI_MOSI) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == 21) {
+    } else if (pinMOSI == SPI1_MOSI) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
-#elif defined(BOARD_RTL8722DM_MINI)
-    if ((pinMOSI == 9) || (pinMOSI == 4)) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8720DN_BW16)
-    if (pinMOSI == PA12) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8721DM)
-    if (pinMOSI == 1) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == 14) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }    
-#else
-#error chack the SPI pin connections
-#endif
 
     spi_init(
         (spi_t *)pSpiMaster, 
@@ -290,11 +236,21 @@ void SPIClass::setBitOrder(uint8_t _pin, BitOrder _bitOrder)
     bitOrder = _bitOrder;
 }
 
+void SPIClass::setBitOrder(BitOrder _order)
+{
+    setBitOrder(pinSS, _order);
+}
+
 void SPIClass::setDataMode(uint8_t _pin, uint8_t _mode)
 {
     (void)_pin;
 
     spi_format((spi_t *)pSpiMaster, 8, _mode, 0);
+}
+
+void SPIClass::setDataMode(uint8_t _mode)
+{
+    setDataMode(pinSS, _mode);
 }
 
 void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
@@ -305,15 +261,6 @@ void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
     // no affact in Ameba
 }
 
-void SPIClass::setBitOrder(BitOrder _order)
-{
-    setBitOrder(pinSS, _order);
-}
-
-void SPIClass::setDataMode(uint8_t _mode)
-{
-    setDataMode(pinSS, _mode);
-}
 
 void SPIClass::setClockDivider(uint8_t _div)
 {
@@ -325,6 +272,14 @@ void SPIClass::setClockDivider(uint8_t _div)
 void SPIClass::setDefaultFrequency(int _frequency)
 {
     defaultFrequency = _frequency;
+    spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+}
+
+// bits: data frame size, 4-16 supported.
+void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
+{
+    (void)_pin;
+    spi_format((spi_t *)pSpiMaster, _bits, _mode, 0);
 }
 
 #if defined(BOARD_RTL8722DM)
@@ -333,14 +288,15 @@ SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
 
 #elif defined(BOARD_RTL8722DM_MINI)
 SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
+//SPIClass SPI((void *)(&spi_obj0), 4, 5, 6, 7);
 
 #elif defined(BOARD_RTL8720DN_BW16)
 SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
 
 #elif defined(BOARD_RTL8721DM)
-SPIClass SPI((void *)(&spi_obj0), 1, 2, 0, 8); // mosi, miso, clk , ss
-SPIClass SPI1((void *)(&spi_obj1), 14, 15, 16, 17); // mosi, miso, clk , ss
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // mosi, miso, sclk , ss
+SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS); // mosi, miso, sclk , ss
 
 #else
-#error chack the borad supported
+#error chack the borad supported SPI
 #endif

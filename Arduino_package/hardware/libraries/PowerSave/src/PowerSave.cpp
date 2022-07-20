@@ -133,22 +133,22 @@ uint32_t PMUClass::AONWakeReason(void) {
 
 //BIT(0): wakepin0, BIT(1): wakepin1, BIT(2): wakepin2, BIT(3): wakepin3
 //wakepin 0 :
-//  _PA_12,  PINMUX_S0
-//  _PA_16,  PINMUX_S1
-//  _PA_20,  PINMUX_S2
+//  PA_12,  PINMUX_S0
+//  PA_16,  PINMUX_S1
+//  PA_20,  PINMUX_S2
 //  
 //wakepin 1 :
-//  _PA_13, PINMUX_S0
-//  _PA_17, PINMUX_S1
-//  _PA_21, PINMUX_S2
+//  PA_13, PINMUX_S0
+//  PA_17, PINMUX_S1
+//  PA_21, PINMUX_S2
 //wakepin 2 :
-//  _PA_14, PINMUX_S0
-//  _PA_18, PINMUX_S1
-//  _PA_25, PINMUX_S2
+//  PA_14, PINMUX_S0
+//  PA_18, PINMUX_S1
+//  PA_25, PINMUX_S2
 //  wakepin 3 :
-//  _PA_15, PINMUX_S0
-//  _PA_19, PINMUX_S1
-//  _PA_26  PINMUX_S2
+//  PA_15, PINMUX_S0
+//  PA_19, PINMUX_S1
+//  PA_26  PINMUX_S2
 int PMUClass::WakePinCheck(void) {
     int checkpin_number = SOCPS_WakePinCheck();
     //printf("checkpin_number %d  \r\n", checkpin_number);

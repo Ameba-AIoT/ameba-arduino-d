@@ -65,7 +65,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
         // If user needs to use SWD pins for GPIO, disable SWD debugging to free pins
         sys_jtag_off();
     }
-	
+
     if (g_APinDescription[ulPin].ulPinType == PIO_GPIO && 
             (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE || ulMode == INPUT_IRQ_CHANGE)) {
         // Pin mode changes from gpio_t to gpio_irq_t

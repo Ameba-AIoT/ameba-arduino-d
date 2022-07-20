@@ -94,6 +94,7 @@ public:
 
     /* extend api added by RTK */
     void setDefaultFrequency(int _frequency);
+    void setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode);
 
 private:
     void *pSpiMaster;

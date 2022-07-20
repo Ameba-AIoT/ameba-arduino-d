@@ -2,6 +2,7 @@
 #define _SPI_WS2812B_H_
 
 #include <Arduino.h>
+#include "SPI.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,5 +40,19 @@ class WS2812B {
         pixel* _led_array = NULL;
         uint8_t _input_pin = 0;
 };
+
+#if defined(BOARD_RTL8722DM)
+extern SPIClass SPI;
+extern SPIClass SPI1;
+#elif defined(BOARD_RTL8722DM_MINI)
+extern SPIClass SPI;
+#elif defined(BOARD_RTL8720DN_BW16)
+extern SPIClass SPI;
+#elif defined(BOARD_RTL8721DM)
+extern SPIClass SPI;
+extern SPIClass SPI1;
+#else
+#error check the board supported
+#endif
 
 #endif

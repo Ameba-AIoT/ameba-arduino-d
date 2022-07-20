@@ -25,13 +25,12 @@
 #include <string.h>
 #include <math.h>
 
-//#define Arduino_STD_PRINTF
+#include "binary.h"
 
+//#define Arduino_STD_PRINTF
 #ifdef Arduino_STD_PRINTF
 #include <stdio.h>
 #endif
-
-#include "binary.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,13 +39,11 @@ extern "C" {
 #include "wiring_constants.h"
 
 extern uint32_t SystemCoreClock;
-
 #define clockCyclesPerMicrosecond() (SystemCoreClock / 1000000L)
 #define clockCyclesToMicroseconds(a) (((a) * 1000L) / (SystemCoreClock / 1000L))
 #define microsecondsToClockCycles(a) ((a) * (SystemCoreClock / 1000000L))
 
 void yield(void);
-
 #ifndef yield
 #define yield(x) {}
 #endif
@@ -54,7 +51,6 @@ void yield(void);
 extern uint32_t                     DiagPrintf(const char *fmt, ...);
 extern int                          _rtl_printf(const char *fmt, ...);
 extern int                          _rtl_sprintf(char* str, const char* fmt, ...);
-
 #ifndef Arduino_STD_PRINTF
 #ifndef printf
 #define printf                      _rtl_printf
@@ -97,13 +93,10 @@ typedef struct _PinDescription
 {
     // HW PinNames
     uint32_t    pinname;
-
     // Current Pin Type
     uint32_t    ulPinType;
-
     // Supported Pin Function
     uint32_t    ulPinAttribute;
-
     // Current Pin Mode
     uint32_t    ulPinMode;
 } PinDescription;
@@ -117,13 +110,16 @@ extern PinDescription g_APinDescription[];
 #include "WCharacter.h"
 #include "WString.h"
 #include "WMath.h"
-#include "HardwareSerial.h"
+//#include "HardwareSerial.h"
+#include "LOGUARTClass.h"
+#include "UARTClassOne.h"
+#include "UARTClassTwo.h"
 #include "wiring_pulse.h"
-
 #endif // __cplusplus
 
 // Include board variant
-#include "variant.h"
+#include "pins_arduino.h"
+//#include "variant.h"
 #include "wiring.h"
 #include "wiring_digital.h"
 #include "wiring_analog.h"
@@ -132,19 +128,13 @@ extern PinDescription g_APinDescription[];
 #include "wiring_watchdog.h"
 #include "wiring_shift.h"
 
-// C++ functions
 #ifdef __cplusplus
-
-
 // WMath prototypes
 extern long random( long ) ;
 extern long random( long, long ) ;
 extern void randomSeed( uint32_t dwSeed ) ;
 extern long map( long, long, long, long, long ) ;
-
 void tone(uint32_t ulPin, unsigned int frequency, unsigned long duration = 0);
-
-#endif
-
+#endif // __cplusplus
 
 #endif // Arduino_h

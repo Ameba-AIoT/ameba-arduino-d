@@ -19,47 +19,16 @@ WS2812B::WS2812B(uint8_t input_pin, uint16_t num_leds) {
 }
 
 void WS2812B::begin(void) {
-#if defined(BOARD_RTL8722DM)
-    if (_input_pin == 11) {
+    if (_input_pin == SPI_MOSI) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
         spi_addr = SPI0_REG_BASE;
-    } else if (_input_pin== 21) {
+    } else if (_input_pin== SPI1_MOSI) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
         spi_addr = SPI1_REG_BASE;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
     }
-#elif defined(BOARD_RTL8722DM_MINI)
-    if ((_input_pin == 9) || (_input_pin == 4)) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-        spi_addr = SPI1_REG_BASE;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8720DN_BW16)
-    if (_input_pin == PA12) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-        spi_addr = SPI1_REG_BASE;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8721DM)
-    if (_input_pin == 1) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-        spi_addr = SPI0_REG_BASE;
-    } else if (_input_pin== 14) {
-        ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
-        spi_addr = SPI1_REG_BASE;
-    } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
-        return;
-    }
-#else
-#error chack the SPI pin connections
-#endif
 }
 
 void WS2812B::sendPixel(uint8_t red ,uint8_t green ,uint8_t blue) {
@@ -86,14 +55,50 @@ void WS2812B::sendPixel(uint8_t red ,uint8_t green ,uint8_t blue) {
 }
 
 void WS2812B::show(void) {
+#if 0
+    if (_input_pin == SPI_MOSI) {
     //Initialise SPI
-    spi_init((spi_t *)pSpiMaster,(PinName)g_APinDescription[_input_pin].pinname, PB_19, PB_20, PB_21);
-    //Revert the unneccesary SPI pins to GPIO functions
-    Pinmux_Config(PB_19, PINMUX_FUNCTION_GPIO);
-    Pinmux_Config(PB_20, PINMUX_FUNCTION_GPIO);
-    Pinmux_Config(PB_21, PINMUX_FUNCTION_GPIO);
+        spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI_MISO].pinname, (PinName)g_APinDescription[SPI_SCLK].pinname, (PinName)g_APinDescription[SPI_SS].pinname);
+        //Revert the unneccesary SPI pins to GPIO functions
+        Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
+    } else if (_input_pin== SPI1_MOSI) {
+        spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI1_MISO].pinname, (PinName)g_APinDescription[SPI1_SCLK].pinname, (PinName)g_APinDescription[SPI1_SS].pinname);
+        //Revert the unneccesary SPI pins to GPIO functions
+        Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI1_SS].pinname, PINMUX_FUNCTION_GPIO);
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
     spi_format((spi_t *)pSpiMaster, 12, 0, 0);
     spi_frequency((spi_t *)pSpiMaster, 2500000);
+#else
+    if (_input_pin == SPI_MOSI) {
+        //Initialise SPI
+        SPI.begin();
+        //Revert the unneccesary SPI pins to GPIO functions
+        Pinmux_Config(SPI_MISO, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config(SPI_SCLK, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config(SPI_SS, PINMUX_FUNCTION_GPIO);
+        SPI.setDefaultFrequency(2500000);
+        SPI.setDataMode(SPI_SS, 12, 0);
+    } else if (_input_pin== SPI1_MOSI) {
+        //Initialise SPI
+        SPI1.begin();
+        //Revert the unneccesary SPI pins to GPIO functions
+        Pinmux_Config(SPI1_MISO, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config(SPI1_SCLK, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config(SPI1_SS, PINMUX_FUNCTION_GPIO);
+        SPI1.setDefaultFrequency(2500000);
+        SPI1.setDataMode(SPI1_SS, 12, 0);
+    } else {
+        printf("spi_init: error. wrong spi_idx \r\n");
+        return;
+    }
+#endif
     //Send Reset pulse of at least 50us duration
     for (uint8_t i = 0; i < reset_count; i++) {
         spi_slave_write((spi_t *)pSpiMaster, 0);
@@ -220,4 +225,3 @@ void WS2812B::rainbow(uint16_t first_hue, int8_t reps, uint8_t saturation, uint8
         setPixelColor(i, r,g,b);
     }
 }
-

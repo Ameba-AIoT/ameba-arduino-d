@@ -47,6 +47,6 @@ class UARTClassTwo : public HardwareSerial
         friend bool Serial2_available();
 };
 
-//extern UARTClassTwo Serial2;
+extern UARTClassTwo Serial2;
 
 #endif // _LOGUART_CLASS_

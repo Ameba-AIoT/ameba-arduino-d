@@ -1,16 +1,12 @@
 #include "WS2812B.h"
 
-#if defined(BOARD_RTL8722DM)
-#define SPI_MOSI_PIN        11
-#elif defined(BOARD_RTL8722DM_MINI)
-#define SPI_MOSI_PIN       9
-#elif defined(BOARD_RTL8720DN_BW16)
-#define SPI_MOSI_PIN       PA12
-#endif
-
-#define NUM_OF_LEDS  8
-
-WS2812B led(SPI_MOSI_PIN,NUM_OF_LEDS);
+#define NUM_OF_LEDS 8
+// There are mutiple choice of SPI_MOSI pins depends on different boards. The default is SPI_MOSI/SPI1_MOSI
+// AMB21/AMB22              D11/D21
+// AMB23                    D9/D4
+// BW16/BW16 Type C         D12
+// AW-CU488 ThingPlus       D1/D14
+WS2812B led(SPI_MOSI, NUM_OF_LEDS);
 
 void setup() {
     Serial.begin(115200);
@@ -30,4 +26,3 @@ void setup() {
 void loop() {
     delay(500);
 }
-
