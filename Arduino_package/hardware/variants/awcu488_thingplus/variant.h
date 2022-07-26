@@ -104,8 +104,8 @@ extern void wait_for_debug(void);
 #define SPI1_SS                         AMB_D17     // AMB_D17/AMB_D28
 
 /* TwoWire/I2C pin mapping */
-#define TwoWire_SDA                     AMB_D5      //AMB_D5 qwiic/AMB_D16
-#define TwoWire_SCL                     AMB_D6      //AMB_D6 qwiic/AMB_D15
+#define I2C_SDA                     AMB_D5      //AMB_D5 qwiic/AMB_D16
+#define I2C_SCL                     AMB_D6      //AMB_D6 qwiic/AMB_D15
 
 /* IR Device pin mapping */
 #define IR_TX                           AMB_D6      //AMB_D6/AMB_D10/AMB_D20

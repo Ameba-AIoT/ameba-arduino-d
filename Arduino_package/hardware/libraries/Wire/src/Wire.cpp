@@ -51,6 +51,7 @@ TwoWire::TwoWire (uint32_t dwSDAPin, uint32_t dwSCLPin) {
     }
 }
 
+
 void TwoWire::begin () {
     this->rxBufferIndex = 0;
     this->rxBufferLength = 0;

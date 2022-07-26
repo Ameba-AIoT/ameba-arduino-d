@@ -9,6 +9,9 @@
 #elif defined(BOARD_RTL8720DN_BW16)
 #define IR_RX_PIN       PA26
 #define IR_TX_PIN       PA25
+#elif defined(BOARD_RTL8721DM)
+#define IR_RX_PIN       5
+#define IR_TX_PIN       6
 #endif
 
 #define CARRIER_FREQ        38000
