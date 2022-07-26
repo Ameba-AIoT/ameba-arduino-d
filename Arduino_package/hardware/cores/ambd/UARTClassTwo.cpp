@@ -92,6 +92,18 @@ void UARTClassTwo::IrqHandler(void)
 
 void UARTClassTwo::begin(const uint32_t dwBaudRate)
 {
+#if defined(BOARD_RTL8720DN_BW16)
+    // Log, UART_LOG
+    //serial_init(&log_uart_obj, PA_7, PA_8);
+    //serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
+
+    // HS_UART0_TX  not available use LP_UART as SERIAL1
+    // serial1, LP_UART
+    //serial_init(&uart_obj, PB_1, PB_2);
+    //serial_init(&uart_obj, PA_26, PA_25);
+    //serial_init(&uart_obj, PA_12, PA_13);
+    serial_init(&uart_obj, PinName(g_APinDescription[SERIAL1_TX].pinname), PinName(g_APinDescription[SERIAL1_RX].pinname));
+#else
     // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
     //serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
@@ -107,6 +119,7 @@ void UARTClassTwo::begin(const uint32_t dwBaudRate)
     //serial_init(&uart_obj, PA_26, PA_25);
     //serial_init(&uart_obj, PA_12, PA_13);
     serial_init(&uart_obj, PinName(g_APinDescription[SERIAL2_TX].pinname), PinName(g_APinDescription[SERIAL2_RX].pinname));
+#endif
 
     serial_format(&uart_obj, 8, ParityNone, 1);
 

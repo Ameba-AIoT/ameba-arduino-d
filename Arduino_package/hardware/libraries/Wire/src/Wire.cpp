@@ -252,26 +252,30 @@ void TwoWire::onRequest (void(*function)(void)) {
 #if defined(BOARD_RTL8722DM)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire  = TwoWire(PA_26, PA_25);
+TwoWire Wire  = TwoWire((PinName)g_APinDescription[I2C_SDA].pinname, (PinName)g_APinDescription[I2C_SCL].pinname);
+//TwoWire Wire  = TwoWire(PA_26, PA_25);
 
 // HW: I2C1
-TwoWire Wire1 = TwoWire(PB_6, PB_5);
+//TwoWire Wire  = TwoWire((PinName)g_APinDescription[I2C1_SDA].pinname, (PinName)g_APinDescription[I2C1_SCL].pinname);
+//TwoWire Wire1 = TwoWire(PB_6, PB_5);
+//TwoWire Wire1 = TwoWire(PA_24, PA_23);
 
 #elif defined(BOARD_RTL8722DM_MINI)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire  = TwoWire(PB_0, PA_31);
+TwoWire Wire  = TwoWire((PinName)g_APinDescription[I2C_SDA].pinname, (PinName)g_APinDescription[I2C_SCL].pinname);
+//TwoWire Wire  = TwoWire(PB_0, PA_31);
 //TwoWire Wire  = TwoWire(PB_6, PB_5);
 
 #elif defined(BOARD_RTL8720DN_BW16)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire  = TwoWire(PA_26, PA_25);
+TwoWire Wire  = TwoWire((PinName)g_APinDescription[I2C_SDA].pinname, (PinName)g_APinDescription[I2C_SCL].pinname);
 
 #elif defined(BOARD_RTL8721DM)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire  = TwoWire(TwoWire_SDA, TwoWire_SCL);
+TwoWire Wire  = TwoWire((PinName)g_APinDescription[I2C_SDA].pinname, (PinName)g_APinDescription[I2C_SCL].pinname);
 
 #else
 #error check the board supported

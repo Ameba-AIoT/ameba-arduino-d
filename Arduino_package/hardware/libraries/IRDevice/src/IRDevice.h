@@ -46,8 +46,8 @@ class IRDevice {
         void sendSONY(unsigned long data, uint16_t len);
 
     private:
-        uint8_t _receivePin = 8;        // default PB_22
-        uint8_t _transmitPin = 9;       // default PB_23
+        uint8_t _receivePin = IR_RX;        // default IR_RX
+        uint8_t _transmitPin = IR_TX;       // default IR_TX
         uint32_t _frequency = 38000;    // default 38kHz
         uint32_t _mode = IR_MODE_TX;    // default transmit
         uint32_t* _pIrBuf = NULL;

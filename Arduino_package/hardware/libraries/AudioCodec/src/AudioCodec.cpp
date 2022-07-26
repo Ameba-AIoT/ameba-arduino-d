@@ -352,26 +352,26 @@ void AudioCodec::initHAL() {
 
     if ((_ioApplication & APP_DMIC_IN) == APP_DMIC_IN) {
         // Configure PDM DMIC input pins
-        PAD_CMD(_PB_1, DISABLE);
-        PAD_CMD(_PB_2, DISABLE);
-        Pinmux_Config(_PB_1, PINMUX_FUNCTION_DMIC);
-        Pinmux_Config(_PB_2, PINMUX_FUNCTION_DMIC);
+        PAD_CMD(PB_1, DISABLE);
+        PAD_CMD(PB_2, DISABLE);
+        Pinmux_Config(PB_1, PINMUX_FUNCTION_DMIC);
+        Pinmux_Config(PB_2, PINMUX_FUNCTION_DMIC);
     } else {
         // Configure analog mic input pins
-        PAD_CMD(_PA_0, DISABLE);
-        PAD_CMD(_PA_1, DISABLE);
-        PAD_CMD(_PA_4, DISABLE);
+        PAD_CMD(PA_0, DISABLE);
+        PAD_CMD(PA_1, DISABLE);
+        PAD_CMD(PA_4, DISABLE);
         if (_channelCount == CH_STEREO) {
             // Configure 2nd analog mic input pin
-            PAD_CMD(_PA_2, DISABLE);
+            PAD_CMD(PA_2, DISABLE);
         }
     }
 
     // Configure analog out pins
-    PAD_CMD(_PB_28, DISABLE);
-    PAD_CMD(_PB_29, DISABLE);
-    PAD_CMD(_PB_30, DISABLE);
-    PAD_CMD(_PB_31, DISABLE);
+    PAD_CMD(PB_28, DISABLE);
+    PAD_CMD(PB_29, DISABLE);
+    PAD_CMD(PB_30, DISABLE);
+    PAD_CMD(PB_31, DISABLE);
     // Codec init
     CODEC_Init(_sampleRate, _wordLen, _channelCount, _ioApplication); 
 }

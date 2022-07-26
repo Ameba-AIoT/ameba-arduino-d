@@ -144,39 +144,18 @@ void IRDevice::setTxPin(uint8_t transmitPin) {
     /* there are three groups of pinmux and pad settings:
     *  |  IR_TX  |  PA_25  |  PB_23 |  PB_31 |
     */
-#if defined(BOARD_RTL8722DM)
-    if (transmitPin == 3) {
-        Pinmux_Config(PB_31, PINMUX_FUNCTION_IR);
-    } else if (transmitPin == 9) {
+    if ((g_APinDescription[transmitPin].pinname) == PA_25) {
+        Pinmux_Config(PA_25, PINMUX_FUNCTION_IR);
+#ifndef BOARD_RTL8720DN_BW16
+    } else if ((g_APinDescription[transmitPin].pinname) == PB_23) {
         Pinmux_Config(PB_23, PINMUX_FUNCTION_IR);
-    } else if (transmitPin == 16) {
-        Pinmux_Config(PA_25, PINMUX_FUNCTION_IR);
-    } else {
-        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8720DN_BW16)
-//    if (transmitPin == 3) {
-    if (transmitPin == PA25) {
-        Pinmux_Config(PA_25, PINMUX_FUNCTION_IR);
-    } else {
-        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8721DM)
-    if (transmitPin == D20) {
-        Pinmux_Config((g_APinDescription[D20].pinname), PINMUX_FUNCTION_IR);
-    } else if (transmitPin == D10) {
-        Pinmux_Config((g_APinDescription[D10].pinname), PINMUX_FUNCTION_IR);
-    } else if (transmitPin == D6) {
-        Pinmux_Config((g_APinDescription[D6].pinname), PINMUX_FUNCTION_IR);
-    } else {
-        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
-        return;
-    }
-#else
-#error
+    } else if ((g_APinDescription[transmitPin].pinname) == PB_31) {
+        Pinmux_Config(PB_31, PINMUX_FUNCTION_IR);
 #endif
+    } else {
+        printf("Hardware IR functionality is not supported on selected transmit pin!\r\n");
+        return;
+    }
 
     _transmitPin = transmitPin;
 }
@@ -185,44 +164,20 @@ void IRDevice::setRxPin(uint8_t receivePin) {
     /* there are three groups of pinmux and pad settings:
     *  |  IR_RX  |  PA_26  |  PB_22 |  PB_29 |
     */
-#if defined(BOARD_RTL8722DM)
-    if (receivePin == 6) {
+    if ((g_APinDescription[receivePin].pinname) == PA_26) {
+        PAD_PullCtrl(PA_26, PullNone);
+        Pinmux_Config(PA_26, PINMUX_FUNCTION_IR);
+#ifndef BOARD_RTL8720DN_BW16
+    } else if ((g_APinDescription[receivePin].pinname) == PB_22) {
+        Pinmux_Config(PB_22, PINMUX_FUNCTION_IR);
+    } else if ((g_APinDescription[receivePin].pinname) == PB_29) {
         PAD_PullCtrl(PB_29, PullNone);
         Pinmux_Config(PB_29, PINMUX_FUNCTION_IR);
-    } else if (receivePin == 8) {
-        Pinmux_Config(PB_22, PINMUX_FUNCTION_IR);
-    } else if (receivePin == 17) {
-        PAD_PullCtrl(PA_26, PullNone);
-        Pinmux_Config(PA_26, PINMUX_FUNCTION_IR);
-    } else {
-        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8720DN_BW16)
-//    if (receivePin == 10) {
-    if (receivePin == PA26) {
-        PAD_PullCtrl(PA_26, PullNone);
-        Pinmux_Config(PA_26, PINMUX_FUNCTION_IR);
-    } else {
-        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
-        return;
-    }
-#elif defined(BOARD_RTL8721DM)
-    if (receivePin == D13) {
-        PAD_PullCtrl((g_APinDescription[D13].pinname), PullNone);
-        Pinmux_Config((g_APinDescription[D13].pinname), PINMUX_FUNCTION_IR);
-    } else if (receivePin == D11) {
-        Pinmux_Config((g_APinDescription[D11].pinname), PINMUX_FUNCTION_IR);
-    } else if (receivePin == D5) {
-        PAD_PullCtrl((g_APinDescription[D5].pinname), PullNone);
-        Pinmux_Config((g_APinDescription[D5].pinname), PINMUX_FUNCTION_IR);
-    } else {
-        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
-        return;
-    }
-#else
-#error
 #endif
+    } else {
+        printf("Hardware IR functionality is not supported on selected receive pin!\r\n");
+        return;
+    }
 
     _receivePin = receivePin;
 }

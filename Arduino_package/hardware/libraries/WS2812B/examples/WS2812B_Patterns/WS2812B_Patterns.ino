@@ -5,10 +5,10 @@
 uint32_t rgbhue;
 
 // There are mutiple choice of SPI_MOSI pins depends on different boards. The default is SPI_MOSI/SPI1_MOSI
-// AMB21/AMB22              D11/D21
-// AMB23                    D9/D4
-// BW16/BW16 Type C         D12
-// AW-CU488 ThingPlus       D1/D14
+// AMB21/AMB22              pin 11/ pin 21
+// AMB23                    pin 9/  pin 4
+// BW16/BW16 Type C         pin 12
+// AW-CU488 ThingPlus       pin 1/  pin 14
 WS2812B led(SPI_MOSI,NUM_OF_LEDS);
 
 void setup() {

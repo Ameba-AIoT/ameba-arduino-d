@@ -36,10 +36,10 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     pSpiMaster = pSpiObj;
 
     /* These 4 pins should belong same spi pinmux*/
-    pinMOSI = mosi;
-    pinMISO = miso;
-    pinCLK = clk;
-    pinSS = ss;
+    pinMOSI = (PinName)g_APinDescription[mosi].pinname;
+    pinMISO = (PinName)g_APinDescription[miso].pinname;
+    pinCLK = (PinName)g_APinDescription[clk].pinname;
+    pinSS = (PinName)g_APinDescription[ss].pinname;
 
     pinUserSS = -1;
 
@@ -81,9 +81,9 @@ void SPIClass::endTransaction(void)
 
 void SPIClass::begin(void)
 {
-    if (pinMOSI == SPI_MOSI) {
+    if (pinMOSI == PA_16 || pinMOSI == PB_18) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == SPI1_MOSI) {
+    } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
@@ -92,10 +92,10 @@ void SPIClass::begin(void)
 
     spi_init(
         (spi_t *)pSpiMaster, 
-        (PinName)g_APinDescription[pinMOSI].pinname, 
-        (PinName)g_APinDescription[pinMISO].pinname, 
-        (PinName)g_APinDescription[pinCLK].pinname, 
-        (PinName)g_APinDescription[pinSS].pinname
+        (PinName)pinMOSI, 
+        (PinName)pinMISO, 
+        (PinName)pinCLK, 
+        (PinName)pinSS
     );
     spi_format((spi_t *)pSpiMaster, 8, 0, 0);
     spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
@@ -103,9 +103,11 @@ void SPIClass::begin(void)
 
 void SPIClass::begin(int ss)
 {
-    if (pinMOSI == SPI_MOSI) {
+    pinSS = (PinName)g_APinDescription[ss].pinname;
+
+    if (pinMOSI == PA_16 || pinMOSI == PB_18) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
-    } else if (pinMOSI == SPI1_MOSI) {
+    } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
@@ -114,10 +116,10 @@ void SPIClass::begin(int ss)
 
     spi_init(
         (spi_t *)pSpiMaster, 
-        (PinName)g_APinDescription[pinMOSI].pinname, 
-        (PinName)g_APinDescription[pinMISO].pinname, 
-        (PinName)g_APinDescription[pinCLK].pinname, 
-        (PinName)g_APinDescription[ss].pinname
+        (PinName)pinMOSI, 
+        (PinName)pinMISO, 
+        (PinName)pinCLK, 
+        (PinName)pinSS
     );
     spi_format((spi_t *)pSpiMaster, 8, 0, 0);
     spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
@@ -283,15 +285,14 @@ void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
 }
 
 #if defined(BOARD_RTL8722DM)
-SPIClass SPI((void *)(&spi_obj0), 11, 12, 13, 10);
-SPIClass SPI1((void *)(&spi_obj1), 21, 20, 19, 18);
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // 11, 12, 13, 10
+SPIClass SPI((void *)(&spi_obj0), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS); // 21, 20, 19, 18
 
 #elif defined(BOARD_RTL8722DM_MINI)
-SPIClass SPI((void *)(&spi_obj0), 9, 10, 11, 12);
-//SPIClass SPI((void *)(&spi_obj0), 4, 5, 6, 7);
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // 9, 10, 11, 12 or 4, 5, 6, 7
 
 #elif defined(BOARD_RTL8720DN_BW16)
-SPIClass SPI((void *)(&spi_obj0), PA12, PA13, PA14, PA15);
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // PA12, PA13, PA14, PA15
 
 #elif defined(BOARD_RTL8721DM)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // mosi, miso, sclk , ss

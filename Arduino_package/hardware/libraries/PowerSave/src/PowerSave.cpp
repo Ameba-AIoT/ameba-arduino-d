@@ -209,140 +209,190 @@ void PMUClass::TL_RTC_WAKEUP(void) {
     printf("Set Tickless wakeup RTC.    \r\n");
 }
 
-//For board RTL8722DM
-    //AON_WAKEPIN_WAKEUP_GPIOA25    // D16
-    //AON_WAKEPIN_WAKEUP_GPIOA26    // D17
-    //AON_WAKEPIN_WAKEUP_GPIOA21    // D26
-    //AON_WAKEPIN_WAKEUP_GPIOA20    // D27
-    //AON_WAKEPIN_WAKEUP_GPIOA19    // D28
-//For board RTL8722DM_MINI
-    //AON_WAKEPIN_WAKEUP_GPIOA12    // D9
-    //AON_WAKEPIN_WAKEUP_GPIOA13    // D10
-    //AON_WAKEPIN_WAKEUP_GPIOA14    // D11
-    //AON_WAKEPIN_WAKEUP_GPIOA15    // D12
-    //AON_WAKEPIN_WAKEUP_GPIOA16    // D13
-    //AON_WAKEPIN_WAKEUP_GPIOA18    // D15
-    //AON_WAKEPIN_WAKEUP_GPIOA19    // D16
-    //AON_WAKEPIN_WAKEUP_GPIOA21    // D18
-//For board RTL8720DN_BW16
-    //AON_WAKEPIN_WAKEUP_GPIOA25    // D7
-    //AON_WAKEPIN_WAKEUP_GPIOA26    // D8
-    //AON_WAKEPIN_WAKEUP_GPIOA15    // D9
-    //AON_WAKEPIN_WAKEUP_GPIOA14    // D10
-    //AON_WAKEPIN_WAKEUP_GPIOA13    // D11
-    //AON_WAKEPIN_WAKEUP_GPIOA12    // D12
+//For board AMB21/AMB22
+    //AON_WAKEPIN_WAKEUP_PA25    // pin 16
+    //AON_WAKEPIN_WAKEUP_PA26    // pin 17
+    //AON_WAKEPIN_WAKEUP_PA21    // pin 26
+    //AON_WAKEPIN_WAKEUP_PA20    // pin 27
+    //AON_WAKEPIN_WAKEUP_PA19    // pin 28
+//For board AMB23
+    //AON_WAKEPIN_WAKEUP_PA12    // pin 9
+    //AON_WAKEPIN_WAKEUP_PA13    // pin 10
+    //AON_WAKEPIN_WAKEUP_PA14    // pin 11
+    //AON_WAKEPIN_WAKEUP_PA15    // pin 12
+    //AON_WAKEPIN_WAKEUP_PA16    // pin 13
+    //AON_WAKEPIN_WAKEUP_PA18    // pin 15
+    //AON_WAKEPIN_WAKEUP_PA19    // pin 16
+    //AON_WAKEPIN_WAKEUP_PA21    // pin 18
+//For board BW16/BW16-TypeC
+    //AON_WAKEPIN_WAKEUP_PA25    // pin 7
+    //AON_WAKEPIN_WAKEUP_PA26    // pin 8
+    //AON_WAKEPIN_WAKEUP_PA15    // pin 9
+    //AON_WAKEPIN_WAKEUP_PA14    // pin 10
+    //AON_WAKEPIN_WAKEUP_PA13    // pin 11
+    //AON_WAKEPIN_WAKEUP_PA12    // pin 12
+//For board AW-CU488_ThingPlus
+    //AON_WAKEPIN_WAKEUP_PA18    // pin 0
+    //AON_WAKEPIN_WAKEUP_PA16    // pin 1
+    //AON_WAKEPIN_WAKEUP_PA17    // pin 2
+    //AON_WAKEPIN_WAKEUP_PA13    // pin 3
+    //AON_WAKEPIN_WAKEUP_PA12    // pin 4
+    //AON_WAKEPIN_WAKEUP_PA26    // pin 5
+    //AON_WAKEPIN_WAKEUP_PA25    // pin 6
+    //AON_WAKEPIN_WAKEUP_PA19    // pin 8
+    //AON_WAKEPIN_WAKEUP_PA15    // pin 28
+    //AON_WAKEPIN_WAKEUP_PA14    // pin 29
+
 #if defined(BOARD_RTL8722DM)
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA12(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA12.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
+    printf("Set Deepsleep wakeup AON pin PA12.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA13(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA13.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA13(void) {
+    printf("Set Deepsleep wakeup AON pin PA13.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA14(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA14.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA14(void) {
+    printf("Set Deepsleep wakeup AON pin PA14.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA15(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA15.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA15(void) {
+    printf("Set Deepsleep wakeup AON pin PA15.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA16(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA16.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA16(void) {
+    printf("Set Deepsleep wakeup AON pin PA16.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA17(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA17.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA17(void) {
+    printf("Set Deepsleep wakeup AON pin PA17.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA18(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA18.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA18(void) {
+    printf("Set Deepsleep wakeup AON pin PA18.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA19(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA19 / D28.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA19(void) {
+    printf("Set Deepsleep wakeup AON pin PA19 / pin 28.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA20(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA20 / D27.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA20(void) {
+    printf("Set Deepsleep wakeup AON pin PA20 / pin 27.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA21(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA21 / D26.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA21(void) {
+    printf("Set Deepsleep wakeup AON pin PA21 / pin 26.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA25(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA25 / D16.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA25(void) {
+    printf("Set Deepsleep wakeup AON pin PA25 / pin 16.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA26(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA26 / D17.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
+    printf("Set Deepsleep wakeup AON pin PA26 / pin 17.    \r\n");
 }
 
 #elif defined(BOARD_RTL8722DM_MINI)
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA12(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA12 / D9.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
+    printf("Set Deepsleep wakeup AON pin PA12 / pin 9.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA13(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA13 / D10.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA13(void) {
+    printf("Set Deepsleep wakeup AON pin PA13 / pin 10.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA14(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA14 / D11.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA14(void) {
+    printf("Set Deepsleep wakeup AON pin PA14 / pin 11.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA15(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA15 / D12.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA15(void) {
+    printf("Set Deepsleep wakeup AON pin PA15 / pin 12.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA16(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA16 / D13.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA16(void) {
+    printf("Set Deepsleep wakeup AON pin PA16 / pin 13.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA17(void) {
-    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin GPIOA17.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA17(void) {
+    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin PA17.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA18(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA18 / D15.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA18(void) {
+    printf("Set Deepsleep wakeup AON pin PA18 / pin 15.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA19(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA19 / D16.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA19(void) {
+    printf("Set Deepsleep wakeup AON pin PA19 / pin 16.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA20(void) {
-    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin GPIOA20.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA20(void) {
+    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin PA20.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA21(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA21 / D18.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA21(void) {
+    printf("Set Deepsleep wakeup AON pin PA21 / pin 18.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA25(void) {
-    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin GPIOA25.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA25(void) {
+    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin PA25.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA26(void) {
-    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin GPIOA26.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
+    printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin PA26.    \r\n");
 }
 
 #elif defined(BOARD_RTL8720DN_BW16)
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA12(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA12 / D12.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
+    printf("Set Deepsleep wakeup AON pin PA12 / pin 12.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA13(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA13 / D11.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA13(void) {
+    printf("Set Deepsleep wakeup AON pin PA13 / pin 11.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA14(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA14 / D10.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA14(void) {
+    printf("Set Deepsleep wakeup AON pin PA14 / pin 10.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA15(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA15 / D9.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA15(void) {
+    printf("Set Deepsleep wakeup AON pin PA15 / pin 9.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA16(void) {
-    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin GPIOA16.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA16(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA16.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA17(void) {
-    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin GPIOA17.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA17(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA17.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA18(void) {
-    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin GPIOA18.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA18(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA18.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA19(void) {
-    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin GPIOA19.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA19(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA19.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA20(void) {
-    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin GPIOA20.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA20(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA20.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA21(void) {
-    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin GPIOA21.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA21(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA21.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA25(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA25 / D7.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA25(void) {
+    printf("Set Deepsleep wakeup AON pin PA25 / pin 7.    \r\n");
 }
-void PMUClass::AON_WAKEPIN_WAKEUP_GPIOA26(void) {
-    printf("Set Deepsleep wakeup AON pin GPIOA26 / D8.    \r\n");
+void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
+    printf("Set Deepsleep wakeup AON pin PA26 / pin 8.    \r\n");
+}
+
+#elif defined(BOARD_RTL8721DM)
+void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
+    printf("Set Deepsleep wakeup AON pin PA12 / pin 4.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA13(void) {
+    printf("Set Deepsleep wakeup AON pin PA13 / pin 3.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA14(void) {
+    printf("Set Deepsleep wakeup AON pin PA14 / pin 29.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA15(void) {
+    printf("Set Deepsleep wakeup AON pin PA15 / pin 28.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA16(void) {
+    printf("Set Deepsleep wakeup AON pin PA16 / pin 1.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA17(void) {
+    printf("Set Deepsleep wakeup AON pin PA17 / pin 2.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA18(void) {
+    printf("Set Deepsleep wakeup AON pin PA18 / pin 0.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA19(void) {
+    printf("Set Deepsleep wakeup AON pin PA19 / pin 8.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA20(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA20.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA21(void) {
+    printf("RTL8720DN_BW16 does not support Deepsleep wakeup AON pin PA21.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA25(void) {
+    printf("Set Deepsleep wakeup AON pin PA25 / pin 6.    \r\n");
+}
+void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
+    printf("Set Deepsleep wakeup AON pin PA26 / pin 5.    \r\n");
 }
 #endif
 

@@ -48,7 +48,8 @@ extern uint32_t pulseIn(uint32_t ulPin, uint32_t state, uint32_t timeout)
     if (ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC)) return 0;
 
     /* Handle */
-    if (g_APinDescription[ulPin].ulPinType != PIO_GPIO) {
+    //if (g_APinDescription[ulPin].ulPinType != PIO_GPIO) {
+    if ((g_APinDescription[ulPin].ulPinAttribute & PIO_GPIO) != PIO_GPIO){
         return 0;
     }
 

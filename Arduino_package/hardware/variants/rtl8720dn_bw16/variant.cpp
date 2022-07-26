@@ -22,32 +22,31 @@ extern "C" {
 #endif
 
 //#include "PinNames.h"
-
 void __libc_init_array(void);
 
 /*
  * Pins descriptions
  */
-
 PinDescription g_APinDescription[TOTAL_GPIO_PIN_NUM]=
 {
-    {PA_7,      NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 0, Serial(0) TX
-    {PA_8,      NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 1, Serial(0) RX
-    {PA_27,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 2
-    {PA_30,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 3
-    {PB_1,      NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 4, A0, Recommended Serial2 TX
-    {PB_2,      NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 5, A1, Recommended Serial2 RX
-    {PB_3,      NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 6, A2,
-    {PA_25,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM    , NOT_INITIAL}, //Arduino pin 7, PWM, Default Serial2 TX, I2C0 SCL, IR TX
-    {PA_26,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM    , NOT_INITIAL}, //Arduino pin 8, PWM, Default Serial2 RX, I2C0 SDA, IR RX
-    {PA_15,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 9, SPI1 CS
-    {PA_14,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ              , NOT_INITIAL}, //Arduino pin 10, SPI1 CLK, GREEN LED
-    {PA_13,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM    , NOT_INITIAL}, //Arduino pin 11, SPI1 MISO, PWM, BLUE LED
-    {PA_12,     NOT_INITIAL, PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM    , NOT_INITIAL}  //Arduino pin 12, SPI1 MOSI, PWM, RED LED
+    {PA_7,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D0,  LOG_TX
+    {PA_8,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D1,  LOG_RX
+    {PA_27, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D2                SWD_DATA
+    {PA_30, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D3,               PWM
+    {PB_1,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D4,  SERIAL1_TX
+    {PB_2,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D5,  SERIAL1_RX
+    {PB_3,  TYPE_DIGITAL | TYPE_ANALOG, PIO_GPIO | PIO_GPIO_IRQ           | PIO_ADC , MODE_NOT_INITIAL}, // AMB_D6,  A2,          SWD_CLK
+    {PA_25, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D7,  *SERIAL1_RX, PWM, I2C_SCL,   IR_TX
+    {PA_26, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D8,  *SERIAL1_TX, PWM, I2C_SDA,   IR_RX
+    {PA_15, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D9,                    SPI_SS
+    {PA_14, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D10,                   SPI_SCLK, LED_G
+    {PA_13, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D11, *SERIAL1_RX, PWM, SPI_MISO, LED_B
+    {PA_12, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}  // AMB_D12, *SERIAL1_TX, PWM, SPI_MOSI, LED_R
 };
 
 void *gpio_pin_struct[TOTAL_GPIO_PIN_NUM] = {NULL};
 void *gpio_irq_handler_list[TOTAL_GPIO_PIN_NUM] = {NULL};
+
 #ifdef __cplusplus
 } // extern C
 #endif
@@ -64,11 +63,6 @@ void serialEventRun(void)
 
 void init(void)
 {
-
-// zzw
-//    uint8_t *regionAddr;
-//    size_t regionSize;
-
     // Initialize C library
     __libc_init_array();
 }

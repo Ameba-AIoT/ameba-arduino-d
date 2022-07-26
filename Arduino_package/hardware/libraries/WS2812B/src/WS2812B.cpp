@@ -19,10 +19,10 @@ WS2812B::WS2812B(uint8_t input_pin, uint16_t num_leds) {
 }
 
 void WS2812B::begin(void) {
-    if (_input_pin == SPI_MOSI) {
+    if ((PinName)g_APinDescription[_input_pin].pinname == PA_16 || (PinName)g_APinDescription[_input_pin].pinname == PB_18) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
         spi_addr = SPI0_REG_BASE;
-    } else if (_input_pin== SPI1_MOSI) {
+    } else if ((PinName)g_APinDescription[_input_pin].pinname == PA_12 || (PinName)g_APinDescription[_input_pin].pinname == PB_4) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
         spi_addr = SPI1_REG_BASE;
     } else {
