@@ -21,7 +21,14 @@
  * TX is digital pin PB1 (connect to the other device RX)
  * RTS is pin PA_14 (connect to the other device CTS)
  * CTS is pin PA_15 (connect to the other device RTS)
- */
+
+The circuit: (BOARD RTL8721DM)
+* RX is digital pin 3 (connect to the other device TX)
+* TX is digital pin 4 (connect to the other device RX)
+* RTS is pin PA_14 (connect to the other device CTS)
+* CTS is pin PA_15 (connect to the other device RTS)
+*/
+
 
 #include <SoftwareSerial.h>
 
@@ -35,6 +42,8 @@
     SoftwareSerial mySerial(2, 1); // RX, TX
 #elif defined(BOARD_RTL8720DN_BW16)
     SoftwareSerial mySerial(PB2, PB1); // RX, TX
+#elif defined(BOARD_RTL8721DM)
+    SoftwareSerial mySerial(3, 4); // RX, TX
 #else
     SoftwareSerial mySerial(0, 1); // RX, TX
 #endif
