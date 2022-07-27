@@ -285,18 +285,18 @@ void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
 }
 
 #if defined(BOARD_RTL8722DM)
-SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // 11, 12, 13, 10
-SPIClass SPI((void *)(&spi_obj0), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS); // 21, 20, 19, 18
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 11, 12, 13, 10
+SPIClass SPI((void *)(&spi_obj0), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);    // 21, 20, 19, 18
 
 #elif defined(BOARD_RTL8722DM_MINI)
-SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // 9, 10, 11, 12 or 4, 5, 6, 7
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 9, 10, 11, 12 or 4, 5, 6, 7
 
 #elif defined(BOARD_RTL8720DN_BW16)
-SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // PA12, PA13, PA14, PA15
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // PA12, PA13, PA14, PA15
 
 #elif defined(BOARD_RTL8721DM)
-SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS); // mosi, miso, sclk , ss
-SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS); // mosi, miso, sclk , ss
+SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 1, 2, 0, 8
+SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 14, 15, 16, 17 or 4, 3, 29, 28 
 
 #else
 #error chack the borad supported SPI

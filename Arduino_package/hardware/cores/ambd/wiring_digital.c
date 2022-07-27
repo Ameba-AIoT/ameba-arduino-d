@@ -67,10 +67,9 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
 
     pinRemoveMode(ulPin);
 
-    // Indicate that MODE is initialed
-    ulMode &= ~MODE_NOT_INITIAL;
     // GPIO and GPIO_IRQ Mode mask 0xFF. Remove all enable bits. 
-    ulMode &= 0xFF;
+    ulMode &= 0x000000FF;
+
     if (ulMode == INPUT_IRQ_FALL || ulMode == INPUT_IRQ_RISE || ulMode == INPUT_IRQ_LOW || ulMode == INPUT_IRQ_HIGH || ulMode == INPUT_IRQ_CHANGE) {
         gpio_pin_struct[ulPin] = malloc (sizeof(gpio_irq_t));
         pGpio_t = gpio_pin_struct[ulPin];
@@ -84,7 +83,6 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
     } else {
         printf("Error Mode not supported. \r\n");
     }
-
 
     switch (ulMode)
     {
@@ -142,7 +140,9 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
             printf("Error Digital pin mode setup. \r\n");
             break;
     }
+    g_APinDescription[ulPin].ulPinMode &= 0xFFFFFF00;
     g_APinDescription[ulPin].ulPinMode |= ulMode;
+    g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
 }
 
 void digitalWrite(uint32_t ulPin, uint32_t ulVal)

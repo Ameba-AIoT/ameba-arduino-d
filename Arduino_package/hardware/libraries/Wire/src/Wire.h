@@ -116,6 +116,7 @@ extern TwoWire Wire;
 extern TwoWire Wire1;
 #elif defined(BOARD_RTL8722DM_MINI)
 extern TwoWire Wire;
+extern TwoWire Wire1;
 #elif defined(BOARD_RTL8720DN_BW16)
 extern TwoWire Wire;
 #elif defined(BOARD_RTL8721DM)

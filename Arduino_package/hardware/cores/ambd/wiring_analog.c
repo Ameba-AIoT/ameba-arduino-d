@@ -207,6 +207,7 @@ void analogWrite (uint32_t ulPin, int32_t ulValue) {
                 pwmout_period_us(obj, _writePeriod);
                 pwmout_write(obj, ulValue * 1.0 / (1<<_writeResolution));
                 g_APinDescription[ulPin].ulPinMode |= PWM_MODE_ENABLED;
+                g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
             } else {
                 pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
                 pwmout_period_us(obj, _writePeriod);
