@@ -28,6 +28,7 @@ extern "C" {
 #include <string.h>
 #include "PinNames.h"
 #include "i2c_api.h"
+#include "i2c_slave.h"
 
 i2c_t i2cwire0;
 i2c_t i2cwire1;
@@ -39,7 +40,9 @@ i2c_t i2cwire1;
 TwoWire::TwoWire (uint32_t dwSDAPin, uint32_t dwSCLPin) {
     this->SDA_pin = (PinName)g_APinDescription[dwSDAPin].pinname;
     this->SCL_pin = (PinName)g_APinDescription[dwSCLPin].pinname;
-
+	this->user_onReceive = NULL;
+	this->user_onRequest = NULL;
+	this->is_slave = false;
 #if 0
     if ((SDA_pin == PA_26) && (SCL_pin == PA_25)) {
         this->pI2C = (void *)&i2cwire0;
@@ -77,15 +80,10 @@ void TwoWire::begin () {
     this->rxBufferLength = 0;
     this->txAddress = 0;
     this->txBufferLength = 0;
-    this->srvBufferIndex = 0;
-    this->srvBufferLength = 0;
-    this->status = UNINITIALIZED;
     this->twiClock = this->TWI_CLOCK;
 
     i2c_init(((i2c_t *)this->pI2C), ((PinName)this->SDA_pin), ((PinName)this->SCL_pin));
     i2c_frequency(((i2c_t *)this->pI2C), this->twiClock);
-
-    status = MASTER_IDLE;
 }
 
 void TwoWire::begin (uint8_t address = 0) {
@@ -93,17 +91,16 @@ void TwoWire::begin (uint8_t address = 0) {
     this->rxBufferLength = 0;
     this->txAddress = 0;
     this->txBufferLength = 0;
-    this->srvBufferIndex = 0;
-    this->srvBufferLength = 0;
-    this->status = UNINITIALIZED;
     this->twiClock = this->TWI_CLOCK;
 
-    i2c_init(((i2c_t *)this->pI2C), ((PinName)this->SDA_pin), ((PinName)this->SCL_pin));
-    i2c_frequency(((i2c_t *)this->pI2C), this->twiClock);
-    i2c_slave_address(((i2c_t *)this->pI2C), 0, address, 0xFF);
-    i2c_slave_mode(((i2c_t *)this->pI2C), 1);
+	// Attach user callbacks 
+	i2c_slave_attach_callbacks(onRequestService, onReceiveService, this);
 
-    status = SLAVE_IDLE;
+	// Init I2C as slave and enable I2C interrupt
+	i2c_slave_init((i2c_t *)this->pI2C, (PinName)this->SDA_pin, (PinName)this->SCL_pin, address, BUFFER_LENGTH);
+
+    //status = SLAVE_IDLE;
+	is_slave = true;
 }
 
 void TwoWire::begin (int address) {
@@ -151,11 +148,11 @@ uint8_t TwoWire::requestFrom(int address, int quantity) {
 }
 
 uint8_t TwoWire::requestFrom (int address, int quantity, int sendStop) {
+
     return requestFrom(((uint8_t)address), ((uint8_t)quantity), ((uint8_t)sendStop));
 }
 
 void TwoWire::beginTransmission (uint8_t address) {
-    status = MASTER_SEND;
 
     // save address of target and empty buffer
     if (txAddress != address) {
@@ -193,7 +190,6 @@ uint8_t TwoWire::endTransmission (uint8_t sendStop) {
     }
 
     txBufferLength = 0;     // empty buffer
-    status = MASTER_IDLE;
     return error;
 }
 
@@ -205,36 +201,19 @@ uint8_t TwoWire::endTransmission (void) {
 }
 
 size_t TwoWire::write (uint8_t data) {
-    if (status == MASTER_SEND) {
-        if (txBufferLength >= BUFFER_LENGTH) {
-            return 0;
-        }
-        txBuffer[txBufferLength++] = data;
-        return 1;
-    } else {
-        if (srvBufferLength >= BUFFER_LENGTH) {
-            return 0;
-        }
-        srvBuffer[srvBufferLength++] = data;
-        return 1;
+    if (txBufferLength >= BUFFER_LENGTH) {
+        return 0;
     }
+    txBuffer[txBufferLength++] = data;
+    return 1;
 }
 
 size_t TwoWire::write (const uint8_t *data, size_t quantity) {
-    if (status == MASTER_SEND) {
-        for (size_t i = 0; i < quantity; ++i) {
-            if (txBufferLength >= BUFFER_LENGTH) {
-                return i;
-            }
-            txBuffer[txBufferLength++] = data[i];
+    for (size_t i = 0; i < quantity; ++i) {
+        if (txBufferLength >= BUFFER_LENGTH) {
+            return i;
         }
-    } else {
-        for (size_t i = 0; i < quantity; ++i) {
-            if (srvBufferLength >= BUFFER_LENGTH) {
-                return i;
-            }
-            srvBuffer[srvBufferLength++] = data[i];
-        }
+        txBuffer[txBufferLength++] = data[i];
     }
     return quantity;
 }
@@ -262,12 +241,65 @@ void TwoWire::flush (void) {
     // data transfer.
 }
 
+
+size_t TwoWire::slaveWrite(int buffer) {
+    return slaveWrite((uint8_t *)&buffer, 1);
+}
+
+
+size_t TwoWire::slaveWrite(char *buffer) {
+    return slaveWrite((uint8_t *)buffer, (size_t)sizeof(buffer));
+}
+
+
+size_t TwoWire::slaveWrite(uint8_t *buffer, size_t len) {
+    return i2cSlaveWrite(buffer, len, RECV_TIMEOUT);
+}
+
+
+void TwoWire::onReceiveService(uint8_t *inBytes, size_t numBytes, bool stop, void *arg) {
+	//status = SLAVE_RECV;
+
+    //printf("in onReceiveService\r\n");
+
+	stop = stop;
+	
+    TwoWire *wire = (TwoWire*)arg;
+    if(!wire->user_onReceive){
+        return;
+    }
+    for(uint8_t i = 0; i < numBytes; ++i){
+        wire->rxBuffer[i] = inBytes[i];    
+    }
+    wire->rxBufferIndex = 0;
+    wire->rxBufferLength = numBytes;
+    wire->user_onReceive(numBytes);
+}
+
+void TwoWire::onRequestService(void * arg) {
+	//status = SLAVE_SEND;
+
+	//printf("in onRequestService\r\n");
+
+    TwoWire *wire = (TwoWire*)arg;
+    if(!wire->user_onRequest){
+        return;
+    }
+    wire->txBufferLength = 0;
+    wire->user_onRequest(); // user callback normally write data into txbuffer
+    if(wire->txBufferLength){
+        wire->slaveWrite((uint8_t*)wire->txBuffer, wire->txBufferLength);
+        //wire->slaveWrite((uint8_t*)txBuffer, txBufferLength);
+    }
+}
+
+
 void TwoWire::onReceive (void(*function)(int)) {
-    onReceiveCallback = function;
+    user_onReceive = function;
 }
 
 void TwoWire::onRequest (void(*function)(void)) {
-    onRequestCallback = function;
+    user_onRequest = function;
 }
 
 #if defined(BOARD_RTL8722DM)

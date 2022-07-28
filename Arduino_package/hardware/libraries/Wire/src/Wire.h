@@ -23,7 +23,13 @@
 
 #include "Stream.h"
 
-#define BUFFER_LENGTH 32
+#define BUFFER_LENGTH 128
+
+// Ameba D support 1 set of I2C in both master and slave mode
+
+typedef void(*user_onRequest)(void);
+typedef void(*user_onReceive)(int);
+
 
 class TwoWire : public Stream {
     public:
@@ -56,10 +62,15 @@ class TwoWire : public Stream {
         inline size_t write(unsigned int n) { return write((uint8_t)n); }
         inline size_t write(int n) { return write((uint8_t)n); }
         using Print::write;
+		size_t slaveWrite(int);
+		size_t slaveWrite(char *);
+		size_t slaveWrite(uint8_t *, size_t);
 
-        void onService(void);
+		
 
     private:
+		bool is_slave;
+		
         // RX Buffer
         uint8_t rxBuffer[BUFFER_LENGTH];
         uint8_t rxBufferIndex;
@@ -70,44 +81,24 @@ class TwoWire : public Stream {
         uint8_t txBuffer[BUFFER_LENGTH];
         uint8_t txBufferLength;
 
-        // Service buffer
-        uint8_t srvBuffer[BUFFER_LENGTH];
-        uint8_t srvBufferIndex;
-        uint8_t srvBufferLength;
 
         // Callback user functions
-        void (*onRequestCallback)(void);
-        void (*onReceiveCallback)(int);
-
-        // Called before initialization
-        void (*onBeginCallback)(void);
-
-        // Called after deinitialization
-        void (*onEndCallback)(void);
+        void (*user_onRequest)(void);
+    	void (*user_onReceive)(int);
+		static void onRequestService(void *);
+    	static void onReceiveService(uint8_t*, size_t, bool, void *);
 
         uint32_t SDA_pin;
         uint32_t SCL_pin;
 
         void*    pI2C;
 
-        // TWI state
-        enum TwoWireStatus {
-            UNINITIALIZED,
-            MASTER_IDLE,
-            MASTER_SEND,
-            MASTER_RECV,
-            SLAVE_IDLE,
-            SLAVE_RECV,
-            SLAVE_SEND
-        };
-        TwoWireStatus status;
-
         // TWI clock frequency
         static const uint32_t TWI_CLOCK = 100000;
         uint32_t twiClock;
 
         // Timeouts
-        static const uint32_t RECV_TIMEOUT = 100000;
+        static const uint32_t RECV_TIMEOUT = 50;
         static const uint32_t XMIT_TIMEOUT = 100000;
 };
 
