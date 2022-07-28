@@ -187,6 +187,7 @@ u8 km4_sleep_type;
 u32 km4_sleep_timeout = 0xffffffff;
 u32 km4_wake_event;
 
+_OPTIMIZE_O3_
 u32 km4_status_on(void)
 {
 	u32 Temp = HAL_READ32(SYSTEM_CTRL_BASE_LP, REG_LP_KM4_CTRL);
@@ -242,6 +243,7 @@ void km4_power_gate(void)
 	pmu_release_wakelock(PMU_OS);
 }
 
+_OPTIMIZE_O3_
 void km4_power_wake(void)
 {
 	//u32 Temp = 0;
@@ -281,6 +283,7 @@ void km4_clock_gate(void)
 	pmu_release_wakelock(PMU_OS);
 }
 
+_OPTIMIZE_O3_
 void km4_clock_on(void)
 {
 	if (km4_status_on())
@@ -322,6 +325,7 @@ u32 km4_suspend(u32 type)
 	return ret;
 }
 
+_OPTIMIZE_O3_
 void km4_wake_event_update(void)
 {
 	/*the timer is used to control KM4 max sleep time*/
@@ -348,16 +352,19 @@ void km4_wake_event_update(void)
 
 }
 
+_OPTIMIZE_O3_
 void km4_set_wake_event(u32 wevt)
 {
 	km4_wake_event |= wevt;
 }
 
+_OPTIMIZE_O3_
 u32 km4_get_wake_event(void)
 {
 	return km4_wake_event ;
 }
 
+_OPTIMIZE_O3_
 void km4_resume(void)
 {
 	if (km4_status_on())
@@ -380,6 +387,7 @@ void km4_resume(void)
 		km4_wake_event = 0;
 }
 
+_OPTIMIZE_O3_
 void km4_flash_highspeed_suspend(u32 Protection)
 {
 	FLASH_ClockSwitch(BIT_SHIFT_FLASH_CLK_XTAL, Protection);
@@ -393,6 +401,7 @@ void km4_flash_highspeed_init(void)
 	flash_operation_config();
 }
 
+_OPTIMIZE_O3_
 void km4_flash_highspeed_resume(u32 Protection)
 {
 	BOOT_ROM_CM4PON((u32)SYSPLL_ON_SEQ);

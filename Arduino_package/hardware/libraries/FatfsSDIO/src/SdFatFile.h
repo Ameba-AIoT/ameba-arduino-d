@@ -98,6 +98,10 @@ public:
      */
     int close();
 
+    uint32_t cursor_pos (void);
+    
+    uint32_t file_size (void);
+
     friend class FatFsSD;
 
 private:

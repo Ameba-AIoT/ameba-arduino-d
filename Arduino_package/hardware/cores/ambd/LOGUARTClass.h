@@ -46,6 +46,6 @@ class LOGUARTClass : public HardwareSerial
         friend bool Serial_available();
 };
 
-//extern LOGUARTClass Serial; //Already defined in variant.h
+extern LOGUARTClass Serial;
 
 #endif // _LOGUART_CLASS_

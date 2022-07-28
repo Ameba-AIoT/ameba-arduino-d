@@ -483,7 +483,6 @@ _LONG_CALL_ void I2C_WakeUp(I2C_TypeDef *I2Cx);
  * @defgroup IC_STATUS
  * @{
  *****************************************************************************/
-#define BIT_IC_STATUS_BUS_BUSY            			((u32)0x00000001 << 7)
 #define BIT_IC_STATUS_SLV_ACTIVITY            			((u32)0x00000001 << 6)
 #define BIT_IC_STATUS_MST_ACTIVITY            			((u32)0x00000001 << 5)
 #define BIT_IC_STATUS_RFF                     				((u32)0x00000001 << 4)

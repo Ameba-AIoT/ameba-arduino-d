@@ -16,9 +16,16 @@
 #define _APP_COMMON_FLAGS_H_
 
 /** @brief  Config local address type: 0-pulic address, 1-static random address */
-#define F_BT_LE_USE_STATIC_RANDOM_ADDR      0
+#define F_BT_LE_USE_RANDOM_ADDR             0
 
 /** @brief  Config device name characteristic and appearance characteristic property: 0-Not writeable, 1-writeable, save to flash*/
 #define F_BT_GAPS_CHAR_WRITEABLE            0
+
+/** @brief  Config set physical: 0-Not built in, 1-built in, use user command to set*/
+#if defined(CONFIG_PLATFORM_8721D)
+#define F_BT_LE_5_0_SET_PHY_SUPPORT         1
+#elif defined(CONFIG_PLATFORM_8710C)
+#define F_BT_LE_5_0_SET_PHY_SUPPORT         0
+#endif
 
 #endif

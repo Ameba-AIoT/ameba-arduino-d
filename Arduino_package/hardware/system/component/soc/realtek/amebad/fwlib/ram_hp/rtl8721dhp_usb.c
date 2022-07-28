@@ -148,6 +148,7 @@ static u8 USB_PhySelectPage(u8 page)
 static u8 USB_DeviceCalibrate(void)
 {
 	u8 ret = HAL_OK;
+	u8 tmp;
 
 	/* Calibrate page 0 registers */
 	ret = USB_PhySelectPage(USB_OTG_PHY_REG_F4_BIT_PAGE0);
@@ -171,7 +172,7 @@ static u8 USB_DeviceCalibrate(void)
 	}
 
 	/* E2 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E2, 0x7AU);
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E2, 0x7dU);
 	if (ret != HAL_OK) {
 		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E2: %d\n", ret);
 		return ret;
@@ -185,9 +186,35 @@ static u8 USB_DeviceCalibrate(void)
 	}
 
 	/* E6 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E6, 0x9AU);
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E6, 0x96U);
 	if (ret != HAL_OK) {
 		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E6: %d\n", ret);
+		return ret;
+	}
+
+	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_E1, &tmp);
+	if (ret != HAL_OK) {
+		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_P0_E1: %d\n", ret);
+		return ret;
+	}
+
+	tmp = tmp & (~BIT(7));
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, tmp);
+	if (ret != HAL_OK) {
+		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
+		return ret;
+	}
+
+	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_E1, &tmp);
+	if (ret != HAL_OK) {
+		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_P0_E1: %d\n", ret);
+		return ret;
+	}
+
+	tmp = tmp & BIT(7);
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, tmp);
+	if (ret != HAL_OK) {
+		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
 		return ret;
 	}
 
@@ -202,6 +229,7 @@ static u8 USB_DeviceCalibrate(void)
 static u8 USB_HostCalibrate(void)
 {
 	u8 ret = HAL_OK;
+	u8 tmp;
 
 	/* Calibrate page 0 registers */
 	ret = USB_PhySelectPage(USB_OTG_PHY_REG_F4_BIT_PAGE0);
@@ -225,7 +253,7 @@ static u8 USB_HostCalibrate(void)
 	}
 
 	/* E2 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E2, 0x9aU);
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E2, 0x9dU);
 	if (ret != HAL_OK) {
 		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E2: %d\n", ret);
 		return ret;
@@ -239,9 +267,22 @@ static u8 USB_HostCalibrate(void)
 	}
 
 	/* E6 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E6, 0x9aU);
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E6, 0x96U);
 	if (ret != HAL_OK) {
 		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E6: %d\n", ret);
+		return ret;
+	}
+
+	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_E1, &tmp);
+	if (ret != HAL_OK) {
+		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_P0_E1: %d\n", ret);
+		return ret;
+	}
+
+	tmp = tmp & (~BIT(7));
+	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, tmp);
+	if (ret != HAL_OK) {
+		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
 		return ret;
 	}
 

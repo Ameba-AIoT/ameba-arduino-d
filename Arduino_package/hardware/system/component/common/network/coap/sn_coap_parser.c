@@ -578,11 +578,12 @@ static int8_t sn_coap_parser_options_parse_multiple_options(struct coap_s *handl
     }
 
     if (uri_query_needed_heap) {
-        *dst_pptr = (uint8_t *) handle->sn_coap_protocol_malloc(uri_query_needed_heap);
+        *dst_pptr = (uint8_t *) handle->sn_coap_protocol_malloc(uri_query_needed_heap + 1);
 
         if (*dst_pptr == NULL) {
             return -1;
         }
+		memset(*dst_pptr,0x00,(uri_query_needed_heap + 1));
     }
 
     *dst_len_ptr = uri_query_needed_heap;

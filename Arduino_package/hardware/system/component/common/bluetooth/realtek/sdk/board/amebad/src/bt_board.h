@@ -5,91 +5,46 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 #include <stdio.h>
 #include "ameba_soc.h"
 
-#define platform_debug DBG_8195A
+#define hci_board_debug    printf
 
-#define TRACE_SWITCH_CLOSE
-//trace_uart
-//========================================
-/* CONFIG */
-//#define TRACE_UART_DEFAULT 
 #define TRACE_UART_TX_IRQ
-//#define TRACE_UART_TX_WHILE
-//#define TRACE_UART_DMA
-/* TRACE UART DEFAULT USE PA18 PA19 UART0
-   (BEBCAUSE OF THE BT LOG IS PA16)*/
-#define TRACE_UART_BAUDRATE  1500000
 
-#ifdef TRACE_UART_DEFAULT
+#define TRACE_UART_BAUDRATE    1500000
 
-
-#define TRACE_UART_DEV    UART0_DEV
-#define TRACE_UART_IRQ    UART0_IRQ
-#define TRACE_UART_TX     _PA_18
-//#define TRACE_UART_RX     _PA_19
-
-#ifdef TRACE_UART_DMA
-#define TRACE_UART_INDEX        0
-#define TRACEUART_DMA_PRIO      12
-#endif
-
-#else
 #define TRACE_UART_DEV    UART3_DEV
 #define TRACE_UART_IRQ    UARTLP_IRQ
 #define TRACE_UART_TX     _PA_26
-//#define TRACE_UART_RX     _PA_25   //km0 not support dma
-#endif
-
 
 #ifdef TRACE_UART_TX_IRQ
-#define TRACE_COUNT             16   //ONE IRQ send DATA LEN
-#define TRACEUART_IRQ_PRIO      12
+#define TRACE_COUNT           16    //ONE IRQ send DATA LEN
+#define TRACEUART_IRQ_PRIO    12
 #endif
 
+#define TRACE_TASK_PRIO    3
+#define TRACE_TASK_STACK_SIZE    0x200
 
-//==hci_uart============================
-//====trace_task========
-#define TRACE_TASK_PRIO  3
-
-
-//hci_rtk============
-
-#define hci_board_debug DBG_8195A
-#define BT_DEFAUT_LMP_SUBVER   0x8721
+#define BT_DEFAUT_LMP_SUBVER    0x8721
 
 #define HCI_START_IQK
 #define HCI_WRITE_IQK
-#ifdef CONFIG_MP_INCLUDED
-#define BT_MP_MODE
-#define HCI_MP_BRIDGE   1
-#endif
-
-
-
-//=board.h====
 
 #define MERGE_PATCH_ADDRESS_OTA1  0x080F8000
 #define MERGE_PATCH_ADDRESS_OTA2  0x081F8000
 #define MERGE_PATCH_SWITCH_ADDR   0x08003028
 #define MERGE_PATCH_SWITCH_SINGLE 0xAAAAAAAA
 
-#define CALI_IQK_RF_STEP0   0x4000
-#define CALI_IQK_RF_STEP1   0x0180
-#define CALI_IQK_RF_STEP2   0x3800
+#define CALI_IQK_RF_STEP0    0x4000
+#define CALI_IQK_RF_STEP1    0x0180
+#define CALI_IQK_RF_STEP2    0x3800
 #define CALI_IQK_RF_STEP3F   0x0400
 
-
-
-#define LEFUSE(x)  (x-0x190)
-
-
-
+#define LEFUSE(x)    (x-0x190)
 
 #define EFUSE_SW_USE_FLASH_PATCH     BIT0
 #define EFUSE_SW_BT_FW_LOG           BIT1
@@ -100,14 +55,9 @@ extern "C" {
 #define EFUSE_SW_DRIVER_DEBUG_LOG    BIT6
 #define EFUSE_SW_RSVD2               BIT7
 
-
 #define CHECK_SW(x)                  (HAL_READ32(SPI_FLASH_BASE, FLASH_SYSTEM_DATA_ADDR + 0x28) & x)
 
-
 extern uint8_t rltk_wlan_is_mp(void);
-
-
-
 
 #ifdef __cplusplus
 }

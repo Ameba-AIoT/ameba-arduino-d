@@ -116,7 +116,7 @@ int _rtl_vsprintf(char *buf, size_t size, const char *fmt, const int *dp)
 				}
 
 				while(h_back) {
-					hex_count += (h_back & 0xF) ? 1 : 0;
+					hex_count += 1;
 					h_back  = h_back >> 4;
 				}
 

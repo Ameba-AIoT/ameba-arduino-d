@@ -59,7 +59,9 @@ int rltk_wlan_init(int idx_wlan, rtw_mode_t mode);				//return 0: success. -1:fa
 void rltk_wlan_deinit(void);
 void rltk_wlan_deinit_fastly(void);
 int rltk_wlan_start(int idx_wlan);
+int rltk_set_tx_power_percentage(rtw_tx_pwr_percentage_t power_percentage_idx);
 void rltk_wlan_statistic(unsigned char idx);
+void rltk_wlan_statistic_extended(unsigned char idx);
 unsigned char rltk_wlan_running(unsigned char idx);		// interface is up. 0: interface is down
 int rltk_wlan_control(unsigned long cmd, void *data);
 int rltk_wlan_handshake_done(void);
@@ -68,18 +70,70 @@ int rltk_wlan_rf_off(void);
 int rltk_wlan_check_bus(void);
 int rltk_wlan_wireless_mode(unsigned char mode);
 int rltk_wlan_get_wireless_mode(unsigned char *pmode);
+int rltk_wlan_set_wpa_mode(const char *ifname, unsigned int wpa_mode);
 int rltk_wlan_set_wps_phase(unsigned char is_trigger_wps);
+void rltk_wlan_PRE_SLEEP_PROCESSING(void);
 int rtw_ps_enable(int enable);
 int rltk_wlan_is_connected_to_ap(void);
+void rltk_wlan_set_no_beacon_timeout(unsigned char timeout_sec);
+void rltk_wlan_set_scan_chan_interval(unsigned short interval_ms);
+void rltk_wlan_map_in_efuse(unsigned char map_in_efuse);
+int rltk_wlan_map_read(unsigned char *data, unsigned short cnts);
+void rltk_set_mac(unsigned char * mac);
 void rltk_wlan_btcoex_set_bt_state(unsigned char state);
 int rltk_wlan_change_channel_plan(unsigned char channel_plan);
+int rltk_coex_ble_scan_duty_update( unsigned char duty);
+int rltk_coex_set_wlan_slot_random(unsigned char temp);
+int rltk_coex_set_wlan_slot_preempting(unsigned char bitmask);
+unsigned char rltk_wlan_ap_compatibility_is_enable(unsigned int bitmap);
+void rltk_wlan_enable_proassocaite(unsigned char enable);
+void rltk_wlan_enable_check_bcn_info(unsigned char enable);
+void rltk_wlan_enable_issue_deauth(unsigned char enable);
+void rltk_wlan_enable_wep_auth_algo_switch(unsigned char enable);
+void rltk_wlan_enable_delayed_reordering(unsigned char enable);
+void rltk_wlan_disable_dpk(void);
+unsigned char rltk_wlan_scan_with_ssid_by_extended_security_is_enable(void);
+void rltk_wlan_enable_channel_switch_announcement(unsigned char enable);
 int rltk_set_tx_pause(unsigned char pause);
 void rltk_set_rts_cts_mode(unsigned char mode);
+void rltk_dump_skb_buffers(void);
+int rltk_wlan_set_igi(unsigned char igi, unsigned char enable);
+int rltk_wlan_get_pbuddy_rssi(int *rssi);
+int rltk_wlan_set_tx_data_rate(unsigned char data_rate);
+void rltk_wlan_set_max_assoc_timeout(int timeout_ms);
+void rltk_wlan_set_max_handshake_timeout(int timeout_ms);
+void rltk_wlan_set_power_limit(int enable);
+int rltk_get_security_mode_full(const char *ifname);
 
 #ifdef CONFIG_IEEE80211W
 void rltk_wlan_tx_sa_query(unsigned char key_type);
 void rltk_wlan_tx_deauth(unsigned char b_broadcast, unsigned char key_type);
 void rltk_wlan_tx_auth(void);
+int rltk_set_pmf(unsigned char mode);
+#endif
+
+#if (RTL8192E_SUPPORT == 1)
+int rltk_wlan_set_ext_channel(int num);
+#endif
+
+#ifdef USER_CTL_POWER_SAVE
+int rltk_wlan_ucps_enable(unsigned char enable);
+int rltk_wlan_ucps_auto_rf_off_cmd(unsigned char enable,unsigned short timeout);
+int rltk_wlan_ucps_close_rf(void);
+int rltk_wlan_ucps_sniffer_param(unsigned char sniffer_time, unsigned short sniffer_interval);
+#endif
+
+#if defined (CONFIG_AP_MODE)
+int rltk_resume_softap(const char *ifname);
+#endif
+
+#ifdef CONFIG_CONCURRENT_MODE
+void rltk_wlan_enable_powersave_in_STA_AP_mode(void);
+void rltk_wlan_disable_powersave_in_STA_AP_mode(void);
+#endif
+
+#if CONFIG_AUTO_RECONNECT
+unsigned char* rltk_wlan_get_saved_bssid(void);
 #endif
 
 #ifdef	__cplusplus
