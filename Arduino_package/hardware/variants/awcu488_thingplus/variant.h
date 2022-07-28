@@ -119,13 +119,13 @@ extern void wait_for_debug(void);
 #define SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE    1
 #define LOG_TX                                  AMB_D24 // UART_LOG_TX AMB_D24
 #define LOG_RX                                  AMB_D25 // UART_LOG_RX AMB_D25
-#define SERIAL1_TX                              AMB_D0  // HS_UART0_TX AMB_D0
-#define SERIAL1_RX                              AMB_D8  // HS_UART0_RX AMB_D8
-#define SERIAL2_TX                              AMB_D4  // LP_UART_TX  AMB_D4 / AMB_D5 / AMB_D18
-#define SERIAL2_RX                              AMB_D3  // LP_UART_RX  AMB_D3 / AMB_D6 / AMB_D19
+#define SERIAL2_TX                              AMB_D0  // HS_UART0_TX AMB_D0
+#define SERIAL2_RX                              AMB_D8  // HS_UART0_RX AMB_D8
+#define SERIAL1_TX                              AMB_D4  // LP_UART_TX  AMB_D4 / AMB_D5 / AMB_D18
+#define SERIAL1_RX                              AMB_D3  // LP_UART_RX  AMB_D3 / AMB_D6 / AMB_D19
 
 /* SWD pin mapping */
-#define SWD_DATA                                AMB_D28
+#define SWD_DATA                                AMB_D27
 #define SWD_CLK                                 AMB_D9
 
 #if 0
