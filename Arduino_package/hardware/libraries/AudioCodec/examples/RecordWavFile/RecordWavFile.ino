@@ -33,16 +33,17 @@ void setup() {
     Codec.setSampleRate(SAMPLERATE);
     recWav.setSampleRate(SAMPLERATE);
     Codec.setReadCallback(readCBFunc);
-    Codec.begin(TRUE, FALSE);
 }
 
 void loop() {
     if ((digitalRead(RECORDBTN) == HIGH) && (!recWav.fileOpened())) {
         Serial.println("Recording started");
         recWav.openFile(absolute_filename);
+        Codec.begin(TRUE, FALSE);
     } else if((digitalRead(RECORDBTN) == LOW) && (recWav.fileOpened())) {
-        Serial.println("Recording stopped");
+        Codec.end();
         recWav.closeFile();
+        Serial.println("Recording stopped");
     }
     delay(100);
 
