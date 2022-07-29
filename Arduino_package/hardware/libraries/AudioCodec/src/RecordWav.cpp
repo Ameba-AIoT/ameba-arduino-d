@@ -81,13 +81,15 @@ void RecordWav::updateWavHeader() {
 }
 
 void RecordWav::closeFile() {
-    _fileReady = 0;
-    updateWavHeader();
-    FRESULT res;
-    // Close source file
-    res = f_close(&_file);
-    if (res) {
-        printf("Close audio file failed : FatFs code %d \n", res);
+    if (_fileReady) {
+        _fileReady = 0;
+        updateWavHeader();
+        FRESULT res;
+        // Close source file
+        res = f_close(&_file);
+        if (res) {
+            printf("Close audio file failed : FatFs code %d \n", res);
+        }
     }
 }
 

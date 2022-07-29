@@ -91,6 +91,9 @@ class AudioCodec {
         static void initHAL();
         static void deinitHAL();
 
+        // Function for checking for avaliable audio data and calling callback functions
+        static void callback_task(void* param);
+
         // Functions for accessing and managing DMA buffer use
         static uint8_t* getFreeTxPage(void);
         static void writeTxPage(uint8_t *src, uint32_t length);
@@ -139,6 +142,7 @@ class AudioCodec {
 
         static void (*_pWriteCB)(void);
         static void (*_pReadCB)(void);
+        static TaskHandle_t callback_task_handle;
 
         static TX_INFO _txBufferInfo;
         static RX_INFO _rxBufferInfo;
