@@ -47,6 +47,10 @@ class UARTClassTwo : public HardwareSerial
         friend bool Serial2_available();
 };
 
-//extern UARTClassTwo Serial2;
+#if defined(BOARD_RTL8720DN_BW16)
+extern UARTClassTwo Serial1;
+#else
+extern UARTClassTwo Serial2;
+#endif
 
 #endif // _LOGUART_CLASS_

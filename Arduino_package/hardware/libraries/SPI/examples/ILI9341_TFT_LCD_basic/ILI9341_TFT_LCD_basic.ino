@@ -13,19 +13,12 @@
 #include "SPI.h"
 #include "AmebaILI9341.h"
 
-#if defined(BOARD_RTL8722DM)
+
+// For all supportted boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
+// Select 2 GPIO pins connect to TFT_RESET and TFT_DC. And default SPI_SS/SPI1_SS connect to TFT_CS.
 #define TFT_RESET       8
 #define TFT_DC          9
-#define TFT_CS          10
-#elif defined(BOARD_RTL8722DM_MINI)
-#define TFT_RESET       8
-#define TFT_DC          13
-#define TFT_CS          12
-#elif defined(BOARD_RTL8720DN_BW16)
-#define TFT_RESET       PA27
-#define TFT_DC          PA26
-#define TFT_CS          PA15
-#endif
+#define TFT_CS          SPI_SS
 
 AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
 

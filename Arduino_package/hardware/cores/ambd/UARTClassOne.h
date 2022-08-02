@@ -15,9 +15,12 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 #ifndef _UART_CLASS_ONE_
 #define _UART_CLASS_ONE_
+
+#if defined(BOARD_RTL8720DN_BW16)
+//Not available
+#else
 
 #include "HardwareSerial.h"
 #include "RingBuffer.h"
@@ -46,6 +49,8 @@ class UARTClassOne : public HardwareSerial
         friend bool Serial1_available();
 };
 
-//extern UARTClassOne Serial1; 
+extern UARTClassOne Serial1;
+
+#endif
 
 #endif // _LOGUART_CLASS_
