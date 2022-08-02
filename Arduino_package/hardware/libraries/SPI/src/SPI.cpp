@@ -260,7 +260,7 @@ void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
     (void)_pin;
     (void)_divider;
 
-    // no affact in Ameba
+    // no affect in Ameba
 }
 
 
@@ -268,7 +268,7 @@ void SPIClass::setClockDivider(uint8_t _div)
 {
     (void)_div;
 
-    // no affact in Ameba
+    // no affect in Ameba
 }
 
 void SPIClass::setDefaultFrequency(int _frequency)

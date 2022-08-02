@@ -49,7 +49,7 @@ class FatFsSD {
          * @param[in] path The absolute directory path to be listed
          * @param[in] result_buf The buffer to be stored results
          * @param[in] bufsize The size of result_buf. If results exceed this size, then the results larger than this size would be discard.
-         * @return Return 0 if success. Return negativate value for a failure.
+         * @return Return 0 if success. Return negative value for a failure.
          */
         int readDir(char *path, char *result_buf, unsigned int bufsize);
 
@@ -57,7 +57,7 @@ class FatFsSD {
          * @brief Create folder
          *
          * @param[in] absolute_path The absolute directory path to be created.
-         * @return Return 0 if success. Return negativate value for a failure.
+         * @return Return 0 if success. Return negative value for a failure.
          */
         int mkdir(char *absolute_path);
 
@@ -65,7 +65,7 @@ class FatFsSD {
          * @brief Remove folder or file
          *
          * @param[in] absolute_path The absolute directory or file path to be deleted.
-         * @return Return 0 if success. Return negativate value for a failure.
+         * @return Return 0 if success. Return negative value for a failure.
          */
         int rm(char *absolute_path);
 
@@ -95,7 +95,7 @@ class FatFsSD {
          * @param[in] hour
          * @param[in] minute
          * @param[in] second field "second" contains no valid information in current version
-         * @return Return 0 if success. Return negativate value for a failure.
+         * @return Return 0 if success. Return negative value for a failure.
          */
         int getLastModTime(char *absolute_path, uint16_t *year, uint16_t *month, uint16_t *date, uint16_t *hour, uint16_t *minute, uint16_t *second);
 
@@ -111,7 +111,7 @@ class FatFsSD {
          * @param[in] hour
          * @param[in] minute
          * @param[in] second field "second" contains no valid information in current version
-         * @return Return 0 if success. Return negativate value for a failure.
+         * @return Return 0 if success. Return negative value for a failure.
          */
         int setLastModTime(char *absolute_path, uint16_t year, uint16_t month, uint16_t date, uint16_t hour, uint16_t minute, uint16_t second);
 
