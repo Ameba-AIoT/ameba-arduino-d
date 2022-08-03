@@ -17,6 +17,9 @@ extern "C" {
 #define ATCMD_TCPIP_TX_BUFFER_SIZE    8192
 #define ATCMD_TCPIP_RX_BUFFER_SIZE    2920
 
+#define DEFAULT_DNS_1   "1.1.1.1"
+#define DEFAULT_DNS_2   "8.8.8.8"
+
 typedef enum {
     CONN_MODE_TCP = 0,
     CONN_MODE_UDP = 1,
@@ -39,12 +42,15 @@ typedef struct atcmd_client_conn
     uint32_t local_addr;
     uint16_t local_port;
     uint32_t keep_alive;
+    uint16_t recv_data_len;     // used to keep track of received data pending read in passive receive mode
 } atcmd_client_conn_t;
 
 struct timeval {
   long    tv_sec;         /* seconds */
   long    tv_usec;        /* and microseconds */
 };
+
+typedef uint32_t in_addr_t;
 
 void atcmd_tcpip_init(void);
 void atcmd_tcpip_register(void);

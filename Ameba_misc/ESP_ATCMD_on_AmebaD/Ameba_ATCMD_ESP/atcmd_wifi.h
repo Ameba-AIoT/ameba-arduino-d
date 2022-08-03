@@ -10,7 +10,6 @@ extern "C" {
 #endif
 
 #define WIFI_SCAN_RESULT_MAX_COUNT 64
-#define DEVICE_DEFAULT_HOSTNAME ("ameba")
 
 //wifi state start at 0
 //if connect indicator, state 0 -> 1
