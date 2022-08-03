@@ -6,11 +6,11 @@
 extern "C" {
 #endif
 
-typedef uint32_t in_addr_t;
-
 #include "lwip_netconf.h"
 #include "lwip/opt.h"
 #include "lwip/sockets.h"
+#include "lwip/dns.h"
+#include "lwip/api.h"
 #include "lwip/inet.h"
 #include "lwip/inet_chksum.h"
 #include "lwip/netdb.h"
@@ -26,20 +26,24 @@ extern struct netif xnetif[NET_IF_NUM];
 
 extern atcmd_cwstate_t cwstate;
 
-uint8_t cip_mux = 0;
-uint8_t cip_mode = 0;
-uint8_t cip_dinfo = 0;
-uint16_t cip_reconnintv = 1;
-uint8_t passthrough_mode = 0;
-uint16_t transmission_mode = 0;
+uint8_t cip_mux = 0;            // indicator for single / multiple simultaneous connections mode
+uint8_t cip_mode = 0;           // indicator for normal / passthrough transmission mode
+uint8_t cip_dinfo = 0;          // indicator for hiding / showing host & port information in received data
+uint8_t cip_recvmode = 0;       // indicator for active / passive data receiving mode
+uint8_t cip_dnsmode = 0;        // indicator for auto / manual DNS configuration
+
+uint16_t transmission_mode_len = 0;     // normal transmission mode data length to receive
+uint8_t passthrough_mode = 0;           // indicator for passthrough mode currently active
 uint32_t atcmd_tcpip_passthrough_last_tick = 0;
+uint16_t cip_reconnintv = 1;
+
 TaskHandle_t atcmd_tcpip_receive_handle = NULL;
 TaskHandle_t atcmd_tcpip_passthrough_send_handle = NULL;
 SemaphoreHandle_t atcmd_tcpip_tx_sema = NULL;
 
 atcmd_client_conn_t client_conn_list[ATCMD_MAX_CLIENT_CONN];
-uint8_t atcmd_tcpip_tx_buf[ATCMD_TCPIP_TX_BUFFER_SIZE];     // RX from UART, send to network
 uint8_t atcmd_tcpip_rx_buf[ATCMD_TCPIP_RX_BUFFER_SIZE];     // RX from network, sent to UART
+uint8_t atcmd_tcpip_tx_buf[ATCMD_TCPIP_TX_BUFFER_SIZE];     // RX from UART, send to network
 volatile uint16_t atcmd_tcpip_tx_buflen = 0;
 
 void atcmd_init_conn_struct(atcmd_client_conn_t* conn) {
@@ -133,7 +137,7 @@ void atcmd_tcpip_passthrough_send_task(void* param) {
 }
 
 uint8_t atcmd_client_start(uint8_t link_id);
-int atcmd_tcpip_receive_data(uint8_t link_id, int* recv_size) {
+int atcmd_tcpip_receive_data(uint8_t link_id, int* recv_size, int flags) {
     struct timeval tv;
     fd_set readfds;
     int error_no = 0, ret = 0, size = 0;
@@ -152,7 +156,11 @@ int atcmd_tcpip_receive_data(uint8_t link_id, int* recv_size) {
 
     // Receive data according to connection type
     if (client_conn_list[link_id].protocol == CONN_MODE_TCP) {              // TCP case
-        size = lwip_recv(client_conn_list[link_id].sockfd, atcmd_tcpip_rx_buf, ATCMD_TCPIP_RX_BUFFER_SIZE, 0);
+        if (*recv_size > 0) {
+            size = lwip_recv(client_conn_list[link_id].sockfd, atcmd_tcpip_rx_buf, *recv_size, flags);
+        } else {
+            size = lwip_recv(client_conn_list[link_id].sockfd, atcmd_tcpip_rx_buf, ATCMD_TCPIP_RX_BUFFER_SIZE, flags);
+        }
 
         if (size == 0) {
             // ERROR:Connection closed
@@ -211,26 +219,54 @@ void atcmd_tcpip_receive_task(void* param) {
                 active_conn++;
                 int error_no = 0;
                 int recv_size = 0;
-                error_no = atcmd_tcpip_receive_data(link_id, &recv_size);
-                if ((error_no == 0) && recv_size) {
-                    atcmd_tcpip_rx_buf[recv_size] = '\0';
-                    if (!cip_mode) {
-                        at_printf("\r\n+IPD");
-                        if (cip_mux) {
-                            at_printf(",%d", link_id);
+                if (cip_recvmode) {
+                    if (passthrough_mode) {
+                        // if in passthrough mode, receive and print data
+                        error_no = atcmd_tcpip_receive_data(link_id, &recv_size, 0);
+                        if ((error_no == 0) && recv_size) {
+                            atcmd_tcpip_rx_buf[recv_size] = '\0';
+                            at_print_data(atcmd_tcpip_rx_buf, recv_size);
+                            vTaskDelay(20/portTICK_PERIOD_MS);
                         }
-                        at_printf(",%d", recv_size);
-                        if (cip_dinfo) {
-                            at_printf("\",%s\"", inet_ntoa(client_conn_list[link_id].addr));
-                            at_printf(",%d", client_conn_list[link_id].port);
+                    } else {
+                        // peek at how much data is pending
+                        if (client_conn_list[link_id].recv_data_len == 0) {
+                            error_no = atcmd_tcpip_receive_data(link_id, &recv_size, MSG_PEEK);
+                            if ((error_no == 0) && recv_size) {
+                                at_printf("\r\n+IPD");
+                                if (cip_mux) {
+                                    at_printf(",%d", link_id);
+                                }
+                                at_printf(",%d", recv_size);
+                                at_printf("\r\n");
+                                client_conn_list[link_id].recv_data_len = recv_size;
+                                vTaskDelay(20/portTICK_PERIOD_MS);
+                            }
                         }
-                        at_printf(":");
                     }
-                    at_print_data(atcmd_tcpip_rx_buf, recv_size);
-                    if (!cip_mode) {
-                        at_printf("\r\n");
+                } else {
+                    // Not in passive data receive mode
+                    error_no = atcmd_tcpip_receive_data(link_id, &recv_size, 0);
+                    if ((error_no == 0) && recv_size) {
+                        atcmd_tcpip_rx_buf[recv_size] = '\0';
+                        if (!cip_mode) {
+                            at_printf("\r\n+IPD");
+                            if (cip_mux) {
+                                at_printf(",%d", link_id);
+                            }
+                            at_printf(",%d", recv_size);
+                            if (cip_dinfo) {
+                                at_printf(",\"%s\"", inet_ntoa(client_conn_list[link_id].addr));
+                                at_printf(",%d", client_conn_list[link_id].port);
+                            }
+                            at_printf(":");
+                        }
+                        at_print_data(atcmd_tcpip_rx_buf, recv_size);
+                        if (!cip_mode) {
+                            at_printf("\r\n");
+                        }
+                        vTaskDelay(20/portTICK_PERIOD_MS);
                     }
-                    vTaskDelay(20/portTICK_PERIOD_MS);
                 }
             }
         }
@@ -405,8 +441,7 @@ uint8_t s_AT_CIPDOMAIN(void *arg) {
     char* argv[ATCMD_MAX_ARG_CNT] = {0};
     char* domain = NULL;      // Arg 1
     uint8_t ip_network = 0;
-    struct in_addr addr;
-    struct hostent *server_host;
+    ip_addr_t ip_addr;
 
     if (!arg) {
         return ATCMD_ERROR;
@@ -427,18 +462,20 @@ uint8_t s_AT_CIPDOMAIN(void *arg) {
         return ATCMD_ERROR;
     }
 
-    if (inet_aton(domain, &addr)) {
+    if (inet_aton(domain, &ip_addr.u_addr.ip4)) {
         // valid IP address provided, return same address
-        at_printf("+CIPDOMAIN:\"%s\"\r\n", inet_ntoa(addr));
+        at_printf("+CIPDOMAIN:\"%s\"\r\n", inet_ntoa(ip_addr.u_addr.ip4));
     } else {
         // Not a valid IP address provided, attempt to DNS resolve hostname
-        server_host = gethostbyname(domain);
-        if (server_host){
-            memcpy(&addr, server_host->h_addr, 4);
-            at_printf("+CIPDOMAIN:\"%s\"\r\n", inet_ntoa(addr));
-        } else {
+        err_t err;
+        err = netconn_gethostbyname_addrtype(domain, &ip_addr, NETCONN_DNS_IPV4);
+        if (err != ERR_OK) {
+            if (AT_DEBUG) printf("netconn_gethostbyname_addrtype error: %d\r\n", err);
             return ATCMD_ERROR;
+        } else {
+            at_printf("+CIPDOMAIN:\"%s\"\r\n", inet_ntoa(ip_addr.u_addr));
         }
+
     }
     return ATCMD_OK;
 }
@@ -704,7 +741,7 @@ uint8_t s_AT_CIPSEND(void *arg) {
     int ret = 0;
     // Enter normal transmission mode
     atcmd_tcpip_tx_buflen = 0;
-    transmission_mode = data_len;
+    transmission_mode_len = data_len;
     at_printf("\r\nOK\r\n\r\n>");
     // wait for semaphore indicating data for transmission is received
     while (xSemaphoreTake(atcmd_tcpip_tx_sema, portMAX_DELAY) != pdTRUE);
@@ -993,6 +1030,156 @@ uint8_t s_AT_CIPRECONNINTV(void *arg) {
     return ATCMD_OK;
 }
 
+uint8_t q_AT_CIPRECVMODE(void *arg) {
+    // Query the socket receiving mode.
+    // AT+CIPRECVMODE?
+    (void)arg;
+    at_printf("+CIPRECVMODE:%d\r\n", cip_recvmode);
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CIPRECVMODE(void *arg) {
+    // Set the socket receiving mode.
+    // AT+CIPRECVMODE=<mode>
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint8_t mode = 0;          // Arg 1
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if (argc != 2) {
+        return ATCMD_ERROR;
+    }
+
+    mode = atoi(argv[1]);
+    if (mode > 1) {
+        return ATCMD_ERROR;
+    }
+    cip_recvmode = mode;
+    if (cip_recvmode == 0) {
+        // zero out pending data counts for all connections
+        for (uint8_t i = 0; i < ATCMD_MAX_CLIENT_CONN; i++) {
+            client_conn_list[i].recv_data_len = 0;
+        }
+    }
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CIPRECVDATA(void *arg) {
+    // Obtain Socket Data in Passive Receiving Mode
+    // Single connection: (AT+CIPMUX=0)
+        // AT+CIPRECVDATA=<len>
+    // Multiple connections: (AT+CIPMUX=1)
+        // AT+CIPRECVDATA=<link_id>,<len>
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint8_t link_id = 0;        // Arg 1
+    int data_len = 0;       // Arg 2
+    int error_no = 0;
+
+    if (cip_recvmode == 0) {
+        return ATCMD_ERROR;
+    }
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if (cip_mux) {
+        if (argc != 3) {
+            return ATCMD_ERROR;
+        }
+    } else {
+        if (argc != 2) {
+            return ATCMD_ERROR;
+        }
+    }
+
+    // Link ID
+    if (cip_mux) {
+        if (argv[1] != NULL) {
+            link_id = atoi(argv[1]);
+            if (link_id >= ATCMD_MAX_CLIENT_CONN) {
+                return ATCMD_ERROR;
+            }
+        } else {
+            return ATCMD_ERROR;
+        }
+    }
+
+    // Data length
+    if (argv[1 + cip_mux] != NULL) {
+        data_len = atoi(argv[1 + cip_mux]);
+        if ((data_len > ATCMD_TCPIP_TX_BUFFER_SIZE) || (data_len <= 0)) {
+            return ATCMD_ERROR;
+        }
+    } else {
+        return ATCMD_ERROR;
+    }
+
+    // Check for data pending read
+    if (client_conn_list[link_id].recv_data_len == 0) {
+        return ATCMD_ERROR;
+    }
+
+    error_no = atcmd_tcpip_receive_data(link_id, &data_len, 0);
+    if ((error_no == 0) && data_len) {
+        atcmd_tcpip_rx_buf[data_len] = '\0';
+        at_printf("+CIPRECVDATA:");
+        at_printf("%d,", data_len);
+        if (cip_dinfo) {
+            at_printf("\"%s\",", inet_ntoa(client_conn_list[link_id].addr));
+            at_printf("%d,", client_conn_list[link_id].port);
+        }
+        at_print_data(atcmd_tcpip_rx_buf, data_len);
+        // set to zero to trigger new pending data message
+        client_conn_list[link_id].recv_data_len = 0;
+        vTaskDelay(20/portTICK_PERIOD_MS);
+    } else {
+        return ATCMD_ERROR;
+    }
+
+    return ATCMD_OK;
+}
+
+uint8_t q_AT_CIPRECVLEN(void *arg) {
+    // Query the length of the entire data buffered for the connection.
+    // AT+CIPRECVLEN?
+    (void)arg;
+
+    uint8_t conn_count = 0;
+    if (cip_mux) {
+        conn_count = ATCMD_MAX_CLIENT_CONN;
+    } else {
+        conn_count = 1;
+    }
+
+    at_printf("+CIPRECVLEN:");
+    for (uint8_t link_id = 0; link_id < conn_count; link_id++) {
+        if (client_conn_list[link_id].active == CONN_ROLE_INACTIVE) {
+            at_printf("-1");
+        } else {
+            int error_no = 0;
+            int recv_size = 0;
+            // peek at how much data is pending
+            error_no = atcmd_tcpip_receive_data(link_id, &recv_size, MSG_PEEK);
+            if ((error_no == 0) && recv_size) {
+                client_conn_list[link_id].recv_data_len = recv_size;
+                vTaskDelay(20/portTICK_PERIOD_MS);
+            }
+            at_printf("%d", client_conn_list[link_id].recv_data_len);
+        }
+        if (link_id < (conn_count - 1)) {
+            at_printf(",");
+        }
+    }
+    at_printf("\r\n");
+    return ATCMD_OK;
+}
+
 uint8_t s_AT_PING(void *arg) {
     // Ping the remote host.
     // AT+PING=<"host">
@@ -1079,6 +1266,80 @@ uint8_t s_AT_PING(void *arg) {
     return ATCMD_ERROR;
 }
 
+uint8_t q_AT_CIPDNS(void *arg) {
+    // Query the current DNS server information.
+    // AT+CIPDNS?
+    (void)arg;
+
+    const ip_addr_t* dns0 = dns_getserver(0);
+    const ip_addr_t* dns1 = dns_getserver(1);
+
+    at_printf("+CIPDNS:%d,\"%s\"", cip_dnsmode, inet_ntoa(dns0->u_addr.ip4));
+    at_printf(",\"%s\"\r\n", inet_ntoa(dns1->u_addr.ip4));
+
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CIPDNS(void *arg) {
+    // Set DNS server information.
+    // AT+CIPDNS=<enable>[,<"DNS IP1">,<"DNS IP2">,<"DNS IP3">]
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint8_t dns_mode = 0;
+    ip_addr_t dns1_addr;
+    ip_addr_t dns2_addr;
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if ((argc < 2) || (argc > 5)) {
+        return ATCMD_ERROR;
+    }
+
+    dns_mode = atoi(argv[1]);
+    if (dns_mode > 1) {
+        return ATCMD_ERROR;
+    }
+    cip_dnsmode = dns_mode;
+
+    if (dns_mode) {
+        if (argv[2] != NULL) {
+            if (inet_aton(argv[2], &dns1_addr.u_addr.ip4) == 0) {
+                return ATCMD_ERROR;
+            }
+            if (dns1_addr.u_addr.ip4.addr == 0) {
+                return ATCMD_ERROR;
+            }
+        } else {
+            inet_aton(DEFAULT_DNS_1, &dns1_addr.u_addr.ip4);
+        }
+        if (argv[3] != NULL) {
+            if (inet_aton(argv[3], &dns2_addr.u_addr.ip4) == 0) {
+                return ATCMD_ERROR;
+            }
+            if (dns2_addr.u_addr.ip4.addr == 0) {
+                return ATCMD_ERROR;
+            }
+        } else {
+            inet_aton(DEFAULT_DNS_2, &dns2_addr.u_addr.ip4);
+        }
+    } else {
+        inet_aton(DEFAULT_DNS_1, &dns1_addr.u_addr.ip4);
+        inet_aton(DEFAULT_DNS_2, &dns2_addr.u_addr.ip4);
+    }
+
+    dns_setserver(0, &dns1_addr);
+    dns_setserver(1, &dns2_addr);
+
+//    struct ip_addr dns;
+//    IP4_ADDR(ip_2_ip4(&dns), 8, 8, 8, 8);
+//    dns_setserver(0, &dns);
+
+    return ATCMD_OK;
+}
+
 atcmd_command_t atcmd_tcpip_commands[] = {
       {"AT+CIPSTATUS",      NULL,   NULL,               NULL,               e_AT_CIPSTATUS,   {NULL, NULL}},
       {"AT+CIPDOMAIN",      NULL,   NULL,               s_AT_CIPDOMAIN,     NULL,             {NULL, NULL}},
@@ -1090,10 +1351,11 @@ atcmd_command_t atcmd_tcpip_commands[] = {
       {"AT+CIPMODE",        NULL,   q_AT_CIPMODE,       s_AT_CIPMODE,       NULL,             {NULL, NULL}},
       {"AT+CIPDINFO",       NULL,   q_AT_CIPDINFO,      s_AT_CIPDINFO,      NULL,             {NULL, NULL}},
       {"AT+CIPRECONNINTV",  NULL,   q_AT_CIPRECONNINTV, s_AT_CIPRECONNINTV, NULL,             {NULL, NULL}},
-      {"AT+CIPRECVMODE",    NULL,   NULL,    NULL,      NULL,               {NULL, NULL}},
-      {"AT+CIPRECVDATA",    NULL,   NULL,    NULL,      NULL,               {NULL, NULL}},
-      {"AT+CIPRECVLEN",     NULL,   NULL,    NULL,      NULL,               {NULL, NULL}},
+      {"AT+CIPRECVMODE",    NULL,   q_AT_CIPRECVMODE,   s_AT_CIPRECVMODE,   NULL,             {NULL, NULL}},
+      {"AT+CIPRECVDATA",    NULL,   NULL,               s_AT_CIPRECVDATA,   NULL,             {NULL, NULL}},
+      {"AT+CIPRECVLEN",     NULL,   q_AT_CIPRECVLEN,    NULL,               NULL,             {NULL, NULL}},
       {"AT+PING",           NULL,   NULL,               s_AT_PING,          NULL,             {NULL, NULL}},
+      {"AT+CIPDNS",         NULL,   q_AT_CIPDNS,        s_AT_CIPDNS,        NULL,             {NULL, NULL}},
 };
 
 void atcmd_tcpip_register(void) {

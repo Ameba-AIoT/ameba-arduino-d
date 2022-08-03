@@ -188,24 +188,8 @@ void atcmd_service_task(void* param) {
     }
 }
 
-void atcmd_taskmon_task(void* param) {
-    (void)param;
-    char ptrTaskList[250];
-    while (1) {
-        vTaskList(ptrTaskList);
-        printf("********************************************\r\n");
-        printf("Task\t\tState\tPrio\tStack\tNum\r\n");
-        printf("********************************************\r\n");
-        printf("%s",ptrTaskList);
-        printf("********************************************\r\n");
-        vTaskDelay(1000/portTICK_PERIOD_MS);
-    }
-}
 void atcmd_init(void) {
     int result;
-
-    // Configure UART for ATCMD processing
-    atcmd_uart_init();
 
     // initialize atcmd hash table and register core atcmd table
     for(uint8_t i = 0; i < ATCMD_HASH_TBL_SIZE; i++) {
@@ -222,12 +206,8 @@ void atcmd_init(void) {
 
     // start task to process incoming ATcommands
     result = xTaskCreate(atcmd_service_task, "atcmd_task", 1024, NULL, tskIDLE_PRIORITY + 3, &atcmd_task_handle);
-    if (AT_DEBUG) xTaskCreate(atcmd_taskmon_task, "taskmon_task", 1024, NULL, tskIDLE_PRIORITY + 2, NULL);
     if (result != pdPASS) {
         printf("atcmd_service_task task create failed\r\n");
-    } else {
-        printf("ATCMD UART interface ready\r\n");
-        at_printf("\r\nready\r\n");
     }
 }
 
@@ -342,6 +322,7 @@ uint8_t e_ATE1(void *arg) {
     return ATCMD_OK;
 }
 
+extern uint8_t q_AT_UART(void *arg);
 extern uint8_t q_AT_UART_CUR(void *arg);
 extern uint8_t s_AT_UART_CUR(void *arg);
 extern uint8_t q_AT_UART_DEF(void *arg);
@@ -392,6 +373,7 @@ atcmd_command_t atcmd_sys_commands[] = {
       {"AT+GMR",        NULL, NULL,             NULL,           e_AT_GMR,   {NULL, NULL}},
       {"ATE0",          NULL, NULL,             NULL,           e_ATE0,     {NULL, NULL}},
       {"ATE1",          NULL, NULL,             NULL,           e_ATE1,     {NULL, NULL}},
+      {"AT+UART",       NULL, q_AT_UART,        s_AT_UART_CUR,  NULL,       {NULL, NULL}},
       {"AT+UART_CUR",   NULL, q_AT_UART_CUR,    s_AT_UART_CUR,  NULL,       {NULL, NULL}},
       {"AT+UART_DEF",   NULL, q_AT_UART_DEF,    s_AT_UART_DEF,  NULL,       {NULL, NULL}},
       {"AT+SYSRAM",     NULL, q_AT_SYSRAM,      NULL,           NULL,       {NULL, NULL}},
@@ -401,4 +383,3 @@ atcmd_command_t atcmd_sys_commands[] = {
 void atcmd_sys_register(void) {
     atcmd_add_cmdtable(atcmd_sys_commands, sizeof(atcmd_sys_commands)/sizeof(atcmd_sys_commands[0]));
 }
-
