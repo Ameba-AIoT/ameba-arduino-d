@@ -12,7 +12,7 @@ extern "C" {
 #endif
 
 // ATCMD UART default configuration
-int atcmd_uart_baudrate = 115200;
+int atcmd_uart_baudrate = 9600;
 int atcmd_uart_databits = 8;
 int atcmd_uart_stopbits = 1;
 SerialParity atcmd_uart_paritybits = ParityNone;
@@ -24,8 +24,8 @@ extern SemaphoreHandle_t atcmd_cmd_done_sema;
 extern uint8_t atcmd_local_echo;
 
 // Variables used for handling TCPIP data for transmission
+extern uint16_t transmission_mode_len;
 extern uint8_t passthrough_mode;
-extern uint16_t transmission_mode;
 extern uint32_t atcmd_tcpip_passthrough_last_tick;
 extern SemaphoreHandle_t atcmd_tcpip_tx_sema;
 extern volatile uint16_t atcmd_tcpip_tx_buflen;
@@ -39,10 +39,10 @@ void uart_irq(uint32_t id, SerialIrq event) {
         rc = serial_getc(sobj);
 
         // Code to process data in transmission mode
-        if (transmission_mode) {
+        if (transmission_mode_len) {
             atcmd_tcpip_tx_buf[atcmd_tcpip_tx_buflen++] = rc;
-            transmission_mode--;
-            if (transmission_mode == 0) {
+            transmission_mode_len--;
+            if (transmission_mode_len == 0) {
                 xSemaphoreGiveFromISR(atcmd_tcpip_tx_sema, NULL);
             }
             return;
@@ -117,6 +117,8 @@ void atcmd_uart_init(void) {
     serial_set_flow_control(&atcmd_uart_obj, atcmd_uart_flow_ctrl, ATCMD_UART_RTS_PIN, ATCMD_UART_CTS_PIN);
     serial_irq_handler(&atcmd_uart_obj, uart_irq, (uint32_t)&atcmd_uart_obj);
     serial_irq_set(&atcmd_uart_obj, RxIrq, 1);
+    printf("ATCMD UART interface ready\r\n");
+    at_printf("\r\nready\r\n");
 }
 
 void atcmd_uart_reinit(void) {
@@ -152,6 +154,13 @@ void atcmd_uart_irq_disable(void) {
 }
 
 //---------------------------- Commands for basic ATCMD functionality ----------------------------//
+uint8_t q_AT_UART(void *arg) {
+    // Query current UART configuration
+    (void)arg;
+    at_printf("+UART:%d,%d,%d,%d,%d\r\n",\
+        atcmd_uart_baudrate, atcmd_uart_databits, atcmd_uart_stopbits, atcmd_uart_paritybits, atcmd_uart_flow_ctrl);
+    return ATCMD_OK;
+}
 
 uint8_t q_AT_UART_CUR(void *arg) {
     // Query current UART configuration
@@ -274,6 +283,35 @@ uint8_t s_AT_UART_DEF(void *arg) {
         ){
         return ATCMD_ERROR;
     }
+
+    atcmd_uart_baudrate = baud;
+    atcmd_uart_databits = databits;
+    if (stopbits == 1) {
+        atcmd_uart_stopbits = 1;
+    } else {
+        atcmd_uart_stopbits = 2;
+    }
+    atcmd_uart_paritybits = (SerialParity)parity;
+    switch (flowcontrol) {
+        case 0: {
+            atcmd_uart_flow_ctrl = FlowControlNone;
+            break;
+        }
+        case 1: {
+            atcmd_uart_flow_ctrl = FlowControlRTS;
+            break;
+        }
+        case 2: {
+            atcmd_uart_flow_ctrl = FlowControlCTS;
+            break;
+        }
+        case 3: {
+            atcmd_uart_flow_ctrl = FlowControlRTSCTS;
+            break;
+        }
+    }
+    at_printf("\r\nOK\r\n");
+    vTaskDelay(5/portTICK_PERIOD_MS);   // delay to allow data in UART FIFO to clear out
+    atcmd_uart_reinit();
     return ATCMD_OK;
 }
-

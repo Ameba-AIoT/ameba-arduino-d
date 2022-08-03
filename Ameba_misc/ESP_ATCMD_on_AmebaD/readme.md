@@ -9,40 +9,29 @@ Ameba_ATCMD_ESP is an Arduino sketch for the AmebaD RTL872xD development boards 
 To use this sketch, open the "Ameba_ATCMD_ESP" sketch in Arduino, compile and upload to an AmebaD board.
 
 The default UART port used for AT commands is TX pin PB_1 and RX pin PB_2.
-Default UART configuration is 115200 baud, 8 data bits, 1 stop bit, no parity bit, no flow control.
+Default UART configuration is 9600 baud, 8 data bits, 1 stop bit, no parity bit, no flow control.
 
 Follow the example guide in the `ESP_ATCMD_on_AmebaD guide` folder on how to use this with an Arduino board.
 
 ### Supported ESP AT commands
 
-- Basic AT commands
-  - AT
-  - AT+RST
-  - AT+GMR
-  - ATE0
-  - ATE1
-  - AT+UART_CUR
-  - AT+SYSRAM
- 
-- Wi-Fi AT commands
-  - AT+CWSTATE
-  - AT+CWJAP
-  - AT+CWLAP
-  - AT+CWQAP
-  - AT+CWRECONNCFG
- 
-- TCP/IP AT commands
-  - AT+CIPSTATUS
-  - AT+CIPDOMAIN
-  - AT+CIPSTART
-  - AT+CIPSEND
-  - AT+CIPCLOSE
-  - AT+CIFSR
-  - AT+CIPMUX
-  - AT+CIPMODE
-  - AT+CIPDINFO
-  - AT+CIPRECONNINTV
-  - AT+PING
+| Basic AT commands | Wi-Fi AT commands | TCP/IP AT commands |
+| ----------------- | ----------------- | ------------------ |
+| AT                | AT+CWSTATE        | AT+CIPSTATUS       |
+| AT+RST            | AT+CWJAP          | AT+CIPDOMAIN       |
+| AT+GMR            | AT+CWRECONNCFG    | AT+CIPSTART        |
+| ATE0              | AT+CWLAP          | AT+CIPSEND         |
+| ATE1              | AT+CWQAP          | AT+CIPCLOSE        |
+| AT+UART_CUR       | AT+CWDHCP         | AT+CIFSR           |
+| AT+SYSRAM         | AT+CIPSTAMAC      | AT+CIPMUX          |
+|                   | AT+CIPSTA         | AT+CIPMODE         |
+|                   | AT+CWHOSTNAME     | AT+CIPDINFO        |
+|                   |                   | AT+CIPRECONNINTV   |
+|                   |                   | AT+CIPRECVMODE     |
+|                   |                   | AT+CIPRECVDATA     |
+|                   |                   | AT+CIPRECVLEN      |
+|                   |                   | AT+PING            |
+|                   |                   | AT+CIPDNS          |
 
 Note that for TCP/IP AT commands, only TCP connections are currently supported.
 

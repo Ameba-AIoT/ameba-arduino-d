@@ -1,5 +1,6 @@
 #include "atcmd_core.h"
 #include "atcmd_wifi.h"
+#include "atcmd_tcpip.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -9,6 +10,7 @@ extern "C" {
 #include "wifi_constants.h"
 #include "wifi_structures.h"
 #include "lwip_netconf.h"
+#include "inet.h"
 
 extern struct netif xnetif[NET_IF_NUM];
 
@@ -18,6 +20,10 @@ extern struct netif xnetif[NET_IF_NUM];
 
 uint8_t cw_dhcp = 3;
 uint8_t cw_autoconn = 1;
+uint8_t static_ip[4] = {0, 0, 0, 0};
+uint8_t static_gw[4] = {0, 0, 0, 0};
+uint8_t static_nm[4] = {0, 0, 0, 0};
+char cw_hostname[32] = {"ameba"};
 TaskHandle_t wifi_scan_task_handle = NULL;
 SemaphoreHandle_t wifi_scan_complete_sema = NULL;
 rtw_scan_result_t* wifi_scan_result_buffer = NULL;
@@ -107,6 +113,7 @@ void atcmd_wifi_reconn_fail_hdl(char* buf, int buf_len, int flags, void* userdat
     }
 }
 
+uint8_t atcmd_wifi_connect(uint32_t timeout_sec);
 void atcmd_wifi_init(void) {
     // initialize semaphore used to indicate newly received ATcommands
     vSemaphoreCreateBinary(wifi_scan_complete_sema);
@@ -117,20 +124,9 @@ void atcmd_wifi_init(void) {
     cwstate = CWSTATE_INITIAL;
     atcmd_wifi_register();
 
-//    uint8_t chnpln;     // Default channel plan 0x7F
-//    uint8_t chntgt = 0x76;      // 0x76
-//    if (wifi_get_channel_plan(&chnpln) == RTW_SUCCESS) {
-//        printf("WiFi Channel Plan: 0x%x\r\n", chnpln);
-//        if (chnpln != chntgt) {
-//            if (wifi_set_channel_plan(chntgt) == RTW_SUCCESS) {
-//                printf("WiFi Set Channel Plan OK\r\n");
-//                wifi_get_channel_plan(&chnpln);
-//                printf("WiFi Channel Plan: 0x%x\r\n", chnpln);
-//            } else {
-//                printf("WiFi Set Channel Plan Failed\r\n");
-//            }
-//        }
-//    }
+    if (wifi.ssid.len != 0) {
+        atcmd_wifi_connect(15);
+    }
 }
 
 rtw_result_t atcmd_wifi_scan_result_handler(rtw_scan_handler_result_t* scan_result) {
@@ -343,13 +339,32 @@ uint8_t atcmd_wifi_connect(uint32_t timeout_sec) {
     if (ret == RTW_SUCCESS) {
         cwstate = CWSTATE_CONNECTED;
         at_printf("WIFI CONNECTED\r\n");
-        netif_set_hostname(&xnetif[0], DEVICE_DEFAULT_HOSTNAME);
-        dhcp_result = LwIP_DHCP(0, DHCP_START);
-        if (dhcp_result != DHCP_ADDRESS_ASSIGNED) {
-            wifi_disconnect();
-            at_printf("+CWJAP:4\r\n");
-            at_printf("WIFI DISCONNECT\r\n");
-            return ATCMD_ERROR;
+        netif_set_hostname(&xnetif[0], cw_hostname);
+        if (cw_dhcp & 0x01) {   // Use DHCP
+            dhcp_result = LwIP_DHCP(0, DHCP_START);
+            if (dhcp_result != DHCP_ADDRESS_ASSIGNED) {
+                wifi_disconnect();
+                cwstate = CWSTATE_DISCONNECTED;
+                at_printf("+CWJAP:4\r\n");
+                at_printf("WIFI DISCONNECT\r\n");
+                return ATCMD_ERROR;
+            }
+        } else {                // Use Static IP
+            if (((static_ip[0] == 0) && (static_ip[1] == 0) && (static_ip[2] == 0) && (static_ip[3] == 0)) || 
+                ((static_gw[0] == 0) && (static_gw[1] == 0) && (static_gw[2] == 0) && (static_gw[3] == 0))) {
+                wifi_disconnect();
+                cwstate = CWSTATE_DISCONNECTED;
+                at_printf("+CWJAP:0\r\n");
+                at_printf("WIFI DISCONNECT\r\n");
+                return ATCMD_ERROR;
+            }
+            struct ip_addr ipaddr;
+            struct ip_addr netmask;
+            struct ip_addr gateway;
+            IP4_ADDR(ip_2_ip4(&ipaddr), static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
+            IP4_ADDR(ip_2_ip4(&netmask), static_nm[0], static_nm[1] , static_nm[2], static_nm[3]);
+            IP4_ADDR(ip_2_ip4(&gateway), static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
+            netif_set_addr(&xnetif[0], ip_2_ip4(&ipaddr), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
         }
         cwstate = CWSTATE_CONNECTEDIP;
         at_printf("WIFI GOT IP\r\n");
@@ -629,6 +644,55 @@ uint8_t e_AT_CWJAP(void *arg) {
     return atcmd_wifi_connect(15);
 }
 
+uint8_t q_AT_CWRECONNCFG(void *arg) {
+    // Query autoconnection setting.
+    (void)arg;
+    at_printf("+CWRECONNCFG:%d,%d\r\n", cwjap_params.reconn_int, cwjap_params.reconn_cnt);
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CWRECONNCFG(void *arg) {
+    // Automatically Connect to an AP When Powered on.
+    // AT+CWAUTOCONN=<enable>
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint16_t interval = 0;          // Arg 1
+    uint16_t count = 0;             // Arg 2
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if (argc != 3) {
+        return ATCMD_ERROR;
+    }
+
+    interval = atoi(argv[1]);
+    if (interval > 7200) {
+        return ATCMD_ERROR;
+    }
+
+    count = atoi(argv[2]);
+    if (count > 1000) {
+        return ATCMD_ERROR;
+    }
+
+    cwjap_params.reconn_int = interval;
+    cwjap_params.reconn_cnt = count;
+
+    // Configure reconnection
+    if (cwjap_params.reconn_int == 0) {
+        wifi_config_autoreconnect(RTW_AUTORECONNECT_DISABLE, 0, 0);
+    } else if (cwjap_params.reconn_cnt == 0) {
+        wifi_config_autoreconnect(RTW_AUTORECONNECT_INFINITE, 2, cwjap_params.reconn_int);
+    } else {
+        wifi_config_autoreconnect(RTW_AUTORECONNECT_FINITE, cwjap_params.reconn_cnt, cwjap_params.reconn_int);
+    }
+
+    return ATCMD_OK;
+}
+
 uint8_t s_AT_CWLAP(void *arg) {
     // Scan for APs with specific parameters
     (void)arg;
@@ -811,62 +875,55 @@ uint8_t s_AT_CWDHCP(void *arg) {
         return ATCMD_ERROR;
     }
 
+    // Station mode DHCP configuration
     if (mode & 0x01) {
+        if ((cwstate == CWSTATE_CONNECTEDIP) || (cwstate == CWSTATE_CONNECTED)) {
+            if (cw_dhcp & 0x01) {       // Already using DHCP
+                if (operate == 0) {     // Change to static IP
+                    LwIP_ReleaseIP(WLAN0_IDX);
+                    struct ip_addr ipaddr;
+                    struct ip_addr netmask;
+                    struct ip_addr gateway;
+                    IP4_ADDR(ip_2_ip4(&ipaddr), static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
+                    IP4_ADDR(ip_2_ip4(&netmask), static_nm[0], static_nm[1] , static_nm[2], static_nm[3]);
+                    IP4_ADDR(ip_2_ip4(&gateway), static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
+                    netif_set_addr(&xnetif[0], ip_2_ip4(&ipaddr), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
+                    if (((static_ip[0] != 0) || (static_ip[1] != 0) || (static_ip[2] != 0) || (static_ip[3] != 0)) && 
+                        ((static_gw[0] != 0) || (static_gw[1] != 0) || (static_gw[2] != 0) || (static_gw[3] != 0))) {
+                        at_printf("WIFI GOT IP\r\n");
+                    }
+                }
+            } else {            // Already using static IP
+                if (operate) {  // Change to use DHCP
+                    LwIP_ReleaseIP(WLAN0_IDX);
+                    uint8_t dhcp_result;
+                    dhcp_result = LwIP_DHCP(0, DHCP_START);
+                    if (dhcp_result == DHCP_ADDRESS_ASSIGNED) {
+                        at_printf("WIFI GOT IP\r\n");
+                    }
+                } else {
+                    struct ip_addr ipaddr;
+                    struct ip_addr netmask;
+                    struct ip_addr gateway;
+                    IP4_ADDR(ip_2_ip4(&ipaddr), static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
+                    IP4_ADDR(ip_2_ip4(&netmask), static_nm[0], static_nm[1] , static_nm[2], static_nm[3]);
+                    IP4_ADDR(ip_2_ip4(&gateway), static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
+                    netif_set_addr(&xnetif[0], ip_2_ip4(&ipaddr), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
+                    if (((static_ip[0] != 0) || (static_ip[1] != 0) || (static_ip[2] != 0) || (static_ip[3] != 0)) && 
+                        ((static_gw[0] != 0) || (static_gw[1] != 0) || (static_gw[2] != 0) || (static_gw[3] != 0))) {
+                        at_printf("WIFI GOT IP\r\n");
+                    }
+                }
+            }
+        }
         cw_dhcp &= ~(0x01);
         cw_dhcp |= (operate & 0x01);
     }
+
+    // SoftAP mode DHCP configuration
     if (mode & 0x02) {
         cw_dhcp &= ~(0x02);
         cw_dhcp |= ((operate << 1) & 0x02);
-    }
-
-    return ATCMD_OK;
-}
-
-uint8_t q_AT_CWRECONNCFG(void *arg) {
-    // Query autoconnection setting.
-    (void)arg;
-    at_printf("+CWRECONNCFG:%d,%d\r\n", cwjap_params.reconn_int, cwjap_params.reconn_cnt);
-    return ATCMD_OK;
-}
-
-uint8_t s_AT_CWRECONNCFG(void *arg) {
-    // Automatically Connect to an AP When Powered on.
-    // AT+CWAUTOCONN=<enable>
-    (void)arg;
-    uint8_t argc = 0;
-    char* argv[ATCMD_MAX_ARG_CNT] = {0};
-    uint16_t interval = 0;          // Arg 1
-    uint16_t count = 0;             // Arg 2
-
-    if (!arg) {
-        return ATCMD_ERROR;
-    }
-    argc = atcmd_parse_params((char*)arg, argv);
-    if (argc != 3) {
-        return ATCMD_ERROR;
-    }
-
-    interval = atoi(argv[1]);
-    if (interval > 7200) {
-        return ATCMD_ERROR;
-    }
-
-    count = atoi(argv[2]);
-    if (count > 1000) {
-        return ATCMD_ERROR;
-    }
-
-    cwjap_params.reconn_int = interval;
-    cwjap_params.reconn_cnt = count;
-
-    // Configure reconnection
-    if (cwjap_params.reconn_int == 0) {
-        wifi_config_autoreconnect(RTW_AUTORECONNECT_DISABLE, 0, 0);
-    } else if (cwjap_params.reconn_cnt == 0) {
-        wifi_config_autoreconnect(RTW_AUTORECONNECT_INFINITE, 2, cwjap_params.reconn_int);
-    } else {
-        wifi_config_autoreconnect(RTW_AUTORECONNECT_FINITE, cwjap_params.reconn_cnt, cwjap_params.reconn_int);
     }
 
     return ATCMD_OK;
@@ -903,15 +960,166 @@ uint8_t s_AT_CWAUTOCONN(void *arg) {
     return ATCMD_OK;
 }
 
+uint8_t q_AT_CIPSTAMAC(void *arg) {
+    // Query the MAC address of the Station.
+    // AT+CIPSTAMAC?
+    (void)arg;
+    char mac[32] = {0};
+
+    wifi_get_mac_address(mac);
+    at_printf("+CIPSTAMAC:\"%s\"\r\n", mac);
+    return ATCMD_OK;
+}
+
+uint8_t q_AT_CIPSTA(void *arg) {
+    // Query the IP address of the Station.
+    // AT+CIPSTA?
+    (void)arg;
+    char ip[15] = {"0.0.0.0"};
+    char gw[15] = {"0.0.0.0"};
+    char nm[15] = {"0.0.0.0"};
+
+    if (cw_dhcp & 0x01) {
+//        // Station DHCP is on
+        if (cwstate == CWSTATE_CONNECTEDIP) {
+            uint8_t* ip_addr = LwIP_GetIP(&xnetif[0]);
+            uint8_t* gw_addr = LwIP_GetGW(&xnetif[0]);
+            uint8_t* netmask = LwIP_GetMASK(&xnetif[0]);
+            sprintf(ip, "%d.%d.%d.%d", ip_addr[0], ip_addr[1], ip_addr[2], ip_addr[3]);
+            sprintf(gw, "%d.%d.%d.%d", gw_addr[0], gw_addr[1], gw_addr[2], gw_addr[3]);
+            sprintf(nm, "%d.%d.%d.%d", netmask[0], netmask[1], netmask[2], netmask[3]);
+        }
+    } else {
+            sprintf(ip, "%d.%d.%d.%d", static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
+            sprintf(gw, "%d.%d.%d.%d", static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
+            sprintf(nm, "%d.%d.%d.%d", static_nm[0], static_nm[1], static_nm[2], static_nm[3]);
+    }
+    at_printf("+CIPSTA:ip:\"%s\"\r\n", ip);
+    at_printf("+CIPSTA:gateway:\"%s\"\r\n", gw);
+    at_printf("+CIPSTA:netmask:\"%s\"\r\n", nm);
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CIPSTA(void *arg) {
+    // Set the IPv4 address of the station.
+    // AT+CIPSTA=<"ip">[,<"gateway">,<"netmask">]
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint32_t ipaddr = 0;
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if ((argc < 2) || (argc > 4)) {
+        return ATCMD_ERROR;
+    }
+
+    if (argv[1] != NULL) {
+        ipaddr = inet_addr(argv[1]);
+        if (ipaddr == 0) {
+            return ATCMD_ERROR;
+        }
+        static_ip[0] = (uint8_t)(ipaddr & 0xff);
+        static_ip[1] = (uint8_t)((ipaddr >> 8) & 0xff);
+        static_ip[2] = (uint8_t)((ipaddr >> 16) & 0xff);
+        static_ip[3] = (uint8_t)((ipaddr >> 24) & 0xff);
+    }
+
+    if (argv[2] != NULL) {
+        ipaddr = inet_addr(argv[2]);
+        if (ipaddr == 0) {
+            return ATCMD_ERROR;
+        }
+        static_gw[0] = (uint8_t)(ipaddr & 0xff);
+        static_gw[1] = (uint8_t)((ipaddr >> 8) & 0xff);
+        static_gw[2] = (uint8_t)((ipaddr >> 16) & 0xff);
+        static_gw[3] = (uint8_t)((ipaddr >> 24) & 0xff);
+    } else {
+        static_gw[0] = static_ip[0];
+        static_gw[1] = static_ip[1];
+        static_gw[2] = static_ip[2];
+        static_gw[3] = 1;
+    }
+
+    if (argv[3] != NULL) {
+        ipaddr = inet_addr(argv[3]);
+        static_nm[0] = (uint8_t)(ipaddr & 0xff);
+        static_nm[1] = (uint8_t)((ipaddr >> 8) & 0xff);
+        static_nm[2] = (uint8_t)((ipaddr >> 16) & 0xff);
+        static_nm[3] = (uint8_t)((ipaddr >> 24) & 0xff);
+    } else {
+        static_nm[0] = 255;
+        static_nm[1] = 255;
+        static_nm[2] = 255;
+        static_nm[3] = 0;
+    }
+
+    cw_dhcp &= ~(0x01);     // Change to using static IP
+    struct ip_addr ip_add;
+    struct ip_addr netmask;
+    struct ip_addr gateway;
+    IP4_ADDR(ip_2_ip4(&ip_add), static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
+    IP4_ADDR(ip_2_ip4(&netmask), static_nm[0], static_nm[1] , static_nm[2], static_nm[3]);
+    IP4_ADDR(ip_2_ip4(&gateway), static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
+    netif_set_addr(&xnetif[0], ip_2_ip4(&ip_add), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
+    if ((cwstate == CWSTATE_CONNECTEDIP) || (cwstate == CWSTATE_CONNECTED)) {
+        at_printf("WIFI GOT IP\r\n");
+    }
+
+    return ATCMD_OK;
+}
+
+uint8_t q_AT_CWHOSTNAME(void *arg) {
+    // Query the host name of ESP Station.
+    // AT+CWHOSTNAME?
+    (void)arg;
+    at_printf("+CWHOSTNAME:%s\r\n", cw_hostname);
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CWHOSTNAME(void *arg) {
+    // Automatically Connect to an AP When Powered on.
+    // AT+CWAUTOCONN=<enable>
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    char* hostname = NULL;          // Arg 1
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if (argc != 2) {
+        return ATCMD_ERROR;
+    }
+
+    // Check for station mode
+
+    if (argv[1] != NULL) {
+        hostname = argv[1];
+        int len = strlen(hostname);
+        if (len > 32) {
+            return ATCMD_ERROR;
+        }
+        strncpy(cw_hostname, hostname, sizeof(cw_hostname));
+    }
+    return ATCMD_OK;
+}
+
 atcmd_command_t atcmd_wifi_commands[] = {
       {"AT+CWMODE",      NULL,   q_AT_CWMODE,      s_AT_CWMODE,      NULL,           {NULL, NULL}},
       {"AT+CWSTATE",     NULL,   q_AT_CWSTATE,     NULL,             NULL,           {NULL, NULL}},
       {"AT+CWJAP",       NULL,   q_AT_CWJAP,       s_AT_CWJAP,       e_AT_CWJAP,     {NULL, NULL}},
+      {"AT+CWRECONNCFG", NULL,   q_AT_CWRECONNCFG, s_AT_CWRECONNCFG, NULL,           {NULL, NULL}},
       {"AT+CWLAP",       NULL,   NULL,             s_AT_CWLAP,       e_AT_CWLAP,     {NULL, NULL}},
       {"AT+CWQAP",       NULL,   NULL,             NULL,             e_AT_CWQAP,     {NULL, NULL}},
       {"AT+CWDHCP",      NULL,   q_AT_CWDHCP,      s_AT_CWDHCP,      NULL,           {NULL, NULL}},
-      {"AT+CWRECONNCFG", NULL,   q_AT_CWRECONNCFG, s_AT_CWRECONNCFG, NULL,           {NULL, NULL}},
       {"AT+CWAUTOCONN",  NULL,   q_AT_CWAUTOCONN,  s_AT_CWAUTOCONN,  NULL,           {NULL, NULL}},
+      {"AT+CIPSTAMAC",   NULL,   q_AT_CIPSTAMAC,   NULL,             NULL,           {NULL, NULL}},
+      {"AT+CIPSTA",      NULL,   q_AT_CIPSTA,      s_AT_CIPSTA,      NULL,           {NULL, NULL}},
+      {"AT+CWHOSTNAME",  NULL,   q_AT_CWHOSTNAME,  s_AT_CWHOSTNAME,  NULL,           {NULL, NULL}},
 };
 
 void atcmd_wifi_register(void) {

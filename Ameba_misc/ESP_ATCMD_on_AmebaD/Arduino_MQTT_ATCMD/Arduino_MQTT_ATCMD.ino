@@ -13,21 +13,27 @@
 
 */
 
-#define USE_ESP32_AT      true
-#include <ESP8266_AT_WebServer.h>
+#include <WiFiEspAT.h>
 #include <PubSubClient.h>
 
-char ssid[] = "xiaomi_test";        // your network SSID (name)
-char pass[] = "1234567890";        // your network password
+// Emulate Serial1 on pins 6/7 if not present
+#if defined(ARDUINO_ARCH_AVR) && !defined(HAVE_HWSERIAL1)
+#include <SoftwareSerial.h>
+SoftwareSerial Serial1(6, 7); // RX, TX
+#endif
+#define AT_BAUD_RATE 9600
+
+char ssid[] = "ssid";        // your network SSID (name)
+char pass[] = "pass";        // your network password
 int status = WL_IDLE_STATUS;
 
 char mqttServer[]     = "test.mosquitto.org";
 char clientId[]       = "amebaClient";
 char publishTopic[]   = "outTopic/amebad/test";
-char publishPayload[] = "hello world, testing using DUE + ATCMD";
+char publishPayload[] = "hello world, testing using Arduino + ATCMD";
 char subscribeTopic[] = "inTopic/amebad/test";
 
-ESP8266_AT_Client atClient;
+WiFiClient atClient;
 PubSubClient client(atClient);
 
 void callback(char* topic, byte* payload, unsigned int length) {
@@ -63,7 +69,7 @@ void reconnect() {
 
 void setup() {
   Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial1.begin(AT_BAUD_RATE);
 
   // initialize ESP module
   WiFi.init(&Serial1);
