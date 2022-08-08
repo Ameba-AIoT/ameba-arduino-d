@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   sodipodi:docname="Ameba RTL8722DM_mini_btm.svg"
+   sodipodi:docname="AMB23 btm.svg"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
    id="svg8"
    version="1.1"
    viewBox="0 0 37.784001 61.858971"
    height="61.858971mm"
    width="37.784mm"
-   inkscape:export-filename="D:\SDK\GitHub\ambd_arduino\Ameba_misc\Fritzing &amp; Pinmux\RTL8722DM_mini\graphics\new drawings\Ameba RTL8722DM_mini_btm.png"
+   inkscape:export-filename="C:\Users\zhangzhenwu\Desktop\Github SDK\ambd_arduino\Ameba_misc\Fritzing and Pinmux\AMB23 (RTL8722DM_MINI)\graphics\Ameba RTL8722DM_mini_btm.png"
    inkscape:export-xdpi="1080.0396"
    inkscape:export-ydpi="1080.0396"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.6557101"
-     inkscape:cx="159.14622"
-     inkscape:cy="159.75019"
+     inkscape:zoom="2.3415277"
+     inkscape:cx="8.1143606"
+     inkscape:cy="89.898573"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
@@ -37,9 +37,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1600"
-     inkscape:window-height="837"
-     inkscape:window-x="-8"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="1272"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:pagecheckerboard="0" />
@@ -182,36 +182,6 @@
        d="M 56.794048,128.40355 V 98.369135 H 38.151999 19.509947 v 30.034415 30.03441 h 18.642052 18.642049 z"
        id="pcb"
        inkscape:label="#pcb" />
-    <g
-       id="g15813-6"
-       transform="matrix(0.26458333,0,0,0.26458333,-1.8610841,92.363083)"
-       inkscape:export-xdpi="96.357231"
-       inkscape:export-ydpi="96.357231">
-      <rect
-         inkscape:export-ydpi="96.357231"
-         inkscape:export-xdpi="96.357231"
-         style="fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:2.23144;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect3115-4-1"
-         width="39.045422"
-         height="2.5217996"
-         x="225.64835"
-         y="109.2593" />
-      <text
-         transform="scale(0.94835073,1.0544622)"
-         inkscape:export-ydpi="96.357231"
-         inkscape:export-xdpi="96.357231"
-         xml:space="preserve"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:3.06003px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ffffff;fill-opacity:1;stroke-width:2.29503"
-         x="238.03076"
-         y="105.72335"
-         id="text1061-9-7"
-         inkscape:transform-center-x="0.4463946"
-         inkscape:transform-center-y="-1.489006"><tspan
-           sodipodi:role="line"
-           id="tspan15803-6"
-           x="238.03076"
-           y="105.72335">MICRO SD CARD ADAPTER</tspan></text>
-    </g>
     <rect
        style="fill:#00a63d;fill-opacity:1;stroke-width:0.170438"
        id="rect839"
@@ -1158,20 +1128,5 @@
         </g>
       </g>
     </g>
-    <ellipse
-       ry="0.26878899"
-       rx="0.24174052"
-       inkscape:export-ydpi="96.357231"
-       inkscape:export-xdpi="96.357231"
-       cy="121.60489"
-       cx="43.553905"
-       id="path1728-3-95-59-0"
-       style="fill:#ff0000;fill-opacity:1;stroke:#000000;stroke-width:0.197607;stroke-opacity:1" />
-    <path
-       inkscape:export-ydpi="96.357231"
-       inkscape:export-xdpi="96.357231"
-       style="fill:none;stroke:#000000;stroke-width:0.162341;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 57.548446,121.60489 H 43.877463"
-       id="path997-83" />
   </g>
 </svg>
