@@ -126,18 +126,18 @@ float DHT::readTemperature(bool S, bool force) {
 }
 
 /*!
- *  @brief  Converts Celcius to Fahrenheit
+ *  @brief  Converts Celsius to Fahrenheit
  *  @param  c
- *					value in Celcius
+ *					value in Celsius
  *	@return float value in Fahrenheit
  */
 float DHT::convertCtoF(float c) { return c * 1.8 + 32; }
 
 /*!
- *  @brief  Converts Fahrenheit to Celcius
+ *  @brief  Converts Fahrenheit to Celsius
  *  @param  f
  *					value in Fahrenheit
- *	@return float value in Celcius
+ *	@return float value in Celsius
  */
 float DHT::convertFtoC(float f) { return (f - 32) * 0.55555; }
 
@@ -169,7 +169,7 @@ float DHT::readHumidity(bool force) {
  *  @brief  Compute Heat Index
  *          Simplified version that reads temp and humidity from sensor
  *  @param  isFahrenheit
- * 					true if fahrenheit, false if celcius
+ * 					true if fahrenheit, false if Celsius
  *(default true)
  *	@return float heat index
  */
@@ -187,7 +187,7 @@ float DHT::computeHeatIndex(bool isFahrenheit) {
  *  @param  percentHumidity
  *          humidity in percent
  *  @param  isFahrenheit
- * 					true if fahrenheit, false if celcius
+ * 					true if fahrenheit, false if Celsius
  *	@return float heat index
  */
 float DHT::computeHeatIndex (float temperature, float percentHumidity, bool isFahrenheit) {
