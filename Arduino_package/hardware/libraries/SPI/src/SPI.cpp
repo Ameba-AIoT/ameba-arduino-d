@@ -286,7 +286,7 @@ void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
 
 #if defined(BOARD_RTL8722DM)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 11, 12, 13, 10
-SPIClass SPI((void *)(&spi_obj0), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);    // 21, 20, 19, 18
+SPIClass SPI1((void *)(&spi_obj0), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);    // 21, 20, 19, 18
 
 #elif defined(BOARD_RTL8722DM_MINI)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 9, 10, 11, 12 or 4, 5, 6, 7
