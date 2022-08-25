@@ -32,8 +32,6 @@
 
 #ifdef __cplusplus
 #include <string>
-#define _min(a,b) ((a)<(b)?(a):(b))
-#define _max(a,b) ((a)>(b)?(a):(b))
 #endif // __cplusplus
 
 #include <stdio.h>
