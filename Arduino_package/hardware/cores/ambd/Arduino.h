@@ -29,6 +29,13 @@
 
 //#define Arduino_STD_PRINTF
 #ifdef Arduino_STD_PRINTF
+
+#ifdef __cplusplus
+#include <string>
+#define _min(a,b) ((a)<(b)?(a):(b))
+#define _max(a,b) ((a)>(b)?(a):(b))
+#endif // __cplusplus
+
 #include <stdio.h>
 #endif
 
