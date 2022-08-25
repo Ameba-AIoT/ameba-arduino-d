@@ -243,9 +243,9 @@ int start_server_v6(uint16_t port, uint8_t protMode) {
         closesocket(_sock);
         return -1;
     }
-    printf("\n\r[INFO] Bind socket successfully\n");
     lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
-	
+    printf("\n\r[INFO] Bind socket successfully\n");
+   
     return _sock;
 }
 
