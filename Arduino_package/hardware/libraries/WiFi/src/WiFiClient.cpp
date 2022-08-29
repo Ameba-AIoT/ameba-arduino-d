@@ -49,12 +49,14 @@ int WiFiClient::available() {
         return 0;
     }
     if (_sock >= 0) {
+try_again:
         ret = clientdrv.availData(_sock);
         if (ret > 0) {
             return 1;
         } else {
             err = clientdrv.getLastErrno(_sock);
-            if ( !((err == 0) || (err == EAGAIN)) ) {
+            if (err == EAGAIN) goto try_again;
+            if (err == 0) {
                 _is_connected = false;
             }
             return 0;
