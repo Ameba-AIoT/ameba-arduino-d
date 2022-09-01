@@ -43,7 +43,7 @@ enum SPITransferMode {
     SPI_CONTINUE,
     SPI_LAST
 };
-
+    
 class SPISettings {
 public:
     SPISettings(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
@@ -85,16 +85,18 @@ public:
     void end(void);
 
     void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
-    void setDataMode(uint8_t _pin, uint8_t _mode);
-    void setClockDivider(uint8_t _pin, uint8_t _divider);
+    void setBitOrder(BitOrder _order);  
 
-    void setBitOrder(BitOrder _order);
+    void setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode);
+    void setDataMode(uint8_t _pin, uint8_t _mode);
     void setDataMode(uint8_t _mode);
+    
+    void setClockDivider(uint8_t _pin, uint8_t _divider);
     void setClockDivider(uint8_t _div);
 
     /* extend api added by RTK */
     void setDefaultFrequency(int _frequency);
-    void setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode);
+    
 
 private:
     void *pSpiMaster;
@@ -104,6 +106,7 @@ private:
     int pinSS;
     int pinUserSS;
     BitOrder bitOrder;
+    bool initStatus;   // flag to mark SPI init status
 
     int defaultFrequency; 
 };
