@@ -87,8 +87,7 @@ public:
     void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
     void setBitOrder(BitOrder _order);  
 
-    void setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode);
-    void setDataMode(uint8_t _pin, uint8_t _mode);
+    void setDataMode(uint8_t _bits, uint8_t _mode);
     void setDataMode(uint8_t _mode);
     
     void setClockDivider(uint8_t _pin, uint8_t _divider);
@@ -107,7 +106,8 @@ private:
     int pinUserSS;
     BitOrder bitOrder;
     bool initStatus;   // flag to mark SPI init status
-
+    u8 dataBits;
+    u8 dataMode;
     int defaultFrequency; 
 };
 

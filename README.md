@@ -53,4 +53,5 @@ For all `release` information, please visit this [link](https://github.com/ambio
     </br>
 
 ## 3. Contributing to Ameba
+
 Please spend 5 mins to read the **Coding Style** and **Contribution Guideline** at [here](https://github.com/ambiot/ambd_arduino/wiki/Contributing-to-Ameba) before you contribute.
