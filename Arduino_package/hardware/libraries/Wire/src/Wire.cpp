@@ -93,14 +93,14 @@ void TwoWire::begin (uint8_t address = 0) {
     this->txBufferLength = 0;
     this->twiClock = this->TWI_CLOCK;
 
-	// Attach user callbacks 
-	i2c_slave_attach_callbacks(onRequestService, onReceiveService, this);
+    // Attach user callbacks 
+    i2c_slave_attach_callbacks(onRequestService, onReceiveService, this);
 
-	// Init I2C as slave and enable I2C interrupt
-	i2c_slave_init((i2c_t *)this->pI2C, (PinName)this->SDA_pin, (PinName)this->SCL_pin, address, BUFFER_LENGTH);
+    // Init I2C as slave and enable I2C interrupt
+    i2c_slave_init((i2c_t *)this->pI2C, (PinName)this->SDA_pin, (PinName)this->SCL_pin, address, BUFFER_LENGTH);
 
     //status = SLAVE_IDLE;
-	is_slave = true;
+    is_slave = true;
 }
 
 void TwoWire::begin (int address) {
@@ -258,12 +258,8 @@ size_t TwoWire::slaveWrite(uint8_t *buffer, size_t len) {
 
 
 void TwoWire::onReceiveService(uint8_t *inBytes, size_t numBytes, bool stop, void *arg) {
-	//status = SLAVE_RECV;
+    stop = stop;
 
-    //printf("in onReceiveService\r\n");
-
-	stop = stop;
-	
     TwoWire *wire = (TwoWire*)arg;
     if(!wire->user_onReceive){
         return;
@@ -277,10 +273,6 @@ void TwoWire::onReceiveService(uint8_t *inBytes, size_t numBytes, bool stop, voi
 }
 
 void TwoWire::onRequestService(void * arg) {
-	//status = SLAVE_SEND;
-
-	//printf("in onRequestService\r\n");
-
     TwoWire *wire = (TwoWire*)arg;
     if(!wire->user_onRequest){
         return;

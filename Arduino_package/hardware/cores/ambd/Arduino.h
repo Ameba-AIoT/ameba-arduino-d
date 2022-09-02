@@ -29,6 +29,11 @@
 
 //#define Arduino_STD_PRINTF
 #ifdef Arduino_STD_PRINTF
+
+#ifdef __cplusplus
+#include <string>
+#endif // __cplusplus
+
 #include <stdio.h>
 #endif
 
@@ -91,10 +96,10 @@ extern void loop( void );
 // Pin mode 
 // 0x0 to 0x4       "GPIO mode"
 // 0x5 to 0x9       "GPIO_IRQ mode"
-#define MODE_NOT_INITIAL                (1UL<<4)
-#define PWM_MODE_ENABLED                (1UL<<31)
-#define GPIO_MODE_ENABLED               (1UL<<30)
-#define GPIO_IRQ_MODE_ENABLED           (1UL<<29)
+#define MODE_NOT_INITIAL                (1UL<<31)
+#define PWM_MODE_ENABLED                (1UL<<30)
+#define GPIO_MODE_ENABLED               (1UL<<29)
+#define GPIO_IRQ_MODE_ENABLED           (1UL<<28)
 
 /* Types used for the tables below */
 typedef struct _PinDescription

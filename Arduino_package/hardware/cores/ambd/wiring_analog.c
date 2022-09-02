@@ -254,6 +254,7 @@ void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration) {
                 pwmout_pulsewidth(obj, 1.0/(frequency * 2));
             }
             g_APinDescription[ulPin].ulPinMode |= PWM_MODE_ENABLED;
+            g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
         } else {
             // There is already a PWM configured
             pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];

@@ -30,7 +30,7 @@ void setup() {
     for (i = 0; i < (SAMPLECOUNT/2); i++) {
         Serial.print(freq_bins[i]);
         Serial.print(" Hz : ");
-        Serial.println(fft_buffer[i]);
+        Serial.println(fft_buffer[i], 6);
     }
 }
 
