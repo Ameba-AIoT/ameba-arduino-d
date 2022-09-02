@@ -1,17 +1,14 @@
 /*
   Arduino.h - Main include file for the Arduino SDK
   Copyright (c) 2005-2013 Arduino Team.  All right reserved.
-
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
   License as published by the Free Software Foundation; either
   version 2.1 of the License, or (at your option) any later version.
-
   This library is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
   Lesser General Public License for more details.
-
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,9 +22,15 @@
 #include <string.h>
 #include <math.h>
 
-#define Arduino_STD_PRINTF
+#include "binary.h"
 
+#define Arduino_STD_PRINTF
 #ifdef Arduino_STD_PRINTF
+
+#ifdef __cplusplus
+#include <string>
+#endif // __cplusplus
+
 #include <stdio.h>
 #endif
 
@@ -46,6 +49,9 @@ extern uint32_t SystemCoreClock;
 #define microsecondsToClockCycles(a) ((a) * (SystemCoreClock / 1000000L))
 
 void yield(void);
+#ifndef yield
+#define yield(x) {}
+#endif
 
 extern uint32_t                     DiagPrintf(const char *fmt, ...);
 extern int                          _rtl_printf(const char *fmt, ...);
@@ -85,8 +91,16 @@ extern void loop( void );
 #define PIO_DAC         (1UL<<5)
 #define PIO_GPIO_IRQ    (1UL<<6)
 
-#define PWM_MODE_ENABLED  1
-#define PWM_MODE_DISABLED 0
+#define TYPE_ANALOG                     (1UL<<7)
+#define TYPE_DIGITAL                    (1UL<<8)
+
+// Pin mode 
+// 0x0 to 0x4       "GPIO mode"
+// 0x5 to 0x9       "GPIO_IRQ mode"
+#define MODE_NOT_INITIAL                (1UL<<31)
+#define PWM_MODE_ENABLED                (1UL<<30)
+#define GPIO_MODE_ENABLED               (1UL<<29)
+#define GPIO_IRQ_MODE_ENABLED           (1UL<<28)
 
 /* Types used for the tables below */
 typedef struct _PinDescription
@@ -113,13 +127,17 @@ extern PinDescription g_APinDescription[];
 #include "WCharacter.h"
 #include "WString.h"
 #include "WMath.h"
-#include "HardwareSerial.h"
+//#include "HardwareSerial.h"
+#include "LOGUARTClass.h"
+#include "UARTClassOne.h"
+#include "UARTClassTwo.h"
 #include "wiring_pulse.h"
 
 #endif // __cplusplus
 
 // Include board variant
-#include "variant.h"
+#include "pins_arduino.h"
+//#include "variant.h"
 #include "wiring.h"
 #include "wiring_digital.h"
 #include "wiring_analog.h"
@@ -139,8 +157,7 @@ extern void randomSeed( uint32_t dwSeed ) ;
 extern long map( long, long, long, long, long ) ;
 
 void tone(uint32_t ulPin, unsigned int frequency, unsigned long duration = 0);
-
-#endif
+#endif // __cplusplus
 
 
 #endif // Arduino_h
