@@ -43,6 +43,8 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
 
     pinUserSS = -1;
     initStatus = false;
+    dataBits = 8;           // default databits is 8 bits
+    dataMode = SPI_MODE0;   // default datamode is mode 0
 
 #if defined(BOARD_RTL8721DM)
     defaultFrequency = 2000000;
@@ -55,7 +57,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
 {
     bitOrder = settings._bitOrder;
-    spi_format((spi_t *)pSpiMaster, 8, settings._dataMode, 0);
+    spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 0);
     spi_frequency((spi_t *)pSpiMaster, settings._clock);
 
     //log_uart_disable_printf();
@@ -98,7 +100,7 @@ void SPIClass::begin(void)
         (PinName)pinCLK, 
         (PinName)pinSS
     );
-    spi_format((spi_t *)pSpiMaster, 8, 0, 0);
+    spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 0);
     spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
 
     // Mark SPI init status
@@ -125,7 +127,7 @@ void SPIClass::begin(int ss)
         (PinName)pinCLK, 
         (PinName)pinSS
     );
-    spi_format((spi_t *)pSpiMaster, 8, 0, 0);
+    spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 0);
     spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
 
     // Mark SPI init status
@@ -254,26 +256,20 @@ void SPIClass::setBitOrder(BitOrder _order)
 }
 
 // bits: data frame size, 4-16 supported.
-void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
+void SPIClass::setDataMode(uint8_t _bits, uint8_t _mode)
 {
+    dataBits = _bits;
+    dataMode = _mode;
     if(initStatus) {
-        (void)_pin;
-        spi_format((spi_t *)pSpiMaster, _bits, _mode, 0);
-    } else {
-        printf("Error: SPI is not initialized yet, please initialize SPI before using this API\r\n");
-        while(1);
+        spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 0);
     }
-}
-
-void SPIClass::setDataMode(uint8_t _pin, uint8_t _mode)
-{
-    setDataMode(_pin, 8, _mode);
 }
 
 void SPIClass::setDataMode(uint8_t _mode)
 {
-    setDataMode(pinSS, _mode);
+    setDataMode(dataBits, _mode);
 }
+
 
 void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
 {
@@ -293,12 +289,9 @@ void SPIClass::setClockDivider(uint8_t _div)
 
 void SPIClass::setDefaultFrequency(int _frequency)
 {
+    defaultFrequency = _frequency;
     if(initStatus) {
-        defaultFrequency = _frequency;
         spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
-    } else {
-        printf("Error: SPI is not initialized yet, please initialize SPI before using this API\r\n");
-        while(1);
     }
 }
 
