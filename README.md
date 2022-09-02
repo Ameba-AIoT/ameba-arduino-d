@@ -1,4 +1,4 @@
-# Ameba Arduino SDK
+# Ameba Arduino SDK (ambd_arduino)
 
 
 ## 1. About `dev` & `master` branch
