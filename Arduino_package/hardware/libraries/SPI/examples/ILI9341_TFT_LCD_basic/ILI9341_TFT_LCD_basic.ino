@@ -14,10 +14,10 @@
 #include "AmebaILI9341.h"
 
 
-// For all supportted boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
+// For all supported boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
 // Select 2 GPIO pins connect to TFT_RESET and TFT_DC. And default SPI_SS/SPI1_SS connect to TFT_CS.
-#define TFT_RESET       8
-#define TFT_DC          9
+#define TFT_RESET       4
+#define TFT_DC          5
 #define TFT_CS          SPI_SS
 
 AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
@@ -28,9 +28,8 @@ void setup() {
     Serial.begin(115200);
     Serial.println("ILI9341 Test!"); 
 
-    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
-
     tft.begin();
+    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
 
     Serial.println("test filling screen");
     testFillScreen();

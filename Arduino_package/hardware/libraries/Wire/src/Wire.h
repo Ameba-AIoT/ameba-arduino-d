@@ -62,15 +62,14 @@ class TwoWire : public Stream {
         inline size_t write(unsigned int n) { return write((uint8_t)n); }
         inline size_t write(int n) { return write((uint8_t)n); }
         using Print::write;
-		size_t slaveWrite(int);
-		size_t slaveWrite(char *);
-		size_t slaveWrite(uint8_t *, size_t);
+        size_t slaveWrite(int);
+        size_t slaveWrite(char *);
+        size_t slaveWrite(uint8_t *, size_t);
 
-		
 
     private:
-		bool is_slave;
-		
+        bool is_slave;
+
         // RX Buffer
         uint8_t rxBuffer[BUFFER_LENGTH];
         uint8_t rxBufferIndex;
@@ -84,9 +83,9 @@ class TwoWire : public Stream {
 
         // Callback user functions
         void (*user_onRequest)(void);
-    	void (*user_onReceive)(int);
-		static void onRequestService(void *);
-    	static void onReceiveService(uint8_t*, size_t, bool, void *);
+        void (*user_onReceive)(int);
+        static void onRequestService(void *);
+        static void onReceiveService(uint8_t*, size_t, bool, void *);
 
         uint32_t SDA_pin;
         uint32_t SCL_pin;

@@ -42,11 +42,12 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     pinSS = (PinName)g_APinDescription[ss].pinname;
 
     pinUserSS = -1;
+    initStatus = false;
 
 #if defined(BOARD_RTL8721DM)
-defaultFrequency = 2000000;
+    defaultFrequency = 2000000;
 #else
-defaultFrequency = 20000000;
+    defaultFrequency = 20000000;
 #endif
 
 }
@@ -99,6 +100,9 @@ void SPIClass::begin(void)
     );
     spi_format((spi_t *)pSpiMaster, 8, 0, 0);
     spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+
+    // Mark SPI init status
+    initStatus = true;
 }
 
 void SPIClass::begin(int ss)
@@ -123,11 +127,17 @@ void SPIClass::begin(int ss)
     );
     spi_format((spi_t *)pSpiMaster, 8, 0, 0);
     spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+
+    // Mark SPI init status
+    initStatus = true;
 }
 
 void SPIClass::end(void)
 {
     spi_free((spi_t *)pSpiMaster);
+    
+    // Mark SPI init status
+    initStatus = false;
 }
 
 byte SPIClass::transfer(byte _pin, uint8_t _data, SPITransferMode _mode)
@@ -243,11 +253,21 @@ void SPIClass::setBitOrder(BitOrder _order)
     setBitOrder(pinSS, _order);
 }
 
+// bits: data frame size, 4-16 supported.
+void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
+{
+    if(initStatus) {
+        (void)_pin;
+        spi_format((spi_t *)pSpiMaster, _bits, _mode, 0);
+    } else {
+        printf("Error: SPI is not initialized yet, please initialize SPI before using this API\r\n");
+        while(1);
+    }
+}
+
 void SPIClass::setDataMode(uint8_t _pin, uint8_t _mode)
 {
-    (void)_pin;
-
-    spi_format((spi_t *)pSpiMaster, 8, _mode, 0);
+    setDataMode(_pin, 8, _mode);
 }
 
 void SPIClass::setDataMode(uint8_t _mode)
@@ -260,7 +280,7 @@ void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider)
     (void)_pin;
     (void)_divider;
 
-    // no affect in Ameba
+    // no effect on Ameba
 }
 
 
@@ -268,25 +288,24 @@ void SPIClass::setClockDivider(uint8_t _div)
 {
     (void)_div;
 
-    // no affect in Ameba
+    // no effect on Ameba
 }
 
 void SPIClass::setDefaultFrequency(int _frequency)
 {
-    defaultFrequency = _frequency;
-    spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+    if(initStatus) {
+        defaultFrequency = _frequency;
+        spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+    } else {
+        printf("Error: SPI is not initialized yet, please initialize SPI before using this API\r\n");
+        while(1);
+    }
 }
 
-// bits: data frame size, 4-16 supported.
-void SPIClass::setDataMode(uint8_t _pin, uint8_t _bits, uint8_t _mode)
-{
-    (void)_pin;
-    spi_format((spi_t *)pSpiMaster, _bits, _mode, 0);
-}
 
 #if defined(BOARD_RTL8722DM)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 11, 12, 13, 10
-SPIClass SPI((void *)(&spi_obj0), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);    // 21, 20, 19, 18
+SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);    // 21, 20, 19, 18
 
 #elif defined(BOARD_RTL8722DM_MINI)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 9, 10, 11, 12 or 4, 5, 6, 7
