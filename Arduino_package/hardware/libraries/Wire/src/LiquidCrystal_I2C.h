@@ -30,6 +30,7 @@
 #define LiquidCrystal_I2C_h
 #include <inttypes.h>
 #include <Print.h>
+#include <Wire.h>
 
 #include "I2CIO.h"
 #include "LCD.h"
@@ -107,7 +108,7 @@ public:
     @param      charsize[in] size of the characters of the LCD: LCD_5x8DOTS or
     LCD_5x10DOTS.
     */
-   virtual void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS);   
+   virtual void begin(uint8_t cols, uint8_t rows, uint8_t charsize = LCD_5x8DOTS, TwoWire &wire = Wire );   
    
    /*!
     @function
@@ -151,7 +152,7 @@ private:
     @abstract   Initializes the LCD class
     @discussion Initializes the LCD class and IO expansion module.
     */
-   int  init();
+   int  init(TwoWire* wire);
    
    /*!
     @function

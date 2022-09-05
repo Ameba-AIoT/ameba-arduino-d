@@ -54,6 +54,7 @@ I2CIO::I2CIO ( )
    _dirMask     = 0xFF;    // mark all as INPUTs
    _shadow      = 0x0;     // no values set
    _initialised = false;
+   _i2c_bus = NULL;
 }
 
 // PUBLIC METHODS
@@ -62,20 +63,21 @@ I2CIO::I2CIO ( )
 
 //
 // begin
-int I2CIO::begin (  uint8_t i2cAddr )
+int I2CIO::begin ( uint8_t i2cAddr, TwoWire* wire )
 {
+   _i2c_bus = wire;
    _i2cAddr = i2cAddr;
    
-   Wire.begin ( );
+   _i2c_bus->begin ( );
       
    _initialised = isAvailable ( _i2cAddr );
    
    if (_initialised)
    {
 #if (ARDUINO <  100)
-      _shadow = Wire.receive ();
+      _shadow = _i2c_bus->receive ();
 #else
-      _shadow = Wire.read (); // Remove the byte read don't need it.
+      _shadow = _i2c_bus->read (); // Remove the byte read don't need it.
 #endif
    }
    return ( _initialised );
@@ -124,11 +126,11 @@ uint8_t I2CIO::read ( void )
    
    if ( _initialised )
    {
-      Wire.requestFrom ( _i2cAddr, (uint8_t)1 );
+      _i2c_bus->requestFrom ( _i2cAddr, (uint8_t)1 );
 #if (ARDUINO <  100)
-      retVal = ( _dirMask & Wire.receive ( ) );
+      retVal = ( _dirMask & _i2c_bus->receive ( ) );
 #else
-      retVal = ( _dirMask & Wire.read ( ) );
+      retVal = ( _dirMask & _i2c_bus->read ( ) );
 #endif      
       
    }
@@ -147,13 +149,13 @@ int I2CIO::write ( uint8_t value )
       // outputs updating the output shadow of the device
       _shadow = ( value & ~(_dirMask) );
    
-      Wire.beginTransmission ( _i2cAddr );
+      _i2c_bus->beginTransmission ( _i2cAddr );
 #if (ARDUINO <  100)
-      Wire.send ( _shadow );
+      _i2c_bus->send ( _shadow );
 #else
-      Wire.write ( _shadow );
+      _i2c_bus->write ( _shadow );
 #endif  
-      status = Wire.endTransmission ();
+      status = _i2c_bus->endTransmission ();
    }
    return ( (status == 0) );
 }
@@ -210,8 +212,8 @@ bool I2CIO::isAvailable (uint8_t i2cAddr)
 {
    int error;
    
-   Wire.beginTransmission( i2cAddr );
-   error = Wire.endTransmission();
+   _i2c_bus->beginTransmission( i2cAddr );
+   error = _i2c_bus->endTransmission();
    if (error==0)
    {
      return true;
