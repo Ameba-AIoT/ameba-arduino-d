@@ -28,6 +28,7 @@
 #define _I2CIO_H_
 
 #include <inttypes.h>
+#include <Wire.h>
 
 #define _I2CIO_VERSION "1.0.0"
 
@@ -59,7 +60,7 @@ public:
     @param      i2cAddr: I2C Address where the device is located.
     @result     1 if the device was initialized correctly, 0 otherwise
     */   
-   int begin ( uint8_t i2cAddr );
+   int begin ( uint8_t i2cAddr, TwoWire* wire = &Wire);
    
    /*!
     @method
@@ -142,6 +143,7 @@ private:
    uint8_t _dirMask;     // Direction mask
    uint8_t _i2cAddr;     // I2C address
    bool    _initialised; // Initialised object
+   TwoWire* _i2c_bus;
 
   /*!
    @method
