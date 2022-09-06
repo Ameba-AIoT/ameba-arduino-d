@@ -30,7 +30,8 @@ LiquidCrystal_I2C lcd(0x27, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);  // Set the LCD I
 void setup() {
     Serial.begin(115200);
 
-    lcd.begin(16, 2);               // initialize the lcd 
+    lcd.begin(16, 2, LCD_5x8DOTS, Wire);               // initialize the lcd 
+    //lcd.begin(16, 2, LCD_5x8DOTS, Wire1);               // Uncomment this line to use Wire1 
     lcd.backlight();
 
     lcd.setCursor (0, 0);           // go to home

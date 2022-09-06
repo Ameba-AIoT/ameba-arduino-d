@@ -141,10 +141,9 @@ LiquidCrystal_I2C::LiquidCrystal_I2C(uint8_t lcd_Addr, uint8_t En, uint8_t Rw,
 
 //
 // begin
-void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize) 
+void LiquidCrystal_I2C::begin(uint8_t cols, uint8_t lines, uint8_t dotsize, TwoWire &wire) 
 {
-   
-   init();     // Initialise the I2C expander interface
+   init(&wire);     // Initialise the I2C expander interface
    LCD::begin ( cols, lines, dotsize );   
 }
 
@@ -191,14 +190,14 @@ void LiquidCrystal_I2C::setBacklight( uint8_t value )
 
 //
 // init
-int LiquidCrystal_I2C::init()
+int LiquidCrystal_I2C::init(TwoWire* wire )
 {
    int status = 0;
    
    // initialize the backpack IO expander
    // and display functions.
    // ------------------------------------------------------------------------
-   if ( _i2cio.begin ( _Addr ) == 1 )
+   if ( _i2cio.begin ( _Addr, wire ) == 1 )
    {
       _i2cio.portMode ( OUTPUT );  // Set the entire IO extender to OUTPUT
       _displayfunction = LCD_4BITMODE | LCD_1LINE | LCD_5x8DOTS;

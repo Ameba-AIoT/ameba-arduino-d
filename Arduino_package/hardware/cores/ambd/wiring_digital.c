@@ -58,7 +58,7 @@ void pinMode(uint32_t ulPin, uint32_t ulMode)
     }
 
     // SWD_DATA, SWD_CLK
-    if ((g_APinDescription[ulPin].pinname == PB_3) || (g_APinDescription[ulPin].pinname == PB_18) || (g_APinDescription[ulPin].pinname == PB_21) || (g_APinDescription[ulPin].pinname == PA_27)) {
+    if ((g_APinDescription[ulPin].pinname == PB_3) || (g_APinDescription[ulPin].pinname == PA_27)) {
         // If user needs to use SWD pins for GPIO, disable SWD debugging to free pins
         sys_jtag_off();
     }
