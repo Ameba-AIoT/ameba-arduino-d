@@ -156,6 +156,7 @@ void atcmd_uart_irq_disable(void) {
 //---------------------------- Commands for basic ATCMD functionality ----------------------------//
 uint8_t q_AT_UART(void *arg) {
     // Query current UART configuration
+    // AT+UART?
     (void)arg;
     at_printf("+UART:%d,%d,%d,%d,%d\r\n",\
         atcmd_uart_baudrate, atcmd_uart_databits, atcmd_uart_stopbits, atcmd_uart_paritybits, atcmd_uart_flow_ctrl);
@@ -164,6 +165,7 @@ uint8_t q_AT_UART(void *arg) {
 
 uint8_t q_AT_UART_CUR(void *arg) {
     // Query current UART configuration
+    // AT+UART_CUR?
     (void)arg;
     at_printf("+UART_CUR:%d,%d,%d,%d,%d\r\n",\
         atcmd_uart_baudrate, atcmd_uart_databits, atcmd_uart_stopbits, atcmd_uart_paritybits, atcmd_uart_flow_ctrl);
@@ -172,6 +174,7 @@ uint8_t q_AT_UART_CUR(void *arg) {
 
 uint8_t s_AT_UART_CUR(void *arg) {
     // Set UART configuration
+    // AT+UART_CUR=<baudrate>,<databits>,<stopbits>,<parity>,<flow control>
     uint8_t argc = 0;
     char *argv[ATCMD_MAX_ARG_CNT] = {0};
     u32 baud = 0;
@@ -241,6 +244,7 @@ uint8_t s_AT_UART_CUR(void *arg) {
 
 uint8_t q_AT_UART_DEF(void *arg) {
     // Query default UART configuration, saved in flash
+    // AT+UART_DEF?
     (void)arg;
     at_printf("+UART_DEF:%d,%d,%d,%d,%d\r\n",\
         atcmd_uart_baudrate, atcmd_uart_databits, atcmd_uart_stopbits, atcmd_uart_paritybits, atcmd_uart_flow_ctrl);
@@ -249,6 +253,7 @@ uint8_t q_AT_UART_DEF(void *arg) {
 
 uint8_t s_AT_UART_DEF(void *arg) {
     // Set default UART configuration, saved in flash
+    // AT+UART_DEF=<baudrate>,<databits>,<stopbits>,<parity>,<flow control>
     uint8_t argc = 0;
     char *argv[ATCMD_MAX_ARG_CNT] = {0};
     u32 baud = 0;
@@ -284,34 +289,34 @@ uint8_t s_AT_UART_DEF(void *arg) {
         return ATCMD_ERROR;
     }
 
-    atcmd_uart_baudrate = baud;
-    atcmd_uart_databits = databits;
-    if (stopbits == 1) {
-        atcmd_uart_stopbits = 1;
-    } else {
-        atcmd_uart_stopbits = 2;
-    }
-    atcmd_uart_paritybits = (SerialParity)parity;
-    switch (flowcontrol) {
-        case 0: {
-            atcmd_uart_flow_ctrl = FlowControlNone;
-            break;
-        }
-        case 1: {
-            atcmd_uart_flow_ctrl = FlowControlRTS;
-            break;
-        }
-        case 2: {
-            atcmd_uart_flow_ctrl = FlowControlCTS;
-            break;
-        }
-        case 3: {
-            atcmd_uart_flow_ctrl = FlowControlRTSCTS;
-            break;
-        }
-    }
-    at_printf("\r\nOK\r\n");
-    vTaskDelay(5/portTICK_PERIOD_MS);   // delay to allow data in UART FIFO to clear out
-    atcmd_uart_reinit();
+//    atcmd_uart_baudrate = baud;
+//    atcmd_uart_databits = databits;
+//    if (stopbits == 1) {
+//        atcmd_uart_stopbits = 1;
+//    } else {
+//        atcmd_uart_stopbits = 2;
+//    }
+//    atcmd_uart_paritybits = (SerialParity)parity;
+//    switch (flowcontrol) {
+//        case 0: {
+//            atcmd_uart_flow_ctrl = FlowControlNone;
+//            break;
+//        }
+//        case 1: {
+//            atcmd_uart_flow_ctrl = FlowControlRTS;
+//            break;
+//        }
+//        case 2: {
+//            atcmd_uart_flow_ctrl = FlowControlCTS;
+//            break;
+//        }
+//        case 3: {
+//            atcmd_uart_flow_ctrl = FlowControlRTSCTS;
+//            break;
+//        }
+//    }
+//    at_printf("\r\nOK\r\n");
+//    vTaskDelay(5/portTICK_PERIOD_MS);   // delay to allow data in UART FIFO to clear out
+//    atcmd_uart_reinit();
     return ATCMD_OK;
 }

@@ -205,7 +205,7 @@ void atcmd_init(void) {
     xSemaphoreGive(atcmd_cmd_done_sema);
 
     // start task to process incoming ATcommands
-    result = xTaskCreate(atcmd_service_task, "atcmd_task", 1024, NULL, tskIDLE_PRIORITY + 3, &atcmd_task_handle);
+    result = xTaskCreate(atcmd_service_task, "atcmd_task", 1024*4, NULL, tskIDLE_PRIORITY + 3, &atcmd_task_handle);
     if (result != pdPASS) {
         printf("atcmd_service_task task create failed\r\n");
     }
@@ -280,6 +280,7 @@ uint8_t atcmd_parse_params(char *buf, char **argv) {
 
 uint8_t e_AT(void *arg) {
     // Test AT
+    // AT
     (void)arg;
     return ATCMD_OK;
 }
@@ -287,6 +288,7 @@ uint8_t e_AT(void *arg) {
 extern uint8_t e_AT_CWQAP(void *arg);
 uint8_t e_AT_RST(void *arg){
     // Soft reset
+    // AT+RST
     (void)arg;
 
     // Disconnect WiFi if necessary
@@ -298,6 +300,7 @@ uint8_t e_AT_RST(void *arg){
 
 uint8_t e_AT_GMR(void *arg) {
     // Check Version Information
+    // AT+GMR
     (void)arg;
 
     at_printf("AT version:2.4.0.0(4c6eb5e - ESP32 - May 20 2022 03:11:58)\r\n");
@@ -310,6 +313,7 @@ uint8_t e_AT_GMR(void *arg) {
 
 uint8_t e_ATE0(void *arg) {
     // Set AT Command echo off
+    // ATE0
     (void)arg;
     atcmd_local_echo = 0;
     return ATCMD_OK;
@@ -317,6 +321,7 @@ uint8_t e_ATE0(void *arg) {
 
 uint8_t e_ATE1(void *arg) {
     // Set AT Command echo on
+    // ATE1
     (void)arg;
     atcmd_local_echo = 1;
     return ATCMD_OK;
@@ -330,6 +335,7 @@ extern uint8_t s_AT_UART_DEF(void *arg);
 
 uint8_t q_AT_SYSRAM(void *arg) {
     // Query Current Remaining Heap Size and Minimum Heap Size
+    // AT+SYSRAM?
     (void)arg;
     at_printf("+SYSRAM:%d,%d", xPortGetFreeHeapSize(), xPortGetMinimumEverFreeHeapSize());
     return ATCMD_OK;
