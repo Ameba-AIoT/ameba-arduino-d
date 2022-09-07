@@ -11,6 +11,7 @@ extern "C" {
 #include "wifi_structures.h"
 #include "lwip_netconf.h"
 #include "inet.h"
+#include "dhcp/dhcps.h"
 
 extern struct netif xnetif[NET_IF_NUM];
 
@@ -20,9 +21,13 @@ extern struct netif xnetif[NET_IF_NUM];
 
 uint8_t cw_dhcp = 3;
 uint8_t cw_autoconn = 1;
+rtw_mode_t cw_mode = RTW_MODE_STA;
 uint8_t static_ip[4] = {0, 0, 0, 0};
 uint8_t static_gw[4] = {0, 0, 0, 0};
 uint8_t static_nm[4] = {0, 0, 0, 0};
+uint8_t ap_ip[4] = {192, 168, 5, 1};
+uint8_t ap_gw[4] = {192, 168, 5, 1};
+uint8_t ap_nm[4] = {255, 255, 255, 0};
 char cw_hostname[32] = {"ameba"};
 TaskHandle_t wifi_scan_task_handle = NULL;
 SemaphoreHandle_t wifi_scan_complete_sema = NULL;
@@ -30,6 +35,10 @@ rtw_scan_result_t* wifi_scan_result_buffer = NULL;
 uint8_t wifi_scan_result_count = 0;
 char password[65] = {0};
 rtw_network_info_t wifi = {{0,{0}},{0},0,0,0,0};
+char ap_password[65] = {"password"};
+rtw_ap_info_t ap = {{8,{"Ameba_AP"}},RTW_SECURITY_OPEN,(unsigned char*)ap_password,8,1};
+uint8_t ap_hidden_ssid = 0;
+uint8_t ap_max_conn = AP_MAX_STA_NUM;
 atcmd_cwstate_t cwstate = CWSTATE_INITIAL;
 
 typedef struct atcmd_cwjap_params{
@@ -125,7 +134,7 @@ void atcmd_wifi_init(void) {
     atcmd_wifi_register();
 
     if (wifi.ssid.len != 0) {
-        atcmd_wifi_connect(15);
+//        atcmd_wifi_connect(15);
     }
 }
 
@@ -426,13 +435,90 @@ uint8_t atcmd_wifi_connect(uint32_t timeout_sec) {
     return ATCMD_OK;
 }
 
+
+uint8_t atcmd_ap_start(void) {
+    struct netif* pnetif;
+
+    if(wext_set_sta_num(ap_max_conn) != 0){
+        printf("ERROR : Set AP max conn failed\r\n");
+        return ATCMD_ERROR;
+    }
+    if (ap_hidden_ssid) {
+        if (wifi_start_ap_with_hidden_ssid((char*)ap.ssid.val, ap.security_type, (char*)ap.password, ap.ssid.len, ap.password_len, ap.channel) < 0) {
+            printf("ERROR : Start AP failed\r\n");
+            return ATCMD_ERROR;
+        }
+    } else {
+        if (wifi_start_ap((char*)ap.ssid.val, ap.security_type, (char*)ap.password, ap.ssid.len, ap.password_len, ap.channel) < 0) {
+            printf("ERROR : Start AP failed\r\n");
+            return ATCMD_ERROR;
+        }
+    }
+
+    if(cw_mode == RTW_MODE_STA_AP)
+        pnetif = &xnetif[1];
+    else
+        pnetif = &xnetif[0];
+
+    struct ip_addr ip_add;
+    struct ip_addr netmask;
+    struct ip_addr gateway;
+    IP4_ADDR(ip_2_ip4(&ip_add), ap_ip[0], ap_ip[1], ap_ip[2], ap_ip[3]);
+    IP4_ADDR(ip_2_ip4(&netmask), ap_nm[0], ap_nm[1] , ap_nm[2], ap_nm[3]);
+    IP4_ADDR(ip_2_ip4(&gateway), ap_gw[0], ap_gw[1], ap_gw[2], ap_gw[3]);
+    netif_set_addr(pnetif, ip_2_ip4(&ip_add), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
+
+    if (cw_dhcp & 0x02) {
+        dhcps_init(pnetif);
+    }
+
+    return ATCMD_OK;
+}
+
+uint8_t atcmd_wifi_change_mode(rtw_mode_t new_mode, uint8_t auto_connect, uint8_t restart) {
+    if ((new_mode != cw_mode) || (restart != 0)) {
+        if ((cw_mode == RTW_MODE_AP) || (cw_mode == RTW_MODE_STA_AP)) {
+            dhcps_deinit();
+        }
+        // Switch WiFi Mode
+        wifi_off();
+        vTaskDelay(20);
+        if (new_mode == RTW_MODE_NONE) {
+            return ATCMD_OK;
+        } else {
+            if (wifi_on(new_mode) < 0){
+                printf("ERROR : Wifi change mode failed\r\n");
+                return ATCMD_ERROR;
+            }
+        }
+
+        cw_mode = new_mode;
+
+        // Configure WiFi STA mode
+        if (auto_connect) {
+            if ((cw_mode == RTW_MODE_STA) || (cw_mode == RTW_MODE_STA_AP)) {
+                if (wifi.ssid.len != 0) {
+                    atcmd_wifi_connect(15);
+                }
+            }
+        }
+
+        // Configure WiFi AP mode
+        if ((cw_mode == RTW_MODE_AP) || (cw_mode == RTW_MODE_STA_AP)) {
+            atcmd_ap_start();
+        }
+    }
+
+    return ATCMD_OK;
+}
+
 //---------------------------- Commands for wifi ATCMD functionality ----------------------------//
 
 uint8_t q_AT_CWMODE(void *arg) {
     // Query the Wi-Fi mode of ESP devices.
     // AT+CWMODE?
     (void)arg;
-    at_printf("+CWMODE:%d\r\n", 1);
+    at_printf("+CWMODE:%d\r\n", cw_mode);
     return ATCMD_OK;
 }
 
@@ -442,8 +528,8 @@ uint8_t s_AT_CWMODE(void *arg) {
     (void)arg;
     uint8_t argc = 0;
     char* argv[ATCMD_MAX_ARG_CNT] = {0};
-    uint8_t mode = 0;           // Arg 1
-    uint8_t auto_connect = 0;   // Arg 2
+    rtw_mode_t new_mode = 0;    // Arg 1
+    uint8_t auto_connect = 1;   // Arg 2
 
     if (!arg) {
         return ATCMD_ERROR;
@@ -453,8 +539,8 @@ uint8_t s_AT_CWMODE(void *arg) {
         return ATCMD_ERROR;
     }
 
-    mode = atoi(argv[1]);
-    if (mode > 3) {
+    new_mode = atoi(argv[1]);
+    if (new_mode > 3) {
         return ATCMD_ERROR;
     }
 
@@ -465,11 +551,12 @@ uint8_t s_AT_CWMODE(void *arg) {
         }
     }
 
-    return ATCMD_OK;
+    return atcmd_wifi_change_mode(new_mode, auto_connect, 0);
 }
 
 uint8_t q_AT_CWSTATE(void *arg) {
     // Query Wi-Fi state and Wi-Fi information
+    // AT+CWSTATE?
     (void)arg;
     at_printf("+CWSTATE:%d,\"%s\"\r\n", cwstate, (char *)wifi.ssid.val);
     return ATCMD_OK;
@@ -477,11 +564,16 @@ uint8_t q_AT_CWSTATE(void *arg) {
 
 uint8_t q_AT_CWJAP(void *arg) {
     // Query currently connected AP information
+    // AT+CWJAP?
     (void)arg;
     char ssid[33];
     uint8_t bssid[ETH_ALEN] = {0};
     int channel = 0;
     int rssi = 0;
+
+    if ((cw_mode != RTW_MODE_STA) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_OK;
+    }
 
     // No information if not connected
     if (wext_get_ssid(WLAN0_NAME, (unsigned char *)ssid) < 0) {
@@ -516,6 +608,10 @@ uint8_t s_AT_CWJAP(void *arg) {
     uint8_t scan_mode = 0;      // Arg 7
     uint16_t jap_timeout = 15;  // Arg 8
     uint8_t pmf = 0;            // Arg 9
+
+    if ((cw_mode != RTW_MODE_STA) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
 
     if (!arg) {
         return ATCMD_ERROR;
@@ -635,7 +731,11 @@ uint8_t s_AT_CWJAP(void *arg) {
 
 uint8_t e_AT_CWJAP(void *arg) {
     // Connect to previously targeted AP
+    // AT+CWJAP
     (void)arg;
+    if ((cw_mode != RTW_MODE_STA) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
     // Check for existing saved SSID, error if none
     if (wifi.ssid.len == 0) {
         return ATCMD_ERROR;
@@ -646,6 +746,7 @@ uint8_t e_AT_CWJAP(void *arg) {
 
 uint8_t q_AT_CWRECONNCFG(void *arg) {
     // Query autoconnection setting.
+    // AT+CWRECONNCFG?
     (void)arg;
     at_printf("+CWRECONNCFG:%d,%d\r\n", cwjap_params.reconn_int, cwjap_params.reconn_cnt);
     return ATCMD_OK;
@@ -653,7 +754,7 @@ uint8_t q_AT_CWRECONNCFG(void *arg) {
 
 uint8_t s_AT_CWRECONNCFG(void *arg) {
     // Automatically Connect to an AP When Powered on.
-    // AT+CWAUTOCONN=<enable>
+    // AT+CWRECONNCFG=<interval_second>,<repeat_count>
     (void)arg;
     uint8_t argc = 0;
     char* argv[ATCMD_MAX_ARG_CNT] = {0};
@@ -695,6 +796,7 @@ uint8_t s_AT_CWRECONNCFG(void *arg) {
 
 uint8_t s_AT_CWLAP(void *arg) {
     // Scan for APs with specific parameters
+    // AT+CWLAP=[<ssid>,<mac>,<channel>,<scan_type>,<scan_time_min>,<scan_time_max>]
     (void)arg;
     // scan_type, scan_time_min, scan_time_max parameters are ignored
     uint8_t argc = 0;
@@ -705,6 +807,10 @@ uint8_t s_AT_CWLAP(void *arg) {
 //    uint8_t scan_type = 0;  // Arg 4
 //    uint16_t scan_min = 0;  // Arg 5
 //    uint16_t scan_max = 0;  // Arg 6
+
+    if ((cw_mode != RTW_MODE_STA) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
 
     if (!arg) {
         return ATCMD_ERROR;
@@ -777,7 +883,13 @@ uint8_t s_AT_CWLAP(void *arg) {
 
 uint8_t e_AT_CWLAP(void *arg) {
     // List all APs
+    // AT+CWLAP
     (void)arg;
+
+    if ((cw_mode != RTW_MODE_STA) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
+
     // Allocate sufficient memory space to store all results
     wifi_scan_result_count = 0;
     if (wifi_scan_result_buffer != NULL) {
@@ -808,10 +920,15 @@ uint8_t e_AT_CWLAP(void *arg) {
 
 uint8_t e_AT_CWQAP(void *arg) {
     // Disconnect from AP
+    // AT+CWQAP
     (void)arg;
     char ssid[33];
     uint8_t timeout = 20;
     int ret = RTW_SUCCESS;
+
+    if ((cw_mode != RTW_MODE_STA) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
 
     if (wext_get_ssid(WLAN0_NAME, (unsigned char *)ssid) < 0) {
         // not connected yet
@@ -837,6 +954,255 @@ uint8_t e_AT_CWQAP(void *arg) {
     LwIP_ReleaseIP(WLAN0_IDX);
     cwstate = CWSTATE_DISCONNECTED;
     at_printf("WIFI DISCONNECT\r\n");
+    return ATCMD_OK;
+}
+
+uint8_t q_AT_CWSAP(void *arg) {
+    // Query the configuration parameters of SoftAP.
+    // AT+CWSAP?
+    (void)arg;
+    uint8_t ecn = 0;
+
+    if ((ap.security_type & WPA2_SECURITY) && (ap.security_type & WPA_SECURITY)) {
+        ecn = 4;
+    } else if (ap.security_type & WPA2_SECURITY) {
+        ecn = 3;
+    } else if (ap.security_type & WPA_SECURITY) {
+        ecn = 2;
+    } else if (ap.security_type == RTW_SECURITY_OPEN) {
+        ecn = 0;
+    }
+
+    at_printf("+CWSAP:\"%s\",", ap.ssid.val);
+    if (ecn != 0) {
+        at_printf("\"%s\",", ap_password);
+    } else {
+        at_printf("\"\",");
+    }
+    at_printf("%d,%d,%d,%d\r\n", ap.channel, ecn, ap_max_conn, ap_hidden_ssid);
+
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CWSAP(void *arg) {
+    // Set the configuration of SoftAP.
+    // AT+CWSAP=<ssid>,<pwd>,<chl>,<ecn>[,<max conn>][,<ssid hidden>]
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    char* ssid = NULL;          // Arg 1
+    char* pass = NULL;          // Arg 2
+    uint8_t channel = 0;        // Arg 3
+    uint8_t ecn = 0;            // Arg 4
+    uint8_t max_conn = AP_MAX_STA_NUM;       // Arg 5
+    uint8_t hidden = 0;         // Arg 6
+
+    if ((cw_mode != RTW_MODE_AP) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if ((argc < 5) || (argc > 7)) {
+        return ATCMD_ERROR;
+    }
+
+    // SSID
+    if (argv[1] != NULL) {
+        ssid = argv[1];
+        int ssid_len = strlen(ssid);
+        if (ssid_len == 0) {
+            // No SSID error
+            return ATCMD_ERROR;
+        }
+        strncpy((char *)ap.ssid.val, ssid, sizeof(ap.ssid.val));
+        ap.ssid.len = ssid_len;
+    }else{
+        // No SSID error
+        return ATCMD_ERROR;
+    }
+
+    // Encryption
+    if (argv[4] != NULL) {
+        ecn = atoi(argv[4]);
+        // Check for values
+        if ((ecn <= 4) && (ecn != 1)) {
+            switch (ecn) {
+                case 0: {
+                    ap.security_type = RTW_SECURITY_OPEN;
+                    break;
+                }
+                case 2: {
+                    printf("AP mode does not support WPA encryption\r\n");
+                    return ATCMD_ERROR;
+                    break;
+                }
+                case 3: {
+                    ap.security_type = RTW_SECURITY_WPA2_AES_PSK;
+                    break;
+                }
+                case 4: {
+                    printf("AP mode does not support WPA encryption\r\n");
+                    return ATCMD_ERROR;
+                    break;
+                }
+                default: {
+                    return ATCMD_ERROR;
+                    break;
+                }
+            }
+        } else {
+            return ATCMD_ERROR;
+        }
+    }
+
+    // PASSWORD
+    if (ecn) {
+        if (argv[2] != NULL) {
+            pass = argv[2];
+            int pwd_len = strlen(pass);
+            if ((pwd_len > 64) || (pwd_len < 8)) {
+                // password format error
+                return ATCMD_ERROR;
+            }
+            strncpy(ap_password, pass, sizeof(ap_password));
+            ap.password = (unsigned char*)ap_password;
+            ap.password_len = pwd_len;
+        }
+    }
+
+    // Channel
+    if (argv[3] != NULL) {
+        channel = atoi(argv[3]);
+        // Check for valid channel values
+        if ( ((channel >= 1) && (channel <= 13)) || ((channel >= 36) && (channel <= 177)) ) {
+            // Valid channel number
+            ap.channel = channel;
+        } else {
+            return ATCMD_ERROR;
+        }
+    }
+
+
+    // Max Connections
+    if (argv[5] != NULL) {
+        max_conn = atoi(argv[5]);
+        // Check for valid channel values
+        if (max_conn > AP_MAX_STA_NUM) {
+            return ATCMD_ERROR;
+        } else {
+            ap_max_conn = max_conn;
+        }
+    }
+
+    // Hidden SSID
+    if (argv[6] != NULL) {
+        hidden = atoi(argv[6]);
+        // Check for valid channel values
+        if (hidden > 1) {
+            return ATCMD_ERROR;
+        } else {
+            ap_hidden_ssid = hidden;
+        }
+    }
+
+    return atcmd_wifi_change_mode(cw_mode, 1, 1);
+}
+
+uint8_t e_AT_CWLIF(void *arg) {
+    // Obtain IP Address of the Station That Connects to SoftAP
+    // AT+CWLIF
+    (void)arg;
+
+    if ((cw_mode != RTW_MODE_AP) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
+
+    struct {
+        int count;
+        rtw_mac_t mac_list[AP_MAX_STA_NUM];
+    } client_info;
+
+    client_info.count = AP_MAX_STA_NUM;
+    wifi_get_associated_client_list(&client_info, sizeof(client_info));
+
+    for (uint8_t i = 0; i < client_info.count; i++) {
+        uint8_t* mac = client_info.mac_list[i].octet;
+        at_printf("+CWLIF:0.0.0.0,%02x:%02x:%02x:%02x:%02x:%02x\r\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    }
+
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CWQIF(void *arg) {
+    // Disconnect a specific station from the SoftAP.
+    // AT+CWQIF=<mac>
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    char* mac = NULL;           // Arg 1
+    uint8_t octet[6] = {0};
+
+    if ((cw_mode != RTW_MODE_AP) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if (argc != 2) {
+        return ATCMD_ERROR;
+    }
+
+    if (argv[1] != NULL) {
+        mac = argv[1];
+        if (strlen(mac) != 17) {
+            // format error
+            return ATCMD_ERROR;
+        }
+        uint8_t i,j;
+        for (i = 0, j = 0; i < ETH_ALEN; i++, j += 3) {
+            octet[i] = hex2int(mac[j], mac[j+1]);
+        }
+    }
+
+    char* ifname = WLAN0_NAME;
+    if (cw_mode == RTW_MODE_STA_AP) {
+        ifname = WLAN1_NAME;
+    }
+    wext_del_station(ifname, octet);
+
+    return ATCMD_OK;
+}
+
+uint8_t e_AT_CWQIF(void *arg) {
+    // Disconnect all stations that are connected to the SoftAP.
+    // AT+CWQIF
+    (void)arg;
+
+    if ((cw_mode != RTW_MODE_AP) && (cw_mode != RTW_MODE_STA_AP)) {
+        return ATCMD_ERROR;
+    }
+
+    struct {
+        int count;
+        rtw_mac_t mac_list[AP_MAX_STA_NUM];
+    } client_info;
+
+    client_info.count = AP_MAX_STA_NUM;
+    wifi_get_associated_client_list(&client_info, sizeof(client_info));
+
+    char* ifname = WLAN0_NAME;
+    if (cw_mode == RTW_MODE_STA_AP) {
+        ifname = WLAN1_NAME;
+    }
+    for (uint8_t i = 0; i < client_info.count; i++) {
+        wext_del_station(ifname, client_info.mac_list[i].octet);
+    }
+
     return ATCMD_OK;
 }
 
@@ -929,8 +1295,74 @@ uint8_t s_AT_CWDHCP(void *arg) {
     return ATCMD_OK;
 }
 
+uint8_t s_AT_CWDHCPS(void *arg) {
+    // Set the IP address range of the SoftAP DHCP server.
+    // AT+CWDHCPS=<enable>,<lease time>,<start IP>,<end IP>
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint8_t enable = 0;         // Arg 1
+    uint16_t lease = 0;         // Arg 2
+    ip_addr_t ipaddr_start;     // Arg 3
+    ip_addr_t ipaddr_end;       // Arg 4
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if ((argc != 5) && (argc != 2)) {
+        return ATCMD_ERROR;
+    }
+
+    if (argv[1] != NULL) {
+        enable = atoi(argv[1]);
+        if (enable > 1) {
+            return ATCMD_ERROR;
+        }
+    }
+    if (enable == 0) {
+        dhcps_set_addr_pool(0,&ipaddr_start,&ipaddr_end);
+        return ATCMD_OK;
+    } else {
+        if (argc != 5) {
+            return ATCMD_ERROR;
+        }
+    }
+
+    if (argv[2] != NULL) {
+        lease = atoi(argv[2]);
+        if (lease > 2880) {
+            return ATCMD_ERROR;
+        }
+        (void)lease;    // remove unused variable warning
+    }
+
+    if (argv[3] != NULL) {
+        if (inet_aton(argv[3], &ipaddr_start.u_addr.ip4) == 0) {
+            return ATCMD_ERROR;
+        }
+        if (ipaddr_start.u_addr.ip4.addr == 0) {
+            return ATCMD_ERROR;
+        }
+    }
+
+    if (argv[4] != NULL) {
+        if (inet_aton(argv[3], &ipaddr_end.u_addr.ip4) == 0) {
+            return ATCMD_ERROR;
+        }
+        if (ipaddr_end.u_addr.ip4.addr == 0) {
+            return ATCMD_ERROR;
+        }
+    }
+
+    dhcps_set_addr_pool(1,&ipaddr_start,&ipaddr_end);
+
+    return ATCMD_OK;
+}
+
 uint8_t q_AT_CWAUTOCONN(void *arg) {
     // Query autoconnection setting.
+    // AT+CWAUTOCONN?
     (void)arg;
     at_printf("+CWAUTOCONN:%d", 0);
     return ATCMD_OK;
@@ -968,6 +1400,24 @@ uint8_t q_AT_CIPSTAMAC(void *arg) {
 
     wifi_get_mac_address(mac);
     at_printf("+CIPSTAMAC:\"%s\"\r\n", mac);
+    return ATCMD_OK;
+}
+
+uint8_t q_AT_CIPAPMAC(void *arg) {
+    // Query the MAC address of the SoftAP.
+    // AT+CIPAPMAC?
+    (void)arg;
+
+    if ((cw_mode == RTW_MODE_AP) || (cw_mode == RTW_MODE_STA_AP)) {
+        struct netif* pnetif;
+        if(cw_mode == RTW_MODE_STA_AP)
+            pnetif = &xnetif[1];
+        else
+            pnetif = &xnetif[0];
+        uint8_t* ap_mac = LwIP_GetMAC(pnetif);
+        at_printf("+CIPAPMAC:\"%02x:%02x:%02x:%02x:%02x:%02x\"\r\n", ap_mac[0], ap_mac[1], ap_mac[2], ap_mac[3], ap_mac[4], ap_mac[5]);
+    }
+
     return ATCMD_OK;
 }
 
@@ -1056,23 +1506,117 @@ uint8_t s_AT_CIPSTA(void *arg) {
         static_nm[3] = 0;
     }
 
-    cw_dhcp &= ~(0x01);     // Change to using static IP
-    struct ip_addr ip_add;
-    struct ip_addr netmask;
-    struct ip_addr gateway;
-    IP4_ADDR(ip_2_ip4(&ip_add), static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
-    IP4_ADDR(ip_2_ip4(&netmask), static_nm[0], static_nm[1] , static_nm[2], static_nm[3]);
-    IP4_ADDR(ip_2_ip4(&gateway), static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
-    netif_set_addr(&xnetif[0], ip_2_ip4(&ip_add), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
-    if ((cwstate == CWSTATE_CONNECTEDIP) || (cwstate == CWSTATE_CONNECTED)) {
-        at_printf("WIFI GOT IP\r\n");
+    if ((cw_mode == RTW_MODE_STA) || (cw_mode == RTW_MODE_STA_AP)) {
+        cw_dhcp &= ~(0x01);     // Change to using static IP
+        struct ip_addr ip_add;
+        struct ip_addr netmask;
+        struct ip_addr gateway;
+        IP4_ADDR(ip_2_ip4(&ip_add), static_ip[0], static_ip[1], static_ip[2], static_ip[3]);
+        IP4_ADDR(ip_2_ip4(&netmask), static_nm[0], static_nm[1] , static_nm[2], static_nm[3]);
+        IP4_ADDR(ip_2_ip4(&gateway), static_gw[0], static_gw[1], static_gw[2], static_gw[3]);
+        netif_set_addr(&xnetif[0], ip_2_ip4(&ip_add), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
+        if ((cwstate == CWSTATE_CONNECTEDIP) || (cwstate == CWSTATE_CONNECTED)) {
+            at_printf("WIFI GOT IP\r\n");
+        }
+    }
+
+    return ATCMD_OK;
+}
+
+uint8_t q_AT_CIPAP(void *arg) {
+    // Query the IP address of the SoftAP.
+    // AT+CIPAP?
+    (void)arg;
+    char ip[15] = {"0.0.0.0"};
+    char gw[15] = {"0.0.0.0"};
+    char nm[15] = {"0.0.0.0"};
+
+    sprintf(ip, "%d.%d.%d.%d", ap_ip[0], ap_ip[1], ap_ip[2], ap_ip[3]);
+    sprintf(gw, "%d.%d.%d.%d", ap_gw[0], ap_gw[1], ap_gw[2], ap_gw[3]);
+    sprintf(nm, "%d.%d.%d.%d", ap_nm[0], ap_nm[1], ap_nm[2], ap_nm[3]);
+    at_printf("+CIPAP:ip:\"%s\"\r\n", ip);
+    at_printf("+CIPAP:gateway:\"%s\"\r\n", gw);
+    at_printf("+CIPAP:netmask:\"%s\"\r\n", nm);
+    return ATCMD_OK;
+}
+
+uint8_t s_AT_CIPAP(void *arg) {
+    // Set the IPv4 address of the SoftAP.
+    // AT+CIPAP=<"ip">[,<"gateway">,<"netmask">]
+    (void)arg;
+    uint8_t argc = 0;
+    char* argv[ATCMD_MAX_ARG_CNT] = {0};
+    uint32_t ipaddr = 0;
+
+    if (!arg) {
+        return ATCMD_ERROR;
+    }
+    argc = atcmd_parse_params((char*)arg, argv);
+    if ((argc < 2) || (argc > 4)) {
+        return ATCMD_ERROR;
+    }
+
+    if (argv[1] != NULL) {
+        ipaddr = inet_addr(argv[1]);
+        if (ipaddr == 0) {
+            return ATCMD_ERROR;
+        }
+        ap_ip[0] = (uint8_t)(ipaddr & 0xff);
+        ap_ip[1] = (uint8_t)((ipaddr >> 8) & 0xff);
+        ap_ip[2] = (uint8_t)((ipaddr >> 16) & 0xff);
+        ap_ip[3] = (uint8_t)((ipaddr >> 24) & 0xff);
+    }
+
+    if (argv[2] != NULL) {
+        ipaddr = inet_addr(argv[2]);
+        if (ipaddr == 0) {
+            return ATCMD_ERROR;
+        }
+        ap_gw[0] = (uint8_t)(ipaddr & 0xff);
+        ap_gw[1] = (uint8_t)((ipaddr >> 8) & 0xff);
+        ap_gw[2] = (uint8_t)((ipaddr >> 16) & 0xff);
+        ap_gw[3] = (uint8_t)((ipaddr >> 24) & 0xff);
+    } else {
+        ap_gw[0] = ap_ip[0];
+        ap_gw[1] = ap_ip[1];
+        ap_gw[2] = ap_ip[2];
+        ap_gw[3] = 1;
+    }
+
+    if (argv[3] != NULL) {
+        ipaddr = inet_addr(argv[3]);
+        ap_nm[0] = (uint8_t)(ipaddr & 0xff);
+        ap_nm[1] = (uint8_t)((ipaddr >> 8) & 0xff);
+        ap_nm[2] = (uint8_t)((ipaddr >> 16) & 0xff);
+        ap_nm[3] = (uint8_t)((ipaddr >> 24) & 0xff);
+    } else {
+        ap_nm[0] = 255;
+        ap_nm[1] = 255;
+        ap_nm[2] = 255;
+        ap_nm[3] = 0;
+    }
+
+    if ((cw_mode == RTW_MODE_AP) || (cw_mode == RTW_MODE_STA_AP)) {
+        struct netif* pnetif;
+        if(cw_mode == RTW_MODE_STA_AP)
+            pnetif = &xnetif[1];
+        else
+            pnetif = &xnetif[0];
+
+        struct ip_addr ip_add;
+        struct ip_addr netmask;
+        struct ip_addr gateway;
+        IP4_ADDR(ip_2_ip4(&ip_add), ap_ip[0], ap_ip[1], ap_ip[2], ap_ip[3]);
+        IP4_ADDR(ip_2_ip4(&netmask), ap_nm[0], ap_nm[1] , ap_nm[2], ap_nm[3]);
+        IP4_ADDR(ip_2_ip4(&gateway), ap_gw[0], ap_gw[1], ap_gw[2], ap_gw[3]);
+        netif_set_addr(pnetif, ip_2_ip4(&ip_add), ip_2_ip4(&netmask),ip_2_ip4(&gateway));
     }
 
     return ATCMD_OK;
 }
 
 uint8_t q_AT_CWHOSTNAME(void *arg) {
-    // Query the host name of ESP Station.
+    // Query the host name of Station.
     // AT+CWHOSTNAME?
     (void)arg;
     at_printf("+CWHOSTNAME:%s\r\n", cw_hostname);
@@ -1080,8 +1624,8 @@ uint8_t q_AT_CWHOSTNAME(void *arg) {
 }
 
 uint8_t s_AT_CWHOSTNAME(void *arg) {
-    // Automatically Connect to an AP When Powered on.
-    // AT+CWAUTOCONN=<enable>
+    // Set the host name of Station.
+    // AT+CWHOSTNAME=<hostname>
     (void)arg;
     uint8_t argc = 0;
     char* argv[ATCMD_MAX_ARG_CNT] = {0};
@@ -1094,8 +1638,6 @@ uint8_t s_AT_CWHOSTNAME(void *arg) {
     if (argc != 2) {
         return ATCMD_ERROR;
     }
-
-    // Check for station mode
 
     if (argv[1] != NULL) {
         hostname = argv[1];
@@ -1115,10 +1657,16 @@ atcmd_command_t atcmd_wifi_commands[] = {
       {"AT+CWRECONNCFG", NULL,   q_AT_CWRECONNCFG, s_AT_CWRECONNCFG, NULL,           {NULL, NULL}},
       {"AT+CWLAP",       NULL,   NULL,             s_AT_CWLAP,       e_AT_CWLAP,     {NULL, NULL}},
       {"AT+CWQAP",       NULL,   NULL,             NULL,             e_AT_CWQAP,     {NULL, NULL}},
+      {"AT+CWSAP",       NULL,   q_AT_CWSAP,       s_AT_CWSAP,       NULL,           {NULL, NULL}},
+      {"AT+CWLIF",       NULL,   NULL,             NULL,             e_AT_CWLIF,     {NULL, NULL}},
+      {"AT+CWQIF",       NULL,   NULL,             s_AT_CWQIF,       e_AT_CWQIF,     {NULL, NULL}},
       {"AT+CWDHCP",      NULL,   q_AT_CWDHCP,      s_AT_CWDHCP,      NULL,           {NULL, NULL}},
+      {"AT+CWDHCPS",     NULL,   NULL,             s_AT_CWDHCPS,     NULL,           {NULL, NULL}},
       {"AT+CWAUTOCONN",  NULL,   q_AT_CWAUTOCONN,  s_AT_CWAUTOCONN,  NULL,           {NULL, NULL}},
       {"AT+CIPSTAMAC",   NULL,   q_AT_CIPSTAMAC,   NULL,             NULL,           {NULL, NULL}},
+      {"AT+CIPAPMAC",    NULL,   q_AT_CIPAPMAC,    NULL,             NULL,           {NULL, NULL}},
       {"AT+CIPSTA",      NULL,   q_AT_CIPSTA,      s_AT_CIPSTA,      NULL,           {NULL, NULL}},
+      {"AT+CIPAP",       NULL,   q_AT_CIPAP,       s_AT_CIPAP,       NULL,           {NULL, NULL}},
       {"AT+CWHOSTNAME",  NULL,   q_AT_CWHOSTNAME,  s_AT_CWHOSTNAME,  NULL,           {NULL, NULL}},
 };
 

@@ -10,6 +10,7 @@ extern "C" {
 #endif
 
 #define WIFI_SCAN_RESULT_MAX_COUNT 64
+#define AP_MAX_STA_NUM 3
 
 //wifi state start at 0
 //if connect indicator, state 0 -> 1
