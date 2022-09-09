@@ -56,7 +56,7 @@ try_again:
         } else {
             err = clientdrv.getLastErrno(_sock);
             if (err == EAGAIN) goto try_again;
-            if (err == 0) {
+            if (err != 0) {
                 _is_connected = false;
             }
             return 0;
