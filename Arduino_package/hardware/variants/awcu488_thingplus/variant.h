@@ -105,6 +105,12 @@ extern void wait_for_debug(void);
 #define SPI1_SCLK                               AMB_D16 // AMB_D16 / AMB_D29
 #define SPI1_SS                                 AMB_D17 // AMB_D17 / AMB_D28
 
+// temporary patch to support older Arduino libraries (including the SparkFun Micro OLED)
+#define SS SPI_SS
+#define MOSI SPI_MOSI
+#define MISO SPI_MISO
+#define SCK SPI_SCLK
+
 /* TwoWire/I2C pin mapping */
 #define I2C_SDA                                 AMB_D5 // AMB_D5 qwiic / AMB_D16
 #define I2C_SCL                                 AMB_D6 // AMB_D6 qwiic / AMB_D15
