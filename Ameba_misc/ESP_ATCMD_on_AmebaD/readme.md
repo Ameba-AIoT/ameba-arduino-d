@@ -17,23 +17,24 @@ Follow the example guide in the `ESP_ATCMD_on_AmebaD guide` folder on how to use
 
 | Basic AT commands | Wi-Fi AT commands | TCP/IP AT commands |
 | ----------------- | ----------------- | ------------------ |
-| AT                | AT+CWSTATE        | AT+CIPSTATUS       |
-| AT+RST            | AT+CWJAP          | AT+CIPDOMAIN       |
-| AT+GMR            | AT+CWRECONNCFG    | AT+CIPSTART        |
-| ATE0              | AT+CWLAP          | AT+CIPSEND         |
-| ATE1              | AT+CWQAP          | AT+CIPCLOSE        |
-| AT+UART_CUR       | AT+CWDHCP         | AT+CIFSR           |
-| AT+SYSRAM         | AT+CIPSTAMAC      | AT+CIPMUX          |
-|                   | AT+CIPSTA         | AT+CIPMODE         |
-|                   | AT+CWHOSTNAME     | AT+CIPDINFO        |
-|                   |                   | AT+CIPRECONNINTV   |
-|                   |                   | AT+CIPRECVMODE     |
-|                   |                   | AT+CIPRECVDATA     |
-|                   |                   | AT+CIPRECVLEN      |
-|                   |                   | AT+PING            |
-|                   |                   | AT+CIPDNS          |
+| AT                | AT+CWMODE         | AT+CIPSTATUS       |
+| AT+RST            | AT+CWSTATE        | AT+CIPDOMAIN       |
+| AT+GMR            | AT+CWJAP          | AT+CIPSTART        |
+| ATE0              | AT+CWRECONNCFG    | AT+CIPSEND         |
+| ATE1              | AT+CWLAP          | AT+CIPCLOSE        |
+| AT+UART_CUR       | AT+CWQAP          | AT+CIFSR           |
+| AT+SYSRAM         | AT+CWSAP          | AT+CIPMUX          |
+|                   | AT+CWLIF          | AT+CIPMODE         |
+|                   | AT+CWQIF          | AT+CIPDINFO        |
+|                   | AT+CWDHCP         | AT+CIPSSLCSNI      |
+|                   | AT+CWDHCPS        | AT+CIPRECONNINTV   |
+|                   | AT+CIPSTAMAC      | AT+CIPRECVMODE     |
+|                   | AT+CIPAPMAC       | AT+CIPRECVDATA     |
+|                   | AT+CIPSTA         | AT+CIPRECVLEN      |
+|                   | AT+CIPAP          | AT+PING            |
+|                   | AT+CWHOSTNAME     | AT+CIPDNS          |
 
-Note that for TCP/IP AT commands, only TCP connections are currently supported.
+Note that only 2 simultaneous SSL connections can be made due to RAM limitations.
 
 ### AT commands syntax reference
 
