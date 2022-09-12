@@ -235,7 +235,7 @@ class WiFiDrv
          *
          * return: ssid string of the specified item on the networks scanned list
          */
-        static char* getSSIDNetoworks(uint8_t networkItem);
+        static char* getSSIDNetworks(uint8_t networkItem);
 
         /*
          * Return the RSSI of the networks discovered during the scanNetworks
@@ -244,7 +244,7 @@ class WiFiDrv
          *
          * return: signed value of RSSI of the specified item on the networks scanned list
          */
-        static int32_t getRSSINetoworks(uint8_t networkItem);
+        static int32_t getRSSINetworks(uint8_t networkItem);
 
         /*
          * Return the encryption type of the networks discovered during the scanNetworks
