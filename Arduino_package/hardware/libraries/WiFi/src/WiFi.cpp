@@ -162,7 +162,7 @@ int8_t WiFiClass::scanNetworks()
 
 char* WiFiClass::SSID(uint8_t networkItem)
 {
-    return WiFiDrv::getSSIDNetoworks(networkItem);
+    return WiFiDrv::getSSIDNetworks(networkItem);
 }
 
 int32_t WiFiClass::RSSI(uint8_t networkItem)
