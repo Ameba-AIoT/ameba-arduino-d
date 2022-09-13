@@ -521,7 +521,7 @@ uint8_t WiFiDrv::getScanNetworks()
     return _networkCount;
 }
 
-char* WiFiDrv::getSSIDNetoworks(uint8_t networkItem)
+char* WiFiDrv::getSSIDNetworks(uint8_t networkItem)
 {
     if (networkItem >= WL_NETWORKS_LIST_MAXNUM) {
         return NULL;
