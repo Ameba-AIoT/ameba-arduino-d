@@ -167,7 +167,7 @@ char* WiFiClass::SSID(uint8_t networkItem)
 
 int32_t WiFiClass::RSSI(uint8_t networkItem)
 {
-    return WiFiDrv::getRSSINetoworks(networkItem);
+    return WiFiDrv::getRSSINetworks(networkItem);
 }
 
 uint8_t WiFiClass::encryptionType(uint8_t networkItem)
