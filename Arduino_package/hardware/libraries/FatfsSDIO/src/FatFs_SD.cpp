@@ -255,8 +255,11 @@ SdFatFile FatFsSD::open(char *absolute_path) {
 }
 
 int FatFsSD::status() {
-    //return sdio_sd_status() == 4;
-    return 1;
+    if (SD_Status() == SD_OK) {
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 int FatFsSD::getLastModTime(char *absolute_path, uint16_t *year, uint16_t *month, uint16_t *date, uint16_t *hour, uint16_t *minute, uint16_t *second) {
