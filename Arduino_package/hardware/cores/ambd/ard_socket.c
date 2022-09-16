@@ -203,7 +203,7 @@ int start_server(uint16_t port, uint8_t protMode) {
         printf("\r\nERROR on binding\r\n");
         return -1;
     }
-    lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
+    //lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
 	
     return _sock;
 }
@@ -243,7 +243,7 @@ int start_server_v6(uint16_t port, uint8_t protMode) {
         closesocket(_sock);
         return -1;
     }
-    lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
+    //lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
     printf("\n\r[INFO] Bind socket successfully\n");
    
     return _sock;
