@@ -6,36 +6,36 @@ menu.EraseFlash=Erase Flash
 # PLEASE DO NOT PUT BOARDS ABOVE THE OFFICIAL AMEBA BOARDS! ##
 ##############################################################
 
-ameba_rtl8721d.name=AMB21/AMB22 (RTL8722DM/CSM)
-#ameba_rtl8721d.vid.0=0x0403
-#ameba_rtl8721d.pid.0=0x6001
+ameba_rtl8722dm.name=AMB21/AMB22 (RTL8722DM/CSM)
+#ameba_rtl8722dm.vid.0=0x0403
+#ameba_rtl8722dm.pid.0=0x6001
 
-ameba_rtl8721d.upload.tool=ameba_d_tools
-ameba_rtl8721d.upload.protocol=usb_serial
-ameba_rtl8721d.upload.maximum_size=2097152
-ameba_rtl8721d.upload.use_1200bps_touch=false
-ameba_rtl8721d.upload.wait_for_upload_port=false
-ameba_rtl8721d.upload.native_usb=false
+ameba_rtl8722dm.upload.tool=ameba_d_tools
+ameba_rtl8722dm.upload.protocol=usb_serial
+ameba_rtl8722dm.upload.maximum_size=2097152
+ameba_rtl8722dm.upload.use_1200bps_touch=false
+ameba_rtl8722dm.upload.wait_for_upload_port=false
+ameba_rtl8722dm.upload.native_usb=false
 
-ameba_rtl8721d.build.tarch=cortex-m33
-ameba_rtl8721d.build.mcu=RTL8722DM/CSM
-ameba_rtl8721d.build.f_cpu=200000000L
-ameba_rtl8721d.build.usb_product="FTDI"
-ameba_rtl8721d.build.board=AMEBA
-ameba_rtl8721d.build.core=ambd
-ameba_rtl8721d.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
-ameba_rtl8721d.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
-ameba_rtl8721d.build.variant=rtl8721d
+ameba_rtl8722dm.build.tarch=cortex-m33
+ameba_rtl8722dm.build.mcu=RTL8722DM/CSM
+ameba_rtl8722dm.build.f_cpu=200000000L
+ameba_rtl8722dm.build.usb_product="AMB21"
+ameba_rtl8722dm.build.board=AMEBA
+ameba_rtl8722dm.build.core=ambd
+ameba_rtl8722dm.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
+ameba_rtl8722dm.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
+ameba_rtl8722dm.build.variant=rtl8722dm
 
-ameba_rtl8721d.menu.EraseFlash.Disable=Disable
-ameba_rtl8721d.menu.EraseFlash.Disable.build.erase_flash=Disable
-ameba_rtl8721d.menu.EraseFlash.Enable=Enable
-ameba_rtl8721d.menu.EraseFlash.Enable.build.erase_flash=Enable
+ameba_rtl8722dm.menu.EraseFlash.Disable=Disable
+ameba_rtl8722dm.menu.EraseFlash.Disable.build.erase_flash=Disable
+ameba_rtl8722dm.menu.EraseFlash.Enable=Enable
+ameba_rtl8722dm.menu.EraseFlash.Enable.build.erase_flash=Enable
 
-#ameba_rtl8721d.menu.AutoUploadMode.Disable=Disable
-#ameba_rtl8721d.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
-#ameba_rtl8721d.menu.AutoUploadMode.Enable=Enable
-#ameba_rtl8721d.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+#ameba_rtl8722dm.menu.AutoUploadMode.Disable=Disable
+#ameba_rtl8722dm.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
+#ameba_rtl8722dm.menu.AutoUploadMode.Enable=Enable
+#ameba_rtl8722dm.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 
 ##############################################################
 
@@ -53,7 +53,7 @@ ameba_rtl8722dm_mini.upload.native_usb=false
 ameba_rtl8722dm_mini.build.tarch=cortex-m33
 ameba_rtl8722dm_mini.build.mcu=RTL8722DM
 ameba_rtl8722dm_mini.build.f_cpu=200000000L
-ameba_rtl8722dm_mini.build.usb_product="FTDI"
+ameba_rtl8722dm_mini.build.usb_product="AMB23"
 ameba_rtl8722dm_mini.build.board=AMEBA
 ameba_rtl8722dm_mini.build.core=ambd
 ameba_rtl8722dm_mini.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI {build.usb_flags}
@@ -73,8 +73,8 @@ ameba_rtl8722dm_mini.menu.EraseFlash.Enable.build.erase_flash=Enable
 ##############################################################
 
 ameba_rtl8720dn_bw16.name=BW16 (RTL8720DN)
-ameba_rtl8720dn_bw16.vid.0=0x1A86
-ameba_rtl8720dn_bw16.pid.0=0x7523
+#ameba_rtl8720dn_bw16.vid.0=0x1A86
+#ameba_rtl8720dn_bw16.pid.0=0x7523
 
 ameba_rtl8720dn_bw16.upload.tool=ameba_d_tools
 ameba_rtl8720dn_bw16.upload.protocol=usb_serial
@@ -86,7 +86,7 @@ ameba_rtl8720dn_bw16.upload.native_usb=false
 ameba_rtl8720dn_bw16.build.tarch=cortex-m33
 ameba_rtl8720dn_bw16.build.mcu=RTL8720DN
 ameba_rtl8720dn_bw16.build.f_cpu=200000000L
-ameba_rtl8720dn_bw16.build.usb_product="CH340"
+ameba_rtl8720dn_bw16.build.usb_product="BW16"
 ameba_rtl8720dn_bw16.build.board=AMEBA
 ameba_rtl8720dn_bw16.build.core=ambd
 ameba_rtl8720dn_bw16.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 {build.usb_flags}
@@ -107,8 +107,8 @@ ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 ##############################################################
 
 awcu488_thingplus.name=AW-CU488 Thing Plus (RTL8721DM)
-#awcu488_thingplus.vid.0=0x0403
-#awcu488_thingplus.pid.0=0x6001
+#awcu488_thingplus.vid.0=0x10C4
+#awcu488_thingplus.pid.0=0xEA60
 
 awcu488_thingplus.upload.tool=ameba_d_tools
 awcu488_thingplus.upload.protocol=usb_serial
@@ -118,12 +118,12 @@ awcu488_thingplus.upload.wait_for_upload_port=false
 awcu488_thingplus.upload.native_usb=false
 
 awcu488_thingplus.build.tarch=cortex-m33
-awcu488_thingplus.build.mcu=RTL8722DM/CSM
+awcu488_thingplus.build.mcu=RTL8721DM
 awcu488_thingplus.build.f_cpu=200000000L
-awcu488_thingplus.build.usb_product="FTDI"
+awcu488_thingplus.build.usb_product="AW-CU488_ThingPlus"
 awcu488_thingplus.build.board=AMEBA
 awcu488_thingplus.build.core=ambd
-awcu488_thingplus.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
+awcu488_thingplus.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags}
 awcu488_thingplus.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
 awcu488_thingplus.build.variant=awcu488_thingplus
 
@@ -132,7 +132,7 @@ awcu488_thingplus.menu.EraseFlash.Disable.build.erase_flash=Disable
 awcu488_thingplus.menu.EraseFlash.Enable=Enable
 awcu488_thingplus.menu.EraseFlash.Enable.build.erase_flash=Enable
 
-#awcu488_thingplus.menu.AutoUploadMode.Disable=Disable
-#awcu488_thingplus.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
-#awcu488_thingplus.menu.AutoUploadMode.Enable=Enable
-#awcu488_thingplus.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+awcu488_thingplus.menu.AutoUploadMode.Disable=Disable
+awcu488_thingplus.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
+awcu488_thingplus.menu.AutoUploadMode.Enable=Enable
+awcu488_thingplus.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable

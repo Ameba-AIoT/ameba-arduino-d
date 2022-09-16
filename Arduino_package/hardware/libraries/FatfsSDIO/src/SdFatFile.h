@@ -26,7 +26,7 @@ public:
      * @brief Write one byte to file
      *
      * @param[in] c The character to be written
-     * @return The succeessful written byte count
+     * @return The successful written byte count
      */
     virtual size_t write(uint8_t c);
 
@@ -35,7 +35,7 @@ public:
      *
      * @param[in] buf The buffer to be written
      * @param[in] size The length of buffer to be written
-     * @return The succeessful written byte count
+     * @return The successful written byte count
      */
     virtual size_t write(const uint8_t *buf, size_t size);
 
@@ -47,14 +47,14 @@ public:
     virtual int read();
 
     /**
-     * @brief Read one byte from file without move curser
+     * @brief Read one byte from file without move cursor
      *
      * @return The read character
      */
     virtual int peek();
 
     /**
-     * @brief Check if curser is at EOF
+     * @brief Check if cursor is at EOF
      *
      * @return Return 1 if is not at EOF. And 0 vise versa.
      */
@@ -84,7 +84,7 @@ public:
     int read(void *buf, uint16_t nbyte);
 
     /**
-     * @brief Change curser to sepcific position
+     * @brief Change cursor to specific position
      *
      * @param[in] pos The desired position
      * @return Return 0 if success. Return negative value if failure.
@@ -97,6 +97,10 @@ public:
      * @return Return 0 if success. Return negative value if failure.
      */
     int close();
+
+    uint32_t cursor_pos (void);
+    
+    uint32_t file_size (void);
 
     friend class FatFsSD;
 

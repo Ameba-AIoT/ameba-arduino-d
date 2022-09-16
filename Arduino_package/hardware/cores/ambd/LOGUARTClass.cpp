@@ -91,21 +91,21 @@ void LOGUARTClass::IrqHandler(void)
 
 void LOGUARTClass::begin(const uint32_t dwBaudRate)
 {
-    // UART2
+    // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
-    serial_init(&log_uart_obj, UART2_TX, UART2_RX);
+    serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
 
-    // UART3
-    //serial_init(&uart_obj, PB_1, PB_2);
-    //serial_init(&uart_obj, PA_26, PA_25);
-    //serial_init(&uart_obj, PA_12, PA_13);
-    //serial_init(&uart_obj, UART3_TX, UART3_RX);
-
-    // UART0
+    // serial1, HS_UART0
     //serial_init(&uart_obj, PB_19, PB_18);
     //serial_init(&uart_obj, PA_21, PA_22);
     //serial_init(&uart_obj, PA_18, PA_19);
-    //serial_init(&uart_obj, UART0_TX, UART0_RX);
+    //serial_init(&uart_obj, PinName(g_APinDescription[SERIAL1_TX].pinname), PinName(g_APinDescription[SERIAL1_RX].pinname));
+
+    // serial2, LP_UART
+    //serial_init(&uart_obj, PB_1, PB_2);
+    //serial_init(&uart_obj, PA_26, PA_25);
+    //serial_init(&uart_obj, PA_12, PA_13);
+    //serial_init(&uart_obj, PinName(g_APinDescription[SERIAL2_TX].pinname), PinName(g_APinDescription[SERIAL2_RX].pinname));
 
     serial_format(&log_uart_obj, 8, ParityNone, 1);
 

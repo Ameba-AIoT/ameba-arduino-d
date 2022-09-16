@@ -521,7 +521,7 @@ uint8_t WiFiDrv::getScanNetworks()
     return _networkCount;
 }
 
-char* WiFiDrv::getSSIDNetoworks(uint8_t networkItem)
+char* WiFiDrv::getSSIDNetworks(uint8_t networkItem)
 {
     if (networkItem >= WL_NETWORKS_LIST_MAXNUM) {
         return NULL;
@@ -558,7 +558,7 @@ uint32_t WiFiDrv::getEncTypeNetowrksEx(uint8_t networkItem)
     return ((networkItem >= WL_NETWORKS_LIST_MAXNUM) ? 0 : _networkEncr[networkItem]);
 }
 
-int32_t WiFiDrv::getRSSINetoworks(uint8_t networkItem)
+int32_t WiFiDrv::getRSSINetworks(uint8_t networkItem)
 {
     if (networkItem >= WL_NETWORKS_LIST_MAXNUM) {
         //return NULL;

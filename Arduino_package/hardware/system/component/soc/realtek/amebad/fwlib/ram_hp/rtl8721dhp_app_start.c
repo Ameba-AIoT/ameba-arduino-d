@@ -412,6 +412,10 @@ void app_start(void)
 	}
 
 	/* configure FreeRTOS interrupt and heap region */
+#if (defined(configUSE_PSRAM_FOR_HEAP_REGION) && ( configUSE_PSRAM_FOR_HEAP_REGION == 1 ))
+	/* psram should be enabled */
+	assert_param(TRUE == psram_dev_config.psram_dev_enable);
+#endif
 	os_heap_init();
 	__NVIC_SetVector(SVCall_IRQn, (u32)(VOID*)vPortSVCHandler);
 	__NVIC_SetVector(PendSV_IRQn, (u32)(VOID*)xPortPendSVHandler);

@@ -15,28 +15,39 @@ DHT dht(DHTPIN, DHTTYPE);
 
 //SET_DS_AON_TIMER_WAKEUP
 //SET_DS_RTC_WAKEUP
-//For RTL8722DM only the AON GPIO pins listed below should be selected
-    //SET_AON_GPIO_WAKEUP_GPIOA25       //D16
-    //SET_AON_GPIO_WAKEUP_GPIOA26       //D17
-    //SET_AON_GPIO_WAKEUP_GPIOA21       //D26
-    //SET_AON_GPIO_WAKEUP_GPIOA20       //D27
-    //SET_AON_GPIO_WAKEUP_GPIOA19       //D28
-//For RTL8722DM_MINI only the AON GPIO pins listed below should be selected
-    //SET_AON_GPIO_WAKEUP_GPIOA12       //D9
-    //SET_AON_GPIO_WAKEUP_GPIOA13       //D10
-    //SET_AON_GPIO_WAKEUP_GPIOA14       //D11
-    //SET_AON_GPIO_WAKEUP_GPIOA15       //D12
-    //SET_AON_GPIO_WAKEUP_GPIOA16       //D13
-    //SET_AON_GPIO_WAKEUP_GPIOA18       //D15
-    //SET_AON_GPIO_WAKEUP_GPIOA19       //D16
-    //SET_AON_GPIO_WAKEUP_GPIOA21       //D18
-//For RTL8720DN_BW16 only the AON GPIO pins listed below should be selected
-    //SET_AON_GPIO_WAKEUP_GPIOA25       //D7
-    //SET_AON_GPIO_WAKEUP_GPIOA26       //D8
-    //SET_AON_GPIO_WAKEUP_GPIOA15       //D9
-    //SET_AON_GPIO_WAKEUP_GPIOA14       //D10
-    //SET_AON_GPIO_WAKEUP_GPIOA13       //D11
-    //SET_AON_GPIO_WAKEUP_GPIOA12       //D12
+//For AMB21/22 only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_PA25          // pin 16
+    //SET_AON_GPIO_WAKEUP_PA26          // pin 17
+    //SET_AON_GPIO_WAKEUP_PA21          // pin 26
+    //SET_AON_GPIO_WAKEUP_PA20          // pin 27
+    //SET_AON_GPIO_WAKEUP_PA19          // pin 28
+//For AMB23 only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_PA12          // pin 9
+    //SET_AON_GPIO_WAKEUP_PA13          // pin 10
+    //SET_AON_GPIO_WAKEUP_PA14          // pin 11
+    //SET_AON_GPIO_WAKEUP_PA15          // pin 12
+    //SET_AON_GPIO_WAKEUP_PA16          // pin 13
+    //SET_AON_GPIO_WAKEUP_PA18          // pin 15
+    //SET_AON_GPIO_WAKEUP_PA19          // pin 16
+    //SET_AON_GPIO_WAKEUP_PA21          // pin 18
+//For BW16/BW16-TypeC only the AON GPIO pins listed below should be selected
+    //SET_AON_GPIO_WAKEUP_PA25          // pin 7
+    //SET_AON_GPIO_WAKEUP_PA26          // pin 8
+    //SET_AON_GPIO_WAKEUP_PA15          // pin 9
+    //SET_AON_GPIO_WAKEUP_PA14          // pin 10
+    //SET_AON_GPIO_WAKEUP_PA13          // pin 11
+    //SET_AON_GPIO_WAKEUP_PA12          // pin 12
+//For board AW-CU488_ThingPlus
+    //SET_AON_GPIO_WAKEUP_PA18          // pin 0
+    //SET_AON_GPIO_WAKEUP_PA16          // pin 1
+    //SET_AON_GPIO_WAKEUP_PA17          // pin 2
+    //SET_AON_GPIO_WAKEUP_PA13          // pin 3
+    //SET_AON_GPIO_WAKEUP_PA12          // pin 4
+    //SET_AON_GPIO_WAKEUP_PA26          // pin 5
+    //SET_AON_GPIO_WAKEUP_PA25          // pin 6
+    //SET_AON_GPIO_WAKEUP_PA19          // pin 8
+    //SET_AON_GPIO_WAKEUP_PA15          // pin 28
+    //SET_AON_GPIO_WAKEUP_PA14          // pin 29
 #define DS_WAKEUP_SOURCE                SET_DS_AON_TIMER_WAKEUP
 
 #define AON_TIMER_SLEEP_DURATION        5000
@@ -109,41 +120,41 @@ void setup() {
             PowerSave.DS_RTC_WAKEUP();
             PowerSave.RTCWakeSetup(DS_RTC_ALARM_DAY, DS_RTC_ALARM_HOUR, DS_RTC_ALARM_MIN, DS_RTC_ALARM_SEC);
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA12:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA12();
+        case SET_AON_GPIO_WAKEUP_PA12:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA12();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA13:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA13();
+        case SET_AON_GPIO_WAKEUP_PA13:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA13();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA14:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA14();
+        case SET_AON_GPIO_WAKEUP_PA14:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA14();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA15:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA15();
+        case SET_AON_GPIO_WAKEUP_PA15:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA15();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA16:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA16();
+        case SET_AON_GPIO_WAKEUP_PA16:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA16();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA17:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA17();
+        case SET_AON_GPIO_WAKEUP_PA17:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA17();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA18:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA18();
+        case SET_AON_GPIO_WAKEUP_PA18:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA18();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA19:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA19();
+        case SET_AON_GPIO_WAKEUP_PA19:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA19();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA20:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA20();
+        case SET_AON_GPIO_WAKEUP_PA20:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA20();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA21:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA21();
+        case SET_AON_GPIO_WAKEUP_PA21:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA21();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA25:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA25();
+        case SET_AON_GPIO_WAKEUP_PA25:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA25();
             break;
-        case SET_AON_GPIO_WAKEUP_GPIOA26:
-            PowerSave.AON_WAKEPIN_WAKEUP_GPIOA26();
+        case SET_AON_GPIO_WAKEUP_PA26:
+            PowerSave.AON_WAKEPIN_WAKEUP_PA26();
             break;
         default:
             printf("Unknown wakeup source.    \r\n");

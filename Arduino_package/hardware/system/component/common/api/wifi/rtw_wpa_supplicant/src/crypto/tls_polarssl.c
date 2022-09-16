@@ -829,8 +829,11 @@ void tls_deinit(void *ssl_ctx)
 	if(ssl_ctx != NULL){
 		struct eap_tls *tls_context = (struct eap_tls *) ssl_ctx;
 		mbedtls_net_free(tls_context->fd);
+		os_free(tls_context->fd, 0);
 		mbedtls_ssl_free(tls_context->ssl);
+		os_free(tls_context->ssl, 0);
 		mbedtls_ssl_config_free(tls_context->conf);
+		os_free(tls_context->conf, 0);
 		os_free(ssl_ctx, 0);
 		ssl_ctx = NULL;
 	}

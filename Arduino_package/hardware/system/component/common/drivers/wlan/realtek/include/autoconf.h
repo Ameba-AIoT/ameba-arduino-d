@@ -534,6 +534,8 @@ extern unsigned int g_ap_sta_num;
 	#define CONFIG_WLAN_SWITCH_MODE         //save memory while switching mode without driver re-init
 	//#define LOW_POWER_WIFI_CONNECT
 	//#define LONG_PERIOD_TICKLESS
+
+	#define RA_ANTI_INTERF 0		// when set to 1, please also set CONFIG_TPBASE_RA to 1
 	#endif
 	#if defined(CONFIG_PLATFORM_8195BHP)
 		#define CONFIG_RTL8195B
@@ -863,9 +865,11 @@ extern unsigned int g_ap_sta_num;
 
 #define TIME_THRES	20
 
+#ifndef LONG_PERIOD_TICKLESS
 /* 80211 - K V R */
 #define CONFIG_IEEE80211K
 #define CONFIG_LAYER2_ROAMING
+#endif
 #ifdef CONFIG_LAYER2_ROAMING
     #define CONFIG_RTW_WNM
     #define CONFIG_IEEE80211R

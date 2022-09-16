@@ -36,6 +36,7 @@ uint32_t AudioCodec::_wordLen = WL_16;
 uint32_t AudioCodec::_channelCount = CH_MONO;
 uint32_t AudioCodec::_ioApplication = APP_AMIC_IN|APP_LINE_OUT;
 uint32_t AudioCodec::_lrMux = RX_CH_LL;
+TaskHandle_t AudioCodec::callback_task_handle = NULL;
 
 uint8_t AudioCodec::_txBuffer[_DMA_PAGE_SIZE*_DMA_PAGE_NUM]__attribute__((aligned(32)));
 uint8_t AudioCodec::_zeroBuffer[_DMA_ZERO_BUF_SIZE]__attribute__((aligned(32)));
@@ -59,6 +60,7 @@ void AudioCodec::begin(bool input, bool output) {
     uint32_t tx_addr, tx_length;
 
     SP_InitTypeDef SP_InitStruct;
+    int result;
 
     _inputEn = input;
     _outputEn = output;
@@ -84,6 +86,13 @@ void AudioCodec::begin(bool input, bool output) {
     }
 
     setOutputVolume(50, 50);
+    
+    // start task to process incoming ATcommands
+    result = xTaskCreate(callback_task, "audioCBtask", 1024, NULL, tskIDLE_PRIORITY + 2, &callback_task_handle);
+    if (result != pdPASS) {
+        printf("Audio Codec callback task create failed\r\n");
+        return;
+    }
 
     if (_outputEn) {
         tx_addr = (uint32_t)getReadyTxPage();
@@ -352,28 +361,51 @@ void AudioCodec::initHAL() {
 
     if ((_ioApplication & APP_DMIC_IN) == APP_DMIC_IN) {
         // Configure PDM DMIC input pins
-        PAD_CMD(_PB_1, DISABLE);
-        PAD_CMD(_PB_2, DISABLE);
-        Pinmux_Config(_PB_1, PINMUX_FUNCTION_DMIC);
-        Pinmux_Config(_PB_2, PINMUX_FUNCTION_DMIC);
+        PAD_CMD(PB_1, DISABLE);
+        PAD_CMD(PB_2, DISABLE);
+        Pinmux_Config(PB_1, PINMUX_FUNCTION_DMIC);
+        Pinmux_Config(PB_2, PINMUX_FUNCTION_DMIC);
     } else {
         // Configure analog mic input pins
-        PAD_CMD(_PA_0, DISABLE);
-        PAD_CMD(_PA_1, DISABLE);
-        PAD_CMD(_PA_4, DISABLE);
+        PAD_CMD(PA_0, DISABLE);
+        PAD_CMD(PA_1, DISABLE);
+        PAD_CMD(PA_4, DISABLE);
         if (_channelCount == CH_STEREO) {
             // Configure 2nd analog mic input pin
-            PAD_CMD(_PA_2, DISABLE);
+            PAD_CMD(PA_2, DISABLE);
         }
     }
 
     // Configure analog out pins
-    PAD_CMD(_PB_28, DISABLE);
-    PAD_CMD(_PB_29, DISABLE);
-    PAD_CMD(_PB_30, DISABLE);
-    PAD_CMD(_PB_31, DISABLE);
+    PAD_CMD(PB_28, DISABLE);
+    PAD_CMD(PB_29, DISABLE);
+    PAD_CMD(PB_30, DISABLE);
+    PAD_CMD(PB_31, DISABLE);
     // Codec init
     CODEC_Init(_sampleRate, _wordLen, _channelCount, _ioApplication); 
+}
+
+void AudioCodec::callback_task(void* param) {
+    (void)param;
+
+    while (1) {
+        if ((getReadyRxPage() != NULL) && (_pReadCB != nullptr)) {
+            _pReadCB();
+        }
+
+        if ((getFreeTxPage() != NULL) && (_pWriteCB != nullptr)) {
+            _pWriteCB();
+        }
+
+        if ((_inputEn == 0) && (_outputEn == 0) && (getReadyRxPage() == NULL)) {
+            break;
+        }
+        vTaskDelay(1/portTICK_PERIOD_MS);
+    }
+
+    // Audio Codec not active, stop & delete task
+    callback_task_handle = NULL;
+    vTaskDelete(NULL);
 }
 
 // Check for presence of a free Tx buffer page avaliable for data write
@@ -454,7 +486,7 @@ uint32_t AudioCodec::getReadyTxLength(void) {
 // Returns pointer to first byte of buffer if avaliable
 uint8_t* AudioCodec::getReadyRxPage(void) {
     RX_BLOCK* prx_block = &(_rxBufferInfo.rx_block[_rxBufferInfo.rx_usr_cnt]);
-    
+
     if (prx_block->rx_gdma_own)
         return NULL;
     else{
@@ -498,7 +530,7 @@ void AudioCodec::releaseRxPage(void) {
 // Otherwise returns pointer to overflow buffer, (new data lost)
 uint8_t* AudioCodec::getFreeRxPage(void) {
     RX_BLOCK* prx_block = &(_rxBufferInfo.rx_block[_rxBufferInfo.rx_gdma_cnt]);
-    
+
     if (prx_block->rx_gdma_own){
         _rxBufferInfo.rx_full_flag = 0;
         return (uint8_t*)prx_block->rx_addr;
@@ -530,11 +562,11 @@ void AudioCodec::initTxVariables(void) {
     }
     _txBufferInfo.tx_zero_block.tx_addr = (uint32_t)_zeroBuffer;
     _txBufferInfo.tx_zero_block.tx_length = (uint32_t)_DMA_ZERO_BUF_SIZE;
-    
+
     _txBufferInfo.tx_gdma_cnt = 0;
     _txBufferInfo.tx_usr_cnt = 0;
     _txBufferInfo.tx_empty_flag = 0;
-    
+
     for(i=0; i<_DMA_PAGE_NUM; i++){
         _txBufferInfo.tx_block[i].tx_gdma_own = 0;
         _txBufferInfo.tx_block[i].tx_addr = (uint32_t)(_txBuffer + i * _DMA_PAGE_SIZE);
@@ -547,11 +579,11 @@ void AudioCodec::initRxVariables(void) {
 
     _rxBufferInfo.rx_full_block.rx_addr = (uint32_t)_fullBuffer;
     _rxBufferInfo.rx_full_block.rx_length = (uint32_t)_DMA_FULL_BUF_SIZE;
-    
+
     _rxBufferInfo.rx_gdma_cnt = 0;
     _rxBufferInfo.rx_usr_cnt = 0;
     _rxBufferInfo.rx_full_flag = 0;
-    
+
     for(i=0; i<_DMA_PAGE_NUM; i++){
         _rxBufferInfo.rx_block[i].rx_gdma_own = 1;
         _rxBufferInfo.rx_block[i].rx_addr = (uint32_t)(_rxBuffer + i * _DMA_PAGE_SIZE);
@@ -571,9 +603,6 @@ void AudioCodec::txCompleteHandler(void* DMAinfo) {
     tx_addr = (uint32_t)getReadyTxPage();
     tx_length = getReadyTxLength();
     AUDIO_SP_TXGDMA_Restart(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, tx_addr, tx_length);
-    if (_pWriteCB != nullptr) {
-        _pWriteCB();
-    }
 }
 
 void AudioCodec::rxCompleteHandler(void* DMAinfo) {
@@ -589,7 +618,4 @@ void AudioCodec::rxCompleteHandler(void* DMAinfo) {
     rx_addr = (uint32_t)getFreeRxPage();
     rx_length = getFreeRxLength();
     AUDIO_SP_RXGDMA_Restart(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, rx_addr, rx_length);
-    if (_pReadCB != nullptr) {
-        _pReadCB();
-    }
 }

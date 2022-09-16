@@ -278,27 +278,47 @@ void netif_pre_sleep_processing(void)
 }
 
 #ifdef CONFIG_WOWLAN
+int rtw_default_netif_idx = 0;
+void rltk_wlan_set_default_idx(int idx){
+#if (CONFIG_LWIP_LAYER == 1)
+	rtw_default_netif_idx = idx;
+#endif
+	return;
+}
+
 unsigned char *rltk_wlan_get_ip(int idx){
 #if (CONFIG_LWIP_LAYER == 1)
-	return LwIP_GetIP(&xnetif[idx]);
+	if(rtw_default_netif_idx)
+		return LwIP_GetIP(&xnetif[rtw_default_netif_idx]);
+	else
+		return LwIP_GetIP(&xnetif[idx]);
 #else
 	return NULL;
 #endif
+
 }
 unsigned char *rltk_wlan_get_gw(int idx){
 #if (CONFIG_LWIP_LAYER == 1)
-	return LwIP_GetGW(&xnetif[idx]);
+		if(rtw_default_netif_idx)
+			return LwIP_GetGW(&xnetif[rtw_default_netif_idx]);
+		else
+			return LwIP_GetGW(&xnetif[idx]);
 #else
-	return NULL;
+		return NULL;
 #endif
+
 }
 
 unsigned char *rltk_wlan_get_gwmask(int idx){
 #if (CONFIG_LWIP_LAYER == 1)
-	return LwIP_GetMASK(&xnetif[idx]);
+		if(rtw_default_netif_idx)
+			return LwIP_GetMASK(&xnetif[rtw_default_netif_idx]);
+		else
+			return LwIP_GetMASK(&xnetif[idx]);
 #else
-	return NULL;
+		return NULL;
 #endif
+
 }
 #endif
 

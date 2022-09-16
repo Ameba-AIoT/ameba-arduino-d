@@ -11,33 +11,14 @@
  * GND connect to GND
 
 
- For RTL8722DM/CSM, ILI9341 TFT LCD with SPI interface has these pins:
+ For all supports boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), ILI9341 TFT LCD with SPI interface has these pins:
+    Select 2 GPIO pins connect to RST and D/C. And default SPI/SPI1 connect to CS, MOSI, MISO and CLK.
     RST  : connect to pin 8
     D/C  : connect to pin 9
-    CS   : connect to pin 10
-    MOSI : connect to pin 11
-    MISO : connect to pin 12
-    CLK  : connect to pin 13
-    VCC  : connect to 3V3
-    GND  : connect to GND
-
-  For RTL8722DM_MINI, ILI9341 TFT LCD with SPI interface has these pins:
-    RST  : connect to pin 8
-    D/C  : connect to pin 13
-    CS   : connect to pin 12
-    MOSI : connect to pin 9
-    MISO : connect to pin 10
-    CLK  : connect to pin 11
-    VCC  : connect to 3V3
-    GND  : connect to GND
-
-  For RTL8720DN/BW16, ILI9341 TFT LCD with SPI interface has these pins:
-    RST  : connect to pin PA27
-    D/C  : connect to pin PA26
-    CS   : connect to pin PA15
-    MOSI : connect to pin PA12
-    MISO : connect to pin PA13
-    CLK  : connect to pin PA14
+    CS   : connect to SPI_SS
+    MOSI : connect to SPI_MOSI
+    MISO : connect to SPI_MISO
+    CLK  : connect to SPI_SCLK
     VCC  : connect to 3V3
     GND  : connect to GND
  */
@@ -46,31 +27,13 @@
 #include <SPI.h>
 #include <AmebaILI9341.h>
 
-
-#if defined(BOARD_RTL8722DM)
-// RTL8722DM -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
-SoftwareSerial mySerial(0, 1); // RX, TX
-
-// IMPORTANT: Due to limit pin, we do not connect TFT_RESET pin.
-#define TFT_RESET       8
-#define TFT_DC          9
-#define TFT_CS          10
-
-#elif defined(BOARD_RTL8722DM_MINI)
-// RTL8722DM_MINI -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
-SoftwareSerial mySerial(2, 1); // RX, TX
-#define TFT_RESET       8
-#define TFT_DC          13
-#define TFT_CS          12
-
-#elif defined(BOARD_RTL8720DN_BW16)
-// RTL8720DN/BW16 -- Do NOT change this pin setting, as softserial is currently only supported on selected pins
-SoftwareSerial mySerial(PB2, PB1); // RX, TX
-#define TFT_RESET       PA27
-#define TFT_DC          PA26
-#define TFT_CS          PA15
-
-#endif
+// For all supported boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
+// Select 2 GPIO pins connect to TFT_RESET and TFT_DC. And default SPI_SS/SPI1_SS connect to TFT_CS.
+// Do NOT change this pin setting, as softserial is currently only supported on selected pins, (SERIAL1_RX, SERIAL1_TX) or (SERIAL2_RX, SERIAL2_TX)
+SoftwareSerial mySerial(SERIAL1_RX, SERIAL1_TX); // RX, TX
+#define TFT_RESET       4
+#define TFT_DC          5
+#define TFT_CS          SPI_SS
 
 AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
 
@@ -101,9 +64,9 @@ void setup() {
     Serial.begin(115200);
     mySerial.begin(9600); // PMS 3003 UART has baud rate 9600
 
-    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
-
     tft.begin();
+    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
+    
     drawPictureFrames();
 }
 

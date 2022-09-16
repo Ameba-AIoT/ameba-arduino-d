@@ -26,6 +26,9 @@
 #include "ameba_soc.h"
 #include "flash_api.h"
 
+#define OTP_OFFSET 0xFFF000
+#define OTP_SIZE      512
+
 extern u32 ConfigDebugInfo;
 
 /** @addtogroup AmebaD_Mbed_API 
@@ -145,6 +148,8 @@ void flash_erase_sector(flash_t *obj, u32 address)
 	DCache_Invalidate(SPI_FLASH_BASE + address, 0x1000);
 	FLASH_Write_Unlock();
 }
+
+
 IMAGE2_RAM_TEXT_SECTION
 void flash_erase_sector_inner(flash_t *obj, u32 address)
 {
@@ -233,6 +238,7 @@ int  flash_read_word(flash_t *obj, u32 address, u32 * data)
 	
 	return 1;
 }
+
 
 /**
   * @brief  Write a word to specified address
@@ -355,6 +361,7 @@ int  flash_stream_read(flash_t *obj, u32 address, u32 len, u8 * data)
 
 	return 1;
 }
+
 
 /**
   * @brief  Write a stream of data to specified address
@@ -718,6 +725,311 @@ int flash_read_id(flash_t *obj, uint8_t *buf, uint8_t len)
 	FLASH_Write_Unlock();
 
 	return len;
+}
+
+void flash_erase_otp(flash_t *obj, u32 address)
+{
+	( void ) obj;
+	
+	if (address != OTP_OFFSET) {
+		printf("Not OTP sector !!! \r\n");
+		return;
+	}
+	FLASH_Write_Lock();
+	
+	//enter OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x3A, 0, NULL);					
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	FLASH_Erase(EraseSector, address);
+	DCache_Invalidate(SPI_FLASH_BASE + address, 0x1000);
+
+	//exit OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x04, 0, 0);
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	FLASH_Write_Unlock();
+
+}
+
+int flash_read_otp(flash_t *obj, u32 address, u32 * data)
+{
+	/* To avoid gcc warnings */
+	( void ) obj;
+	
+	if (address > (OTP_OFFSET + OTP_SIZE) || address < OTP_OFFSET) {
+		printf("Address is not in the range of OTP !!! \r\n");
+		return 0;
+	}
+
+	u32 offset_to_align = address & 0x03;
+	u32 read_data;
+	u32 temp;
+	u32 i = 4 - offset_to_align;
+
+	assert_param(data != NULL);
+
+	FLASH_Write_Lock();
+	//enter OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x3A, 0, NULL);					
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	if(offset_to_align){
+		address -= offset_to_align;
+		temp = HAL_READ32(SPI_FLASH_BASE, address);
+		read_data= temp >> (offset_to_align * 8);
+
+		address += 4;
+		temp = HAL_READ32(SPI_FLASH_BASE, address);
+		read_data |= (temp << (i * 8));
+
+		*data = read_data;
+	}else{
+		* data = HAL_READ32(SPI_FLASH_BASE, address);
+	}
+
+	//exit OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x04, 0, 0);
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	FLASH_Write_Unlock();
+
+	return 1;
+}
+
+int flash_stream_read_otp(flash_t *obj, u32 address, u32 len, u8 * data)
+{
+	/* To avoid gcc warnings */
+	( void ) obj;
+	
+	u32 offset_to_align;
+	u32 i;
+	u32 read_word;
+	u8 *ptr;
+	u8 *pbuf;
+
+	assert_param(data != NULL);
+	
+	if (address + len > OTP_OFFSET + OTP_SIZE) {
+		printf("Read range exceeds OTP area !!!\r\n");
+		return 0;
+	}
+	
+	FLASH_Write_Lock();
+	//enter OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x3A, 0, NULL);					
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+	
+
+	offset_to_align = address & 0x03;
+	pbuf = data;
+	if (offset_to_align != 0) {
+		/* the start address is not 4-bytes aligned */
+		read_word = HAL_READ32(SPI_FLASH_BASE, (address - offset_to_align));
+		ptr = (u8*)&read_word + offset_to_align;
+		offset_to_align = 4 - offset_to_align;
+		for (i=0;i<offset_to_align;i++) {
+			*pbuf = *(ptr+i);
+			pbuf++;
+			len--;
+			if (len == 0) {
+				break;
+			}
+		}
+	}
+
+	/* address = next 4-bytes aligned */
+	address = (((address-1) >> 2) + 1) << 2;
+
+	ptr = (u8*)&read_word;
+	if ((u32)pbuf & 0x03) {
+		while (len >= 4) {
+			read_word = HAL_READ32(SPI_FLASH_BASE, address);
+			for (i=0;i<4;i++) {
+				*pbuf = *(ptr+i);
+				pbuf++;
+			}
+			address += 4;
+			len -= 4;
+		}
+	} else {
+		while (len >= 4) {
+			*((u32 *)pbuf) = HAL_READ32(SPI_FLASH_BASE, address);
+			pbuf += 4;
+			address += 4;
+			len -= 4;
+		}
+	}
+
+	if (len > 0) {
+		read_word = HAL_READ32(SPI_FLASH_BASE, address);
+		for (i=0;i<len;i++) {
+			*pbuf = *(ptr+i);
+			pbuf++;
+		}        
+	}
+
+	//exit OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x04, 0, 0);
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	FLASH_Write_Unlock();
+
+	return 1;
+}
+
+int flash_write_otp(flash_t *obj, u32 address, u32 data)
+{
+	/* To avoid gcc warnings */
+	( void ) obj;
+
+	u32 write_word = data;
+	u32 offset_to_align = address & 0x03;
+	u32 temp;
+	u32 i = 4 - offset_to_align;
+	
+	if (address > OTP_OFFSET + OTP_SIZE || address < OTP_OFFSET) {
+		printf("Address is not in the range of OTP !!! \r\n");
+		return 0;
+	}
+
+	FLASH_Write_Lock();
+	//enter OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x3A, 0, NULL);					
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+	
+	if(offset_to_align){
+		address -= offset_to_align;
+		temp = HAL_READ32(SPI_FLASH_BASE, address);
+		temp = (temp << (i * 8))>>(8*i) | write_word << (8 * offset_to_align);
+		FLASH_TxData12B(address, 4, (u8*)&temp);
+
+		address += 4;
+		temp = HAL_READ32(SPI_FLASH_BASE, address);
+		temp = (temp >> (offset_to_align * 8)) << (offset_to_align * 8) | write_word >>(8*i);
+		FLASH_TxData12B(address, 4, (u8*)&temp);
+	}else{
+		FLASH_TxData12B(address, 4, (u8*)&write_word);
+	}
+
+	DCache_Invalidate(SPI_FLASH_BASE + address, 4);
+
+	//exit OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x04, 0, 0);
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	FLASH_Write_Unlock();
+
+	return 1;
+}
+
+
+int flash_stream_write_otp(flash_t *obj, u32 address, u32 len, u8 * data)
+{
+	/* To avoid gcc warnings */
+	( void ) obj;
+		
+	if (address + len > OTP_OFFSET + OTP_SIZE) {
+		printf("Write range exceeds OTP area !!!\r\n");
+		return 0;
+	}
+
+	// Check address: 4byte aligned & page(256bytes) aligned
+	u32 page_begin = address &  (~0xff);                     
+	u32 page_end = (address + len) & (~0xff);
+	u32 page_cnt = ((page_end - page_begin) >> 8) + 1;
+
+	u32 addr_begin = address;
+	u32 addr_end = (page_cnt == 1) ? (address + len) : (page_begin + 0x100);
+	u32 size = addr_end - addr_begin;
+	u8 *buffer = data;
+	u8 write_data[12];
+	
+	u32 offset_to_align;
+	u32 read_word;
+	u32 i;
+
+	FLASH_Write_Lock();
+	//enter OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x3A, 0, NULL);					
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	while(page_cnt){	
+		offset_to_align = addr_begin & 0x3;
+		
+		if(offset_to_align != 0){
+			read_word = HAL_READ32(SPI_FLASH_BASE, addr_begin - offset_to_align);
+			for(i = offset_to_align;i < 4;i++){
+				read_word = (read_word &  (~(0xff << (8*i)))) |( (*buffer) <<(8*i));
+				size--;
+				buffer++;
+				if(size == 0)
+					break;
+			}
+			FLASH_TxData12B(addr_begin - offset_to_align, 4, (u8*)&read_word);
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+		}
+
+		addr_begin = (((addr_begin-1) >> 2) + 1) << 2;
+		for(;size >= 12 ;size -= 12){
+			_memcpy(write_data, buffer, 12);
+			FLASH_TxData12B(addr_begin, 12, write_data);
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+			buffer += 12;
+			addr_begin += 12;
+		}
+
+		for(;size >= 4; size -=4){
+			_memcpy(write_data, buffer, 4);			
+			FLASH_TxData12B(addr_begin, 4, write_data);
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+			buffer += 4;
+			addr_begin += 4;
+		}
+
+		if(size > 0){
+			read_word = HAL_READ32(SPI_FLASH_BASE, addr_begin);
+			for( i = 0;i < size;i++){
+				read_word = (read_word & (~(0xff << (8*i)))) | ((*buffer) <<(8*i));
+				buffer++;
+			}
+			FLASH_TxData12B(addr_begin, 4, (u8*)&read_word); 
+#ifdef MICRON_N25Q00AA
+			FLASH_ReadFlagStatusReg();
+#endif
+		}
+
+		page_cnt--;
+		addr_begin = addr_end;
+		addr_end = (page_cnt == 1) ? (address + len) : (((addr_begin>>8) + 1)<<8);
+		size = addr_end - addr_begin;		
+	}
+
+	DCache_Invalidate(SPI_FLASH_BASE + address, len);
+
+	//exit OTP mode
+	FLASH_WaitBusy(WAIT_FLASH_BUSY);
+	FLASH_TxCmd(0x04, 0, 0);
+	FLASH_WaitBusy(WAIT_WRITE_DONE);
+
+	FLASH_Write_Unlock();
+
+	return 1;
 }
 /** 
   * @}

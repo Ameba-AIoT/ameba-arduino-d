@@ -158,18 +158,18 @@ int main(int argc, char *argv[]) {
         //TL_UART_WAKEUP                    201
         //TL_RTC_WAKEUP                     202
 
-        //AON_WAKEPIN_WAKEUP_GPIOA12        312
-        //AON_WAKEPIN_WAKEUP_GPIOA13        313
-        //AON_WAKEPIN_WAKEUP_GPIOA14        314
-        //AON_WAKEPIN_WAKEUP_GPIOA15        315
-        //AON_WAKEPIN_WAKEUP_GPIOA16        316
-        //AON_WAKEPIN_WAKEUP_GPIOA17        317
-        //AON_WAKEPIN_WAKEUP_GPIOA18        318
-        //AON_WAKEPIN_WAKEUP_GPIOA19        319
-        //AON_WAKEPIN_WAKEUP_GPIOA20        320
-        //AON_WAKEPIN_WAKEUP_GPIOA21        321
-        //AON_WAKEPIN_WAKEUP_GPIOA25        325
-        //AON_WAKEPIN_WAKEUP_GPIOA26        326
+        //AON_WAKEPIN_WAKEUP_PA12        312
+        //AON_WAKEPIN_WAKEUP_PA13        313
+        //AON_WAKEPIN_WAKEUP_PA14        314
+        //AON_WAKEPIN_WAKEUP_PA15        315
+        //AON_WAKEPIN_WAKEUP_PA16        316
+        //AON_WAKEPIN_WAKEUP_PA17        317
+        //AON_WAKEPIN_WAKEUP_PA18        318
+        //AON_WAKEPIN_WAKEUP_PA19        319
+        //AON_WAKEPIN_WAKEUP_PA20        320
+        //AON_WAKEPIN_WAKEUP_PA21        321
+        //AON_WAKEPIN_WAKEUP_PA25        325
+        //AON_WAKEPIN_WAKEUP_PA26        326
 
         pos = line.find("DS_AON_TIMER_WAKEUP");
         if (pos != string::npos) {
@@ -191,62 +191,62 @@ int main(int argc, char *argv[]) {
             check_powersavemode = 202;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA12");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA12");
         if (pos != string::npos) {
             check_powersavemode = 312;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA13");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA13");
         if (pos != string::npos) {
             check_powersavemode = 313;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA14");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA14");
         if (pos != string::npos) {
             check_powersavemode = 314;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA15");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA15");
         if (pos != string::npos) {
             check_powersavemode = 315;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA16");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA16");
         if (pos != string::npos) {
             check_powersavemode = 316;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA17");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA17");
         if (pos != string::npos) {
             check_powersavemode = 317;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA18");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA18");
         if (pos != string::npos) {
             check_powersavemode = 318;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA19");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA19");
         if (pos != string::npos) {
             check_powersavemode = 319;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA20");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA20");
         if (pos != string::npos) {
             check_powersavemode = 320;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA21");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA21");
         if (pos != string::npos) {
             check_powersavemode = 321;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA25");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA25");
         if (pos != string::npos) {
             check_powersavemode = 325;
         }
 
-        pos = line.find("AON_WAKEPIN_WAKEUP_GPIOA26");
+        pos = line.find("AON_WAKEPIN_WAKEUP_PA26");
         if (pos != string::npos) {
             check_powersavemode = 326;
         }
@@ -349,18 +349,18 @@ int main(int argc, char *argv[]) {
     //TL_UART_WAKEUP                    201
     //TL_RTC_WAKEUP                     202
 
-    //AON_WAKEPIN_WAKEUP_GPIOA12        312
-    //AON_WAKEPIN_WAKEUP_GPIOA13        313
-    //AON_WAKEPIN_WAKEUP_GPIOA14        314
-    //AON_WAKEPIN_WAKEUP_GPIOA15        315
-    //AON_WAKEPIN_WAKEUP_GPIOA16        316
-    //AON_WAKEPIN_WAKEUP_GPIOA17        317
-    //AON_WAKEPIN_WAKEUP_GPIOA18        318
-    //AON_WAKEPIN_WAKEUP_GPIOA19        319
-    //AON_WAKEPIN_WAKEUP_GPIOA20        320
-    //AON_WAKEPIN_WAKEUP_GPIOA21        321
-    //AON_WAKEPIN_WAKEUP_GPIOA25        325
-    //AON_WAKEPIN_WAKEUP_GPIOA26        326
+    //AON_WAKEPIN_WAKEUP_PA12        312
+    //AON_WAKEPIN_WAKEUP_PA13        313
+    //AON_WAKEPIN_WAKEUP_PA14        314
+    //AON_WAKEPIN_WAKEUP_PA15        315
+    //AON_WAKEPIN_WAKEUP_PA16        316
+    //AON_WAKEPIN_WAKEUP_PA17        317
+    //AON_WAKEPIN_WAKEUP_PA18        318
+    //AON_WAKEPIN_WAKEUP_PA19        319
+    //AON_WAKEPIN_WAKEUP_PA20        320
+    //AON_WAKEPIN_WAKEUP_PA21        321
+    //AON_WAKEPIN_WAKEUP_PA25        325
+    //AON_WAKEPIN_WAKEUP_PA26        326
 
     cmd = "rm -f bsp/image/*.bin";
     cout << cmd << endl;

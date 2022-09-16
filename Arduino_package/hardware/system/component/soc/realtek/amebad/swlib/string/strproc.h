@@ -41,6 +41,7 @@ extern _LONG_CALL_ size_t _strnlen(const char *s, size_t count);
 extern _LONG_CALL_ int _strncmp(const char *cs, const char *ct, size_t count);
 extern _LONG_CALL_ int _sscanf(const char *buf, const char *fmt, ...);
 extern _LONG_CALL_ char *_strsep(char **s, const char *ct);
+extern _LONG_CALL_ char *_strncat(char *__restrict s1 , const char *__restrict s2 , size_t n);
 extern _LONG_CALL_ char * _strcat(char *__restrict s1 , const char *__restrict s2);
 
 extern _LONG_CALL_ char *_strpbrk(const char *cs, const char *ct);

@@ -1,20 +1,14 @@
 
 #include "BLEDevice.h"
 
+// Choose the RGB LED type
+//#define AnodeRGB
+#define CathodeRGB
 
-#if defined(BOARD_RTL8722DM)
+// Choose 3 PWM pins for RGB LED pins refer to the pinmap of using board
 #define LED_RED      13
 #define LED_GRN      12
 #define LED_BLU      11
-#elif defined(BOARD_RTL8722DM_MINI)
-#define LED_RED      4
-#define LED_GRN      5
-#define LED_BLU      7
-#elif defined(BOARD_RTL8720DN_BW16)
-#define LED_RED      PA25
-#define LED_GRN      PA12
-#define LED_BLU      PA13
-#endif
 
 #define UART_SERVICE_UUID      "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
 #define CHARACTERISTIC_UUID_RX "6E400002-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -41,10 +35,21 @@ void writeCB (BLECharacteristic* chr, uint8_t connID) {
             uint8_t command[datalen];
             chr->getData(command, datalen);
             if (command[1] == 'C') {
-              printf("Color command R = %x G = %x B = %x \n", command[2], command[3], command[4]);
-              analogWrite(LED_RED,command[2]);
-              analogWrite(LED_GRN,command[3]);
-              analogWrite(LED_BLU,command[4]);
+                // print hax
+                printf("Color command R = %x G = %x B = %x \n", command[2], command[3], command[4]);
+                // print decimal
+                //printf("Color command R = %d G = %d B = %d \n", command[2], command[3], command[4]);
+#if defined(CathodeRGB)
+                analogWrite(LED_RED, command[2]);
+                analogWrite(LED_GRN, command[3]);
+                analogWrite(LED_BLU, command[4]);
+#elif defined(AnodeRGB)
+                analogWrite(LED_RED, (255 - command[2]));
+                analogWrite(LED_GRN, (255 - command[3]));
+                analogWrite(LED_BLU, (255 - command[4]));
+#else
+                printf("Error, please choose the RGB LED type \n");
+#endif
             }
         } else {
             Serial.print("Received string: ");

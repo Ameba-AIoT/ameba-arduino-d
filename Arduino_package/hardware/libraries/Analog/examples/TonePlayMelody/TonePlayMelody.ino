@@ -117,6 +117,8 @@ void play(int *melody, int *noteDurations, int num) {
         tone(7, melody[note], noteDuration);
 #elif defined(BOARD_RTL8720DN_BW16)
         tone(PA25, melody[note], noteDuration);
+#elif defined(BOARD_RTL8721DM)
+        tone(3, melody[note], noteDuration);
 #else
         tone(10, melody[note], noteDuration);
 #endif

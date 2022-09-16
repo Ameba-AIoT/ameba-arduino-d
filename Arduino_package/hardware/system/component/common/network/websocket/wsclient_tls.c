@@ -130,10 +130,12 @@ exit:
 		mbedtls_ssl_conf_authmode(conf, MBEDTLS_SSL_VERIFY_NONE);
 		mbedtls_ssl_conf_rng(conf, ws_random, NULL);
 
+#if MBEDTLS_SSL_MAX_CONTENT_LEN == 4096
 		if(ret = mbedtls_ssl_conf_max_frag_len(conf, MBEDTLS_SSL_MAX_FRAG_LEN_4096) < 0) {
 			printf("\n[WSCLIENT] ERROR: mbedtls_ssl_conf_max_frag_len %d\n", ret);
 			goto exit;
 		}
+#endif
 
 		if((ret = mbedtls_ssl_setup(ssl, conf)) != 0) {
 			printf("\n[WSCLIENT] ERROR: ssl_setup %d\n", ret);

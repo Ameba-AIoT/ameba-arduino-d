@@ -13,7 +13,9 @@
 #include <Wire.h>
 
 void setup() {
+    Serial.begin(115200);
     Wire.begin(); // join i2c bus (address optional for master)
+    Serial.println("Master writer sending data to slave 8");
 }
 
 byte x = 0;

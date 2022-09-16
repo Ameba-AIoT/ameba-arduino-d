@@ -397,6 +397,7 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #define LWIP_AUTOIP                     1
 #define TCPIP_THREAD_NAME              "TCP_IP" 
 
+// zzw arduino
 #define LWIP_IPV6                       1
 #if LWIP_IPV6
 #undef  MEMP_NUM_SYS_TIMEOUT
@@ -426,15 +427,12 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #endif
 #endif 
 
+
 #if (defined(CONFIG_EXAMPLE_AZURE_IOTHUB_TELEMETRY) && (CONFIG_EXAMPLE_AZURE_IOTHUB_TELEMETRY)) \
       || (defined(CONFIG_EXAMPLE_AZURE_IOTHUB_X509) && (CONFIG_EXAMPLE_AZURE_IOTHUB_X509))
 #define ERRNO                           1
 #endif
-
-#ifdef ARDUINO_SDK
-#define LWIP_NETIF_HOSTNAME             1
-#endif
-
+      
 #include "lwip/init.h"                  //for version control
 
 #endif /* LWIP_HDR_LWIPOPTS_H */

@@ -1,24 +1,57 @@
-# Ameba Arduino SDK
-## How to add realtek ameba core files:
+# Ameba Arduino SDK (ambd_arduino)
 
-You can reference below link to get started: http://www.amebaiot.com/ameba-arduino-getting-started/
 
-Or you can follow steps below.
+## 1. About `dev` & `master` branch
 
-1. Arduino IDE 1.6.5 support third party hardware by providing hardware configuration.
-You need add Ameba's configuration in "File" -> "Preferences".
-And fill below URL in "Additional Boards Manager URLs:" https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json
+|Branch|Usage|Remarks|
+|:-----|:-----|:-----|
+|`dev`| merge `PR` & early release| `dev` branch is open to `Pull Request`(PR) for ***feature addition*** and ***bug fix***. It will also have the latest features which you can access via this link https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek.com_amebad_early_index.json (refer below for steps to install early release on Arduino IDE, but please be noted that as this is a **early release**, bugs and/or performance issue might occur and break your program) |
+|`master` | stable release| `master` branch is only for hosting stable release, no `PR` will be merged, refer to the following steps to use the stable release |
 
-    We also suggest to enable "Show verbose output" options on "compilation" and "upload" in Preference.
 
-2. Open "Device Manager" in "Tools" -> "Board" -> "Board Manager".
-Wait for IDE update core configuration. Scroll down the menu, you will see Realtek Ameba in the list.
-Press "Install" at the right side.
+For all `release` information, please visit this [link](https://github.com/ambiot/ambd_arduino/releases).
 
-3. Select Ameba in "Tools" -> "Board" -> "Ameba Arduino".
-Now you are able to develop Arduino code and upload image onto Ameba.
+</br>
 
-    More information refer to https://www.amebaiot.com/en/ameba-arduino-summary/
+## 2. How to add Realtek Ameba Arduino package to `Arduino IDE`:
 
-## Contributing to Ameba
-Please spend 5mins to read the **Coding Style** and **Contribution Guideline** at [here](https://github.com/ambiot/ambd_arduino/wiki/Contributing-to-Ameba) before you contribute.
+> You can refer to this link to get started: http://www.amebaiot.com/ameba-arduino-getting-started/
+> , or follow the steps below.
+
+1. **Add Ameba Arduino SDK link to *Arduino IDE Additional Boards Manager***
+
+    > Arduino IDE 1.6.5 and above versions support third party hardware so please make sure to use the latest Arduino IDE for better experience.
+
+    Therefore, you need to add Ameba Arduino SDK link in 
+    
+    **"File" -> "Preferences" -> "Additional Boards Manager URLs:"**
+
+    Simply copy and paste the following link into the field and click "OK",
+
+     https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json
+
+    > We also suggest to enable "Show verbose output" options on "compilation" and "upload" in Preference for easier debugging.
+    
+    </br>
+
+2. **Install Ameba board in *"Board Manager"***
+
+    Open **"Tools" -> "Board" -> "Board Manager"**, wait for it to update additional hardware configurations, then type **"ameba"** in the search bar, you will see Realtek Ameba in the list.
+
+    Press **"Install"** to start the installation.
+    
+    </br>
+
+3. **Select your Ameba model in *"Tools" -> "Board" -> "AmebaD ARM (32-bits) Boards"***
+
+    > Make sure you select the correct model for your board, otherwise your program might not work properly 
+
+    Now you are **ready** to develop and upload firmware onto Ameba.
+
+    For more information, please refer to https://www.amebaiot.com/en/ameba-arduino-summary/
+    
+    </br>
+
+## 3. Contributing to Ameba
+
+Please spend 5 mins to read the **Coding Style** and **Contribution Guideline** at [here](https://github.com/ambiot/ambd_arduino/wiki/Contributing-to-Ameba) before you contribute.
