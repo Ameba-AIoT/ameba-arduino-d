@@ -1,0 +1,16 @@
+{
+ "name": "JLink Attach",
+ "request": "attach",
+ "servertype": "jlink",
+ "interface": "swd",
+ "device": "Cortex-M33",
+ "serverArgs": ["-scriptfile", "{replace with your Arduino15 packages directory}/packages/realtek/tools/ameba_d_tools/{replace with tools version number}/debug/RTL872x_Arduino_debug.JLinkScript"],
+ "debuggerArgs": ["-init-eval-command", "maintenance set target-async on"],
+ "postAttachCommands": [
+    "monitor clrbp",
+    "monitor reset",
+    "break setup",
+    "continue",
+    "clear setup"
+  ]
+}

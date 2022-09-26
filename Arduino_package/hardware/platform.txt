@@ -20,17 +20,25 @@ ameba.project=realtek_amebaD_va0_example
 compiler.path={runtime.tools.ameba_d_asdk_toolchain.path}/bin/
 compiler.c.cmd=arm-none-eabi-gcc
 
+# O2 = optimize for code size and execution speed
+# Og = optimize for debugging experience
+# g3 = add in maximum debug info
+# gdwarf-3 = debug info in DWARF-3 format
+compiler.optimization_flags=-O2
+compiler.optimization_flags.release=-O2
+compiler.optimization_flags.debug=-Og -g3 -gdwarf-3
+
 ###--save-temps
-compiler.c.flags=-ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -g -gdwarf-3 -nostartfiles -nodefaultlibs -nostdlib -O2 -D__FPU_PRESENT -gdwarf-3 -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wstrict-prototypes -Wundef -Wno-write-strings -Wno-maybe-uninitialized -c -MMD -Wextra
+compiler.c.flags={compiler.optimization_flags} -ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -nostartfiles -nodefaultlibs -nostdlib -D__FPU_PRESENT -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wstrict-prototypes -Wundef -Wno-write-strings -Wno-maybe-uninitialized -c -MMD -Wextra
 
 compiler.c.elf.cmd=arm-none-eabi-gcc
 ### -Wl,--warn-section-align
-compiler.c.elf.flags=-O2 -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -nostartfiles -specs nosys.specs -Wl,--gc-sections
+compiler.c.elf.flags={compiler.optimization_flags} -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -nostartfiles -specs nosys.specs -Wl,--gc-sections
 
 compiler.S.flags=-c -g -x assembler-with-cpp
 compiler.cpp.cmd=arm-none-eabi-g++
 ### --save-temps
-compiler.cpp.flags=-ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -g -gdwarf-3 -nostartfiles -nodefaultlibs -nostdlib -O2 -D__FPU_PRESENT -gdwarf-3 -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wundef -Wno-write-strings -Wno-maybe-uninitialized -c -MMD -Wextra 
+compiler.cpp.flags={compiler.optimization_flags} -ffunction-sections -march=armv8-m.main+dsp -mthumb -mcmse -mfloat-abi=hard -mfpu=fpv5-sp-d16 -nostartfiles -nodefaultlibs -nostdlib -D__FPU_PRESENT -fstack-usage -fdata-sections -nostartfiles -nostdlib -Wall -Wpointer-arith -Wundef -Wno-write-strings -Wno-maybe-uninitialized -c -MMD -Wextra 
 
 compiler.ar.cmd=arm-none-eabi-ar
 compiler.ar.flags=rcs
@@ -143,3 +151,23 @@ tools.ameba_d_tools.upload.pattern.macosx="{runtime.tools.ameba_d_tools.path}/up
 
 #tools.ameba_d_tools.upload.network_pattern="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
 #tools.ameba_d_tools.upload.network_pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
+
+# Debugger configuration (general options)
+# ----------------------------------------
+tools.gdb.path={runtime.tools.ameba_d_asdk_toolchain.path}/bin/
+tools.gdb.cmd=arm-none-eabi-gdb
+tools.gdb.cmd.windows=arm-none-eabi-gdb.exe
+tools.gdb.debug.pattern="{path}/{cmd}" --interpreter=mi2 -ex "set pagination off" --baud 115200 -ex "set target-charset ASCII" -ex "target remote {debug.port}" {build.path}/application.axf
+
+debug.executable={build.path}/application.axf
+debug.toolchain=gcc
+debug.toolchain.path={runtime.tools.ameba_d_asdk_toolchain.path}/bin/
+debug.toolchain.prefix=arm-none-eabi-
+
+# Options for JLink GDB server
+# ----------------------------------------
+debug.server=jlink
+debug.server.jlink.path.windows=C:/Program Files/SEGGER/JLink/JLinkGDBServerCL.exe
+#debug.server.jlink.device=CORTEX-M33
+#debug.server.jlink.interface=swd
+#debug.server.jlink.script={runtime.tools.ameba_d_tools.path}/tools/debug/RTL8722_Arduino_debug.JLinkScript
