@@ -1,6 +1,7 @@
 
-menu.AutoUploadMode=Auto Upload Mode
-menu.EraseFlash=Erase Flash
+menu.AutoUploadMode=* Auto Upload Mode
+menu.EraseFlash=* Erase Flash
+menu.StdLibInit=* Standard Lib Enable
 
 ##############################################################
 # PLEASE DO NOT PUT BOARDS ABOVE THE OFFICIAL AMEBA BOARDS! ##
@@ -37,6 +38,11 @@ ameba_rtl8722dm.menu.EraseFlash.Enable.build.erase_flash=Enable
 #ameba_rtl8722dm.menu.AutoUploadMode.Enable=Enable
 #ameba_rtl8722dm.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 
+ameba_rtl8722dm.menu.StdLibInit.Disable=NA
+ameba_rtl8722dm.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
+ameba_rtl8722dm.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+ameba_rtl8722dm.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags} -DArduino_STD_PRINTF
+
 ##############################################################
 
 ameba_rtl8722dm_mini.name=AMB23 (RTL8722DM_MINI)
@@ -69,6 +75,11 @@ ameba_rtl8722dm_mini.menu.EraseFlash.Enable.build.erase_flash=Enable
 #ameba_rtl8722dm_mini.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
 #ameba_rtl8722dm_mini.menu.AutoUploadMode.Enable=Enable
 #ameba_rtl8722dm_mini.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+
+ameba_rtl8722dm_mini.menu.StdLibInit.Disable=NA
+ameba_rtl8722dm_mini.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI {build.usb_flags}
+ameba_rtl8722dm_mini.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+ameba_rtl8722dm_mini.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI {build.usb_flags} -DArduino_STD_PRINTF
 
 ##############################################################
 
@@ -103,6 +114,11 @@ ameba_rtl8720dn_bw16.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
 ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable=Enable
 ameba_rtl8720dn_bw16.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 
+ameba_rtl8720dn_bw16.menu.StdLibInit.Disable=NA
+ameba_rtl8720dn_bw16.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 {build.usb_flags}
+ameba_rtl8720dn_bw16.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+ameba_rtl8720dn_bw16.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 {build.usb_flags} -DArduino_STD_PRINTF
+
 
 ##############################################################
 
@@ -136,3 +152,8 @@ awcu488_thingplus.menu.AutoUploadMode.Disable=Disable
 awcu488_thingplus.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
 awcu488_thingplus.menu.AutoUploadMode.Enable=Enable
 awcu488_thingplus.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+
+awcu488_thingplus.menu.StdLibInit.Disable=NA
+awcu488_thingplus.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags}
+awcu488_thingplus.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+awcu488_thingplus.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags} -DArduino_STD_PRINTF
