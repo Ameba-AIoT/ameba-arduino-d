@@ -47,6 +47,8 @@ extern void wait_for_debug(void);
 #define TOTAL_GPIO_PIN_NUM                      (29)
 #define TOTAL_PWM_PIN_NUM                       (9)
 
+#define digitalPinToInterrupt(p)    (((p)<TOTAL_GPIO_PIN_NUM)?(p):-1)
+
 /* Digital pin mapping refer to g_APinDescription */
 #define AMB_D0                                  0  // PB_0
 #define AMB_D1                                  1  // PB_1
