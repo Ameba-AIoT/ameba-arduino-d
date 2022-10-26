@@ -311,5 +311,5 @@ SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        
 SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 14, 15, 16, 17 or 4, 3, 29, 28 
 
 #else
-#error chack the borad supported SPI
+#error check the board supported SPI
 #endif
