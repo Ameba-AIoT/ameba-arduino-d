@@ -63,7 +63,7 @@ void WS2812B::show(void) {
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
-    } else if (_input_pin== SPI1_MOSI) {
+    } else if (_input_pin == SPI1_MOSI) {
         spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI1_MISO].pinname, (PinName)g_APinDescription[SPI1_SCLK].pinname, (PinName)g_APinDescription[SPI1_SS].pinname);
         //Revert the unneccesary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
@@ -80,20 +80,22 @@ void WS2812B::show(void) {
         //Initialise SPI
         SPI.begin();
         //Revert the unneccesary SPI pins to GPIO functions
-        Pinmux_Config(SPI_MISO, PINMUX_FUNCTION_GPIO);
-        Pinmux_Config(SPI_SCLK, PINMUX_FUNCTION_GPIO);
-        Pinmux_Config(SPI_SS, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI_MISO].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
         SPI.setDefaultFrequency(2500000);
-        SPI.setDataMode(SPI_SS, 12, 0);
-    } else if (_input_pin== SPI1_MOSI) {
+        SPI.setDataMode(12, 0);
+    #if defined(BOARD_RTL8722DM) || defined(BOARD_RTL8721DM)
+    } else if (_input_pin == SPI1_MOSI) {
         //Initialise SPI
         SPI1.begin();
         //Revert the unneccesary SPI pins to GPIO functions
-        Pinmux_Config(SPI1_MISO, PINMUX_FUNCTION_GPIO);
-        Pinmux_Config(SPI1_SCLK, PINMUX_FUNCTION_GPIO);
-        Pinmux_Config(SPI1_SS, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI1_MISO].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
+        Pinmux_Config((PinName)g_APinDescription[SPI1_SS].pinname, PINMUX_FUNCTION_GPIO);
         SPI1.setDefaultFrequency(2500000);
-        SPI1.setDataMode(SPI1_SS, 12, 0);
+        SPI1.setDataMode(12, 0);
+    #endif
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
