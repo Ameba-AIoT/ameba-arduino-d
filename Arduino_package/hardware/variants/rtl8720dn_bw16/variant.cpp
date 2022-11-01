@@ -36,8 +36,16 @@ PinDescription g_APinDescription[TOTAL_GPIO_PIN_NUM]=
     {PA_8,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D1,  LOG_RX
     {PA_27, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D2                SWD_DATA
     {PA_30, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D3,               PWM
-    {PB_1,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D4,  SERIAL1_TX
-    {PB_2,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D5,  SERIAL1_RX
+#ifdef A0
+    {PB_1,  TYPE_DIGITAL | TYPE_ANALOG, PIO_GPIO | PIO_GPIO_IRQ           | PIO_ADC , MODE_NOT_INITIAL}, // AMB_D4,  SERIAL1_TX, *A0
+#else
+    {PB_1,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D4,  SERIAL1_TX, *A0
+#endif
+#ifdef A1
+    {PB_2,  TYPE_DIGITAL | TYPE_ANALOG, PIO_GPIO | PIO_GPIO_IRQ           | PIO_ADC , MODE_NOT_INITIAL}, // AMB_D5,  SERIAL1_RX, *A1
+#else
+    {PB_2,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                     , MODE_NOT_INITIAL}, // AMB_D5,  SERIAL1_RX, *A1
+#endif
     {PB_3,  TYPE_DIGITAL | TYPE_ANALOG, PIO_GPIO | PIO_GPIO_IRQ           | PIO_ADC , MODE_NOT_INITIAL}, // AMB_D6,  A2,          SWD_CLK
     {PA_25, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D7,  *SERIAL1_RX, PWM, I2C_SCL,   IR_TX
     {PA_26, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM           , MODE_NOT_INITIAL}, // AMB_D8,  *SERIAL1_TX, PWM, I2C_SDA,   IR_RX
