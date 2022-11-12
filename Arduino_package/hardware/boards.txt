@@ -157,3 +157,40 @@ awcu488_thingplus.menu.StdLibInit.Disable=NA
 awcu488_thingplus.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags}
 awcu488_thingplus.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 awcu488_thingplus.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags} -DArduino_STD_PRINTF
+
+##############################################################
+
+nora_w30.name=u-blox NORA-W30 series (RTL8720DF)
+
+nora_w30.upload.tool=ameba_d_tools
+nora_w30.upload.protocol=usb_serial
+nora_w30.upload.maximum_size=2097152
+nora_w30.upload.use_1200bps_touch=false
+nora_w30.upload.wait_for_upload_port=false
+nora_w30.upload.native_usb=false
+
+nora_w30.build.tarch=cortex-m33
+nora_w30.build.mcu=RTL8720DF
+nora_w30.build.f_cpu=200000000L
+nora_w30.build.usb_product="u-blox_nora_w30"
+nora_w30.build.board=AMEBA
+nora_w30.build.core=ambd
+nora_w30.build.extra_flags=-mthumb -DRTL8720DF -DBOARD_RTL8720DF {build.usb_flags}
+nora_w30.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
+nora_w30.build.variant=nora_w30
+
+nora_w30.menu.EraseFlash.Disable=Disable
+nora_w30.menu.EraseFlash.Disable.build.erase_flash=Disable
+nora_w30.menu.EraseFlash.Enable=Enable
+nora_w30.menu.EraseFlash.Enable.build.erase_flash=Enable
+
+nora_w30.menu.AutoUploadMode.Disable=Disable
+nora_w30.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
+nora_w30.menu.AutoUploadMode.Enable=Enable
+nora_w30.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+
+nora_w30.menu.StdLibInit.Disable=NA
+nora_w30.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DF -DBOARD_RTL8721DF {build.usb_flags}
+nora_w30.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+nora_w30.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DF -DBOARD_RTL8721DF {build.usb_flags} -DArduino_STD_PRINTF
+
