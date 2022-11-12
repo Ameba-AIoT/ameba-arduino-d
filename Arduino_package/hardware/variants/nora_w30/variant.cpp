@@ -37,19 +37,19 @@ PinDescription g_APinDescription[TOTAL_GPIO_PIN_NUM]=
  /*  1 */ {PB_19, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_G8  D1   UART_TXD
  /*  2 */ {PB_20, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_F9  D2   UART_CTS
  /*  3 */ {PB_21, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_F8  D3   UART_RTS
-          // D9 - D12
- /*  4 */ {PA_28, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_B3  D9   SPI_CS
- /*  5 */ {PA_25, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_C2  D10  SPI_MOSI
- /*  6 */ {PA_26, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_C1  D11  SPI_MISO
- /*  7 */ {PA_30, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_B1  D12  SPI_CLK
-          // D14 - D19
+ //        D10 - D13
+ /*  4 */ {PA_28, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_B3  D10  SPI_CS
+ /*  5 */ {PA_25, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_C2  D11  SPI_MOSI
+ /*  6 */ {PA_26, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_C1  D12  SPI_MISO
+ /*  7 */ {PA_30, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_B1  D13  SPI_CLK
+ //        D14 - D19
  /*  8 */ {PA_7,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                    , MODE_NOT_INITIAL}, // NORA_A5  D14  DBG_TX
  /*  9 */ {PA_8,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                    , MODE_NOT_INITIAL}, // NORA_A6  D15  DBG_RX
  /* 10 */ {PA_14, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                    , MODE_NOT_INITIAL}, // NORA_H9  D16  LED_BLUE
  /* 11 */ {PA_15, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                    , MODE_NOT_INITIAL}, // NORA_H8  D17  LED_GREEN
  /* 12 */ {PA_12, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_J9  D18
  /* 13 */ {PA_13, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          , MODE_NOT_INITIAL}, // NORA_J8  D19  LED_RED
-           // A0 - A6
+ //        A0 - A6
  /* 14 */ {PB_3,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ           | PIO_ADC, MODE_NOT_INITIAL}, // NORA_J2  A0
  /* 15 */ {PB_1,  TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ           | PIO_ADC, MODE_NOT_INITIAL}, // NORA_D8  A1   SW1
  /* 16 */ {PA_27, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                    , MODE_NOT_INITIAL}, // NORA_H2  A2
