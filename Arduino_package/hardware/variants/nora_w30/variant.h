@@ -101,7 +101,7 @@ extern void wait_for_debug(void);
 #define LOG_RX                                  9 // PA_8
 #define SERIAL1_TX                              1 // PB_19
 #define SERIAL1_RX                              0 // PB_18
-#define SERIAL2_TX                              1 // PB_19
-#define SERIAL2_RX                              0 // PB_18
+#define SERIAL2_TX                              12 // PA_12
+#define SERIAL2_RX                              13 // PA_13
 
 #endif /* _VARIANT_ARDUINO_AMEBA_ */
