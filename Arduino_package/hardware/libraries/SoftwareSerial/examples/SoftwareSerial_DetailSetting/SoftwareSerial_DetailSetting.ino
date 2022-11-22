@@ -37,16 +37,19 @@ The circuit: (BOARD RTL8721DM)
 #define CTS_PIN PA_15
 
 #if defined(BOARD_RTL8722DM)
-    SoftwareSerial mySerial(0, 1); // RX, TX
+        SoftwareSerial mySerial(0, 1); // RX, TX
 #elif defined(BOARD_RTL8722DM_MINI)
-    SoftwareSerial mySerial(2, 1); // RX, TX
+        SoftwareSerial mySerial(2, 1); // RX,TX
 #elif defined(BOARD_RTL8720DN_BW16)
-    SoftwareSerial mySerial(PB2, PB1); // RX, TX
+        SoftwareSerial mySerial(PB2, PB1); // RX, TX
 #elif defined(BOARD_RTL8721DM)
-    SoftwareSerial mySerial(3, 4); // RX, TX
+        SoftwareSerial mySerial(3, 4); // RX, TX
+#elif defined(BOARD_RTL8720DF)
+        SoftwareSerial mySerial(17, 16); // RX, TX
 #else
-    SoftwareSerial mySerial(0, 1); // RX, TX
+        SoftwareSerial mySerial(0, 1); // RX, TX
 #endif
+
 
 
 void setup() {

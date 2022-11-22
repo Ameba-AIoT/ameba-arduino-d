@@ -54,6 +54,8 @@ PMS3003 pms(2, 1);      // SoftwareSerial RX/TX
 PMS3003 pms(PB2, PB1);  // SoftwareSerial RX/TX
 #elif defined(BOARD_RTL8721DM)
 PMS3003 pms(3, 4);  // SoftwareSerial RX/TX
+#elif defined(BOARD_RTL8720DF)
+PMS3003 pms(17, 16);  // SoftwareSerial RX/TX
 #else
 PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
 #endif
