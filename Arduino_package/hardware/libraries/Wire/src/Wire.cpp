@@ -320,6 +320,11 @@ TwoWire Wire  = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25
 // HW: I2C0
 TwoWire Wire  = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25 / PB_6, PB_5
 
+#elif defined(BOARD_RTL8720DF)
+// SDA SCL
+// HW: I2C0
+TwoWire Wire  = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25
+
 #else
 #error check the board supported
 #endif

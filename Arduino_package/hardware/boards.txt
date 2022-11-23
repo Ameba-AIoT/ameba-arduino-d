@@ -157,3 +157,42 @@ awcu488_thingplus.menu.StdLibInit.Disable=NA
 awcu488_thingplus.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags}
 awcu488_thingplus.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 awcu488_thingplus.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags} -DArduino_STD_PRINTF
+
+
+##############################################################
+
+ameba_rtl8720df.name=AMB25/AMB26 (RTL8720DF)
+#ameba_rtl8720df.vid.0=0x10C4
+#ameba_rtl8720df.pid.0=0xEA60
+
+ameba_rtl8720df.upload.tool=ameba_d_tools
+ameba_rtl8720df.upload.protocol=usb_serial
+ameba_rtl8720df.upload.maximum_size=2097152
+ameba_rtl8720df.upload.use_1200bps_touch=false
+ameba_rtl8720df.upload.wait_for_upload_port=false
+ameba_rtl8720df.upload.native_usb=false
+
+ameba_rtl8720df.build.tarch=cortex-m33
+ameba_rtl8720df.build.mcu=RTL8720DF
+ameba_rtl8720df.build.f_cpu=200000000L
+ameba_rtl8720df.build.usb_product="AMB25/AMB26"
+ameba_rtl8720df.build.board=AMEBA
+ameba_rtl8720df.build.core=ambd
+ameba_rtl8720df.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags}
+ameba_rtl8720df.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
+ameba_rtl8720df.build.variant=rtl8720df
+
+ameba_rtl8720df.menu.EraseFlash.Disable=Disable
+ameba_rtl8720df.menu.EraseFlash.Disable.build.erase_flash=Disable
+ameba_rtl8720df.menu.EraseFlash.Enable=Enable
+ameba_rtl8720df.menu.EraseFlash.Enable.build.erase_flash=Enable
+
+ameba_rtl8720df.menu.AutoUploadMode.Disable=Disable
+ameba_rtl8720df.menu.AutoUploadMode.Disable.build.auto_upload_mode=Disable
+ameba_rtl8720df.menu.AutoUploadMode.Enable=Enable
+ameba_rtl8720df.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
+
+ameba_rtl8720df.menu.StdLibInit.Disable=NA
+ameba_rtl8720df.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8720DF -DBOARD_RTL8720DF {build.usb_flags}
+ameba_rtl8720df.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+ameba_rtl8720df.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8720DF -DBOARD_RTL8721DF {build.usb_flags} -DArduino_STD_PRINTF
