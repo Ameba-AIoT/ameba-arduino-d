@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
             // check if this symbole appears in the map file
             for (iter = lines.begin(); iter != lines.end(); ++iter) {
                 if ((iter->find(bksym)) != string::npos) {
-                    cerr << endl << "ERROR: " << msg << endl << endl;
+                    cerr << "ERROR: " << msg << endl;
                     ret = -1;
                     break;
                 }

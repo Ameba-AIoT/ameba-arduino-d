@@ -274,7 +274,6 @@ int main(int argc, char *argv[]) {
         if (pos != string::npos) {
             check_powersavemode = 326;
         }
-
     }
     fout.close();
 
