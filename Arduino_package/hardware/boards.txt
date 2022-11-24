@@ -177,7 +177,7 @@ ameba_rtl8720df.build.f_cpu=200000000L
 ameba_rtl8720df.build.usb_product="AMB25/AMB26"
 ameba_rtl8720df.build.board=AMEBA
 ameba_rtl8720df.build.core=ambd
-ameba_rtl8720df.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags}
+ameba_rtl8720df.build.extra_flags=-mthumb -DRTL8720DF -DBOARD_RTL8720DF {build.usb_flags}
 ameba_rtl8720df.build.ldscript=linker_scripts/gcc/rlx8721d_img2_is_arduino.ld
 ameba_rtl8720df.build.variant=rtl8720df
 
@@ -228,7 +228,7 @@ nora_w30.menu.AutoUploadMode.Enable=Enable
 nora_w30.menu.AutoUploadMode.Enable.build.auto_upload_mode=Enable
 
 nora_w30.menu.StdLibInit.Disable=NA
-nora_w30.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DF -DBOARD_RTL8721DF {build.usb_flags}
+nora_w30.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8720DF -DBOARD_RTL8720DF {build.usb_flags}
 nora_w30.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-nora_w30.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DF -DBOARD_RTL8721DF {build.usb_flags} -DArduino_STD_PRINTF
+nora_w30.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8720DF -DBOARD_RTL8720DF {build.usb_flags} -DArduino_STD_PRINTF
 
