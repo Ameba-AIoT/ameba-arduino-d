@@ -73,6 +73,28 @@ extern void wait_for_debug(void);
 #define A4                                      15 // PB_22   NORA_E9   UART_DSR
 #define A5                                      10 // PB_2    NORA_E8   UART_DTR
 
+// NORA-W30 module pad names
+#define NORA_A5                                 12 // PA_7    NORA_A5   DBG_TX 
+#define NORA_A6                                 13 // PA_8    NORA_A6   DBG_RX
+#define NORA_B1                                 4  // PA_30   NORA_B1   SPI_SCLK
+#define NORA_B3                                 5  // PA_28   NORA_B3   SPI_CS
+#define NORA_C1                                 6  // PA_26   NORA_C1   SPI_MISO
+#define NORA_C2                                 7  // PA_25   NORA_C2   SPI_MOSI
+#define NORA_C8                                 14 // PB_23   NORA_C8   SW2
+#define NORA_D8                                 11 // PB_1    NORA_D8   SW1
+#define NORA_E8                                 10 // PB_2    NORA_E8   UART_DTR
+#define NORA_E9                                 15 // PB_22   NORA_E9   UART_DSR
+#define NORA_F8                                 18 // PB_21   NORA_F8   I2C_SDA / UART_RTS
+#define NORA_F9                                 19 // PB_20   NORA_F9   I2C_SCL / UART_CTS
+#define NORA_G8                                 16 // PB_19   NORA_G8   UART_TXD
+#define NORA_G9                                 17 // PB_18   NORA_G9   UART_RXD
+#define NORA_H2                                 8  // PA_27   NORA_H2
+#define NORA_H8                                 0  // PA_15   NORA_H8   LED_GREEN
+#define NORA_H9                                 1  // PA_14   NORA_H9   LED_BLUE
+#define NORA_J2                                 9  // PB_3    NORA_J2
+#define NORA_J8                                 2  // PA_13   NORA_J8   LED_RED
+#define NORA_J9                                 3  // PA_12   NORA_J9
+
 /* LED pin mapping */
 #define LED_BUILTIN                             1  // PA_14
 #define LED_RED                                 2  // PA_13
