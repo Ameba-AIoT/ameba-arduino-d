@@ -48,60 +48,60 @@ extern void wait_for_debug(void);
 #define TOTAL_PWM_PIN_NUM                       (12)
 
 /* Digital pin mapping refer to g_APinDescription */
-/*               index into g_APinDescription --v */
-#define D0                                      0 // PB_18
-#define D1                                      1 // PB_19
-#define D2                                      2 // PB_20
-#define D3                                      3 // PB_21
-
-#define D10                                     4 // PA_28
-#define D11                                     5 // PA_25
-#define D12                                     6 // PA_26
-#define D13                                     7 // PA_30
-#define D14                                     8 // PA_7
-#define D15                                     9 // PA_8
-#define D16                                     10 // PA_14
-#define D17                                     11 // PA_15
-#define D18                                     12 // PA_12
-#define D19                                     13 // PA_13
-
-/* Analog pin mapping */
-#define A0                                      14 // PB_3
-#define A1                                      15 // PB_1
-#define A2                                      16 // PA_27
-#define A3                                      17 // PB_23
-#define A4                                      18 // PB_22
-#define A5                                      19 // PB_2
+//               index into g_APinDescription --v     AMEBA   NORA      Function
+#define EVK_D0                                  17 // PB_18   NORA_G9   UART_RXD
+#define EVK_D1                                  16 // PB_19   NORA_G8   UART_TXD
+#define EVK_D2                                  19 // PB_20   NORA_F9   I2C_SCL / UART_CTS
+#define EVK_D3                                  18 // PB_21   NORA_F8   I2C_SDA / UART_RTS
+//      EVK_D4 .. D8                            NC
+#define EVK_D9                                  5  // PA_28   NORA_B3   SPI_CS
+#define EVK_D10                                 7  // PA_25   NORA_C2   SPI_MOSI
+#define EVK_D11                                 6  // PA_26   NORA_C1   SPI_MISO
+#define EVK_D12                                 4  // PA_30   NORA_B1   SPI_SCLK
+//      EVK_D13                                 NC
+#define EVK_D14                                 12 // PA_7    NORA_A5   DBG_TX 
+#define EVK_D15                                 13 // PA_8    NORA_A6   DBG_RX
+#define EVK_D16                                 1  // PA_14   NORA_H9   LED_BLUE
+#define EVK_D17                                 0  // PA_15   NORA_H8   LED_GREEN
+#define EVK_D18                                 3  // PA_12   NORA_J9
+#define EVK_D19                                 2  // PA_13   NORA_J8   LED_RED
+// Analog pin mapping
+#define A0                                      9  // PB_3    NORA_J2
+#define A1                                      11 // PB_1    NORA_D8   SW1
+#define A2                                      8  // PA_27   NORA_H2
+#define A3                                      14 // PB_23   NORA_C8   SW2
+#define A4                                      15 // PB_22   NORA_E9   UART_DSR
+#define A5                                      10 // PB_2    NORA_E8   UART_DTR
 
 /* LED pin mapping */
-#define LED_BUILTIN                             10 // PA_14
-#define LED_RED                                 13 // PA_13
-#define LED_GREEN                               11 // PA_15
-#define LED_BLUE                                10 // PA_14
+#define LED_BUILTIN                             1  // PA_14
+#define LED_RED                                 2  // PA_13
+#define LED_GREEN                               0  // PA_15
+#define LED_BLUE                                1  // PA_14
 
 /* ADC/DAC pin mapping */
 #define FEATURE_ADC
 //#define FEATURE_DAC
 
 /* SPI pin mapping */
-#define SPI_SS                                  4 // PA_28
-#define SPI_MOSI                                5 // PA_25
-#define SPI_MISO                                6 // PA_26
-#define SPI_SCLK                                7 // PA_30
+#define SPI_SS                                  5  // PA_28
+#define SPI_MOSI                                7  // PA_25
+#define SPI_MISO                                6  // PA_26
+#define SPI_SCLK                                4  // PA_30
 
 /* TwoWire/I2C pin mapping */
-#define I2C_SDA                                 3 // PB_21
-#define I2C_SCL                                 2 // PB_20
+#define I2C_SDA                                 18 // PB_21
+#define I2C_SCL                                 19 // PB_20
 
 /* UART pin mapping */
 #define LOG_UART_MODIFIABLE_BAUD_RATE           1
 #define SERIAL_ONE_UART_MODIFIABLE_BAUD_RATE    1
 #define SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE    1
-#define LOG_TX                                  8 // PA_7
-#define LOG_RX                                  9 // PA_8
-#define SERIAL1_TX                              1 // PB_19
-#define SERIAL1_RX                              0 // PB_18
-#define SERIAL2_TX                              12 // PA_12
-#define SERIAL2_RX                              13 // PA_13
+#define LOG_TX                                  12 // PA_7
+#define LOG_RX                                  13 // PA_8
+#define SERIAL1_TX                              16 // PB_19
+#define SERIAL1_RX                              17 // PB_18
+#define SERIAL2_TX                              3  // PA_12
+#define SERIAL2_RX                              2  // PA_13
 
 #endif /* _VARIANT_ARDUINO_AMEBA_ */
