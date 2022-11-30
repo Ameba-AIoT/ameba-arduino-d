@@ -161,6 +161,14 @@ int httpd_setup_cert(const char *server_cert, const char *server_key, const char
 int httpd_setup_user_password(char *user, char *password);
 
 /**
+ * @brief     This function is used to set the maximum handling header size in httpd_request_read_header()
+              The default maximum size of http header is 1024 Bytes
+ * @param[in] size: the maximum size of http header
+ * @return    None
+ */
+void httpd_set_header_size(size_t size);
+
+/**
  * @brief     This function is used to free memory allocated by httpd API, such as httpd_request_get_header_field() and httpd_request_get_query_key().
  * @param[in] ptr: pointer to memory to be deallocated
  * @return    None

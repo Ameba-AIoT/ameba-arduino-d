@@ -315,6 +315,9 @@ void RTIM_CCxInit(RTIM_TypeDef* TIMx, TIM_CCInitTypeDef* TIM_CCInitStruct, u16 T
 	assert_param(IS_TIM_OCPRELOAD_STATE(TIM_CCInitStruct->TIM_OCProtection));
 	assert_param(IS_TIM_CHANNEL(TIM_Channel));
 
+	u32 Status;
+	u32 cr_bkp;
+
 	/* Reset the CCMR Bit */
 	TIMx->CCMRx[TIM_Channel] = 0;
 
@@ -328,6 +331,33 @@ void RTIM_CCxInit(RTIM_TypeDef* TIMx, TIM_CCInitTypeDef* TIM_CCInitStruct, u16 T
 		TIMx->CCMRx[TIM_Channel] = (TIM_CCInitStruct->TIM_CCPolarity |
 			TIM_CCInitStruct->TIM_ICPulseMode);
 	}
+
+	/* Backup the value of Control Register */
+	cr_bkp = TIMx->CR;
+	/* URS and UDIS must be 0 before generating UEV by setting UG bit */
+	/* ONLY @AmebaD */
+	RTIM_UpdateDisableConfig(TIMx, DISABLE);
+	RTIM_UpdateRequestConfig(TIMx, TIM_UpdateSource_Global);
+
+	/* Generate an update event */
+	/* 1) reload the CCRx immediatly */
+	/* 2) hardware will clear this bit after reload, about 71.936 us (2*32k cycles)  */
+	/* 3) UEV will reset counter, and counter will start from 0 */
+	/* 4) gen a interrupt if use TIM_UpdateSource_Global */
+	TIMx->EGR = TIM_PSCReloadMode_Immediate;
+
+	/* poll EGR UG done */
+	while (1) {
+		if (TIMx->SR & TIM_SR_UG_DONE) {
+			break;
+		}
+	}
+
+	Status = TIMx->SR;
+	TIMx->SR = Status;
+
+	/* Restore the value of Control Register */
+	TIMx->CR = cr_bkp;
 }
 
 /**

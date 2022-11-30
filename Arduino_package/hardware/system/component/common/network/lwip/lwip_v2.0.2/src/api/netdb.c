@@ -74,6 +74,9 @@ int h_errno;
 #define HOSTENT_STORAGE static
 #endif /* LWIP_DNS_API_STATIC_HOSTENT */
 
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+extern struct dns_table_entry dns_table[DNS_TABLE_SIZE];
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
 /**
  * Returns an entry containing addresses of address family AF_INET
  * for the host with name name.
@@ -93,7 +96,11 @@ lwip_gethostbyname(const char *name)
   HOSTENT_STORAGE struct hostent s_hostent;
   HOSTENT_STORAGE char *s_aliases;
   HOSTENT_STORAGE ip_addr_t s_hostent_addr;
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+  HOSTENT_STORAGE ip_addr_t *s_phostent_addr[DNS_MAX_IP_ENTRIES];
+#else
   HOSTENT_STORAGE ip_addr_t *s_phostent_addr[2];
+#endif
   HOSTENT_STORAGE char s_hostname[DNS_MAX_NAME_LENGTH + 1];
 
   /* query host IP address */
@@ -105,9 +112,21 @@ lwip_gethostbyname(const char *name)
   }
 
   /* fill hostent */
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+  int i=0, j=0;
+  for (i = 0; i < DNS_TABLE_SIZE; ++i) {
+    if ((dns_table[i].state == DNS_STATES_DONE) &&
+        (lwip_strnicmp(name, dns_table[i].name, sizeof(dns_table[i].name)) == 0)) {
+      for (j = 0; j < dns_table[i].dns_ip_entries; j++)
+        s_phostent_addr[j] = &dns_table[i].ipaddr[j];
+    }
+  }
+  s_phostent_addr[j] = NULL;
+#else
   s_hostent_addr = addr;
   s_phostent_addr[0] = &s_hostent_addr;
   s_phostent_addr[1] = NULL;
+#endif
   strncpy(s_hostname, name, DNS_MAX_NAME_LENGTH);
   s_hostname[DNS_MAX_NAME_LENGTH] = 0;
   s_hostent.h_name = s_hostname;

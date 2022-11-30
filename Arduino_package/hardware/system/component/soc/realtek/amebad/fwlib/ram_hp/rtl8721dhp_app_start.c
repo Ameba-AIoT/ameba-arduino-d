@@ -42,7 +42,7 @@ void app_section_init(void)
 u32 app_mpu_nocache_check(u32 mem_addr) {
 	mpu_region_config mpu_cfg;
 
-	if (wifi_config.km4_cache_enable) {
+	if (rtk_wifi_config.km4_cache_enable) {
 		mpu_cfg.region_base = (uint32_t)__ram_nocache_start__;
 		mpu_cfg.region_size = __ram_nocache_end__-__ram_nocache_start__;
 	} else {
@@ -62,7 +62,7 @@ u32 app_mpu_nocache_init(void)
 	u32 mpu_entry = 0;
 
 	mpu_entry = mpu_entry_alloc();
-	if (wifi_config.km4_cache_enable) {
+	if (rtk_wifi_config.km4_cache_enable) {
 		mpu_cfg.region_base = (uint32_t)__ram_nocache_start__;
 		mpu_cfg.region_size = __ram_nocache_end__-__ram_nocache_start__;
 	} else {

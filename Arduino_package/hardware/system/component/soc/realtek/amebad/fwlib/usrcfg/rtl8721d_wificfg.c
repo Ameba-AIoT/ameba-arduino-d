@@ -17,7 +17,7 @@
 
 #include "ameba_soc.h"
 
-WIFICFG_TypeDef wifi_config =
+WIFICFG_TypeDef rtk_wifi_config =
 {
 	.wifi_app_ctrl_tdma = FALSE,
 	.wifi_ultra_low_power = FALSE, /* default is FALSE */

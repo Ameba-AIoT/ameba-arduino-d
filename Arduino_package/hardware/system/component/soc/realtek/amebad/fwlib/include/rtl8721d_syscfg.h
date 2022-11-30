@@ -125,6 +125,14 @@
   * @}
   */
 
+typedef enum IC_Version_Definition {
+    IC_VERSION_0    =  0,
+    IC_VERSION_1    =  1,
+    IC_VERSION_2    =  2,
+    IC_VERSION_3    =  3,
+    IC_VERSION_4    =  4,
+} IC_VERSION_E;
+
 /* Exported functions --------------------------------------------------------*/
 /** @defgroup SYSCFG_Exported_Functions SYSCFG Exported Functions
   * @{

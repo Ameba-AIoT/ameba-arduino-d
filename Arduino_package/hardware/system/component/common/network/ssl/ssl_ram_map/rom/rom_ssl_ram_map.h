@@ -28,6 +28,15 @@ struct _rom_ssl_ram_map {
 		const u8* message, 	const u32 msglen, 
 		const u8* iv, 		const u32 ivlen, 
 		u8* pResult);
+	int (*hw_crypto_aes_gcm_init)(const u8* key, const u32 keylen);
+	int (*hw_crypto_aes_gcm_encrypt)(
+		const u8* message, const u32 msglen, 
+		const u8* iv, const u8 *aad, const u32 aadlen,
+		u8* pResult, u8* pTag);
+	int (*hw_crypto_aes_gcm_decrypt)(
+		const u8* message, const u32 msglen, 
+		const u8* iv, const u8 *aad, const u32 aadlen,
+		u8* pResult, u8* pTag);
 
 	//DES HW CRYPTO
 	int (*hw_crypto_des_cbc_init)(const u8* key, const u32 keylen);
@@ -78,6 +87,15 @@ struct _rom_mbedtls_ram_map {
 		const u8* message, 	const u32 msglen, 
 		const u8* iv, 		const u32 ivlen, 
 		u8* pResult);
+	int (*hw_crypto_aes_gcm_init)(const u8* key, const u32 keylen);
+	int (*hw_crypto_aes_gcm_encrypt)(
+		const u8* message, const u32 msglen, 
+		const u8* iv, const u8 *aad, const u32 aadlen,
+		u8* pResult, u8* pTag);
+	int (*hw_crypto_aes_gcm_decrypt)(
+		const u8* message, const u32 msglen, 
+		const u8* iv, const u8 *aad, const u32 aadlen,
+		u8* pResult, u8* pTag);
 
 	//DES HW CRYPTO
 	int (*hw_crypto_des_cbc_init)(const u8* key, const u32 keylen);

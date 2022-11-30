@@ -163,31 +163,49 @@ int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
                         const unsigned char *key,
                         unsigned int keybits )
 {
-    int ret;
-    const mbedtls_cipher_info_t *cipher_info;
+	int ret;
+	const mbedtls_cipher_info_t *cipher_info;
 
-    cipher_info = mbedtls_cipher_info_from_values( cipher, keybits, MBEDTLS_MODE_ECB );
-    if( cipher_info == NULL )
-        return( MBEDTLS_ERR_GCM_BAD_INPUT );
 
-    if( cipher_info->block_size != 16 )
-        return( MBEDTLS_ERR_GCM_BAD_INPUT );
+#ifdef RTL_HW_CRYPTO
+	if(rom_ssl_ram_map.use_hw_crypto_func){
+		switch(keybits)
+		{
+			case 128: ctx->keybytes = 16; break;
+			case 192: ctx->keybytes = 24; break;
+			case 256: ctx->keybytes = 32; break;
+			default : return(MBEDTLS_ERR_GCM_BAD_INPUT);
+		}
+		memcpy(ctx->key, key, ctx->keybytes);
 
-    mbedtls_cipher_free( &ctx->cipher_ctx );
+		return 0;
+	}
+#endif
+#ifdef SUPPORT_HW_SW_CRYPTO
+	else{
+		cipher_info = mbedtls_cipher_info_from_values( cipher, keybits, MBEDTLS_MODE_ECB );
+		if( cipher_info == NULL )
+			return( MBEDTLS_ERR_GCM_BAD_INPUT );
 
-    if( ( ret = mbedtls_cipher_setup( &ctx->cipher_ctx, cipher_info ) ) != 0 )
-        return( ret );
+		if( cipher_info->block_size != 16 )
+			return( MBEDTLS_ERR_GCM_BAD_INPUT );
 
-    if( ( ret = mbedtls_cipher_setkey( &ctx->cipher_ctx, key, keybits,
-                               MBEDTLS_ENCRYPT ) ) != 0 )
-    {
-        return( ret );
-    }
+		mbedtls_cipher_free( &ctx->cipher_ctx );
 
-    if( ( ret = gcm_gen_table( ctx ) ) != 0 )
-        return( ret );
+		if( ( ret = mbedtls_cipher_setup( &ctx->cipher_ctx, cipher_info ) ) != 0 )
+			return( ret );
 
-    return( 0 );
+		if( ( ret = mbedtls_cipher_setkey( &ctx->cipher_ctx, key, keybits, MBEDTLS_ENCRYPT ) ) != 0 )
+		{
+			return( ret );
+		}
+
+		if( ( ret = gcm_gen_table( ctx ) ) != 0 )
+			return( ret );
+	}
+#endif
+
+	return( 0 );
 }
 
 /*
@@ -450,18 +468,41 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
                        size_t tag_len,
                        unsigned char *tag )
 {
-    int ret;
+	int ret;
 
-    if( ( ret = mbedtls_gcm_starts( ctx, mode, iv, iv_len, add, add_len ) ) != 0 )
-        return( ret );
+#ifdef RTL_HW_CRYPTO
+	if(rom_ssl_ram_map.use_hw_crypto_func)
+	{
 
-    if( ( ret = mbedtls_gcm_update( ctx, length, input, output ) ) != 0 )
-        return( ret );
+		if((ret = rom_ssl_ram_map.hw_crypto_aes_gcm_init( ctx->key, ctx->keybytes)) != 0 ){
+			return( ret );
+		}
 
-    if( ( ret = mbedtls_gcm_finish( ctx, tag, tag_len ) ) != 0 )
-        return( ret );
+		if(mode == MBEDTLS_GCM_ENCRYPT){
+			if((ret = rom_ssl_ram_map.hw_crypto_aes_gcm_encrypt( input, length, iv, add, add_len, output, tag)) != 0 ){
+				return( ret );
+			}
+		}
+		else if(mode == MBEDTLS_GCM_DECRYPT){
+			if((ret = rom_ssl_ram_map.hw_crypto_aes_gcm_decrypt( input, length, iv, add, add_len, output, tag)) != 0 ){
+				return( ret );
+			}
+		}
+	}
+#endif
+#ifdef SUPPORT_HW_SW_CRYPTO
+	else{
+		if( ( ret = mbedtls_gcm_starts( ctx, mode, iv, iv_len, add, add_len ) ) != 0 )
+			return( ret );
 
-    return( 0 );
+		if( ( ret = mbedtls_gcm_update( ctx, length, input, output ) ) != 0 )
+			return( ret );
+
+		if( ( ret = mbedtls_gcm_finish( ctx, tag, tag_len ) ) != 0 )
+			return( ret );
+	}
+#endif
+	return( 0 );
 }
 
 int mbedtls_gcm_auth_decrypt( mbedtls_gcm_context *ctx,

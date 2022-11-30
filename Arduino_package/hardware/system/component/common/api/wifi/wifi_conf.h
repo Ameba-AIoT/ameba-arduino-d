@@ -253,7 +253,11 @@ int wifi_is_ready_to_transceive(rtw_interface_t interface);
 
 /**
  * @brief  This function sets the current Media Access Control (MAC) address of the 802.11 device but don't 
-write to  efuse or flash, it is temporary to modify the MAC.
+ *			write to efuse or flash, it is to modify the MAC temporarily in RAM.
+ *			Only call this API BEFORE connecting to a network, BEFORE fast connect and BEFORE starting SoftAP(For AP mode).
+ *      Example:
+ *      u8 mac[ETH_ALEN] = {0x00, 0xe0, 0x4c, 0x87, 0x12, 0x34};
+ *      ret = wifi_change_mac_address_from_ram(0,mac); 
  * @param[in] idx: 0=> wlan0, 1=>wlan1.
  * @param[in] mac: Wi-Fi MAC address.
  * @return    RTW_SUCCESS or RTW_ERROR
@@ -261,19 +265,43 @@ write to  efuse or flash, it is temporary to modify the MAC.
 int wifi_change_mac_address_from_ram(int idx, u8 *mac);
 
 /**
- * @brief  This function sets the current Media Access Control (MAC) address of the 802.11 device.
+ * @brief  This function sets the current Media Access Control (MAC) address of the 802.11 device in Efuse.
+ *      Example:
+ *      #define MAC_VALID		"ecf00e4e751c"
+ *      ret = wifi_set_mac_address((char *)MAC_VALID);
  * @param[in] mac: Wi-Fi MAC address.
  * @return    RTW_SUCCESS or RTW_ERROR
  */
 int wifi_set_mac_address(char * mac);
 
 /**
- * @brief  Retrieves the current Media Access Control (MAC) address
+ * @brief  Retrieves from RAM space WLAN0's current Media Access Control (MAC) address
  *			(or Ethernet hardware address) of the 802.11 device.
- * @param[in]  mac: Point to the result of the mac address will be get.
+ *      Example:
+ *      char *mac;
+ *      mac = (char*)malloc(18*sizeof(char));
+ *      ret = wifi_get_mac_address(mac);
+ *      printf("\nGet MAC address: %s\n", mac);
+ *      free(mac);
+ * @param[in]  mac: Pointer to the result of the mac address,it must be at least 18 bytes long.
  * @return    RTW_SUCCESS or RTW_ERROR
  */
 int wifi_get_mac_address(char * mac);
+
+/**
+ * @brief  Retrieves from RAM space the selected interface's current Media Access Control (MAC) address
+ *			(or Ethernet hardware address) of the 802.11 device.
+  *     Example:
+ *      char *mac;
+ *      mac = (char*)malloc(18*sizeof(char));
+ *      ret = wifi_get_interface_mac_address(0,mac);
+ *      printf("\nGet MAC address of wlan0: %s\n", mac);
+ *      free(mac);
+ *  @param[in] idx: 0=> wlan0, 1=>wlan1.
+ *  @param[in]  mac: Pointer to the result of the mac address, it must be at least 18 bytes long.
+ * @return    RTW_SUCCESS or RTW_ERROR
+ */
+int wifi_get_interface_mac_address(int idx, char * mac);
 
 /**
  * @brief Enable Wi-Fi powersave mode.
@@ -281,6 +309,13 @@ int wifi_get_mac_address(char * mac);
  * @return RTW_SUCCESS or RTW_ERROR.
  */
 int wifi_enable_powersave(void);
+
+/**
+ * @brief Enable Wi-Fi powersave mode for coexistence.
+ * @param  None
+ * @return RTW_SUCCESS or RTW_ERROR.
+ */
+int wifi_enable_powersave_for_coex(void);
 
 /**
  * @brief Resume Wi-Fi powersave mode.
@@ -1183,6 +1218,20 @@ int wifi_ap_switch_chl_and_inform(unsigned char new_channel);
  * @return -1: fail.
  */
 int wifi_set_igi(uint8_t igi, uint8_t enable);
+
+/**
+ * @brief  Set softap uapsd feature.
+ * @param[in]  enable: 1, enable uapsd; 0, disable uapsd.
+ * @return 0: success.
+ */
+int wifi_set_ap_uapsd(uint8_t enable);
+
+/**
+ * @brief  Set softap bcn period.
+ * @param[in]  period: default 100ms.
+ * @return 0: success.
+ */
+int wifi_set_bcn_period(uint8_t period);
 
 #ifdef __cplusplus
   }

@@ -350,7 +350,7 @@ bridgeif_output(struct netif *netif, struct pbuf *p)
   return err;
 }
 
-#include "linux_list.h"
+#include "dlist.h"
 
 #define __TCP_NAT_RULE_NUMS	8
 #define __UDP_NAT_RULE_NUMS	16
@@ -1417,7 +1417,7 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
   bridgeif_validate_recv_packet(p, pattrib);
   if (pattrib->protocol == lwip_htons(ETH_P_IPV6)) {
     pbuf_free(p);
-    pbuf_free(pattrib);
+  	free(pattrib);
     return ERR_VAL;
   }
   pattrib->port_idx = port->port_num;
@@ -1443,7 +1443,7 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
           dst->addr[0],dst->addr[1],dst->addr[2],dst->addr[3],dst->addr[4],dst->addr[5]);
 #endif
         pbuf_free(p);
-        pbuf_free(pattrib);
+    	free(pattrib);
         return ERR_VAL;
       }
     }
@@ -1517,12 +1517,16 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
             q = pbuf_alloc(PBUF_RAW, p->tot_len, PBUF_POOL);
             if (q == NULL) {
               LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("%s,pbuf alloc failed!\n",__func__));
+
+			  free(pattrib);
               return ERR_VAL;
             }
 
             if(ERR_OK != pbuf_copy(q, p)) {
               LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("%s,pbuf copy failed!\n",__func__));
               pbuf_free(q);
+
+			  free(pattrib);
               return ERR_VAL;
             }
 
@@ -1563,6 +1567,8 @@ bridgeif_input(struct pbuf *p, struct netif *netif)
       #else
       /* yes, send to cpu port only */
       LWIP_DEBUGF(BRIDGEIF_FW_DEBUG, ("br -> input(%p)\n", (void *)p));
+
+	  free(pattrib);
       return br->netif->input(p, br->netif);
       #endif
     }

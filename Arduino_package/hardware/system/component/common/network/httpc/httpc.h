@@ -144,6 +144,14 @@ void httpc_enable_ignore_content_len(struct httpc_conn *conn);
 void httpc_set_http_1_0_request_used(uint8_t used);
 
 /**
+ * @brief     This function is used to set the maximum handling header size in httpc_response_read_header()
+              The default maximum size of http header is 1024 Bytes
+ * @param[in] size: the maximum size of http header
+ * @return    None
+ */
+void httpc_set_header_size(size_t size);
+
+/**
  * @brief     This function is used to free memory allocated by httpc API, such as httpc_response_get_header_field().
  * @param[in] ptr: pointer to memory to be deallocated
  * @return    None

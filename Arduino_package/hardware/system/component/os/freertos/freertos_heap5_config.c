@@ -143,8 +143,16 @@ static unsigned char psRAMHeap[configTOTAL_PSRAM_HEAP_SIZE];
 
 #else
 	#include "section_config.h"
+#if (defined(configAUDIO_USE_SRAM_FOR_HEAP_REGION) && ( configAUDIO_USE_SRAM_FOR_HEAP_REGION == 1 ))
+	#define configAUDIO_SRAM_HEAP_SIZE 	(200*1024)
 	SRAM_BF_DATA_SECTION
-	static unsigned char ucHeap[ configTOTAL_HEAP_SIZE ];
+	static unsigned char sRAMAudioHeap[configAUDIO_SRAM_HEAP_SIZE];
+#else
+	#define configAUDIO_SRAM_HEAP_SIZE 	(0)	
+#endif
+
+	SRAM_BF_DATA_SECTION
+	static unsigned char ucHeap[ configTOTAL_HEAP_SIZE-configAUDIO_SRAM_HEAP_SIZE ];
 
 	HeapRegion_t xHeapRegions[] =
 	{
@@ -235,4 +243,15 @@ void os_heap_init(void)
 #endif
 #endif
 		vPortDefineHeapRegions( xHeapRegions );	
+
+#if (defined(configAUDIO_USE_SRAM_FOR_HEAP_REGION) && ( configAUDIO_USE_SRAM_FOR_HEAP_REGION == 1 ))
+	{
+		HeapRegion_t xAudioHeapRegions[] =
+		{
+			{ sRAMAudioHeap, sizeof(sRAMAudioHeap) },
+			{ NULL, 0 }   // Terminates the array.
+		};
+		RtSRAMHeapInit(xAudioHeapRegions);
+	}
+#endif
 }
