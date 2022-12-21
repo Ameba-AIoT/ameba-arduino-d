@@ -47,6 +47,9 @@ extern void wait_for_debug(void);
 #define TOTAL_GPIO_PIN_NUM                      (20)
 #define TOTAL_PWM_PIN_NUM                       (12)
 
+#define digitalPinToInterrupt(p)    (((p)<TOTAL_GPIO_PIN_NUM)?(p):-1)
+
+
 /* Digital pin mapping refer to g_APinDescription */
 #define AMB_D0                                  0  // PA_15
 #define AMB_D1                                  1  // PA_14
@@ -110,8 +113,8 @@ extern void wait_for_debug(void);
 #define SERIAL1_RX                              AMB_D17 // HS_UART0_RX   PB_18
 #define SERIAL1_RTS                             AMB_D18 // HS_UART0_RTS  PB_21
 #define SERIAL1_CTS                             AMB_D19 // HS_UART0_CTS  PB_20
-#define SERIAL2_TX                              AMB_D17 // LP_UART_TX    PA_12
-#define SERIAL2_RX                              AMB_D16 // LP_UART_RX    PA_13
+#define SERIAL2_TX                              AMB_D3 // LP_UART_TX    PA_12
+#define SERIAL2_RX                              AMB_D2 // LP_UART_RX    PA_13
 
 /* SWD pin mapping */
 #define SWD_DATA                                AMB_D8  // PA_27

@@ -242,6 +242,14 @@ void PMUClass::TL_RTC_WAKEUP(void) {
     //AON_WAKEPIN_WAKEUP_PA19    // pin 8
     //AON_WAKEPIN_WAKEUP_PA15    // pin 28
     //AON_WAKEPIN_WAKEUP_PA14    // pin 29
+//For board AMB25/AMB26
+    //SET_AON_GPIO_WAKEUP_PA12   // pin 3
+    //SET_AON_GPIO_WAKEUP_PA13   // pin 2
+    //SET_AON_GPIO_WAKEUP_PA14   // pin 1
+    //SET_AON_GPIO_WAKEUP_PA15   // pin 0
+    //SET_AON_GPIO_WAKEUP_PA25   // pin 7
+    //SET_AON_GPIO_WAKEUP_PA26   // pin 6
+
 
 #if defined(BOARD_RTL8722DM)
 void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {

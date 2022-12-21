@@ -15,6 +15,9 @@
                (BOARD RTL8721DM)
  * RX is digital pin 3 (connect to the other device TX)
  * TX is digital pin 4 (connect to the other device RX)
+               (BOARD RTL8720DF)
+ * RX is digital pin 17 (connect to the other device TX)
+ * TX is digital pin 16 (connect to the other device RX)
  */
 
 #include <SoftwareSerial.h>
