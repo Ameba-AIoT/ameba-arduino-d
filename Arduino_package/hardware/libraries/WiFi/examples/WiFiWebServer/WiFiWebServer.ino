@@ -4,6 +4,9 @@ char ssid[] = "yourNetwork";    // your network SSID (name)
 char pass[] = "Password";       // your network password
 int keyIndex = 0;               // your network key Index number (needed only for WEP)
 
+//State the analog pin that you want to read
+int analogChannel = 0;
+
 int status = WL_IDLE_STATUS;
 
 WiFiServer server(80);
@@ -60,14 +63,12 @@ void loop() {
                     client.println("<!DOCTYPE HTML>");
                     client.println("<html>");
                     // output the value of each analog input pin
-                    for (int analogChannel = 0; analogChannel < 6; analogChannel++) {
-                        int sensorReading = analogRead(analogChannel);
-                        client.print("analog input ");
-                        client.print(analogChannel);
-                        client.print(" is ");
-                        client.print(sensorReading);
-                        client.println("<br />");
-                    }
+                    int sensorReading = analogRead(analogChannel);
+                    client.print("analog input ");
+                    client.print(analogChannel);
+                    client.print(" is ");
+                    client.print(sensorReading);
+                    client.println("<br />");
                     client.println("</html>");
                     break;
                 }
