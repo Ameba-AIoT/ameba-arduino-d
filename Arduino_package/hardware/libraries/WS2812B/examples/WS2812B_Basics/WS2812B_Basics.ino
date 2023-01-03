@@ -21,7 +21,7 @@ void setup() {
     led.show();
     delay(1000);
     //Fill the entire LED strip with the same color
-    led.fill(60, 0, 25, 0, 8);
+    led.fill(60, 0, 25, 0, NUM_OF_LEDS);
     led.show();
 }
 

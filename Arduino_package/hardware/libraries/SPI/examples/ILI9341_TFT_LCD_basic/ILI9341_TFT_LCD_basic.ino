@@ -19,8 +19,9 @@
 #define TFT_RESET       4
 #define TFT_DC          5
 #define TFT_CS          SPI_SS
+#define SPI_BUS         SPI
 
-AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
+AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET, SPI_BUS);
 
 #define ILI9341_SPI_FREQUENCY 20000000
 
@@ -29,7 +30,7 @@ void setup() {
     Serial.println("ILI9341 Test!"); 
 
     tft.begin();
-    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
+    SPI_BUS.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
 
     Serial.println("test filling screen");
     testFillScreen();
