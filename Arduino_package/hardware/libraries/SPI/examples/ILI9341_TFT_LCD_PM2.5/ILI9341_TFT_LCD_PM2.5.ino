@@ -34,7 +34,7 @@ SoftwareSerial mySerial(SERIAL1_RX, SERIAL1_TX); // RX, TX
 #define TFT_RESET       4
 #define TFT_DC          5
 #define TFT_CS          SPI_SS
-#define SPI_BUS         SPI0
+#define SPI_BUS         SPI
 
 AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET, SPI_BUS);
 
