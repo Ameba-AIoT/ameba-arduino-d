@@ -1072,6 +1072,12 @@ int rtw_get_random_bytes(void* dst, u32 size)
 	return 0;
 }
 
+int rtw_get_random_bytes_f_rng( void *p_rng, unsigned char *output, size_t output_size )
+{
+	(void*)p_rng;
+	return rtw_get_random_bytes(output, output_size);
+}
+
 u32 rtw_getFreeHeapSize(void)
 {
 	if(osdep_service.rtw_getFreeHeapSize)

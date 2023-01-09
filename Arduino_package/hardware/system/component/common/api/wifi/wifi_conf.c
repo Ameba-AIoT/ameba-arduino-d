@@ -1258,8 +1258,27 @@ This method is to modify the mac and don't write to efuse.
 **/
 extern int rltk_change_mac_address_from_ram(int idx, u8 *mac);
 int wifi_change_mac_address_from_ram(int idx, u8 *mac)
-{
-	return rltk_change_mac_address_from_ram(idx, mac);
+{	
+	int ret = 0;
+	int ret_ps = 0;
+	const char * ifname = WLAN0_NAME;
+	if ((0 != idx) && (1 != idx)) {
+		RTW_API_INFO("\n\rInvalid interface selected");
+		return RTW_ERROR;
+	}
+	if (1 == idx) {
+		ifname = WLAN1_NAME;
+	}
+	ret_ps = wext_disable_powersave(ifname);
+	if (RTW_SUCCESS != ret_ps) {
+		RTW_API_INFO("\n\rFailed to disable powersave");
+	}
+	ret = rltk_change_mac_address_from_ram(idx, mac);
+	ret_ps = wext_resume_powersave(ifname);
+	if (RTW_SUCCESS != ret_ps) {
+		RTW_API_INFO("\n\rFailed to resume powersave");
+	}
+	return ret;
 }
 
 //----------------------------------------------------------------------------//
@@ -1282,10 +1301,44 @@ int wifi_get_mac_address(char * mac)
 	return ret;
 }
 
+int wifi_get_interface_mac_address(int idx, char * mac)
+{
+	int ret = 0;
+	char buf[32];
+	rtw_memset(buf, 0, sizeof(buf));
+	rtw_memcpy(buf, "read_mac", 8);
+
+	if (WLAN0_IDX == idx) {
+		ret = wext_private_command_with_retval(WLAN0_NAME, buf, buf, 32);
+	}
+	else if (WLAN1_IDX == idx) {
+		if (wifi_mode == RTW_MODE_STA_AP) {
+		ret = wext_private_command_with_retval(WLAN1_NAME, buf, buf, 32);
+		}
+		else {
+		RTW_API_INFO("\n\rInvalid interface selected");
+		ret = RTW_ERROR;
+		return ret;
+		}
+	}
+	else {
+		RTW_API_INFO("\n\rInvalid interface selected");
+		ret = RTW_ERROR;
+		return ret;
+	}
+	strcpy(mac, buf);
+	return ret;
+}
+
 //----------------------------------------------------------------------------//
 int wifi_enable_powersave(void)
 {
 	return wext_enable_powersave(WLAN0_NAME, 1, 1);
+}
+
+int wifi_enable_powersave_for_coex(void)
+{
+	return wext_enable_powersave(WLAN0_NAME, 0, 1);
 }
 
 int wifi_resume_powersave(void)
@@ -1524,6 +1577,9 @@ _WEAK void wifi_set_mib(void)
 	//trp tis
 	wext_set_trp_tis(RTW_TRP_TIS_DISABLE);
 	wext_set_anti_interference(DISABLE);
+#if defined(CONFIG_IEEE80211K)
+	wext_set_enable_80211k(1);
+#endif
 #ifdef CONFIG_POWER_SAVING
 	//PS_MODE_MIN:1(default), PS_MODE_MAX:2
 	wext_set_powersave_mode(1);
@@ -3119,7 +3175,7 @@ int wifi_show_setting(const char *ifname, rtw_wifi_setting_t *pSetting)
 //----------------------------------------------------------------------------//
 int wifi_set_network_mode(rtw_network_mode_t mode)
 {
-	if((mode == RTW_NETWORK_B) || (mode == RTW_NETWORK_BG) || (mode == RTW_NETWORK_BGN))
+	if((mode == RTW_NETWORK_B) || (mode == RTW_NETWORK_BG) || (mode == RTW_NETWORK_BGN) || (mode == RTW_NETWORK_ABGN))
 		return rltk_wlan_wireless_mode((unsigned char) mode);
 
 	return -1;
@@ -3969,6 +4025,13 @@ int wifi_set_igi(uint8_t igi, uint8_t enable)
 	return rltk_wlan_set_igi(igi, enable);
 }
 
+int wifi_set_ap_uapsd(uint8_t enable){
+	return wext_set_uapsd_enable(enable);
+}
+
+int wifi_set_bcn_period(uint8_t period){
+	return wext_set_bcn_period(period);
+}
 /*
 Data rate input table
 0x00->1M

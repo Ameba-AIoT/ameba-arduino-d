@@ -394,6 +394,15 @@ static const mbedtls_cipher_info_t aes_256_ctr_info = {
 static int gcm_aes_setkey_wrap( void *ctx, const unsigned char *key,
                                 unsigned int key_bitlen )
 {
+#ifdef RTL_HW_CRYPTO
+	if(rom_ssl_ram_map.use_hw_crypto_func)
+	{
+		device_mutex_lock(RT_DEV_LOCK_CRYPTO);
+		int ret = mbedtls_gcm_setkey( (mbedtls_gcm_context *) ctx, MBEDTLS_CIPHER_ID_AES, key, key_bitlen );
+		device_mutex_unlock(RT_DEV_LOCK_CRYPTO);
+		return ret;
+	}
+#endif
     return mbedtls_gcm_setkey( (mbedtls_gcm_context *) ctx, MBEDTLS_CIPHER_ID_AES,
                      key, key_bitlen );
 }

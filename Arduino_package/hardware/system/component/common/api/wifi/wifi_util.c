@@ -904,6 +904,13 @@ int wext_get_bcn_rssi(const char *ifname, int *rssi)
 	return ret;
 }
 
+int wext_set_bcn_period(__u8 period){
+	int ret = 0;
+	extern u8 custom_beacon_period;
+	custom_beacon_period = period;
+	return ret;
+}
+
 int wext_set_pscan_channel(const char *ifname, __u8 *ch, __u8 *pscan_config, __u8 length)
 {
 	struct rtwreq iwr;
@@ -1564,6 +1571,14 @@ int wext_set_bw40_enable(__u8 enable)
     return 0;
 }
 
+
+int wext_set_uapsd_enable(__u8 enable){
+	int ret = 0;
+	extern u8 custom_uapsd;
+	custom_uapsd = enable;
+	return ret;
+}
+
 extern int rltk_get_auto_chl(const char *ifname, unsigned char *channel_set, unsigned char channel_num);
 int wext_get_auto_chl(const char *ifname, unsigned char *channel_set, unsigned char channel_num)
 {
@@ -1810,6 +1825,14 @@ int wext_wlan_redl_fw(const char *ifname){
 	rtw_free(para);
 
 	return ret;
+}
+#endif
+
+#ifdef CONFIG_IEEE80211K
+u8 rtw_enable_80211k = 1;
+void wext_set_enable_80211k(__u8 enable)
+{
+	rtw_enable_80211k = enable;
 }
 #endif
 

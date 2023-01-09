@@ -100,6 +100,7 @@
   */ 
 #define EFUSE_MAP_LEN_8711B			1024 /*!< logical map len in byte */
 #define EFUSE_MAX_SECTION_8711B		(EFUSE_MAP_LEN_8711B >> 3) /*!< logical map len in section */
+#define OTP_LMAP_LEN					EFUSE_MAP_LEN_8711B
 #define PGPKT_DATA_SIZE				8 /*!< logical map section len */
 
 /* logical EFUSE User area */
@@ -116,6 +117,7 @@
 
 /*  physical EFUSE len */
 #define EFUSE_REAL_CONTENT_LEN		512
+#define OTP_REAL_CONTENT_LEN			EFUSE_REAL_CONTENT_LEN
 #define AVAILABLE_EFUSE_ADDR(addr)		(addr < EFUSE_REAL_CONTENT_LEN)
 
 /* physical EFUSE write forbid */

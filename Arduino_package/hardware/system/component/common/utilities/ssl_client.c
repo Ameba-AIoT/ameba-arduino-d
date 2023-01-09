@@ -248,12 +248,20 @@ void cmd_ssl_client(int argc, char **argv)
 
 #elif CONFIG_USE_MBEDTLS /* CONFIG_USE_POLARSSL */
 
+#if defined(CONFIG_MBEDTLS_VERSION3) && (CONFIG_MBEDTLS_VERSION3 == 1)
+#include "mbedtls/build_info.h"
+#include "psa/crypto_types.h"
+#include "psa/crypto_values.h"
+#include "mbedtls/x509.h"
+#else
 #include "mbedtls/config.h"
+#endif
 #include "mbedtls/platform.h"
 #include "mbedtls/net_sockets.h"
 #include "mbedtls/ssl.h"
 #include "mbedtls/error.h"
 #include "mbedtls/debug.h"
+#include "mbedtls/version.h"
 
 #if defined(configENABLE_TRUSTZONE) && (configENABLE_TRUSTZONE == 1) && defined(CONFIG_SSL_CLIENT_PRIVATE_IN_TZ) && (CONFIG_SSL_CLIENT_PRIVATE_IN_TZ == 1)
 #include "device_lock.h"
@@ -499,13 +507,249 @@ exit1:
 		*((int *) param) = ret;
 }
 
+#define SERVER_NAME   "www.google.com"
+#define GTSR1_CA_PEM                                              \
+"-----BEGIN CERTIFICATE-----\r\n"  \
+"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\r\n"  \
+"bP6MvPJwNQzcmRk13NfIRmPVNnGuV/u3gm3c\r\n"  \
+"-----END CERTIFICATE-----\r\n"
+const unsigned char gtsr1_pem[] = GTSR1_CA_PEM;
+
+#if defined(CONFIG_MBEDTLS_VERSION3) && (CONFIG_MBEDTLS_VERSION3 == 1)
+static void ssl_client_TLS13(void *param)
+{
+	printf("\n\r START example %s", __FUNCTION__);
+	int retry_count = 0;
+	int ret = 0;
+	int len, written, frags;
+	mbedtls_net_context server_fd;
+	unsigned char buf[1024];
+	const char *pers = "ssl_client";
+
+	mbedtls_ssl_context ssl;
+	mbedtls_ssl_config conf;
+	uint32_t flags;
+	mbedtls_x509_crt cacert;
+
+#if defined(MBEDTLS_DEBUG_C)
+	mbedtls_debug_set_threshold(DEBUG_LEVEL);
+#endif
+
+	psa_status_t status;
+	status = psa_crypto_init();
+	if( status != 0 ) {
+		printf("\r\n psa_crypto_init status = %d", status);
+		mbedtls_psa_crypto_free( );
+	}
+
+	/*
+	 * Make sure memory references are valid.
+	 */
+	mbedtls_net_init( &server_fd );
+	mbedtls_ssl_init( &ssl );
+	mbedtls_ssl_config_init( &conf );
+	mbedtls_x509_crt_init( &cacert );
+
+	/*
+	 * 1. Load the trusted CA
+	 */
+	printf( "\n\r  . Loading the CA root certificate ..." );
+	ret = mbedtls_x509_crt_parse( &cacert, gtsr1_pem, sizeof(gtsr1_pem) );
+	if( ret < 0 ) {
+		printf( " failed\n  !  mbedtls_x509_crt_parse returned -0x%x\n\n",
+						(unsigned int) -ret );
+		goto exit;
+	}
+	printf( " ok\n" );
+
+	/*
+	 * 2. Setup stuff
+	 */
+	printf( "\n\r  . Setting up the SSL/TLS structure..." );
+	if( ( ret = mbedtls_ssl_config_defaults( &conf,
+					MBEDTLS_SSL_IS_CLIENT,
+					MBEDTLS_SSL_TRANSPORT_STREAM,
+					MBEDTLS_SSL_PRESET_DEFAULT ) ) != 0 ) {
+		printf( " failed\n  ! mbedtls_ssl_config_defaults returned -0x%x\n\n", (unsigned int) -ret );
+		goto exit;
+	}
+
+	mbedtls_ssl_conf_rng( &conf, my_random, NULL );
+	mbedtls_ssl_conf_dbg( &conf, my_debug, NULL );
+	mbedtls_ssl_conf_read_timeout( &conf, 0 );
+	mbedtls_ssl_conf_session_tickets( &conf, MBEDTLS_SSL_SESSION_TICKETS_ENABLED );
+	mbedtls_ssl_conf_tls13_key_exchange_modes( &conf, MBEDTLS_SSL_TLS1_3_KEY_EXCHANGE_MODE_ALL );
+	mbedtls_ssl_conf_renegotiation( &conf, MBEDTLS_SSL_RENEGOTIATION_DISABLED );
+	mbedtls_ssl_conf_ca_chain( &conf, &cacert, NULL );
+	mbedtls_ssl_conf_min_version( &conf, MBEDTLS_SSL_MAJOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_4 );
+	mbedtls_ssl_conf_max_version( &conf, MBEDTLS_SSL_MAJOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_4 );
+
+	if( ( ret = mbedtls_ssl_setup( &ssl, &conf ) ) != 0 ) {
+		printf( " failed\n  ! mbedtls_ssl_setup returned -0x%x\n\n", (unsigned int) -ret );
+		goto exit;
+	}
+	if( ( ret = mbedtls_ssl_set_hostname( &ssl, SERVER_NAME ) ) != 0 ) {
+		printf( " failed\n  ! mbedtls_ssl_set_hostname returned %d\n\n", ret );
+		goto exit;
+	}
+	mbedtls_ssl_set_bio(&ssl, &server_fd, mbedtls_net_send, mbedtls_net_recv, NULL);
+	printf( " ok\n" );
+
+	/*
+	 * 3. Start the connection
+	 */
+	printf("\n\r  . Connecting to tcp/%s/%s...", SERVER_NAME, SERVER_PORT);
+	if( ( ret = mbedtls_net_connect( &server_fd,
+					   SERVER_NAME, SERVER_PORT, MBEDTLS_NET_PROTO_TCP) ) != 0 ) {
+		printf( " failed\n  ! mbedtls_net_connect returned -0x%x\n\n", (unsigned int) -ret );
+		goto exit;
+	}
+	ret = mbedtls_net_set_block( &server_fd );
+	if ( ret != 0 ) {
+		printf( " failed\n  ! net_set_(non)block() returned -0x%x\n\n", (unsigned int) -ret );
+		goto exit;
+	}
+	printf( " ok\n" );
+
+	/*
+	 * 4. Handshake
+	 */
+	printf( "\n\r  . Performing the SSL/TLS handshake..." );
+	while( ( ret = mbedtls_ssl_handshake( &ssl ) ) != 0 ) {
+		if( ret != MBEDTLS_ERR_SSL_WANT_READ &&
+			ret != MBEDTLS_ERR_SSL_WANT_WRITE &&
+			ret != MBEDTLS_ERR_SSL_CRYPTO_IN_PROGRESS ) {
+			printf( " failed\n  ! mbedtls_ssl_handshake returned -0x%x\n", (unsigned int) -ret );
+			goto exit;
+		}
+	}
+	printf( " ok\n    [ Protocol is %s ]\n    [ Ciphersuite is %s ]\n",
+					mbedtls_ssl_get_version( &ssl ),
+					mbedtls_ssl_get_ciphersuite( &ssl ) );
+
+	/*
+	 * 5. Verify the server certificate
+	 */
+	printf( "\n\r  . Verifying peer X.509 certificate..." );
+	if( ( flags = mbedtls_ssl_get_verify_result( &ssl ) ) != 0 )
+		printf( " server sertificate failed\n" );
+	else
+		printf( " ok\n" );
+
+	/*
+	 * 6. Write the GET request
+	 */
+	printf("\n\r  > Write to server:");
+
+	len = sprintf((char *) buf, GET_REQUEST);
+
+	while((ret = mbedtls_ssl_write(&ssl, buf, len)) <= 0) {
+		if(ret != MBEDTLS_ERR_SSL_WANT_READ && ret != MBEDTLS_ERR_SSL_WANT_WRITE) {
+			printf(" failed\n\r  ! mbedtls_ssl_write returned %d\n", ret);
+			goto exit;
+		}
+	}
+
+	len = ret;
+	printf(" %d bytes written\n\n%s", len, (char *) buf);
+
+	/*
+	 * 7. Read the HTTP response
+	 */
+	printf("  < Read from server:" );
+
+	do {
+		len = sizeof(buf) - 1;
+		memset(buf, 0, sizeof(buf));
+		ret = mbedtls_ssl_read(&ssl, buf, len);
+
+		if(ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE)
+			continue;
+
+		if(ret == MBEDTLS_ERR_SSL_PEER_CLOSE_NOTIFY)
+			break;
+
+		if(ret < 0) {
+			printf(" failed\n  ! mbedtls_ssl_read returned %d\n", ret);
+			break;
+		}
+
+		if(ret == 0) {
+			printf("\n\nEOF\n\n");
+			break;
+		}
+
+		len = ret;
+		printf(" %d bytes read\n\n%s", len, (char *) buf);
+	}
+	while(1);
+
+	mbedtls_ssl_close_notify(&ssl);
+	printf( " ok\n" );
+
+exit:
+	printf( "\r\n EXIT \r\n" );
+	mbedtls_net_free( &server_fd );
+	mbedtls_ssl_free( &ssl );
+	mbedtls_ssl_config_free( &conf );
+	mbedtls_x509_crt_free( &cacert );
+
+exit1:
+	if(is_task) {
+#if defined(INCLUDE_uxTaskGetStackHighWaterMark) && (INCLUDE_uxTaskGetStackHighWaterMark == 1)
+		printf("\n\rMin available stack size of %s = %d * %d bytes\n\r", __FUNCTION__, uxTaskGetStackHighWaterMark(NULL), sizeof(portBASE_TYPE));
+#endif
+
+		if(min_heap_size > 0)
+			printf("\n\rMin available heap size = %d bytes during %s\n\r", min_heap_size, __FUNCTION__);
+
+		vTaskDelete(NULL);
+	}
+
+	if(param != NULL)
+		*((int *) param) = ret;
+}
+#endif
+
 void start_ssl_client(void)
 {
 	is_task = 1;
 	//strcpy(server_host, SERVER_HOST);
 
+#if defined(CONFIG_MBEDTLS_VERSION3) && (CONFIG_MBEDTLS_VERSION3 == 1)
+	if(xTaskCreate(ssl_client_TLS13, "ssl_client_TLS13", STACKSIZE, NULL, tskIDLE_PRIORITY + 1, NULL) != pdPASS)
+		printf("\n\r%s xTaskCreate failed", __FUNCTION__);
+#else
 	if(xTaskCreate(ssl_client, "ssl_client", STACKSIZE, NULL, tskIDLE_PRIORITY + 1, NULL) != pdPASS)
 		printf("\n\r%s xTaskCreate failed", __FUNCTION__);
+#endif
 }
 
 void do_ssl_connect(void)

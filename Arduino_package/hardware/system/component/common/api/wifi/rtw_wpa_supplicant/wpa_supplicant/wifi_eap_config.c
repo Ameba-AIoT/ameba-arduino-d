@@ -500,12 +500,24 @@ int eap_cert_setup(ssl_context *ssl)
 
 #elif CONFIG_USE_MBEDTLS
 
+#if CONFIG_MBEDTLS_VERSION3 == 1
+#include "mbedtls/build_info.h"
+#include "ssl_misc.h"
+#define MBEDTLS_SSL_COMPRESSION_ADD 0
+#define MBEDTLS_SSL_MAX_CONTENT_LEN MBEDTLS_SSL_IN_CONTENT_LEN
+#else
 #include <mbedtls/config.h>
+#include <mbedtls/ssl_internal.h>
+#endif
 #include <mbedtls/platform.h>
 #include <mbedtls/ssl.h>
-#include <mbedtls/ssl_internal.h>
 
-int max_buf_bio_size = MBEDTLS_SSL_BUFFER_LEN;
+int max_buf_bio_size = ( MBEDTLS_SSL_MAX_CONTENT_LEN                \
+                        + MBEDTLS_SSL_COMPRESSION_ADD               \
+                        + 29 /* counter + header + IV */    \
+                        + MBEDTLS_SSL_MAC_ADD                       \
+                        + MBEDTLS_SSL_PADDING_ADD                   \
+                        );    //modify by Relatek,  original define is MBEDTLS_SSL_BUFFER_LEN
 
 struct eap_tls{
 	void *ssl;
@@ -632,10 +644,18 @@ int eap_cert_setup(struct eap_tls *tls_context)
 		if(mbedtls_x509_crt_parse(_cli_crt, eap_client_cert, eap_client_cert_len) != 0)
 			return -1;
 		if(eap_client_key_pwd){
+#if CONFIG_MBEDTLS_VERSION3 == 1
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd)+1, rtw_get_random_bytes_f_rng, (void*)1) != 0)
+#else
 			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd)+1) != 0)
+#endif
 				return -1;
 		}else{
+#if CONFIG_MBEDTLS_VERSION3 == 1
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, 0, rtw_get_random_bytes_f_rng, (void*)1) != 0)
+#else
 			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, 0) != 0)
+#endif
 				return -1;
 		}
 

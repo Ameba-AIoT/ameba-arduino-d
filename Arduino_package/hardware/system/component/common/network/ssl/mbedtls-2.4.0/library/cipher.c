@@ -56,6 +56,8 @@
 #define mbedtls_free   free
 #endif
 
+#include "device_lock.h"
+
 #if defined(MBEDTLS_ARC4_C) || defined(MBEDTLS_CIPHER_NULL_CIPHER)
 #define MBEDTLS_CIPHER_MODE_STREAM
 #endif
@@ -849,6 +851,18 @@ int mbedtls_cipher_auth_encrypt( mbedtls_cipher_context_t *ctx,
     if( MBEDTLS_MODE_GCM == ctx->cipher_info->mode )
     {
         *olen = ilen;
+#ifdef RTL_HW_CRYPTO
+		if(rom_ssl_ram_map.use_hw_crypto_func)
+		{
+			device_mutex_lock(RT_DEV_LOCK_CRYPTO);
+			int ret = mbedtls_gcm_crypt_and_tag( ctx->cipher_ctx, MBEDTLS_GCM_ENCRYPT, ilen,
+                                   iv, iv_len, ad, ad_len, input, output,
+                                   tag_len, tag );
+			device_mutex_unlock(RT_DEV_LOCK_CRYPTO);
+			return ret;
+		}
+#endif
+
         return( mbedtls_gcm_crypt_and_tag( ctx->cipher_ctx, MBEDTLS_GCM_ENCRYPT, ilen,
                                    iv, iv_len, ad, ad_len, input, output,
                                    tag_len, tag ) );

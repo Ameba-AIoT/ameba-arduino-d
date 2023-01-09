@@ -27,6 +27,12 @@ The circuit: (BOARD RTL8721DM)
 * TX is digital pin 4 (connect to the other device RX)
 * RTS is pin PA_14 (connect to the other device CTS)
 * CTS is pin PA_15 (connect to the other device RTS)
+
+The circuit: (BOARD RTL8720DF)
+* RX is digital pin 17 (connect to the other device TX)
+* TX is digital pin 16 (connect to the other device RX)
+* RTS is pin PB_21 (connect to the other device CTS)
+* CTS is pin PB_20 (connect to the other device RTS)
 */
 
 
@@ -44,6 +50,8 @@ The circuit: (BOARD RTL8721DM)
     SoftwareSerial mySerial(PB2, PB1); // RX, TX
 #elif defined(BOARD_RTL8721DM)
     SoftwareSerial mySerial(3, 4); // RX, TX
+#elif defined(BOARD_RTL8720DF)
+    SoftwareSerial mySerial(17, 16); // RX, TX
 #else
     SoftwareSerial mySerial(0, 1); // RX, TX
 #endif

@@ -224,7 +224,9 @@
 #endif
 
 #define CONFIG_PMKSA_CACHING
-
+#ifdef CONFIG_PMKSA_CACHING
+//#define CONFIG_PMKSA_CACHING_RECONNECT
+#endif
 /* For WPA3 */
 #define CONFIG_IEEE80211W
 #define CONFIG_SAE_SUPPORT
@@ -333,6 +335,10 @@
 
 /* For AP_MODE */
 #define CONFIG_AP_MODE
+//#define UAPSD
+#ifdef UAPSD
+#define TX_CHECK_DSEC_ALWAYS
+#endif
 extern unsigned char g_user_ap_sta_num;
 #define USER_AP_STA_NUM g_user_ap_sta_num
 #if (CONFIG_PLATFORM_AMEBA_X == 1)

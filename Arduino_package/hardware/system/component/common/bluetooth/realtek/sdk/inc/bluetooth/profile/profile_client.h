@@ -533,6 +533,31 @@ T_GAP_CAUSE client_attr_write(uint8_t conn_id, T_CLIENT_ID client_id,
   */
 T_GAP_CAUSE client_attr_ind_confirm(uint8_t conn_id);
 
+/**
+ * @brief Send the exchange MTU request.
+ * This function is used to send the exchange MTU request.
+ *
+ * @param[in] conn_id         Connection id indicate which link is.
+ * @retval GAP_CAUSE_SUCCESS: Write request success.
+ * @retval other: Write request failed.
+ *
+ * <b>Example usage</b>
+ * \code{.c}
+    uint8_t *p_data_buf;
+    uint16_t data_offset;
+    static T_USER_CMD_PARSE_RESULT cmd_send_mtu_req(T_USER_CMD_PARSED_VALUE *p_parse_value)
+    {
+      T_GAP_CAUSE cause;
+      uint8_t conn_id = p_parse_value->dw_param[0];
+
+      cause = client_send_exchange_mtu_req(conn_id);
+      return (T_USER_CMD_PARSE_RESULT)cause;
+    }
+ * \endcode
+ */
+T_GAP_CAUSE client_send_exchange_mtu_req(uint8_t conn_id);
+
+
 /** End of GATT_Client_Exported_Functions
 * @}
 */

@@ -17,8 +17,8 @@ extern "C" {
 #include "app_msg.h"
 #include "profile_server.h"
 #include "profile_client.h"
-#include "app_flags.h"
-#include "link_mgr.h"
+#include "ble_central_app_flags.h"
+#include "ble_central_link_mgr.h"
 
 #ifdef __cplusplus
 }

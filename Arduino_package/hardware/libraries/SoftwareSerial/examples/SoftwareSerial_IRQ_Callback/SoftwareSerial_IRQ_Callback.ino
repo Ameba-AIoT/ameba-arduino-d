@@ -17,6 +17,12 @@
               (BOARD RTL8720DN / BW16)
  * RX is digital pin PB2 (connect to the other device TX)
  * TX is digital pin PB1 (connect to the other device RX)
+               (BOARD RTL8721DM)
+ * RX is digital pin 3 (connect to the other device TX)
+ * TX is digital pin 4 (connect to the other device RX)
+              (BOARD RTL8720DF)
+ * RX is digital pin 17 (connect to the other device TX)
+ * TX is digital pin 16 (connect to the other device RX)
  */
 
 #include <SoftwareSerial.h>
@@ -29,6 +35,8 @@
     SoftwareSerial mySerial(PB2, PB1); // RX, TX
 #elif defined(BOARD_RTL8721DM)
     SoftwareSerial mySerial(3, 4); // RX, TX
+#elif defined(BOARD_RTL8720DF)
+    SoftwareSerial mySerial(17, 16); // RX, TX
 #else
     SoftwareSerial mySerial(0, 1); // RX, TX
 #endif

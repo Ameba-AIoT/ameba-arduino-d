@@ -11,6 +11,7 @@
 #include "ameba_soc.h"
 #include "freertos_pmu.h"
 #include "rom_map.h"
+#include "device_lock.h"
 
 KM4SLEEP_ParamDef dsleep_param;
 
@@ -224,13 +225,17 @@ u32 cmd_efuse_protect(u16 argc, u8  *argv[])
 			EfuseBuf[index] = _2char2hex(DString[index*2], DString[index*2+1]);
 		}
 		
+		device_mutex_lock(RT_DEV_LOCK_EFUSE);
 		EFUSE_LMAP_WRITE(Addr, Len, (u8 *)(EfuseBuf));
+		device_mutex_unlock(RT_DEV_LOCK_EFUSE);
 	}
 
 	if (_strcmp((const char*)argv[0], "rmap") == 0) {
 		MONITOR_LOG("efuse rmap \n");
 		
+		device_mutex_lock(RT_DEV_LOCK_EFUSE);
 		ret = EFUSE_LMAP_READ(EfuseBuf);
+		device_mutex_unlock(RT_DEV_LOCK_EFUSE);
 		if (ret == _FAIL) {
 			MONITOR_LOG("EFUSE_LogicalMap_Read fail \n");
 		}
@@ -249,7 +254,9 @@ u32 cmd_efuse_protect(u16 argc, u8  *argv[])
 	
 		for (index = 0; index< EFUSE_REAL_CONTENT_LEN; index++) {
 			if ((index < EFUSE_SECURE_START) || (index > EFUSE_SECURE_END)) {
+				device_mutex_lock(RT_DEV_LOCK_EFUSE);
 				EFUSE_PMAP_READ8(0, index, EfuseBuf + index, L25EOUTVOLTAGE);
+				device_mutex_unlock(RT_DEV_LOCK_EFUSE);
 			} else {
 				EfuseBuf[index] = 0xFF;
 			}
@@ -293,7 +300,9 @@ u32 cmd_efuse_protect(u16 argc, u8  *argv[])
 		
 		for (index = 0; index < Len; index++) {
 			MONITOR_LOG("wraw: %x %x \n", Addr + index, EfuseBuf[index]);
+			device_mutex_lock(RT_DEV_LOCK_EFUSE);
 			EFUSE_PMAP_WRITE8(0, Addr + index, EfuseBuf[index], L25EOUTVOLTAGE);
+			device_mutex_unlock(RT_DEV_LOCK_EFUSE);
 		}
 	}
 
@@ -310,7 +319,7 @@ CmdCloseUltraLowPower(
 	( void ) argc;
 	( void ) argv;
 	
-	wifi_config.wifi_ultra_low_power = FALSE;
+	rtk_wifi_config.wifi_ultra_low_power = FALSE;
 
 	return _TRUE;
 }

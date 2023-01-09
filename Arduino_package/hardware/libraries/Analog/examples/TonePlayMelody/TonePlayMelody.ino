@@ -112,15 +112,17 @@ void play(int *melody, int *noteDurations, int num) {
         int noteDuration = 3000 / noteDurations[note];
 
 #if defined(BOARD_RTL8722DM)
-        tone(8, melody[note], noteDuration);
+    tone(8, melody[note], noteDuration);
 #elif defined(BOARD_RTL8722DM_MINI)
-        tone(7, melody[note], noteDuration);
+    tone(7, melody[note], noteDuration);
 #elif defined(BOARD_RTL8720DN_BW16)
-        tone(PA25, melody[note], noteDuration);
+    tone(PA25, melody[note], noteDuration);
 #elif defined(BOARD_RTL8721DM)
-        tone(3, melody[note], noteDuration);
+    tone(3, melody[note], noteDuration);
+#elif defined(BOARD_RTL8720DF)
+    tone(7, melody[note], noteDuration);
 #else
-        tone(10, melody[note], noteDuration);
+    tone(10, melody[note], noteDuration);
 #endif
 
         delay(noteDuration * 1.30);

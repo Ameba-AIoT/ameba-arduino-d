@@ -24,12 +24,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
+#include "avr/dtostrf.h"
+#include "itoa.h"
 #include "binary.h"
 
 //#define Arduino_STD_PRINTF
 #ifdef Arduino_STD_PRINTF
-
+#define STD_PRINTF
 #ifdef __cplusplus
 #include <string>
 #endif // __cplusplus

@@ -25,6 +25,9 @@
               (BOARD RTL8721DM)
  * RX is digital pin 3 (connect to PMS 3003 TX)
  * TX is digital pin 4 (connect to PMS 3003 RX)
+              (BOARD RTL8720DF)
+ * RX is digital pin 17 (Connect to PMS 3003 TX)
+ * TX is digital pin 16 (Connect to PMS 3003 RX)
  */
 
 #include <SoftwareSerial.h>
@@ -36,7 +39,9 @@
 #elif defined(BOARD_RTL8720DN_BW16)
     SoftwareSerial mySerial(PB2, PB1); // RX, TX
 #elif defined(BOARD_RTL8721DM)
-        SoftwareSerial mySerial(3, 4); // RX, TX
+    SoftwareSerial mySerial(3, 4); // RX, TX
+#elif defined(BOARD_RTL8720DF)
+    SoftwareSerial mySerial(17, 16); // RX, TX
 #else
     SoftwareSerial mySerial(0, 1); // RX, TX
 #endif

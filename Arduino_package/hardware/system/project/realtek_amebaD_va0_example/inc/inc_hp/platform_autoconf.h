@@ -99,8 +99,8 @@
  */
 #define CONFIG_BT_EN 1
 #define CONFIG_BT 1
-#undef  CONFIG_BT_PERIPHERAL
-#undef  CONFIG_BT_CENTRAL
+#define CONFIG_BT_PERIPHERAL 1
+#define CONFIG_BT_CENTRAL 1
 #undef  CONFIG_BT_SCATTERNET
 #undef  CONFIG_BT_BEACON
 #define CONFIG_BT_CONFIG 1
@@ -162,10 +162,11 @@
 #undef  CONFIG_GUI_EN
 
 /*
- * < Audio Config 
+ * < Audio Config
  */
 #undef  CONFIG_AUDIO_EN
 #undef  CONFIG_AUDIO_FWK
+#undef  CONFIG_MEDIA_PLAYER
 
 /*
  * To set debug msg flag

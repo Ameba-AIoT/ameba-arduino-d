@@ -85,6 +85,7 @@ int rltk_wlan_change_channel_plan(unsigned char channel_plan);
 int rltk_coex_ble_scan_duty_update( unsigned char duty);
 int rltk_coex_set_wlan_slot_random(unsigned char temp);
 int rltk_coex_set_wlan_slot_preempting(unsigned char bitmask);
+int rltk_coex_set_wlan_lps_coex(unsigned char enable);
 unsigned char rltk_wlan_ap_compatibility_is_enable(unsigned int bitmap);
 void rltk_wlan_enable_proassocaite(unsigned char enable);
 void rltk_wlan_enable_check_bcn_info(unsigned char enable);

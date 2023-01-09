@@ -69,6 +69,9 @@ typedef enum
     GAP_PARAM_DS_DATA_OFFSET           = 0x232, //!< Downstream pool buffer data offset.  Read only.  size is uint16.
     GAP_PARAM_LE_REMAIN_CREDITS        = 0x233, //!< Remain credits avaiable for TX.  Read only.  size is uint16.
     GAP_PARAM_MAX_WL_SIZE              = 0x234, //!< Max white list size.  Read only.  size is uint16.
+#if F_BT_LE_GAP_CENTRAL_SUPPORT
+    GAP_PARAM_MASTER_INIT_GATT_MTU_REQ = 0x23b, //!< Master initiate the GATT exchange MTU procedure. Write Only. Size is uint8. Default value is true.
+#endif
 } T_GAP_LE_PARAM_TYPE;
 
 /**
