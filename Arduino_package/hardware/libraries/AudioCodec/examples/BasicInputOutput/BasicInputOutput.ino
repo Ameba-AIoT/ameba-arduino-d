@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-basic/
+ */
+
 #include "AudioCodec.h"
 
 #define SAMPLECOUNT 512

@@ -1,3 +1,8 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-wifi-configuration/
+ */
 
 #include "BLEDevice.h"
 #include "BLEWifiConfigService.h"

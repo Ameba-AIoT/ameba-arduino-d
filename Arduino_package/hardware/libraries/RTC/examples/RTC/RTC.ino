@@ -1,8 +1,12 @@
-/**
- *  This function describes how to use the RTC API. 
- *  The RTC function is implemented by an independent BCD timer/counter.
- *  This example will print out the time information every second.
-*/
+/*
+ * This function describes how to use the RTC API.
+ * The RTC function is implemented by an independent BCD timer/counter.
+ * This example will print out the time information every second.
+
+ * Example guide:
+ * https://www.amebaiot.com/en/amebad-arduino-rtc/
+ */
+
 #include <stdio.h>
 #include <time.h>
 

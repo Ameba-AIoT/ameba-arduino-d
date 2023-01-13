@@ -14,6 +14,8 @@
 
  This code is in the public domain.
 
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-utc-time/
  */
 
 #include <WiFi.h>

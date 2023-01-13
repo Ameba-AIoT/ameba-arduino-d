@@ -1,3 +1,8 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-dht/
+ */
 
 #include "BLEDevice.h"
 #include "DHT.h"

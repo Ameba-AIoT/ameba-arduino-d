@@ -14,14 +14,15 @@
  D0D0DEADF00DABBADEAFBEADED will work because it's 26 characters,
  all in the 0-9, A-F range.
 
- Circuit:
- * WiFi shield attached
-
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 31 May 2012
  by Tom Igoe
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-connect-wifi/
  */
+
 #include <WiFi.h>
 
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters

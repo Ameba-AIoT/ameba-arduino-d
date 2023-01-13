@@ -1,4 +1,5 @@
 /*
+
  Basic MQTT example
 
  This sketch demonstrates the basic capabilities of the library.
@@ -10,8 +11,10 @@
  It will reconnect to the server if the connection is lost using a blocking
  reconnect function. See the 'mqtt_reconnect_nonblocking' example for how to
  achieve the same result without blocking the main loop.
- 
-*/
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-mqtt-upload-listen/
+ */
 
 #include <WiFi.h>
 #include <PubSubClient.h>

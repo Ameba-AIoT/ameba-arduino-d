@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-gamepad/
+ */
+
 #include "BLEHIDDevice.h"
 #include "BLEHIDGamepad.h"
 #include "BLEDevice.h"

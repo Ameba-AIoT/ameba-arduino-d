@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ws2812b-patterns/
+ */
+
 #include "WS2812B.h"
 
 #define NUM_OF_LEDS 8

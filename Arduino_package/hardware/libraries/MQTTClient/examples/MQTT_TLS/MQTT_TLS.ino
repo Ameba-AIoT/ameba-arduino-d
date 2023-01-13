@@ -1,10 +1,16 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-mqtt-tls/
+ */
+
 #include <WiFi.h>
 #include <PubSubClient.h>
 
 // Update these with values suitable for your network.
 char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "yourPassword";     	// your network password (use for WPA, or use as key for WEP)
-int status  = WL_IDLE_STATUS;    	// the Wifi radio's status
+char pass[] = "yourPassword";       // your network password (use for WPA, or use as key for WEP)
+int status  = WL_IDLE_STATUS;       // the Wifi radio's status
 
 char mqttServer[]     = "test.mosquitto.org";
 char clientId[]       = "amebaClient";

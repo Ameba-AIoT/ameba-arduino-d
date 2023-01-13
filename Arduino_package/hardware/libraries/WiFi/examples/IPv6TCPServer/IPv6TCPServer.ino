@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ipv6-tcp/
+ */
+
 #include <WiFi.h>
 
 #define MAX_SEND_SIZE 256

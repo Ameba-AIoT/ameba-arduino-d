@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-usb-keyboard/
+ */
+
 #include "USBHIDDevice.h"
 #include "USBHIDKeyboard.h"
 

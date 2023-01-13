@@ -28,6 +28,9 @@
               (BOARD RTL8720DF)
  * RX is digital pin 17 (Connect to PMS 3003 TX)
  * TX is digital pin 16 (Connect to PMS 3003 RX)
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-pm25/
  */
 
 #include <SoftwareSerial.h>

@@ -4,14 +4,15 @@
  Then it prints the  MAC address of the Wifi shield,
  the IP address obtained, and other network details.
 
- Circuit:
- * WiFi shield attached
-
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 31 May 2012
  by Tom Igoe
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-connect-wifi/
  */
+
 #include <WiFi.h>
 
 // If you are connecting to an iPhone WiFi hotspot, the default SSID uses Unicode (U+2019) Right Single Quotation Mark instead of ASCII apostrophe
@@ -22,7 +23,7 @@
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
 
-char ssid[] = "yourNetwork";     //  your network SSID (name)
+char ssid[] = "yourNetwork";     // your network SSID (name)
 char pass[] = "secretPassword";  // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 

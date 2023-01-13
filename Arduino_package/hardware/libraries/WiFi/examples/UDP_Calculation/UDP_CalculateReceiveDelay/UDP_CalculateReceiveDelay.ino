@@ -1,9 +1,13 @@
 /*
-   This sketch provide a simple way to roughly calculate the delay of Ameba receive delay.
-   The source code is separate into two parts.
-   The first part is Ameba code which play receiver role.
-   The second part is PC code wich play sender role. Please compile the second part and run it.
-*/
+
+ This sketch provide a simple way to roughly calculate the delay of Ameba receive delay.
+ The source code is separate into two parts.
+ The first part is Ameba code which play receiver role.
+ The second part is PC code wich play sender role. Please compile the second part and run it.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-udp-receive-delay/
+ */
 
 #include <WiFi.h>
 #include <WiFiUdp.h>

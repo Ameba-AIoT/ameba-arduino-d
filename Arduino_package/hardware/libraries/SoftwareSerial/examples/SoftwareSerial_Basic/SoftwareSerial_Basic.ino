@@ -18,6 +18,9 @@
                (BOARD RTL8720DF)
  * RX is digital pin 17 (connect to the other device TX)
  * TX is digital pin 16 (connect to the other device RX)
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-uart/
  */
 
 #include <SoftwareSerial.h>

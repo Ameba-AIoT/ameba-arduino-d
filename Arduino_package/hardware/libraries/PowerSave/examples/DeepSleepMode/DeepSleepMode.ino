@@ -1,6 +1,10 @@
 /*
-  This sketch shows how to use power save deepsleep mode
-*/
+ This sketch shows how to use power save deepsleep mode
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-deepsleepmode/
+ */
+
 #include <PowerSave.h>
 
 //SET_DS_AON_TIMER_WAKEUP

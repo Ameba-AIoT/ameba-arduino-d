@@ -1,6 +1,12 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-web-client/
+ */
+
 #include <WiFi.h>
 
-char ssid[] = "yourNetwork"; //  your network SSID (name)
+char ssid[] = "yourNetwork"; // your network SSID (name)
 char pass[] = "password";    // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;            // your network key Index number (needed only for WEP)
 

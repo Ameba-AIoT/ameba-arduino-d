@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-gpio-dht/
+ */
+
 // Example testing sketch for various DHT humidity/temperature sensors
 // Written by ladyada, public domain
 

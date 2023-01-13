@@ -9,6 +9,8 @@
  *  Demo Video Available at:
  *      https://youtu.be/ItVaPQ4dv8Q
  *
+ *  Example guide:
+ *  https://www.amebaiot.com/en/amebad-arduino-amebamotors/
  **/
 
 #include "Car2wd.h"

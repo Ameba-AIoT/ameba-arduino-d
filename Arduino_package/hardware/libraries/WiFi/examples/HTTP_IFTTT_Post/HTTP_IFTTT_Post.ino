@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/ifttt-via-amebad/
+ */
+
 #include <HttpClient.h>
 #include <WiFi.h>
 #include <WiFiClient.h>

@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-keyboard/
+ */
+
 #include "BLEHIDDevice.h"
 #include "BLEHIDKeyboard.h"
 #include "BLEDevice.h"

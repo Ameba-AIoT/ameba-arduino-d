@@ -4,7 +4,9 @@
   If your computer that run Arduino IDE stays in the same local network with Ameba, then you can find Ameba in "Tools" -> "Port" -> "Arduino at 192.168.1.238 (Ameba RTL8195A)".
   It means the Arduino IDE find Ameba via mDNS.
 
-*/
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-mdns-basic/
+ */
 
 #include <WiFi.h>
 #include <AmebaMDNS.h>

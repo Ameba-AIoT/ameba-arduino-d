@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ipv6-udp/
+ */
+
 #include <WiFi.h>
 
 #include "Arduino.h"
