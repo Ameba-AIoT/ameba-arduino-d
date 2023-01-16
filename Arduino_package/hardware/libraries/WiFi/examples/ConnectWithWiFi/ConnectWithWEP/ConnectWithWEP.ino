@@ -26,13 +26,13 @@
 #include <WiFi.h>
 #include "WifiSerial.h"
 
-#define MANUAL_INPUT;  //Set if user wants to key in ssid/pwd manually during operation
+#define MANUAL_INPUT // Set if user wants to key in ssid/pwd manually during operation
 
-#ifdef MANUAL_INPUT //initialise ssid string, pwd string, and serial_in object.
-  //initialise strings
-  std::string str_ssid, str_pass, str_key;
-  //Create serial_in object
-  WifiSerial wifiSerial;
+#ifdef MANUAL_INPUT // initialise ssid string, pwd string, and serial_in object
+// Initialise strings
+std::string str_ssid, str_pass, str_key;
+// Create serial_in object
+WifiSerial wifiSerial;
 #endif
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
 #define password_type                           0
@@ -73,36 +73,36 @@ void setup() {
 
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
-      #ifdef MANUAL_INPUT
-      Serial.println("Enter your ssid");
-      while (str_ssid.length() == 0) {
-        str_ssid = wifiSerial.readInput();
-        if (str_ssid.length() != 0) {  //user has entered data
-          Serial.print("SSID entered: ");
-          Serial.println(str_ssid.c_str());
+        #ifdef MANUAL_INPUT
+        Serial.println("Enter your ssid");
+        while (str_ssid.length() == 0) {
+            str_ssid = wifiSerial.readInput();
+            if (str_ssid.length() != 0) { // user has entered data
+                Serial.print("SSID entered: ");
+                Serial.println(str_ssid.c_str());
+            }
         }
-      }
 
-      Serial.println("Enter your network key index number");
-      while (str_key.length() == 0) {
-        str_key = wifiSerial.readInput();
-        if (str_key.length() != 0) {  //user has entered data
-          Serial.print("key entered: ");
-          Serial.println(str_key.c_str());
+        Serial.println("Enter your network key index number");
+        while (str_key.length() == 0) {
+            str_key = wifiSerial.readInput();
+                if (str_key.length() != 0) { // user has entered data
+                    Serial.print("key entered: ");
+                    Serial.println(str_key.c_str());
+                }
         }
-      }
 
-      Serial.println("Enter your password");
-      while (str_pass.length() == 0) {
-        str_pass = wifiSerial.readInput();
-        if (str_pass.length() != 0) {  //user has entered data
-          if (str_pass.length() <8){  //to catch pwd<8 exception
-            Serial.println("Password cannot be less than 8 characters! Try again");
-            str_pass = ""; //clear entered pwd and try again
-          }
-          Serial.print("Password entered: ");
-          Serial.println(str_pass.c_str());
-          }
+        Serial.println("Enter your password");
+        while (str_pass.length() == 0) {
+            str_pass = wifiSerial.readInput();
+                if (str_pass.length() != 0) { // user has entered data
+                    if (str_pass.length() <8){ // to catch password length < 8 exception
+                        Serial.println("Password cannot be less than 8 characters! Try again");
+                        str_pass = ""; // clear entered pwd and try again
+                    }
+                    Serial.print("Password entered: ");
+                    Serial.println(str_pass.c_str());
+                }
         }
         #endif
 
@@ -123,9 +123,9 @@ void setup() {
         char pass_cust[str_pass.length()+1];
         strcpy(ssid_cust, str_ssid.c_str());
         strcpy(pass_cust, str_pass.c_str());
-        Serial.println(str_ssid.c_str());        
+        Serial.println(str_ssid.c_str());
         status = WiFi.begin(ssid_cust,std::stoi( str_key ), pass_cust);
-        #endif        
+        #endif
         // wait 10 seconds for connection:
         delay(10000);
     }

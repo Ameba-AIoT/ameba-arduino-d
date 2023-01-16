@@ -1,14 +1,10 @@
 #include <string>
 
-class WifiSerial
-{
-  public:
-  WifiSerial();
+class WifiSerial {
+	public:
+	    WifiSerial();
+	    std::string readInput();
 
-  std::string readInput();
-  
-  private:
-  std::string currentInput;
+	private:
+	    std::string currentInput;
 };
-
-

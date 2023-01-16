@@ -16,13 +16,13 @@
 #include <WiFi.h>
 #include "WifiSerial.h"
 
-#define MANUAL_INPUT;  //Set if user wants to key in ssid/pwd manually during operation
+#define MANUAL_INPUT // Set if user wants to key in ssid/pwd manually during operation
 
-#ifdef MANUAL_INPUT //initialise ssid string, pwd string, and serial_in object.
-  //initialise strings
-  std::string str_ssid, str_pass;
-  //Create serial_in object
-  WifiSerial wifiSerial;
+#ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
+// Initialise strings
+std::string str_ssid, str_pass;
+// Create serial_in object
+WifiSerial wifiSerial;
 #endif
 
 // If you are connecting to an iPhone WiFi hotspot, the default SSID uses Unicode (U+2019) Right Single Quotation Mark instead of ASCII apostrophe
@@ -56,23 +56,23 @@ void setup() {
         #ifdef MANUAL_INPUT
         Serial.println("Enter your ssid");
         while (str_ssid.length() == 0) {
-          str_ssid = wifiSerial.readInput();
-          if (str_ssid.length() != 0) {  //user has entered data
-            Serial.print("SSID entered: ");
-            Serial.println(str_ssid.c_str());
-          }
+            str_ssid = wifiSerial.readInput();
+            if (str_ssid.length() != 0) { // user has entered data
+                Serial.print("SSID entered: ");
+                Serial.println(str_ssid.c_str());
+            }
         }
         Serial.println("Enter your password");
         while (str_pass.length() == 0) {
-          str_pass = wifiSerial.readInput();
-          if (str_pass.length() != 0) {  //user has entered data
-            if (str_pass.length() <8){  //to catch pwd<8 exception
-              Serial.println("Password cannot be less than 8 characters! Try again");
-              str_pass = ""; //clear entered pwd and try again
-            }
-            Serial.print("pwd entered: ");
+            str_pass = wifiSerial.readInput();
+            if (str_pass.length() != 0) {  // user has entered data
+                if (str_pass.length() <8){ // to catch pwd<8 exception
+                Serial.println("Password cannot be less than 8 characters! Try again");
+                str_pass = ""; // clear entered pwd and try again
+                }
+            Serial.print("Password entered: ");
             Serial.println(str_pass.c_str());
-          }
+            }
         }
         #endif
         Serial.print("Attempting to connect to WPA SSID: ");
@@ -84,12 +84,12 @@ void setup() {
         #endif
 
         #ifdef MANUAL_INPUT
-          char ssid_cust[str_ssid.length()+1];
-          char pass_cust[str_pass.length()+1];
-          strcpy(ssid_cust, str_ssid.c_str());
-          strcpy(pass_cust, str_pass.c_str());
-          Serial.println(str_ssid.c_str());
-          status = WiFi.begin(ssid_cust, pass_cust);
+        char ssid_cust[str_ssid.length()+1];
+        char pass_cust[str_pass.length()+1];
+        strcpy(ssid_cust, str_ssid.c_str());
+        strcpy(pass_cust, str_pass.c_str());
+        Serial.println(str_ssid.c_str());
+        status = WiFi.begin(ssid_cust, pass_cust);
         #endif
         // wait 10 seconds for connection:
         delay(10000);
