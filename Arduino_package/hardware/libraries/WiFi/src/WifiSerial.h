@@ -1,10 +1,10 @@
 #include <string>
 
 class WifiSerial {
-	public:
-	    WifiSerial();
-	    std::string readInput();
+    public:
+        WifiSerial();
+        std::string readInput();
 
-	private:
-	    std::string currentInput;
+    private:
+        std::string currentInput;
 };

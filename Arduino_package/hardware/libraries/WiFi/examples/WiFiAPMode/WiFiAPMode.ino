@@ -7,7 +7,8 @@
 #include <WiFi.h>
 #include "WifiSerial.h"
 
-#define MANUAL_INPUT // Set if user wants to key in ssid/pwd manually during operation
+// Set if user wants to key in ssid/pwd manually during operation
+//#define MANUAL_INPUT 
 
 #ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
 // Initialise strings
@@ -41,7 +42,7 @@ void setup() {
 
     // attempt to start AP:
     while (status != WL_CONNECTED) {
-        #ifdef MANUAL_INPUT
+#ifdef MANUAL_INPUT
         Serial.println("Enter your ssid");
         while (str_ssid.length() == 0) {
             str_ssid = wifiSerial.readInput();
@@ -54,29 +55,27 @@ void setup() {
         while (str_pass.length() == 0) {
             str_pass = wifiSerial.readInput();
             if (str_pass.length() != 0) {  //user has entered data
-                if (str_pass.length() <8){  //to catch pwd<8 exception
-                Serial.println("Password cannot be less than 8 characters! Try again");
-                str_pass = ""; //clear entered pwd and try again
+                if (str_pass.length() <8) {  //to catch pwd<8 exception
+                    Serial.println("Password cannot be less than 8 characters! Try again");
+                    str_pass = ""; //clear entered pwd and try again
                 }
-            Serial.print("Password entered: ");
-            Serial.println(str_pass.c_str());
+                Serial.print("Password entered: ");
+                Serial.println(str_pass.c_str());
             }
         }
-        #endif
+#endif
         Serial.print("Attempting to start AP with SSID: ");
-        #ifndef MANUAL_INPUT
+#ifndef MANUAL_INPUT
         Serial.println(ssid);
         status = WiFi.apbegin(ssid, pass, channel, ssid_status);
-        #endif
-
-        #ifdef MANUAL_INPUT
-        char ssid_cust[str_ssid.length()+1];
-        char pass_cust[str_pass.length()+1];
+#else
+        char ssid_cust[str_ssid.length() + 1];
+        char pass_cust[str_pass.length() + 1];
         strcpy(ssid_cust, str_ssid.c_str());
         strcpy(pass_cust, str_pass.c_str());
         Serial.println(str_ssid.c_str());
         status = WiFi.apbegin(ssid_cust, pass_cust, channel, ssid_status);
-        #endif
+#endif
         delay(10000);
     }
 
