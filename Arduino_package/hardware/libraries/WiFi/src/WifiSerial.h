@@ -1,10 +1,13 @@
-#include <string>
+#ifndef WifiSerial_h
+#define WifiSerial_h
 
 class WifiSerial {
     public:
-        WifiSerial();
-        std::string readInput();
+    WifiSerial();
+    const char* readInput();
 
     private:
-        std::string currentInput;
+        const char* currentInput;
 };
+
+#endif

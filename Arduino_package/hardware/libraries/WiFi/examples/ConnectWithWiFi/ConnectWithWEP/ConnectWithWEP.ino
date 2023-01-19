@@ -32,7 +32,7 @@
 
 #ifdef MANUAL_INPUT // initialise ssid string, pwd string, and serial_in object
 // Initialise strings
-std::string str_ssid, str_pass, str_key;
+String str_ssid, str_pass, str_key;
 // Create serial_in object
 WifiSerial wifiSerial;
 #endif
@@ -120,11 +120,14 @@ void setup() {
     #endif
 #else
         char ssid_cust[str_ssid.length()+1];
+        char key_cust[str_key.length()+1];
         char pass_cust[str_pass.length()+1];
         strcpy(ssid_cust, str_ssid.c_str());
+        strcpy(key_cust, str_key.c_str());
         strcpy(pass_cust, str_pass.c_str());
         Serial.println(str_ssid.c_str());
-        status = WiFi.begin(ssid_cust,std::stoi( str_key ), pass_cust);
+        status = WiFi.begin(ssid_cust,atoi(key_cust), pass_cust);
+        str_ssid, str_key, str_pass = "";
 #endif
         // wait 10 seconds for connection:
         delay(10000);

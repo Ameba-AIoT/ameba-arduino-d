@@ -17,11 +17,11 @@
 #include "WifiSerial.h"
 
 // Set if user wants to key in ssid/pwd manually during operation
-//#define MANUAL_INPUT 
+//#define MANUAL_INPUT
 
 #ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
 // Initialise strings
-std::string str_ssid, str_pass;
+String str_ssid, str_pass;
 // Create serial_in object
 WifiSerial wifiSerial;
 #endif
@@ -65,7 +65,7 @@ void setup() {
         Serial.println("Enter your password");
         while (str_pass.length() == 0) {
             str_pass = wifiSerial.readInput();
-            if (str_pass.length() != 0) {  // user has entered data
+            if (str_pass.length() != 0) {   // user has entered data
                 if (str_pass.length() <8) { // to catch pwd<8 exception
                     Serial.println("Password cannot be less than 8 characters! Try again");
                     str_pass = ""; // clear entered pwd and try again
@@ -76,7 +76,7 @@ void setup() {
         }
 #endif
         Serial.print("Attempting to connect to WPA SSID: ");
-
+        
 #ifndef MANUAL_INPUT
         Serial.println(ssid);
         // Connect to WPA/WPA2 network:
