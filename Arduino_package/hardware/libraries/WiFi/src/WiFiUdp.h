@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef wifiudp_h
-#define wifiudp_h
+#ifndef WifiUdp_h
+#define WifiUdp_h
 
 #include "IPAddress.h"
 #include "IPv6Address.h"

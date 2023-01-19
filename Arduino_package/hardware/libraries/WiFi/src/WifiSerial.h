@@ -1,3 +1,6 @@
+#ifndef WifiSerial_h
+#define WifiSerial_h
+
 class WifiSerial {
     public:
     WifiSerial();
@@ -6,3 +9,5 @@ class WifiSerial {
     private:
         const char* currentInput;
 };
+
+#endif
