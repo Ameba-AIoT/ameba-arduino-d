@@ -8,11 +8,11 @@
 #include "WifiSerial.h"
 
 // Set if user wants to key in ssid/pwd manually during operation
-//#define MANUAL_INPUT 
+//#define MANUAL_INPUT
 
 #ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
 // Initialise strings
-std::string str_ssid, str_pass;
+String str_ssid, str_pass;
 // Create serial_in object
 WifiSerial wifiSerial;
 #endif

@@ -1,20 +1,17 @@
 #include "WifiSerial.h"
 #include <stdlib.h>
 #include <Arduino.h>
-#include <string>
 
 WifiSerial::WifiSerial() {}//declaration
 
-
 //Function: Reads Serial monitor input
-//Output  : std::string
-std::string WifiSerial::readInput() {
+const char* WifiSerial::readInput() {
     currentInput = "";    //clear string output in preparation
     String name;
     while (Serial.available()) {
-      delay(2);    //add a delay to buy time for bytes to enter buffer
-      char c = Serial.read();
-      name += c;
+        delay(2);    //add a delay to buy time for bytes to enter buffer
+        char c = Serial.read();
+        name += c;
     }
     if (name.length() > 0) {          //loop triggers when Serial data is received.
         name.trim();                  //removes trailing newline

@@ -1,10 +1,8 @@
-#include <string>
-
 class WifiSerial {
     public:
-        WifiSerial();
-        std::string readInput();
+    WifiSerial();
+    const char* readInput();
 
     private:
-        std::string currentInput;
+        const char* currentInput;
 };
