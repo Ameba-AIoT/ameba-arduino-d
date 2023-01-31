@@ -64,12 +64,14 @@ void AmebaServo::detach()
 
 void AmebaServo::write(int value)
 {
-    if(value < 0) value = 0;
-    if(value > 180) value = 180;
+    if(value < MIN_PULSE_WIDTH)
+    {  // treat values less than 544 as angles in degrees (valid values in microseconds are handled as microseconds)
+        if(value < 0) value = 0;
+        if(value > 180) value = 180;
+        value = (max - min) * value / 180 + min;
+    }
 
     currentWidth = value;
-
-    value = (max - min) * value / 180 + min;
     this->writeMicroseconds(value);
 }
 
@@ -78,8 +80,7 @@ void AmebaServo::writeMicroseconds(int value)
     if (value < (int)min) value = min;
     if (value > (int)max) value = max;
 
-    currentWidth = 180 * (value - min) / (max - min);
-
+    currentWidth = value;
     pwmout_write(((pwmout_t *)gpio_pin_struct[servoPin]), (value * 1.0 / 20000));
 }
 
@@ -95,5 +96,5 @@ int AmebaServo::readMicroseconds()
 
 bool AmebaServo::attached()
 {
-    return (servoPin == 0xFFFFFFFF);
+    return (servoPin != 0xFFFFFFFF);
 }
