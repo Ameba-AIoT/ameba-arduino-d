@@ -26,7 +26,6 @@ void setup() {
     BLE.configAdvert()->updateAdvertParams();
     delay(100);
     BLE.configAdvert()->startAdv();
-
 }
 
 void loop() {

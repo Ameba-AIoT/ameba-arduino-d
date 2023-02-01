@@ -45,7 +45,7 @@ void setup() {
     battChar.setCCCDCallback(notifCB);
 
     battService.addCharacteristic(battChar);
-    
+
     BLE.init();
     BLE.configAdvert()->setAdvData(advdata);
     BLE.configAdvert()->setScanRspData(scandata);

@@ -13,6 +13,7 @@ void scanFunction(T_LE_CB_DATA* p_data) {
     Serial.print("Scan Data ");
     Serial.println(++dataCount);
     BLE.configScan()->printScanInfo(p_data);
+    BLE.configConnection()->disconnect();
 
     foundDevice.parseScanInfo(p_data);
     if (foundDevice.hasName()) {
