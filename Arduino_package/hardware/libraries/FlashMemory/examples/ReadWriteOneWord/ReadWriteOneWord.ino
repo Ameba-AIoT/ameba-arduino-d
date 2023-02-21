@@ -1,5 +1,8 @@
 /*
  This sketch shows how to request flash memory larger than defaut 4K, and read/write one specific word.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-flash-size/
  */
 
 #include <FlashMemory.h>

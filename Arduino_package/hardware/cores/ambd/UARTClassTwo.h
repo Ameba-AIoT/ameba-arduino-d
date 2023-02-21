@@ -27,7 +27,8 @@ class UARTClassTwo : public HardwareSerial
     public:
         //UARTClassTwo(int dwIrq, RingBuffer* pRx_buffer);
         UARTClassTwo(RingBuffer* pRx_buffer);
-        void begin(const uint32_t dwBaudRate);
+        void begin(const uint32_t dwBaudRate) { begin(dwBaudRate, SERIAL_8N1); }
+        void begin(const uint32_t dwBaudRate, uint8_t serial_config_value);
         void end(void);
         int available(void);
         int peek(void);

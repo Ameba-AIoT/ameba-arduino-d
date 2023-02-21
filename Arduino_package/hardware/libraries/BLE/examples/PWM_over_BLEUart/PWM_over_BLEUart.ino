@@ -1,3 +1,8 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-pwm/
+ */
 
 #include "BLEDevice.h"
 
@@ -35,7 +40,7 @@ void writeCB (BLECharacteristic* chr, uint8_t connID) {
             uint8_t command[datalen];
             chr->getData(command, datalen);
             if (command[1] == 'C') {
-                // print hax
+                // print hex
                 printf("Color command R = %x G = %x B = %x \n", command[2], command[3], command[4]);
                 // print decimal
                 //printf("Color command R = %d G = %d B = %d \n", command[2], command[3], command[4]);

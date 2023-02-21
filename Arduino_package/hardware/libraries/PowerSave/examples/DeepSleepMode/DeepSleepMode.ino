@@ -1,6 +1,10 @@
 /*
-  This sketch shows how to use power save deepsleep mode
-*/
+ This sketch shows how to use power save deepsleep mode
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-deepsleepmode/
+ */
+
 #include <PowerSave.h>
 
 //SET_DS_AON_TIMER_WAKEUP
@@ -38,6 +42,13 @@
     //SET_AON_GPIO_WAKEUP_PA19          // pin 8
     //SET_AON_GPIO_WAKEUP_PA15          // pin 28
     //SET_AON_GPIO_WAKEUP_PA14          // pin 29
+    //For board AMB25/AMB26
+    //SET_AON_GPIO_WAKEUP_PA12          // pin 3
+    //SET_AON_GPIO_WAKEUP_PA13          // pin 2
+    //SET_AON_GPIO_WAKEUP_PA14          // pin 1
+    //SET_AON_GPIO_WAKEUP_PA15          // pin 0
+    //SET_AON_GPIO_WAKEUP_PA25          // pin 7
+    //SET_AON_GPIO_WAKEUP_PA26          // pin 6
 
 #define DS_WAKEUP_SOURCE                SET_DS_AON_TIMER_WAKEUP
 

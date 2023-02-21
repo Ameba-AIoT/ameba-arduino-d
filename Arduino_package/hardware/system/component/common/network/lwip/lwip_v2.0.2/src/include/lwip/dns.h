@@ -92,6 +92,36 @@ extern const ip_addr_t dns_mquery_v4group;
 extern const ip_addr_t dns_mquery_v6group;
 #endif /* LWIP_IPV6 */
 
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+#define DNS_MAX_IP_ENTRIES  5
+#define DNS_STATES_DONE     3
+
+/** DNS table entry */
+struct dns_table_entry {
+  u32_t ttl;
+  ip_addr_t ipaddr[DNS_MAX_IP_ENTRIES];
+  u8_t  dns_ip_entries;
+  u16_t txid;
+  u8_t  state;
+  u8_t  server_idx;
+  u8_t  tmr;
+  u8_t  retries;
+  u8_t  seqno;
+#if ((LWIP_DNS_SECURE & LWIP_DNS_SECURE_RAND_SRC_PORT) != 0)
+  u8_t pcb_idx;
+#endif
+  char name[DNS_MAX_NAME_LENGTH];
+#if LWIP_IPV4 && LWIP_IPV6
+  u8_t reqaddrtype;
+#endif /* LWIP_IPV4 && LWIP_IPV6 */
+#if LWIP_DNS_SUPPORT_MDNS_QUERIES
+  u8_t is_mdns;
+#endif
+};
+
+extern struct dns_table_entry dns_table[DNS_TABLE_SIZE];
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
+
 /** Callback which is invoked when a hostname is found.
  * A function of this type must be implemented by the application using the DNS resolver.
  * @param name pointer to the name that was looked up.

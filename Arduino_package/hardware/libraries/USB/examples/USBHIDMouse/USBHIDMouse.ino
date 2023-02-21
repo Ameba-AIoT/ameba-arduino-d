@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-usb-mouse/
+ */
+
 #include "USBHIDDevice.h"
 #include "USBHIDMouse.h"
 

@@ -520,7 +520,8 @@ typedef unsigned long rtw_wps_type_t;
 enum {
     RTW_NETWORK_B   = 1,
 	RTW_NETWORK_BG  = 3,
-	RTW_NETWORK_BGN = 11
+	RTW_NETWORK_BGN = 11,
+	RTW_NETWORK_ABGN = 31
 };
 typedef unsigned long rtw_network_mode_t;
 

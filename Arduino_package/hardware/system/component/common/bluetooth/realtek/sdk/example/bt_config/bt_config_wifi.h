@@ -42,13 +42,13 @@
 #define DEBUG 0
 
 #if DEBUG
-	#define BC_DBG_PREFIX	"\n\r[BT Config Wifi][DBG] "
+	#define BC_DBG_PREFIX	"\r\n[BT Config Wifi][DBG] "
 	#define	BC_DBG(...)		printf(BC_DBG_PREFIX __VA_ARGS__);
 #else
 	#define BC_DBG(...)
 #endif
 
-#define BC_PREFIX		"\n\r[BT Config Wifi] "
+#define BC_PREFIX		"\r\n[BT Config Wifi] "
 #define	BC_printf(...)	printf(BC_PREFIX __VA_ARGS__);
 
 #define BC_BSSID_LEN					(6)

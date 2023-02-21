@@ -1,4 +1,21 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ap-mode/
+ */
+
 #include <WiFi.h>
+#include "WifiSerial.h"
+
+// Set if user wants to key in ssid/pwd manually during operation
+//#define MANUAL_INPUT
+
+#ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
+// Initialise strings
+String str_ssid, str_pass;
+// Create serial_in object
+WifiSerial wifiSerial;
+#endif
 
 // UTF-8 encoding can also be used for SSID with emoji characters
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
@@ -25,9 +42,40 @@ void setup() {
 
     // attempt to start AP:
     while (status != WL_CONNECTED) {
+#ifdef MANUAL_INPUT
+        Serial.println("Enter your ssid");
+        while (str_ssid.length() == 0) {
+            str_ssid = wifiSerial.readInput();
+            if (str_ssid.length() != 0) {  //user has entered data
+            Serial.print("SSID entered: ");
+            Serial.println(str_ssid.c_str());
+            }
+        }
+        Serial.println("Enter your password");
+        while (str_pass.length() == 0) {
+            str_pass = wifiSerial.readInput();
+            if (str_pass.length() != 0) {  //user has entered data
+                if (str_pass.length() <8) {  //to catch pwd<8 exception
+                    Serial.println("Password cannot be less than 8 characters! Try again");
+                    str_pass = ""; //clear entered pwd and try again
+                }
+                Serial.print("Password entered: ");
+                Serial.println(str_pass.c_str());
+            }
+        }
+#endif
         Serial.print("Attempting to start AP with SSID: ");
+#ifndef MANUAL_INPUT
         Serial.println(ssid);
         status = WiFi.apbegin(ssid, pass, channel, ssid_status);
+#else
+        char ssid_cust[str_ssid.length() + 1];
+        char pass_cust[str_pass.length() + 1];
+        strcpy(ssid_cust, str_ssid.c_str());
+        strcpy(pass_cust, str_pass.c_str());
+        Serial.println(str_ssid.c_str());
+        status = WiFi.apbegin(ssid_cust, pass_cust, channel, ssid_status);
+#endif
         delay(10000);
     }
 

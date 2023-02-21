@@ -4,15 +4,27 @@
  Then it prints the  MAC address of the Wifi shield,
  the IP address obtained, and other network details.
 
- Circuit:
- * WiFi shield attached
-
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 31 May 2012
  by Tom Igoe
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-connect-wifi/
  */
+
 #include <WiFi.h>
+#include "WifiSerial.h"
+
+// Set if user wants to key in ssid/pwd manually during operation
+//#define MANUAL_INPUT
+
+#ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
+// Initialise strings
+String str_ssid, str_pass;
+// Create serial_in object
+WifiSerial wifiSerial;
+#endif
 
 // If you are connecting to an iPhone WiFi hotspot, the default SSID uses Unicode (U+2019) Right Single Quotation Mark instead of ASCII apostrophe
 // Modify the "Your Name" section in the SSID below to connect to an iPhone using a default SSID style
@@ -21,8 +33,7 @@
 // UTF-8 encoding can also be used for SSID with emoji characters
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
-
-char ssid[] = "yourNetwork";     //  your network SSID (name)
+char ssid[] = "yourNetwork";     // your network SSID (name)
 char pass[] = "secretPassword";  // your network password
 int status = WL_IDLE_STATUS;     // the Wifi radio's status
 
@@ -42,11 +53,42 @@ void setup() {
 
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
+#ifdef MANUAL_INPUT
+        Serial.println("Enter your ssid");
+        while (str_ssid.length() == 0) {
+            str_ssid = wifiSerial.readInput();
+            if (str_ssid.length() != 0) { // user has entered data
+                Serial.print("SSID entered: ");
+                Serial.println(str_ssid.c_str());
+            }
+        }
+        Serial.println("Enter your password");
+        while (str_pass.length() == 0) {
+            str_pass = wifiSerial.readInput();
+            if (str_pass.length() != 0) {   // user has entered data
+                if (str_pass.length() <8) { // to catch pwd<8 exception
+                    Serial.println("Password cannot be less than 8 characters! Try again");
+                    str_pass = ""; // clear entered pwd and try again
+                }
+                Serial.print("Password entered: ");
+                Serial.println(str_pass.c_str());
+            }
+        }
+#endif
         Serial.print("Attempting to connect to WPA SSID: ");
+        
+#ifndef MANUAL_INPUT
         Serial.println(ssid);
         // Connect to WPA/WPA2 network:
         status = WiFi.begin(ssid, pass);
-
+#else
+        char ssid_cust[str_ssid.length() + 1];
+        char pass_cust[str_pass.length() + 1];
+        strcpy(ssid_cust, str_ssid.c_str());
+        strcpy(pass_cust, str_pass.c_str());
+        Serial.println(str_ssid.c_str());
+        status = WiFi.begin(ssid_cust, pass_cust);
+#endif
         // wait 10 seconds for connection:
         delay(10000);
     }

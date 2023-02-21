@@ -5,6 +5,7 @@
 #include <platform/platform_stdlib.h>
 #include <platform_opts.h>
 
+#include "lwip/netdb.h"
 #define MAX_RECV_SIZE 1500
 #define MAX_SEND_SIZE 256
 #define UDP_SERVER_PORT 5002
@@ -492,3 +493,80 @@ void ipv6_udp_server(void) {
     return;
 }
 
+// OTA
+// OTA TCP bind() process
+int ota_bind_socket(int server_socket, int OTAport) {
+    struct sockaddr_in server_addr;
+
+    // create socket
+    server_socket = socket(AF_INET, SOCK_STREAM, 0);
+    if (server_socket < 0) {
+        printf("\n[Error] Can not create socket\n");
+        return -1;
+    }
+    // initilize structure dest
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(OTAport);
+    server_addr.sin_addr.s_addr = INADDR_ANY;
+
+    // Assigna port number to the socket
+    if (bind(server_socket, (struct sockaddr *)&server_addr,
+             sizeof(server_addr)) == -1) {
+        printf("\n[Error] Socket connect failed\n");
+        closesocket(server_socket);
+        return -1;
+    }
+    ota_listen_socket(server_socket, OTAport);
+
+    return server_socket;
+}
+
+// OTA listen() for incoming TCP socket sent by OTA Server
+void ota_listen_socket(int server_socket, int OTAport){
+    listen(server_socket, 10);
+    printf("<Arduino>\r\nListening on port %d.\n", OTAport);
+}
+
+// OTA accept() TCP socket and return incoming Port and IP Address
+int ota_accept_socket(int server_socket){
+    int enable = 1;
+    int timeout;
+    int client_socket;
+    int err;
+    struct sockaddr_in cli_addr;
+
+    socklen_t client = sizeof(cli_addr);
+
+    do {
+        client_socket = lwip_accept(server_socket, ((struct sockaddr *)&cli_addr), &client);
+        if (client_socket < 0) {
+            err = get_sock_errno(server_socket);
+            if (err != EAGAIN) {
+                break;
+            }
+        }
+    } while (client_socket < 0);
+
+    if (client_socket < 0) {
+        printf("\n[%s] [ERROR] Accept connection failed\n", __FUNCTION__);
+        return -1;
+    } else {
+        timeout = 3000;
+        lwip_setsockopt(client_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout,
+                        sizeof(timeout));
+        timeout = 30000;
+        lwip_setsockopt(client_socket, SOL_SOCKET, SO_SNDTIMEO, &timeout,
+                        sizeof(timeout));
+        lwip_setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &enable,
+                        sizeof(enable));
+        lwip_setsockopt(client_socket, SOL_SOCKET, SO_KEEPALIVE, &enable,
+                        sizeof(enable));
+        printf("[%s] [INFO] Accept connection successfully\n", __FUNCTION__);
+        printf(
+            "\r\nOTA server connected to this client :\r\n[PORT]: "
+            "%d\r\n[IP]:%s\r\n\r\n",
+            ntohs(cli_addr.sin_port), inet_ntoa(cli_addr.sin_addr.s_addr));
+        return client_socket;
+    }
+}

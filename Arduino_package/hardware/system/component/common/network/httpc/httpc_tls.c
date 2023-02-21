@@ -199,7 +199,11 @@ exit:
 				goto exit;
 			}
 
+#if CONFIG_MBEDTLS_VERSION3 == 1
+			if((ret = mbedtls_pk_parse_key(&tls->key, (const unsigned char *) client_key, strlen(client_key) + 1, NULL, 0, rtw_get_random_bytes_f_rng, (void*)1 )) != 0) {
+#else
 			if((ret = mbedtls_pk_parse_key(&tls->key, (const unsigned char *) client_key, strlen(client_key) + 1, NULL, 0)) != 0) {
+#endif
 				printf("\n[HTTPC] ERROR: mbedtls_pk_parse_key %d\n", ret);
 				ret = -1;
 				goto exit;

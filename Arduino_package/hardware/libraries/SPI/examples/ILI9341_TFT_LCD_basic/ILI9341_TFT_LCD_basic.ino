@@ -7,8 +7,10 @@
  * An ILI9341 TFT LCD with SPI interface can be used with spi to
  * send command and data. We can draw text, line, circle, and
  * other picture on it.
- * 
- **/
+ *
+ * Example guide:
+ * https://www.amebaiot.com/en/amebad-arduino-spi-lcd/
+ */
 
 #include "SPI.h"
 #include "AmebaILI9341.h"
@@ -19,8 +21,9 @@
 #define TFT_RESET       4
 #define TFT_DC          5
 #define TFT_CS          SPI_SS
+#define SPI_BUS         SPI
 
-AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
+AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET, SPI_BUS);
 
 #define ILI9341_SPI_FREQUENCY 20000000
 
@@ -29,7 +32,7 @@ void setup() {
     Serial.println("ILI9341 Test!"); 
 
     tft.begin();
-    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
+    SPI_BUS.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
 
     Serial.println("test filling screen");
     testFillScreen();

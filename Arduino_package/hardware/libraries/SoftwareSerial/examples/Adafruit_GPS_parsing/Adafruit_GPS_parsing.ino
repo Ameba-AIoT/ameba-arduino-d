@@ -11,6 +11,12 @@
 // Pick one up today at the Adafruit electronics shop 
 // and help support open source hardware & software! -ada
 
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-uart-gps/
+ */
+
 #include <Adafruit_GPS.h>
 #include <SoftwareSerial.h>
 

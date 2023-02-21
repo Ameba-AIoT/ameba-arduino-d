@@ -50,6 +50,10 @@ typedef struct {
     unsigned char y[16];        /*!< Y working value */
     unsigned char buf[16];      /*!< buf working value */
     int mode;                   /*!< Encrypt or Decrypt */
+#ifdef RTL_HW_CRYPTO
+	unsigned int keybytes;
+	unsigned char key[32];
+#endif
 }
 mbedtls_gcm_context;
 

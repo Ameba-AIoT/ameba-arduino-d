@@ -14,16 +14,28 @@
  D0D0DEADF00DABBADEAFBEADED will work because it's 26 characters,
  all in the 0-9, A-F range.
 
- Circuit:
- * WiFi shield attached
-
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 31 May 2012
  by Tom Igoe
- */
-#include <WiFi.h>
 
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-connect-wifi/
+ */
+
+#include <WiFi.h>
+#include "WifiSerial.h"
+
+
+// Set if user wants to key in ssid/pwd manually during operation
+//#define MANUAL_INPUT 
+
+#ifdef MANUAL_INPUT // initialise ssid string, pwd string, and serial_in object
+// Initialise strings
+String str_ssid, str_pass, str_key;
+// Create serial_in object
+WifiSerial wifiSerial;
+#endif
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
 #define password_type                           0
 
@@ -63,14 +75,59 @@ void setup() {
 
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
+#ifdef MANUAL_INPUT
+        Serial.println("Enter your ssid");
+        while (str_ssid.length() == 0) {
+            str_ssid = wifiSerial.readInput();
+            if (str_ssid.length() != 0) { // user has entered data
+                Serial.print("SSID entered: ");
+                Serial.println(str_ssid.c_str());
+            }
+        }
+
+        Serial.println("Enter your network key index number");
+        while (str_key.length() == 0) {
+            str_key = wifiSerial.readInput();
+                if (str_key.length() != 0) { // user has entered data
+                    Serial.print("key entered: ");
+                    Serial.println(str_key.c_str());
+                }
+        }
+
+        Serial.println("Enter your password");
+        while (str_pass.length() == 0) {
+            str_pass = wifiSerial.readInput();
+                if (str_pass.length() != 0) { // user has entered data
+                    if (str_pass.length() <8) { // to catch password length < 8 exception
+                        Serial.println("Password cannot be less than 8 characters! Try again");
+                        str_pass = ""; // clear entered pwd and try again
+                    }
+                    Serial.print("Password entered: ");
+                    Serial.println(str_pass.c_str());
+                }
+        }
+#endif
+
         Serial.print("Attempting to connect to WEP network, SSID: ");
+#ifndef MANUAL_INPUT
         Serial.println(ssid);
-#if (password_type == 0)
+    #if (password_type == 0)
         status = WiFi.begin(ssid, keyIndex, key);
-#elif (password_type == 1)
+    #elif (password_type == 1)
         status = WiFi.begin(ssid, keyIndex, pass);
+    #else
+        #error                                       // Error unsupported password type
+    #endif
 #else
-    #error                                       // Error unsupported password type
+        char ssid_cust[str_ssid.length()+1];
+        char key_cust[str_key.length()+1];
+        char pass_cust[str_pass.length()+1];
+        strcpy(ssid_cust, str_ssid.c_str());
+        strcpy(key_cust, str_key.c_str());
+        strcpy(pass_cust, str_pass.c_str());
+        Serial.println(str_ssid.c_str());
+        status = WiFi.begin(ssid_cust,atoi(key_cust), pass_cust);
+        str_ssid, str_key, str_pass = "";
 #endif
         // wait 10 seconds for connection:
         delay(10000);

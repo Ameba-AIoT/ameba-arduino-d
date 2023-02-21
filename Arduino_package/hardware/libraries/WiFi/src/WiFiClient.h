@@ -1,5 +1,5 @@
-#ifndef wificlient_h
-#define wificlient_h
+#ifndef WifiClient_h
+#define WifiClient_h
 
 #include "Print.h"
 #include "Client.h"
@@ -8,34 +8,34 @@
 #include "server_drv.h"
 
 class WiFiClient : public Client {
-	public:
-	    WiFiClient();
-	    WiFiClient(uint8_t sock);
+    public:
+        WiFiClient();
+        WiFiClient(uint8_t sock);
 
-	    uint8_t status();
-	    virtual uint8_t connected();
-	    virtual int available();
-	    virtual int read();
-	    virtual int read(uint8_t *buf, size_t size);
-	    virtual int recv(uint8_t *buf, size_t size);
-	    virtual void stop();
-	    virtual size_t write(uint8_t);
-	    virtual size_t write(const uint8_t *buf, size_t size);
-	    virtual operator bool();
-	    virtual int connect(const char *host, uint16_t port);
-	    virtual int connect(IPAddress ip, uint16_t port);
-	    virtual int connectv6(IPv6Address ipv6, uint16_t port);
-	    virtual int peek();
-	    virtual void flush();
-	    // extend API from RTK
-	    int setRecvTimeout(int timeout);
-	    int read(char *buf, size_t size);
-	    // IPv6 related
-	    int enableIPv6();
-	    int getIPv6Status();
+        uint8_t status();
+        virtual uint8_t connected();
+        virtual int available();
+        virtual int read();
+        virtual int read(uint8_t *buf, size_t size);
+        virtual int recv(uint8_t *buf, size_t size);
+        virtual void stop();
+        virtual size_t write(uint8_t);
+        virtual size_t write(const uint8_t *buf, size_t size);
+        virtual operator bool();
+        virtual int connect(const char *host, uint16_t port);
+        virtual int connect(IPAddress ip, uint16_t port);
+        virtual int connectv6(IPv6Address ipv6, uint16_t port);
+        virtual int peek();
+        virtual void flush();
+        // extend API from RTK
+        int setRecvTimeout(int timeout);
+        int read(char *buf, size_t size);
+        // IPv6 related
+        int enableIPv6();
+        int getIPv6Status();
 
-	    friend class WiFiServer;
-	    using Print::write;
+        friend class WiFiServer;
+        using Print::write;
 
     private:
         int _sock;

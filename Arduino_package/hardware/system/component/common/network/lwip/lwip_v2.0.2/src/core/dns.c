@@ -219,6 +219,7 @@ typedef enum {
   DNS_STATE_DONE             = 3
 } dns_state_enum_t;
 
+#if !LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
 /** DNS table entry */
 struct dns_table_entry {
   u32_t ttl;
@@ -240,6 +241,7 @@ struct dns_table_entry {
   u8_t is_mdns;
 #endif
 };
+#endif /* !(LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP) */
 
 /** DNS request table entry: used when dns_gehostbyname cannot answer the
  * request from the DNS table */
@@ -299,7 +301,11 @@ static struct udp_pcb        *dns_pcbs[DNS_MAX_SOURCE_PORTS];
 static u8_t                   dns_last_pcb_idx;
 #endif
 static u8_t                   dns_seqno;
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+struct dns_table_entry dns_table[DNS_TABLE_SIZE];
+#else
 static struct dns_table_entry dns_table[DNS_TABLE_SIZE];
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
 static struct dns_req_entry   dns_requests[DNS_MAX_REQUESTS];
 static ip_addr_t              dns_servers[DNS_MAX_SERVERS];
 
@@ -620,6 +626,19 @@ dns_lookup(const char *name, ip_addr_t *addr LWIP_DNS_ADDRTYPE_ARG(u8_t dns_addr
 
   /* Walk through name list, return entry if found. If not, return NULL. */
   for (i = 0; i < DNS_TABLE_SIZE; ++i) {
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+    if ((dns_table[i].state == DNS_STATE_DONE) &&
+        (lwip_strnicmp(name, dns_table[i].name, sizeof(dns_table[i].name)) == 0) &&
+        LWIP_DNS_ADDRTYPE_MATCH_IP(dns_addrtype, dns_table[i].ipaddr[0])) {
+      LWIP_DEBUGF(DNS_DEBUG, ("dns_lookup: \"%s\": found = ", name));
+      ip_addr_debug_print(DNS_DEBUG, &(dns_table[i].ipaddr[0]));
+      LWIP_DEBUGF(DNS_DEBUG, ("\n"));
+      if (addr) {
+        ip_addr_copy(*addr, dns_table[i].ipaddr[0]);
+      }
+      return ERR_OK;
+    }
+#else
     if ((dns_table[i].state == DNS_STATE_DONE) &&
         (lwip_strnicmp(name, dns_table[i].name, sizeof(dns_table[i].name)) == 0) &&
         LWIP_DNS_ADDRTYPE_MATCH_IP(dns_addrtype, dns_table[i].ipaddr)) {
@@ -631,6 +650,7 @@ dns_lookup(const char *name, ip_addr_t *addr LWIP_DNS_ADDRTYPE_ARG(u8_t dns_addr
       }
       return ERR_OK;
     }
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
   }
 
   return ERR_ARG;
@@ -1139,6 +1159,9 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
   struct dns_answer ans;
   struct dns_query qry;
   u16_t nquestions, nanswers;
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+  u8_t ip_entry = 0;
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
 
   LWIP_UNUSED_ARG(arg);
   LWIP_UNUSED_ARG(pcb);
@@ -1236,11 +1259,17 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
                   if (pbuf_copy_partial(p, &ip4addr, sizeof(ip4_addr_t), res_idx) != sizeof(ip4_addr_t)) {
                     goto memerr; /* ignore this packet */
                   }
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+                  if (ip_entry < DNS_MAX_IP_ENTRIES) {
+                    ip_addr_copy_from_ip4(dns_table[i].ipaddr[ip_entry], ip4addr);
+                  }
+#else
                   ip_addr_copy_from_ip4(dns_table[i].ipaddr, ip4addr);
                   pbuf_free(p);
                   /* handle correct response */
                   dns_correct_response(i, lwip_ntohl(ans.ttl));
                   return;
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
                 }
               }
 #endif /* LWIP_IPV4 */
@@ -1255,21 +1284,40 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
                   if (pbuf_copy_partial(p, &ip6addr, sizeof(ip6_addr_t), res_idx) != sizeof(ip6_addr_t)) {
                     goto memerr; /* ignore this packet */
                   }
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+                  if (ip_entry < DNS_MAX_IP_ENTRIES) {
+                    ip_addr_copy_from_ip6(dns_table[i].ipaddr[ip_entry], ip6addr);
+                  }
+#else
                   ip_addr_copy_from_ip6(dns_table[i].ipaddr, ip6addr);
                   pbuf_free(p);
                   /* handle correct response */
                   dns_correct_response(i, lwip_ntohl(ans.ttl));
                   return;
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
                 }
               }
 #endif /* LWIP_IPV6 */
             }
+#if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
+            --nanswers;
+            ip_entry++;
+            if((nanswers == 0) || (ip_entry >= DNS_MAX_IP_ENTRIES)) {
+              dns_table[i].dns_ip_entries = ip_entry;
+              pbuf_free(p);
+              /* handle correct response */
+              dns_correct_response(i, lwip_ntohl(ans.ttl));
+              return;
+            }
+#endif /* LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP */
             /* skip this answer */
             if ((int)(res_idx + lwip_htons(ans.len)) > 0xFFFF) {
               goto memerr; /* ignore this packet */
             }
             res_idx += lwip_htons(ans.len);
+#if !LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
             --nanswers;
+#endif /* !(LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP) */
           }
 #if LWIP_IPV4 && LWIP_IPV6
           if ((entry->reqaddrtype == LWIP_DNS_ADDRTYPE_IPV4_IPV6) ||

@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-googlecloud/
+ */
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <NTPClient.h>

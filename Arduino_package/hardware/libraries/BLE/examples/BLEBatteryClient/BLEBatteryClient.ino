@@ -1,3 +1,8 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-battery-client/
+ */
 
 #include "BLEDevice.h"
 

@@ -9,6 +9,11 @@
 
 // This example code is in the public domain.
 
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-i2c-4/
+ */
 
 #include <Wire.h>
 

@@ -1,17 +1,18 @@
 /*
 
  This example connects to an unencrypted Wifi network.
- Then it prints the  MAC address of the Wifi shield,
+ Then it prints the MAC address of the Wifi shield,
  the IP address obtained, and other network details.
-
- Circuit:
- * WiFi shield attached
 
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 31 May 2012
  by Tom Igoe
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-connect-wifi/
  */
+
 #include <WiFi.h>
 
 // If you are connecting to an iPhone WiFi hotspot, the default SSID uses Unicode (U+2019) Right Single Quotation Mark instead of ASCII apostrophe

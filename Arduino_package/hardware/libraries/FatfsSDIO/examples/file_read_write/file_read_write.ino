@@ -1,5 +1,8 @@
 /*
  This sketch shows how to open/close file and perform read/write to it.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-fatfssdio/
  */
 
 #include "FatFs_SD.h"

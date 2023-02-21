@@ -3,6 +3,8 @@
 
 #include "Print.h"
 #include <cstdint>
+#include "SPI.h"
+
 
 #define ILI9341_TFTWIDTH     240
 #define ILI9341_TFTHEIGHT    320
@@ -92,7 +94,7 @@
 class AmebaILI9341 : public Print {
 
 public:
-    AmebaILI9341(int csPin, int dcPin, int resetPin);
+    AmebaILI9341(int csPin, int dcPin, int resetPin, SPIClass& targetSPI = SPI);
 
     void begin(void);
 
@@ -152,6 +154,7 @@ private:
     uint16_t background;
     uint8_t fontsize;
     uint8_t rotation;
+    SPIClass& _spi;
 };
 
 #endif

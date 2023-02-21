@@ -7,7 +7,10 @@
  http://www.arduino.cc/en/Tutorial/Sweep
 
  refined 2016/03/18 by Realtek
-*/
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-pwm-servo/
+ */
 
 #include <AmebaServo.h>
 

@@ -1,3 +1,8 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ble-battery/
+ */
 
 #include "BLEDevice.h"
 
@@ -40,7 +45,7 @@ void setup() {
     battChar.setCCCDCallback(notifCB);
 
     battService.addCharacteristic(battChar);
-    
+
     BLE.init();
     BLE.configAdvert()->setAdvData(advdata);
     BLE.configAdvert()->setScanRspData(scandata);

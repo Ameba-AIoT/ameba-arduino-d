@@ -1,6 +1,9 @@
 /*
-   This sketch shows how to use several hardware timers in invoke handler only once for each timer.
-*/
+ This sketch shows how to use several hardware timers in invoke handler only once for each timer.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-singleuse-timer/
+ */
 
 #include <GTimer.h>
 

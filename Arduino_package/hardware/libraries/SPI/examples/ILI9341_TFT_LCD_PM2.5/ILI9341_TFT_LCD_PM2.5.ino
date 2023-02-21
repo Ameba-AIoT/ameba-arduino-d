@@ -13,14 +13,17 @@
 
  For all supports boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), ILI9341 TFT LCD with SPI interface has these pins:
     Select 2 GPIO pins connect to RST and D/C. And default SPI/SPI1 connect to CS, MOSI, MISO and CLK.
-    RST  : connect to pin 8
-    D/C  : connect to pin 9
+    RST  : connect to pin 4
+    D/C  : connect to pin 5
     CS   : connect to SPI_SS
     MOSI : connect to SPI_MOSI
     MISO : connect to SPI_MISO
     CLK  : connect to SPI_SCLK
     VCC  : connect to 3V3
     GND  : connect to GND
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-spi-lcd-pm2-5/
  */
 
 #include <SoftwareSerial.h>
@@ -34,8 +37,9 @@ SoftwareSerial mySerial(SERIAL1_RX, SERIAL1_TX); // RX, TX
 #define TFT_RESET       4
 #define TFT_DC          5
 #define TFT_CS          SPI_SS
+#define SPI_BUS         SPI
 
-AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET);
+AmebaILI9341 tft = AmebaILI9341(TFT_CS, TFT_DC, TFT_RESET, SPI_BUS);
 
 #define ILI9341_SPI_FREQUENCY 20000000
 
@@ -65,7 +69,7 @@ void setup() {
     mySerial.begin(9600); // PMS 3003 UART has baud rate 9600
 
     tft.begin();
-    SPI.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
+    SPI_BUS.setDefaultFrequency(ILI9341_SPI_FREQUENCY);
     
     drawPictureFrames();
 }

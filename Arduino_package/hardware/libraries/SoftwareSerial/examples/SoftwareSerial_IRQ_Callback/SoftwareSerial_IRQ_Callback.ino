@@ -17,6 +17,15 @@
               (BOARD RTL8720DN / BW16)
  * RX is digital pin PB2 (connect to the other device TX)
  * TX is digital pin PB1 (connect to the other device RX)
+               (BOARD RTL8721DM)
+ * RX is digital pin 3 (connect to the other device TX)
+ * TX is digital pin 4 (connect to the other device RX)
+              (BOARD RTL8720DF)
+ * RX is digital pin 17 (connect to the other device TX)
+ * TX is digital pin 16 (connect to the other device RX)
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-uart-callback/
  */
 
 #include <SoftwareSerial.h>

@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-sinewave/
+ */
+
 #include "AudioCodec.h"
 
 #define SAMPLERATE 16000

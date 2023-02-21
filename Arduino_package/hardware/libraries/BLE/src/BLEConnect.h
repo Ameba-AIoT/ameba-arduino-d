@@ -26,7 +26,7 @@ class BLEConnect {
 
         void setScanInterval(uint16_t scanInt_ms);
         void setScanWindow(uint16_t scanWindow_ms);
-        
+
         void setConnInterval(uint16_t min_ms, uint16_t max_ms);
         void setConnLatency(uint16_t latency);
         void setConnTimeout(uint16_t timeout_ms);

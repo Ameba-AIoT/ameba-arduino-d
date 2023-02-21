@@ -1,5 +1,5 @@
-#ifndef wifiserver_h
-#define wifiserver_h
+#ifndef WifiServer_h
+#define WifiServer_h
 
 #include "Server.h"
 #include "server_drv.h"

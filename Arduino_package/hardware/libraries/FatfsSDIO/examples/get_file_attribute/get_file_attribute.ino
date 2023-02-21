@@ -1,5 +1,8 @@
 /*
  This sketch shows how to check whether a item is a directory or a file.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-fatfssdio/
  */
 
 #include "FatFs_SD.h"

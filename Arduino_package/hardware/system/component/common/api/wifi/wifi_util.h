@@ -94,9 +94,14 @@ int wext_add_mac_filter(unsigned char* hwaddr);
 int wext_del_mac_filter(unsigned char* hwaddr);
 void wext_set_indicate_mgnt(int enable);
 int wext_get_bcn_rssi(const char *ifname, int *rssi);
+int wext_set_bcn_period(__u8 period);
+#if defined(CONFIG_IEEE80211K)
+void wext_set_enable_80211k(__u8 enable);
+#endif
 void wext_set_powersave_mode(__u8 ps_mode);
 int wext_set_ant_div_gpio(__u8 type);
 int wext_set_bw40_enable(__u8 enable);
+int wext_set_uapsd_enable(__u8 enable);
 #ifdef CONFIG_SW_MAILBOX_EN
 int wext_mailbox_to_wifi(const char *ifname, char *buf, __u16 buf_len);
 #endif

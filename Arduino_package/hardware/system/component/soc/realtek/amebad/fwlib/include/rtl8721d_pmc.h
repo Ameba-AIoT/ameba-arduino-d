@@ -187,7 +187,7 @@ typedef struct
 } WIFICFG_TypeDef;
 
 extern PSCFG_TypeDef ps_config;
-extern WIFICFG_TypeDef wifi_config;
+extern WIFICFG_TypeDef rtk_wifi_config;
 
 void SOCPS_SetWakeEventAON(u32 Option, u32 NewStatus);
 void SOCPS_SleepCG_RAM(VOID);
