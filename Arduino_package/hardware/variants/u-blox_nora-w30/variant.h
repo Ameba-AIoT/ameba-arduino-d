@@ -70,8 +70,8 @@ extern void wait_for_debug(void);
 #define A1                                      4  // PA_30   NORA_B1   LED_RED
 #define A2                                      8  // PA_27   NORA_H2   SWDIO
 #define A3                                      5  // PA_28   NORA_B3   USB_RREF
-#define A4                                      6  // PA_26   NORA_C1   I2C1_SDA
-#define A5                                      7  // PA_25   NORA_C2   I2C1_SCL
+#define A4                                      6  // PA_26   NORA_C1   LP_I2C_SDA
+#define A5                                      7  // PA_25   NORA_C2   LP_I2C_SCL
 
 // NORA-W30 module pad names
 #define NORA_A5                                 12 // PA_7    NORA_A5   UART_LOG_TX 
