@@ -53,25 +53,25 @@ extern void wait_for_debug(void);
 #define EVK_D1                                  16 // PB_19   NORA_G8   UART_TXD
 #define EVK_D2                                  19 // PB_20   NORA_F9   I2C_SCL / UART_CTS
 #define EVK_D3                                  18 // PB_21   NORA_F8   I2C_SDA / UART_RTS
-//      EVK_D4 .. D8                            NC
-#define EVK_D9                                  5  // PA_28   NORA_B3   SPI_CS
-#define EVK_D10                                 7  // PA_25   NORA_C2   SPI_MOSI
-#define EVK_D11                                 6  // PA_26   NORA_C1   SPI_MISO
-#define EVK_D12                                 4  // PA_30   NORA_B1   SPI_SCLK
-//      EVK_D13                                 NC
-#define EVK_D14                                 12 // PA_7    NORA_A5   DBG_TX 
-#define EVK_D15                                 13 // PA_8    NORA_A6   DBG_RX
-#define EVK_D16                                 1  // PA_14   NORA_H9   LED_BLUE
-#define EVK_D17                                 0  // PA_15   NORA_H8   LED_GREEN
-#define EVK_D18                                 3  // PA_12   NORA_J9
-#define EVK_D19                                 2  // PA_13   NORA_J8   LED_RED
+//      EVK_D4 .. D9                            NC
+#define EVK_D10                                 0  // PA_15   NORA_H8   LED_GREEN
+#define EVK_D11                                 3  // PA_12   NORA_J9
+#define EVK_D12                                 2  // PA_13   NORA_J8   LED_RED
+#define EVK_D13                                 1  // PA_14   NORA_H9   LED_BLUE
+
+#define EVK_D14                                 11 // PB_1    NORA_D8   SW1
+#define EVK_D15                                 10 // PB_2    NORA_E8   UART_DTR
+#define EVK_D16                                 14 // PB_23   NORA_C8   SW2
+#define EVK_D17                                 15 // PB_22   NORA_E9   UART_DSR
+#define EVK_D18                                 12 // PA_7    NORA_A5   DBG_TX
+#define EVK_D19                                 13 // PA_8    NORA_A6   DBG_RX 
 // Analog pin mapping
 #define A0                                      9  // PB_3    NORA_J2
-#define A1                                      11 // PB_1    NORA_D8   SW1
+#define A1                                      4  // PA_30   NORA_B1   SPI_SCLK
 #define A2                                      8  // PA_27   NORA_H2
-#define A3                                      14 // PB_23   NORA_C8   SW2
-#define A4                                      15 // PB_22   NORA_E9   UART_DSR
-#define A5                                      10 // PB_2    NORA_E8   UART_DTR
+#define A3                                      5  // PA_28   NORA_B3   SPI_CS
+#define A4                                      6  // PA_26   NORA_C1   SPI_MISO
+#define A5                                      7  // PA_25   NORA_C2   SPI_MOSI
 
 // NORA-W30 module pad names
 #define NORA_A5                                 12 // PA_7    NORA_A5   DBG_TX 
