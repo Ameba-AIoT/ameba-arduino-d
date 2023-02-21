@@ -110,10 +110,10 @@ extern void wait_for_debug(void);
 //#define FEATURE_DAC
 
 /* SPI pin mapping */
-#define SPI_SS                                  0  // PA_15   NORA_H8   SPI_CS
 #define SPI_MOSI                                3  // PA_12   NORA_J9   SPI_MOSI
 #define SPI_MISO                                2  // PA_13   NORA_J8   SPI_MISO
 #define SPI_SCLK                                1  // PA_14   NORA_H9   SPI_SCLK
+#define SPI_SS                                  0  // PA_15   NORA_H8   SPI_CS
 
 /* TwoWire/I2C pin mapping */
 #define I2C_SDA                                 18 // PB_21   NORA_F8   HS_I2C_SDA / HS_UART_RTS
