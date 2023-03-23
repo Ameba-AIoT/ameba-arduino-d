@@ -172,12 +172,12 @@ int32_t WiFiClass::RSSI(uint8_t networkItem)
 
 uint8_t WiFiClass::encryptionType(uint8_t networkItem)
 {
-    return WiFiDrv::getEncTypeNetowrks(networkItem);
+    return WiFiDrv::getEncTypeNetworks(networkItem);
 }
 
 uint32_t WiFiClass::encryptionTypeEx(uint8_t networkItem)
 {
-    return WiFiDrv::getEncTypeNetowrksEx(networkItem);
+    return WiFiDrv::getEncTypeNetworksEx(networkItem);
 }
 
 uint8_t WiFiClass::status()

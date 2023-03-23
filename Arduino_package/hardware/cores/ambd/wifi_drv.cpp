@@ -530,8 +530,7 @@ char* WiFiDrv::getSSIDNetworks(uint8_t networkItem)
     return _networkSsid[networkItem];
 }
 
-uint8_t WiFiDrv::getEncTypeNetowrks(uint8_t networkItem)
-{
+uint8_t WiFiDrv::getEncTypeNetworks(uint8_t networkItem) {
     if (networkItem >= WL_NETWORKS_LIST_MAXNUM) {
         //return NULL;
         return 0;
@@ -541,18 +540,21 @@ uint8_t WiFiDrv::getEncTypeNetowrks(uint8_t networkItem)
 
     if (_networkEncr[networkItem] == RTW_SECURITY_OPEN) {
         encType = ENC_TYPE_NONE;
-    } else if (_networkEncr[networkItem] & AES_ENABLED) {
-        encType = ENC_TYPE_CCMP;
-    } else if (_networkEncr[networkItem] & TKIP_ENABLED) {
-        encType = ENC_TYPE_TKIP;
-    } else if (_networkEncr[networkItem] == RTW_SECURITY_WEP_PSK) {
+    } else if (_networkEncr[networkItem] & WPA3_SECURITY) {
+        encType = ENC_TYPE_WPA3;
+    } else if (_networkEncr[networkItem] & WPA2_SECURITY) {
+        encType = ENC_TYPE_WPA2;
+    } else if (_networkEncr[networkItem] & WPA_SECURITY) {
+        encType = ENC_TYPE_WPA;
+    } else if (_networkEncr[networkItem] & WEP_ENABLED) {
         encType = ENC_TYPE_WEP;
     }
 
     return encType;
 }
 
-uint32_t WiFiDrv::getEncTypeNetowrksEx(uint8_t networkItem)
+
+uint32_t WiFiDrv::getEncTypeNetworksEx(uint8_t networkItem)
 {
     //return ((networkItem >= WL_NETWORKS_LIST_MAXNUM) ? NULL : _networkEncr[networkItem]);
     return ((networkItem >= WL_NETWORKS_LIST_MAXNUM) ? 0 : _networkEncr[networkItem]);
