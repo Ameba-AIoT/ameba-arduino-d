@@ -131,24 +131,23 @@ void printEncryptionType(int thisType) {
     // read the encryption type and print out the name:
     switch (thisType) {
         case ENC_TYPE_WEP:
-            Serial.print("WEP");
+            Serial.println("WEP");
             break;
         case ENC_TYPE_WPA:
-            Serial.print("WPA");
+            Serial.println("WPA");
             break;
         case ENC_TYPE_WPA2:
-            Serial.print("WPA2");
+            Serial.println("WPA2");
             break;
         case ENC_TYPE_WPA3:
-            Serial.print("WPA3");
+            Serial.println("WPA3");
             break;
         case ENC_TYPE_NONE:
-            Serial.print("None");
+            Serial.println("None");
             break;
         case ENC_TYPE_AUTO:
-            Serial.print("Auto");
+            Serial.println("Auto");
             break;
     }
-    Serial.println();
 }
 
