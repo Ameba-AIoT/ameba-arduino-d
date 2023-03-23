@@ -253,7 +253,7 @@ class WiFiDrv
          *
          * return: encryption type (enum wl_enc_type) of the specified item on the networks scanned list
          */
-        static uint8_t getEncTypeNetowrks(uint8_t networkItem);
+        static uint8_t getEncTypeNetworks(uint8_t networkItem);
 
         /*
          * Return the security type and encryption type of the networks discovered during the scanNetworks
@@ -262,7 +262,7 @@ class WiFiDrv
          *
          * return: security and encryption type of the specified item on the networks scanned list
          */
-        static uint32_t getEncTypeNetowrksEx(uint8_t networkItem);
+        static uint32_t getEncTypeNetworksEx(uint8_t networkItem);
 
         /*
          * Resolve the given hostname to an IP address.

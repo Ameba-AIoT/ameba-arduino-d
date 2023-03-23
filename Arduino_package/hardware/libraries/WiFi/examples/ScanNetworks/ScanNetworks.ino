@@ -118,8 +118,14 @@ void printEncryptionTypeEx(uint32_t thisType) {
         case SECURITY_WPA_WPA2_MIXED:
             Serial.print("WPA/WPA2 AES");
             break;
+        case SECURITY_WPA3_AES_PSK:
+            Serial.print("WPA3 AES");
+            break;
+        case SECURITY_WPA2_WPA3_MIXED:
+            Serial.print("WPA2/WPA3");
     }
 }
+
 
 void printEncryptionType(int thisType) {
     // read the encryption type and print out the name:
@@ -127,11 +133,14 @@ void printEncryptionType(int thisType) {
         case ENC_TYPE_WEP:
             Serial.println("WEP");
             break;
-        case ENC_TYPE_TKIP:
+        case ENC_TYPE_WPA:
             Serial.println("WPA");
             break;
-        case ENC_TYPE_CCMP:
+        case ENC_TYPE_WPA2:
             Serial.println("WPA2");
+            break;
+        case ENC_TYPE_WPA3:
+            Serial.println("WPA3");
             break;
         case ENC_TYPE_NONE:
             Serial.println("None");
@@ -141,3 +150,4 @@ void printEncryptionType(int thisType) {
             break;
     }
 }
+
