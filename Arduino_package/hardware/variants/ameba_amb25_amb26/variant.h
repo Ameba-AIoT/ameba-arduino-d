@@ -42,13 +42,10 @@ extern void wait_for_debug(void);
 }
 #endif
 
-#define MAIN_THREAD_STACK_SIZE                  (4096 * 4)
-
-#define TOTAL_GPIO_PIN_NUM                      (20)
-#define TOTAL_PWM_PIN_NUM                       (12)
-
+#define MAIN_THREAD_STACK_SIZE      (4096 * 4)
+#define TOTAL_GPIO_PIN_NUM          (20)
+#define TOTAL_PWM_PIN_NUM           (12)
 #define digitalPinToInterrupt(p)    (((p)<TOTAL_GPIO_PIN_NUM)?(p):-1)
-
 
 /* Digital pin mapping refer to g_APinDescription */
 #define AMB_D0                                  0  // PA_15
@@ -72,12 +69,37 @@ extern void wait_for_debug(void);
 #define AMB_D18                                 18 // PB_21
 #define AMB_D19                                 19 // PB_20
 
+#define PB23                                    AMB_D14
+#define PB22                                    AMB_D15
+#define PB21                                    AMB_D18
+#define PB20                                    AMB_D19
+#define PB19                                    AMB_D16
+#define PB18                                    AMB_D17
+#define PA27                                    AMB_D8
+#define PA28                                    AMB_D5
+#define PA25                                    AMB_D7
+#define PA26                                    AMB_D6
+#define PB1                                     AMB_D11
+#define PB2                                     AMB_D10
+#define PB3                                     AMB_D9
+#define PA12                                    AMB_D3
+#define PA13                                    AMB_D2
+#define PA14                                    AMB_D1
+#define PA15                                    AMB_D0
+#define PA8                                     AMB_D13
+#define PA7                                     AMB_D12
+#define PB30                                    AMB_D4
 
 /* Analog pin mapping */
-#define A4                                      AMB_D11 // PB_1    3.3V    CH4
-#define A5                                      AMB_D10 // PB_2    3.3V    CH5
-#define A6                                      AMB_D9  // PB_3    3.3V    CH6
+#define A4                                      AMB_D11 // PB_1 3.3V    CH4
+#define A5                                      AMB_D10 // PB_2 3.3V    CH5
+#define A6                                      AMB_D9  // PB_3 3.3V    CH6
 
+/* LED pin mapping */
+#define LED_G                                   AMB_D3  // Green
+#define LED_R                                   AMB_D2  // Red
+#define LED_B                                   AMB_D1  // Blue
+#define LED_BUILTIN                             LED_G   // Green
 
 /* ADC/DAC pin mapping */
 #define FEATURE_ADC
@@ -97,11 +119,9 @@ extern void wait_for_debug(void);
 #define I2C_SDA                                 AMB_D6  // PA_26
 #define I2C_SCL                                 AMB_D7  // PA_25
 
-
 /* IR Device pin mapping */
 #define IR_TX                                   AMB_D7  // PA_25 PB_23
 #define IR_RX                                   AMB_D6  // PA_26 PB_22
-
 
 /* UART pin mapping */
 #define LOG_UART_MODIFIABLE_BAUD_RATE           1
@@ -113,8 +133,8 @@ extern void wait_for_debug(void);
 #define SERIAL1_RX                              AMB_D17 // HS_UART0_RX   PB_18
 #define SERIAL1_RTS                             AMB_D18 // HS_UART0_RTS  PB_21
 #define SERIAL1_CTS                             AMB_D19 // HS_UART0_CTS  PB_20
-#define SERIAL2_TX                              AMB_D3 // LP_UART_TX    PA_12
-#define SERIAL2_RX                              AMB_D2 // LP_UART_RX    PA_13
+#define SERIAL2_TX                              AMB_D3  // LP_UART_TX    PA_12
+#define SERIAL2_RX                              AMB_D2  // LP_UART_RX    PA_13
 
 /* SWD pin mapping */
 #define SWD_DATA                                AMB_D8  // PA_27
