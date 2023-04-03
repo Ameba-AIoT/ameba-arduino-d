@@ -4,6 +4,7 @@ Compile:
 
 macos:
 g++ -o tools/macos/postbuild_img2_arduino_macos tools/macos/src/postbuild_img2_arduino_macos.cpp
+g++ -mmacosx-version-min=11.0 -o tools/macos/postbuild_img2_arduino_macos tools/macos/src/postbuild_img2_arduino_macos.cpp
 
 */
 
