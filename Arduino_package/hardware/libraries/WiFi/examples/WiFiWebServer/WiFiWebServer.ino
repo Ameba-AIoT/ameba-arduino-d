@@ -5,7 +5,7 @@ char pass[] = "Password";       // your network password
 int keyIndex = 0;               // your network key Index number (needed only for WEP)
 
 //State the analog pin that you want to read
-int analogChannel = 0;
+int analogChannel = A0;
 
 int status = WL_IDLE_STATUS;
 
@@ -64,9 +64,7 @@ void loop() {
                     client.println("<html>");
                     // output the value of each analog input pin
                     int sensorReading = analogRead(analogChannel);
-                    client.print("analog input ");
-                    client.print(analogChannel);
-                    client.print(" is ");
+                    client.print("analog input reading is ");
                     client.print(sensorReading);
                     client.println("<br />");
                     client.println("</html>");
