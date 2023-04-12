@@ -24,8 +24,6 @@
  */
 
 #include <WiFi.h>
-#include "WifiSerial.h"
-
 
 // Set if user wants to key in ssid/pwd manually during operation
 //#define MANUAL_INPUT 
@@ -33,8 +31,6 @@
 #ifdef MANUAL_INPUT // initialise ssid string, pwd string, and serial_in object
 // Initialise strings
 String str_ssid, str_pass, str_key;
-// Create serial_in object
-WifiSerial wifiSerial;
 #endif
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
 #define password_type                           0
@@ -77,35 +73,33 @@ void setup() {
     while (status != WL_CONNECTED) {
 #ifdef MANUAL_INPUT
         Serial.println("Enter your ssid");
-        while (str_ssid.length() == 0) {
-            str_ssid = wifiSerial.readInput();
-            if (str_ssid.length() != 0) { // user has entered data
-                Serial.print("SSID entered: ");
-                Serial.println(str_ssid.c_str());
-            }
-        }
+        while (Serial.available() == 0){}
+        str_ssid = Serial.readString();
+        str_ssid.trim();
+        Serial.print("SSID entered: ");
+        Serial.println(str_ssid);
 
         Serial.println("Enter your network key index number");
-        while (str_key.length() == 0) {
-            str_key = wifiSerial.readInput();
-                if (str_key.length() != 0) { // user has entered data
-                    Serial.print("key entered: ");
-                    Serial.println(str_key.c_str());
-                }
-        }
+        while (Serial.available() == 0){}
+        str_key = Serial.readString();
+        str_key.trim();
+        Serial.print("Key entered: ");
+        Serial.println(str_key);
 
         Serial.println("Enter your password");
-        while (str_pass.length() == 0) {
-            str_pass = wifiSerial.readInput();
-                if (str_pass.length() != 0) { // user has entered data
-                    if (str_pass.length() <8) { // to catch password length < 8 exception
-                        Serial.println("Password cannot be less than 8 characters! Try again");
-                        str_pass = ""; // clear entered pwd and try again
-                    }
-                    Serial.print("Password entered: ");
-                    Serial.println(str_pass.c_str());
+        while (Serial.available() == 0) {}
+        str_pass = Serial.readString();
+        str_pass.trim();
+            if (str_pass.length() != 0) {   // user has entered data
+                while (str_pass.length() < 5 ) { // to catch pwd<5 exception
+                    Serial.println("Password cannot be less than 5 characters! Try again");
+                    while (Serial.available() == 0) {}
+                    str_pass = Serial.readString();
+                    str_pass.trim();
                 }
-        }
+                    Serial.print("Password entered: ");
+                    Serial.println(str_pass);
+            }
 #endif
 
         Serial.print("Attempting to connect to WEP network, SSID: ");
@@ -127,7 +121,7 @@ void setup() {
         strcpy(pass_cust, str_pass.c_str());
         Serial.println(str_ssid.c_str());
         status = WiFi.begin(ssid_cust,atoi(key_cust), pass_cust);
-        str_ssid, str_key, str_pass = "";
+        str_ssid = str_key = str_pass = "";
 #endif
         // wait 10 seconds for connection:
         delay(10000);

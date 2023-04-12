@@ -5,16 +5,12 @@
  */
 
 #include <WiFi.h>
-#include "WifiSerial.h"
-
 // Set if user wants to key in ssid/pwd manually during operation
 //#define MANUAL_INPUT
 
 #ifdef MANUAL_INPUT  // Initialise ssid string, pwd string, and serial_in object
 // Initialise strings
-String str_ssid, str_pass;
-// Create serial_in object
-WifiSerial wifiSerial;
+String str_ssid, str_pass, str_channel;
 #endif
 
 // UTF-8 encoding can also be used for SSID with emoji characters
@@ -44,25 +40,40 @@ void setup() {
     while (status != WL_CONNECTED) {
 #ifdef MANUAL_INPUT
         Serial.println("Enter your ssid");
-        while (str_ssid.length() == 0) {
-            str_ssid = wifiSerial.readInput();
-            if (str_ssid.length() != 0) {  //user has entered data
+        while (Serial.available() == 0) {}
+            str_ssid = Serial.readString();
+            str_ssid.trim();
             Serial.print("SSID entered: ");
-            Serial.println(str_ssid.c_str());
-            }
-        }
+            Serial.println(str_ssid);
+        
         Serial.println("Enter your password");
-        while (str_pass.length() == 0) {
-            str_pass = wifiSerial.readInput();
-            if (str_pass.length() != 0) {  //user has entered data
-                if (str_pass.length() <8) {  //to catch pwd<8 exception
+        while (Serial.available() == 0) {}
+        str_pass = Serial.readString();
+        str_pass.trim();
+            if (str_pass.length() != 0) { // user has entered data
+                while (str_pass.length() <8 ) { // to catch pwd<8 exception
                     Serial.println("Password cannot be less than 8 characters! Try again");
-                    str_pass = ""; //clear entered pwd and try again
+                    while (Serial.available() == 0) {}
+                    str_pass = Serial.readString();
+                    str_pass.trim();
                 }
-                Serial.print("Password entered: ");
-                Serial.println(str_pass.c_str());
+                    Serial.print("Password entered: ");
+                    Serial.println(str_pass);
             }
-        }
+
+        Serial.println("Enter your channel number");
+        while (Serial.available() == 0) {}
+            str_channel = Serial.readString();
+            int checker = str_channel.toInt();
+            while(str_channel != (String(checker))){
+                Serial.println("channel should be a number!");
+                while (Serial.available() == 0) {}
+                str_channel = Serial.readString();
+                checker = str_channel.toInt();
+            }
+            str_channel.trim();
+            Serial.print("channel entered: ");
+            Serial.println(str_channel);
 #endif
         Serial.print("Attempting to start AP with SSID: ");
 #ifndef MANUAL_INPUT
@@ -71,10 +82,13 @@ void setup() {
 #else
         char ssid_cust[str_ssid.length() + 1];
         char pass_cust[str_pass.length() + 1];
+        char channel_cust[str_channel.length() + 1];
         strcpy(ssid_cust, str_ssid.c_str());
         strcpy(pass_cust, str_pass.c_str());
+        strcpy(channel_cust, str_channel.c_str());
         Serial.println(str_ssid.c_str());
         status = WiFi.apbegin(ssid_cust, pass_cust, channel, ssid_status);
+        str_ssid = str_pass = str_channel = "";
 #endif
         delay(10000);
     }
