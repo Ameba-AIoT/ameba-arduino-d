@@ -13,6 +13,42 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
+          "version": "3.1.6-build20230412",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.6-build20230412.tar.gz",
+          "archiveFileName": "ameba_d-3.1.6-build20230412.tar.gz",
+          "checksum": "SHA-256:e5b9ae313e1323547c7871f91856bcf88ca4423e0dc4384a1bcf8d188ac71177",
+          "size": "15517631",
+          "boards": [
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM)"},
+            {"name": "BW16 (RTL8720DN)"},
+            {"name": "BW16-TypeC (RTL8720DN)"},
+            {"name": "AW-CU488 Thing Plus (RTL8721DM)"},
+            {"name": "AMB25 (RTL8720DF)"},
+            {"name": "AMB26 (RTL8720DF)"},
+            {"name": "NORA-W30 (RTL8720DF)"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.1.1"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
           "version": "3.1.6-build20230309",
           "category": "Contributed",
           "help": {
@@ -58,150 +94,6 @@
           "archiveFileName": "ameba_d-3.1.5-build20230103.tar.gz",
           "checksum": "SHA-256:c5862b7214f4d3568f7c1eac77add3ab3212bf80b803ed6f016aeb0c0e966036",
           "size": "15502512",
-          "boards": [
-            {"name": "AMB21 (RTL8722DM)"},
-            {"name": "AMB22 (RTL8722CSM)"},
-            {"name": "AMB23 (RTL8722DM)"},
-            {"name": "BW16 (RTL8720DN)"},
-            {"name": "BW16-TypeC (RTL8720DN)"},
-            {"name": "AW-CU488 Thing Plus (RTL8721DM)"},
-            {"name": "AMB25 (RTL8720DF)"},
-            {"name": "AMB26 (RTL8720DF)"},
-            {"name": "NORA-W30 (RTL8720DF)"}
-          ],
-          "toolsDependencies": [
-            {
-              "packager": "realtek",
-              "name": "ameba_d_asdk_toolchain",
-              "version": "1.0.1"
-            },
-            {
-              "packager": "realtek",
-              "name": "ameba_d_tools",
-              "version": "1.1.0"
-            }
-          ]
-        },
-		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
-          "architecture": "AmebaD",
-          "version": "3.1.5-build20230109",
-          "category": "Contributed",
-          "help": {
-            "online": "https://www.amebaiot.com/"
-          },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.5-build20230109.tar.gz",
-          "archiveFileName": "ameba_d-3.1.5-build20230109.tar.gz",
-          "checksum": "SHA-256:e23ee8fadced1e107574333240683086c54bf175d6ba2f535b9e7c29edea7235",
-          "size": "15496378",
-          "boards": [
-            {"name": "AMB21 (RTL8722DM)"},
-            {"name": "AMB22 (RTL8722CSM)"},
-            {"name": "AMB23 (RTL8722DM)"},
-            {"name": "BW16 (RTL8720DN)"},
-            {"name": "BW16-TypeC (RTL8720DN)"},
-            {"name": "AW-CU488 Thing Plus (RTL8721DM)"},
-            {"name": "AMB25 (RTL8720DF)"},
-            {"name": "AMB26 (RTL8720DF)"},
-            {"name": "NORA-W30 (RTL8720DF)"}
-          ],
-          "toolsDependencies": [
-            {
-              "packager": "realtek",
-              "name": "ameba_d_asdk_toolchain",
-              "version": "1.0.1"
-            },
-            {
-              "packager": "realtek",
-              "name": "ameba_d_tools",
-              "version": "1.1.0"
-            }
-          ]
-        },
-		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
-          "architecture": "AmebaD",
-          "version": "3.1.5-build20221221",
-          "category": "Contributed",
-          "help": {
-            "online": "https://www.amebaiot.com/"
-          },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.5-build20221221.tar.gz",
-          "archiveFileName": "ameba_d-3.1.5-build20221221.tar.gz",
-          "checksum": "SHA-256:1acbdfcc84c9107c0d4e05ab9a4bef3f08e355fac97b88530e3eda0ae30588bb",
-          "size": "16153991",
-          "boards": [
-            {"name": "AMB21 (RTL8722DM)"},
-            {"name": "AMB22 (RTL8722CSM)"},
-            {"name": "AMB23 (RTL8722DM)"},
-            {"name": "BW16 (RTL8720DN)"},
-            {"name": "BW16-TypeC (RTL8720DN)"},
-            {"name": "AW-CU488 Thing Plus (RTL8721DM)"},
-            {"name": "AMB25 (RTL8720DF)"},
-            {"name": "AMB26 (RTL8720DF)"},
-            {"name": "NORA-W30 (RTL8720DF)"}
-          ],
-          "toolsDependencies": [
-            {
-              "packager": "realtek",
-              "name": "ameba_d_asdk_toolchain",
-              "version": "1.0.1"
-            },
-            {
-              "packager": "realtek",
-              "name": "ameba_d_tools",
-              "version": "1.1.0"
-            }
-          ]
-        },
-		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
-          "architecture": "AmebaD",
-          "version": "3.1.5-build20221129",
-          "category": "Contributed",
-          "help": {
-            "online": "https://www.amebaiot.com/"
-          },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.5-build20221129.tar.gz",
-          "archiveFileName": "ameba_d-3.1.5-build20221129.tar.gz",
-          "checksum": "SHA-256:c1fa6b30a91a010b12f2360ec749fb0a245f8b8bfecc55982b269923032c9432",
-          "size": "16157066",
-          "boards": [
-            {"name": "AMB21 (RTL8722DM)"},
-            {"name": "AMB22 (RTL8722CSM)"},
-            {"name": "AMB23 (RTL8722DM)"},
-            {"name": "BW16 (RTL8720DN)"},
-            {"name": "BW16-TypeC (RTL8720DN)"},
-            {"name": "AW-CU488 Thing Plus (RTL8721DM)"},
-            {"name": "AMB25 (RTL8720DF)"},
-            {"name": "AMB26 (RTL8720DF)"},
-            {"name": "NORA-W30 (RTL8720DF)"}
-          ],
-          "toolsDependencies": [
-            {
-              "packager": "realtek",
-              "name": "ameba_d_asdk_toolchain",
-              "version": "1.0.1"
-            },
-            {
-              "packager": "realtek",
-              "name": "ameba_d_tools",
-              "version": "1.1.0"
-            }
-          ]
-        },
-		{
-          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
-          "architecture": "AmebaD",
-          "version": "3.1.5-build20221128",
-          "category": "Contributed",
-          "help": {
-            "online": "https://www.amebaiot.com/"
-          },
-          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.5-build20221128.tar.gz",
-          "archiveFileName": "ameba_d-3.1.5-build20221128.tar.gz",
-          "checksum": "SHA-256:a60a686891bff6ecf1caa75a2c9008fa85213111e6a287a2858c5cea60f7f261",
-          "size": "16147064",
           "boards": [
             {"name": "AMB21 (RTL8722DM)"},
             {"name": "AMB22 (RTL8722CSM)"},
@@ -415,32 +307,6 @@
           ]
         },
 		{
-          "name": "ameba_d_asdk_toolchain",
-          "version":"1.0.0",
-          "systems": [
-            {
-              "host":"i686-mingw32",
-              "archiveFileName":"ameba_d_toolchain_windows-1.0.0.tar.bz2",
-              "url":"https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_toolchain_windows-1.0.0.tar.bz2",
-              "checksum":"SHA-256:fa3c9d6e41acc9c4c3f223ac3f7394b6b43df942c5de02588c222d7fe8326af2",
-              "size":"99699540"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_asdk_toolchain",
-          "version":"0.0.2",
-          "systems": [
-            {
-              "host":"i686-mingw32",
-              "archiveFileName":"ameba_d_toolchain_windows-1.0.0v2.tar.gz",
-              "url":"https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_toolchain_windows-1.0.0v2.tar.gz",
-              "checksum":"SHA-256:4c1079e3a8b0ff570e428e0f74c1c291263f0e80709dd17e1ffaf7ca7a575029",
-              "size":"130531123"
-            }
-          ]
-        },
-		{
           "name": "ameba_d_tools",
           "version": "1.1.1",
           "systems": [
@@ -599,147 +465,6 @@
               "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.0.6.tar.gz",
               "checksum": "SHA-256:da7f1ecfe2766eedde259ce1295e0495064e541a44941b18a0b8a44c9c5bc542",
               "size": "631285"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_tools",
-          "version": "1.0.5",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "archiveFileName": "ameba_d_tools_windows-1.0.5.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.5.tar.gz",
-              "checksum": "SHA-256:573a9f15c15f836f324cf56b88ba3e1abc0b2f10eb2cdde00d605f7f1d314694",
-              "size": "7381238"
-            },
-            {
-              "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.5-v02.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_linux-1.0.5-v02.tar.gz",
-              "checksum": "SHA-256:d790f242db750575d5307670bf106da69e63b19b77e3e46a59b7550ee0313555",
-              "size": "2496623"
-            },
-            {
-              "host": "x86_64-apple-darwin",
-              "archiveFileName": "ameba_d_tools_macos-1.0.5.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.0.5.tar.gz",
-              "checksum": "SHA-256:1ae558ed2c3f9d7f79a244f5006f7616949a216af46854ec4e6a30a4521b4542",
-              "size": "661518"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_tools",
-          "version": "1.0.4",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "archiveFileName": "ameba_d_tools_windows-1.0.4.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.4.tar.gz",
-              "checksum": "SHA-256:4b4deef71f2a67697fc5b87294d4657ea8e78b0d88aac81f3966a81d3bae67cb",
-              "size": "4137088"
-            },
-            {
-              "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.4.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_linux-1.0.4.tar.gz",
-              "checksum": "SHA-256:053fc5ba3897438e43c3031bfb8b77982d1d68e643b0b7466d3c26159fdeafad",
-              "size": "8799158"
-            },
-            {
-              "host": "x86_64-apple-darwin",
-              "archiveFileName": "ameba_d_tools_macos-1.0.4.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.0.4.tar.gz",
-              "checksum": "SHA-256:d3bb85155631fb0d14552b4424e45149ce53cd273fd7d9d3393e1c52357f1f9b",
-              "size": "6077070"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_tools",
-          "version": "1.0.3",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "archiveFileName": "ameba_d_tools_windows-1.0.3.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.3.tar.gz",
-              "checksum": "SHA-256:ea459d46b88d7a8092ec05ddf9f65576fa04172ab4fdac1537c0cc61ecc907e9",
-              "size": "3628968"
-            },
-            {
-              "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.3.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_linux-1.0.3.tar.gz",
-              "checksum": "SHA-256:4fe0732ce7cc20a5f8fad7a90b517dd6e25807a4268485d71725fa5c9a14ef52",
-              "size": "2861177"
-            },
-            {
-              "host": "x86_64-apple-darwin",
-              "archiveFileName": "ameba_d_tools_macos-1.0.3.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.0.3.tar.gz",
-              "checksum": "SHA-256:21dd80859c629b0ccd3c75a8ba437a7d66c43e31ce172bb616e6d1dc5cc0edcb",
-              "size": "155285"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_tools",
-          "version": "1.0.2",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "archiveFileName": "ameba_d_tools_windows-1.0.2.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.2.tar.gz",
-              "checksum": "SHA-256:134eab0cb6089b8653d9feed1360dbe8c8c2cbb881dc93c2c0deae992f801c7d",
-              "size": "3629093"
-            },
-            {
-              "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.2.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_linux-1.0.2.tar.gz",
-              "checksum": "SHA-256:9fd3d9bb2e8a249bf634d25f9392e33897ecd170fa31b342e30e1e9332073847",
-              "size": "2861124"
-            },
-            {
-              "host": "x86_64-apple-darwin",
-              "archiveFileName": "ameba_d_tools_macos-1.0.2.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.0.2.tar.gz",
-              "checksum": "SHA-256:ac3f8f922fead4fb79f2ef62b2fbc93f8cddbf094b0cf31fbf176da701d679f0",
-              "size": "144003"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_tools",
-          "version": "1.0.1",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "archiveFileName": "ameba_d_tools_windows-1.0.1.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.1.tar.gz",
-              "checksum": "SHA-256:c2c43d6d304fdd386657ea32a0063302dd1c61bf86c2134c6128a04fc1b31aad",
-              "size": "1228819"
-            },
-            {
-              "host": "x86_64-pc-linux-gnu",
-              "archiveFileName": "ameba_d_tools_linux-1.0.1.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_linux-1.0.1.tar.gz",
-              "checksum": "SHA-256:9aef99fd7c511daa50bb1415e6f4d8b80ac97ceed0214fbe8afe32bd0812e789",
-              "size": "1984210"
-            }
-          ]
-        },
-		{
-          "name": "ameba_d_tools",
-          "version": "1.0.0",
-          "systems": [
-            {
-              "host": "i686-mingw32",
-              "archiveFileName": "ameba_d_tools_windows-1.0.0.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_windows-1.0.0.tar.gz",
-              "checksum": "SHA-256:e161d0174b1ea14de8176433c2e3dc2df094ec2ece25b2d68f15415e9f6325af",
-              "size": "1372682"
             }
           ]
         }
