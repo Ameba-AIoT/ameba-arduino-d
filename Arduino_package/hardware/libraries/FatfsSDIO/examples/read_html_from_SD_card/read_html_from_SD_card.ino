@@ -1,5 +1,8 @@
 /*
  This sketch shows how to read and open HTML file saved in SD card.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-fatfs-sdio/
  */
 
 #include <WiFi.h>

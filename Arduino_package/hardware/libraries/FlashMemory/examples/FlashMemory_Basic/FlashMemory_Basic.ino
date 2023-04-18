@@ -13,7 +13,11 @@
  * 
  * This sketch store boot count in flash. Each time device boot up, it read
  * boot count from flash, add one, and write back to flash.
+ *
+ * Example guide:
+ * https://www.amebaiot.com/en/amebad-arduino-flash/
  */
+
 
 #include <FlashMemory.h>
 

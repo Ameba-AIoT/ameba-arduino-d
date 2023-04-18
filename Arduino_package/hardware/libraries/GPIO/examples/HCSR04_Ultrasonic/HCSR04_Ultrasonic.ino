@@ -10,6 +10,9 @@
  * It means the echo pin needs level shift from 5V to 3.3V.
  * We can either use a level converter or use resister to devide the level.
  *
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-gpio-ultrasonic/
  **/
 
 const int trigger_pin = 12;

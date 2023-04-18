@@ -61,8 +61,10 @@ typedef enum {
 /* Encryption modes */
 enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
     ENC_TYPE_WEP  = 5,
-    ENC_TYPE_TKIP = 2,
-    ENC_TYPE_CCMP = 4,
+    ENC_TYPE_WPA = 2,
+    ENC_TYPE_WPA3 = 3,
+    ENC_TYPE_WPA2 = 4,
+    
     /* ... except these two, 7 and 8 are reserved in 802.11-2007 */
     ENC_TYPE_NONE = 7,
     ENC_TYPE_AUTO = 8
@@ -79,6 +81,7 @@ enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
 #define SHARED_ENABLED      0x00008000
 #define WPA_SECURITY        0x00200000
 #define WPA2_SECURITY       0x00400000
+#define WPA3_SECURITY       0x00800000
 #define WPS_ENABLED         0x10000000
 
 #endif // #ifndef WEP_ENABLED
@@ -93,5 +96,8 @@ enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
 #define SECURITY_WPA2_TKIP_PSK   (WPA2_SECURITY | TKIP_ENABLED)
 #define SECURITY_WPA2_MIXED_PSK  (WPA2_SECURITY | AES_ENABLED | TKIP_ENABLED)
 #define SECURITY_WPA_WPA2_MIXED  (WPA_SECURITY  | WPA2_SECURITY)
+#define SECURITY_WPA3_AES_PSK    (WPA3_SECURITY | AES_ENABLED)
+#define SECURITY_WPA2_WPA3_MIXED (WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED)
 
 #endif /* WL_DEFINITIONS_H_ */
+

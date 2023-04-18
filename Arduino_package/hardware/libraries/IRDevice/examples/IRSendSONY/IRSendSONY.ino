@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ir-sonydata/
+ */
+
 #include "IRDevice.h"
 
 // User defined txPin, rxPin and carrier frequency

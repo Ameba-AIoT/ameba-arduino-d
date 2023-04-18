@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-inputfft/
+ */
+
 #include "AudioCodec.h"
 #include "FFT.h"
 

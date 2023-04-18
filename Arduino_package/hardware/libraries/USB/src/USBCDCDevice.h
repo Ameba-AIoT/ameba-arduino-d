@@ -33,7 +33,7 @@ class USBCDCDevice : public HardwareSerial{
         uint8_t connected();
         uint8_t dtr();
         uint8_t rts();
-        void begin(uint32_t baud = 0);
+        void begin(uint32_t baud = 0, uint8_t config = 0);
         void end();
         int available();
         int peek();

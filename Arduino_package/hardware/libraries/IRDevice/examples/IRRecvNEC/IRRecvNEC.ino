@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-irdevice/
+ */
+
 #include "IRDevice.h"
 
 #if defined(BOARD_RTL8722DM)

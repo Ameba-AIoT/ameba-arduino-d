@@ -1,19 +1,18 @@
 /*
 
- This example  prints the Wifi shield's MAC address, and
+ This example prints the Wifi shield's MAC address, and
  scans for available Wifi networks using the Wifi shield.
  Every ten seconds, it scans again. It doesn't actually
  connect to any network, so no encryption scheme is specified.
-
- Circuit:
- * WiFi shield attached
 
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 21 Junn 2012
  by Tom Igoe and Jaymes Dec
- */
 
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-scan-wifi/
+ */
 
 #include <WiFi.h>
 
@@ -119,8 +118,14 @@ void printEncryptionTypeEx(uint32_t thisType) {
         case SECURITY_WPA_WPA2_MIXED:
             Serial.print("WPA/WPA2 AES");
             break;
+        case SECURITY_WPA3_AES_PSK:
+            Serial.print("WPA3 AES");
+            break;
+        case SECURITY_WPA2_WPA3_MIXED:
+            Serial.print("WPA2/WPA3");
     }
 }
+
 
 void printEncryptionType(int thisType) {
     // read the encryption type and print out the name:
@@ -128,11 +133,14 @@ void printEncryptionType(int thisType) {
         case ENC_TYPE_WEP:
             Serial.println("WEP");
             break;
-        case ENC_TYPE_TKIP:
+        case ENC_TYPE_WPA:
             Serial.println("WPA");
             break;
-        case ENC_TYPE_CCMP:
+        case ENC_TYPE_WPA2:
             Serial.println("WPA2");
+            break;
+        case ENC_TYPE_WPA3:
+            Serial.println("WPA3");
             break;
         case ENC_TYPE_NONE:
             Serial.println("None");
@@ -142,3 +150,4 @@ void printEncryptionType(int thisType) {
             break;
     }
 }
+

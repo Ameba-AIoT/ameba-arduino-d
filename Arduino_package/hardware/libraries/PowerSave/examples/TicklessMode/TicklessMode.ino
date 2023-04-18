@@ -1,6 +1,10 @@
 /*
-  This sketch shows how to use power save tickless mode
-*/
+ This sketch shows how to use power save tickless mode
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ticklessmode/
+ */
+
 #include <PowerSave.h>
 
 //SET_TL_UART_WAKEUP

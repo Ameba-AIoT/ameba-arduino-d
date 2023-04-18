@@ -10,7 +10,9 @@
 
       https://lass.hackpad.com/LASS-README-DtZ5T6DXLbu
 
-*/
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-lass/
+ */
 
 #include <WiFi.h>
 #include <PubSubClient.h>

@@ -21,6 +21,9 @@
     CLK  : connect to SPI_SCLK
     VCC  : connect to 3V3
     GND  : connect to GND
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-spi-lcd-pm2-5/
  */
 
 #include <SoftwareSerial.h>

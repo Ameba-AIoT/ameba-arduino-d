@@ -151,8 +151,11 @@ tools.ameba_d_tools.upload.pattern.linux="{runtime.tools.ameba_d_tools.path}/upl
 
 tools.ameba_d_tools.upload.pattern.macosx="{runtime.tools.ameba_d_tools.path}/upload_image_tool_macos" "{runtime.tools.ameba_d_tools.path}" "{serial.port}" "{board}" "{build.auto_upload_mode}" "{build.erase_flash}" "1500000" {upload.verbose}
 
-#tools.ameba_d_tools.upload.network_pattern="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
-#tools.ameba_d_tools.upload.network_pattern.windows="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
+##tools.ameba_d_tools.upload.network_pattern="{runtime.tools.ameba_d_tools.path}/upload_ota.exe" -i "{serial.port}" -p "{network.port}" -f "{runtime.tools.ameba_d_tools.path}\ota.bin"
+tools.ameba_d_tools.upload.network_pattern.windows="{runtime.tools.ameba_d_tools.path}/DownloadServer.exe" "8082" "{runtime.tools.ameba_d_tools.path}\misc\OTA_All.bin" "{serial.port}"
+tools.ameba_d_tools.upload.network_pattern.linux="{runtime.tools.ameba_d_tools.path}/DownloadServer.linux" "8082" "{runtime.tools.ameba_d_tools.path}/misc/OTA_All.bin" "{serial.port}"
+tools.ameba_d_tools.upload.network_pattern.macosx="{runtime.tools.ameba_d_tools.path}/DownloadServer.darwin" "8082" "{runtime.tools.ameba_d_tools.path}/misc/OTA_All.bin" "{serial.port}"
+
 
 # Debugger configuration (general options)
 # ----------------------------------------

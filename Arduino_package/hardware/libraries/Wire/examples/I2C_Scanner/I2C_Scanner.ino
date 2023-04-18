@@ -4,8 +4,13 @@
 // Devices with higher bit address might not be seen properly.
 // ---------------------------------------
 
-#include <Wire.h>
+/*
 
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-i2c-scan/
+ */
+
+#include <Wire.h>
 
 void setup()
 {

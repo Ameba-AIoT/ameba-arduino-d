@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-irdevice/
+ */
+
 #include "IRDevice.h"
 
 // User defined txPin, rxPin and carrier frequency

@@ -1,5 +1,8 @@
 /*
  This sketch shows how to list files under root directory.
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-fatfssdio/
  */
 
 #include "FatFs_SD.h"

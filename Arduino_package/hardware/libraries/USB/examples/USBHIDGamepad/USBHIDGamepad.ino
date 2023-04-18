@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-usb-gamepad/
+ */
+
 #include "USBHIDDevice.h"
 #include "USBHIDGamepad.h"
 

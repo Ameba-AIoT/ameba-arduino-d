@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-fft/
+ */
+
 #include "FFT.h"
 
 #define SAMPLERATE 16000

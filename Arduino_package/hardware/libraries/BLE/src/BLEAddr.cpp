@@ -1,14 +1,5 @@
 #include "BLEAddr.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-#ifdef __cplusplus
-}
-#endif
-
 static uint8_t ctoi(char c) {
     if((c >= 'A') && (c <= 'F')) {
         return (c - 'A' + 0x0A);

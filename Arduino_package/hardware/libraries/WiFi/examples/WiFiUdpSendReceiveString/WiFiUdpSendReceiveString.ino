@@ -1,24 +1,22 @@
-
 /*
-  WiFi UDP Send and Receive String
+
+ WiFi UDP Send and Receive String
 
  This sketch wait an UDP packet on localPort using a WiFi shield.
  When a packet is received an Acknowledge packet is sent to the client on port remotePort
 
- Circuit:
- * WiFi shield attached
-
  created 30 December 2012
  by dlf (Metodo2 srl)
 
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ameba-udp-server/
  */
-
 
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
 int status = WL_IDLE_STATUS;
-char ssid[] = "yourNetwork";        //  your network SSID (name)
+char ssid[] = "yourNetwork";        // your network SSID (name)
 char pass[] = "secretPassword";     // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
 

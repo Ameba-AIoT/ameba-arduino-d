@@ -1,10 +1,14 @@
-/**
+/*
  * This example describes how to use watchdog api.
  * In this example, watchdog is setup to 5s timeout.
  * Watchdog won't bark if we refresh it before timeout in smallTask.
  * The timer is also reloaded after refresh.
  * Otherwise, while running bigTask, watchdog will restart system in default or call callback function if registered.
-*/
+
+ * Example guide:
+ * https://www.amebaiot.com/en/amebad-arduino-watchdog/
+ */
+
 #include "WDT.h"
 
 #define RUN_CALLBACK_IF_WATCHDOG_BARKS (0)

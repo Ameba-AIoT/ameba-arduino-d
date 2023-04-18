@@ -43,5 +43,11 @@ int sendto_data_v6(int sock, const void *send_data, size_t len, uint32_t peer_ip
 
 void ipv6_udp_server(void);
 
+// OTA
 
+int ota_bind_socket(int server_socket, int OTAport);
+
+void ota_listen_socket(int server_socket, int OTAport);
+
+int ota_accept_socket(int server_socket);
 #endif

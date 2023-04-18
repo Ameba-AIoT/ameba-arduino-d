@@ -6,7 +6,10 @@
   Then we change LED state.
       If LED was light on, then turn it off.
       If LED was light off, then turn it on.
-*/
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-gpio-interrupt/
+ */
 
 int button = 12;
 int led    = 11;

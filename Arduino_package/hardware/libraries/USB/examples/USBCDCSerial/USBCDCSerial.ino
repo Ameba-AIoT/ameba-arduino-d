@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-usb-cdc/
+ */
+
 #include "USBCDCDevice.h"
 
 void setup() {
