@@ -34,8 +34,8 @@ void loop() {
   delay(500);
   if ((i%10)==0) {
     Serial.println(i);
-    // If you need more breakpoints, you can use either of the instructions below to add a software breakpoint in program execution
-	// To continue program execution from a software breakpoint, use "Step Over" first before "Continue"
+    //RTL8722 only supports a maximum of 2 hardware breakpoints. If you need more breakpoints, you can use either of the instructions below to add a software breakpoint in program execution
+    //Note: To continue program execution from a software breakpoint, use "Step Over" first before "Continue"
     //__BKPT();
     __asm__("BKPT");
   }

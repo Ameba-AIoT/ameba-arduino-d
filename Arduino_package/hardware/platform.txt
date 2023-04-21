@@ -176,3 +176,4 @@ debug.server.jlink.path.windows=C:/Program Files/SEGGER/JLink/JLinkGDBServerCL.e
 #debug.server.jlink.device=CORTEX-M33
 #debug.server.jlink.interface=swd
 #debug.server.jlink.script={runtime.tools.ameba_d_tools.path}/tools/debug/RTL8722_Arduino_debug.JLinkScript
+
