@@ -6,16 +6,15 @@
 
 #include <WiFi.h>
 
-char ssid[] = "yourNetwork";      // your network SSID (name)
-char pass[] = "secretPassword";   // your network password
-int keyIndex = 0;                 // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
-int status = WL_IDLE_STATUS;
 WiFiServer server(5000);
 
 void setup() {
-    Serial.begin(115200);      // initialize serial communication
-    pinMode(9, OUTPUT);      // set the LED pin mode
+    Serial.begin(115200);           // initialize serial communication
 
     // check for the presence of the shield:
     if (WiFi.status() == WL_NO_SHIELD) {
@@ -54,7 +53,6 @@ void loop() {
             }
         }
     }
-
     client.stop();
 }
 
@@ -63,7 +61,7 @@ void printWifiStatus() {
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

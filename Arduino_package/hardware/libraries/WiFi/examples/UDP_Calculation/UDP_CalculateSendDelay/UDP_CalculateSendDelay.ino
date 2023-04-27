@@ -1,5 +1,4 @@
 /*
-
  This sketch provide a simple way to roughly calculate the delay of Ameba send delay.
  The source code is separate into two parts.
  The first part is Ameba code which play sender role.
@@ -12,10 +11,10 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-int status = WL_IDLE_STATUS;
-char ssid[] = "mynetwork";      // your network SSID (name)
-char pass[] = "mypassword";     // your network password (use for WPA, or use as key for WEP)
-int keyIndex = 0;               // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 WiFiUDP Udp;
 char server[] ="192.168.1.65";
@@ -123,7 +122,7 @@ int main(int argc, char **argv) {
 #if __CYGWIN__
     int clientaddr_len = sizeof(clientaddr);
 #else
-	unsigned int clientaddr_len = sizeof(clientaddr);
+    unsigned int clientaddr_len = sizeof(clientaddr);
 #endif
 
     struct hostent *hostp;

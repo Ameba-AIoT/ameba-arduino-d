@@ -10,10 +10,9 @@
 #define MAX_RECV_SIZE 1500
 #define TCP_SERVER_PORT 5003
 
-char ssid[] = "yourNetwork"; //  your network SSID (name)
-char pass[] = "password";    // your network password (use for WPA, or use as key for WEP)
-
-int status = WL_IDLE_STATUS;
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Update Server's IPv6 address according to log printed by [IPv6TCPServer] example //

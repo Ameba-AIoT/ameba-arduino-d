@@ -1,5 +1,4 @@
 /*
-
  This sketch provide a simple way to roughly calculate the delay of Ameba receive delay.
  The source code is separate into two parts.
  The first part is Ameba code which play receiver role.
@@ -13,10 +12,10 @@
 #include <WiFiUdp.h>
 #include <stdio.h>
 
-int status = WL_IDLE_STATUS;
-char ssid[] = "mynetwork";      //  your network SSID (name)
-char pass[] = "mypassword";     // your network password
-int keyIndex = 0;               // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 unsigned int localPort = 5001;  // local port to listen for UDP packets
 
