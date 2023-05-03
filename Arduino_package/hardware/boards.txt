@@ -206,6 +206,7 @@ u-blox_NORA-W30.upload.maximum_size=2097152
 u-blox_NORA-W30.upload.use_1200bps_touch=false
 u-blox_NORA-W30.upload.wait_for_upload_port=false
 u-blox_NORA-W30.upload.native_usb=false
+u-blox_NORA-W30.upload.speed=921600L
 
 u-blox_NORA-W30.build.tarch=cortex-m33
 u-blox_NORA-W30.build.mcu=RTL8720DF
