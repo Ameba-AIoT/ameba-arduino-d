@@ -26,7 +26,7 @@ For all `release` information, please visit this [link](https://github.com/ambio
     
     **"File" -> "Preferences" -> "Additional Boards Manager URLs:"**
 
-    Simply copy and paste the following link into the field and click "OK",
+    Copy and paste the following link into the field and click "OK",
 
      https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json
 

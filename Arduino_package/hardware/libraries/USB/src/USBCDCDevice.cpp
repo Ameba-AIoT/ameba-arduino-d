@@ -401,8 +401,9 @@ uint8_t USBCDCDevice::rts() {
     }
 }
 
-void USBCDCDevice::begin(uint32_t baud) {
+void USBCDCDevice::begin(uint32_t baud, uint8_t config) {
     (void)baud;
+    (void)config;
 
     // Zero out RX buffer
     memset(rx_buffer.buffer, 0, CDC_ACM_HS_BULK_MAX_PACKET_SIZE);

@@ -1,8 +1,7 @@
 /*
-
  WiFi UDP Send and Receive String
 
- This sketch wait an UDP packet on localPort using a WiFi shield.
+ This sketch wait an UDP packet on localPort.
  When a packet is received an Acknowledge packet is sent to the client on port remotePort
 
  created 30 December 2012
@@ -15,10 +14,10 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-int status = WL_IDLE_STATUS;
-char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "secretPassword";     // your network password (use for WPA, or use as key for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 unsigned int localPort = 2390;      // local port to listen on
 
@@ -86,13 +85,12 @@ void loop() {
     }
 }
 
-
 void printWifiStatus() {
     // print the SSID of the network you're attached to:
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

@@ -1,7 +1,6 @@
 /*
-
- This example prints the Wifi shield's MAC address, and
- scans for available Wifi networks using the Wifi shield.
+ This example prints MAC address, and
+ scans for available Wifi networks.
  Every ten seconds, it scans again. It doesn't actually
  connect to any network, so no encryption scheme is specified.
 
@@ -42,10 +41,8 @@ void loop() {
 }
 
 void printMacAddress() {
-    // the MAC address of your Wifi shield
-    byte mac[6];
-
     // print your MAC address:
+    byte mac[6];
     WiFi.macAddress(mac);
     Serial.print("MAC: ");
     Serial.print(mac[0], HEX);
@@ -118,6 +115,11 @@ void printEncryptionTypeEx(uint32_t thisType) {
         case SECURITY_WPA_WPA2_MIXED:
             Serial.print("WPA/WPA2 AES");
             break;
+        case SECURITY_WPA3_AES_PSK:
+            Serial.print("WPA3 AES");
+            break;
+        case SECURITY_WPA2_WPA3_MIXED:
+            Serial.print("WPA2/WPA3");
     }
 }
 
@@ -127,11 +129,14 @@ void printEncryptionType(int thisType) {
         case ENC_TYPE_WEP:
             Serial.println("WEP");
             break;
-        case ENC_TYPE_TKIP:
+        case ENC_TYPE_WPA:
             Serial.println("WPA");
             break;
-        case ENC_TYPE_CCMP:
+        case ENC_TYPE_WPA2:
             Serial.println("WPA2");
+            break;
+        case ENC_TYPE_WPA3:
+            Serial.println("WPA3");
             break;
         case ENC_TYPE_NONE:
             Serial.println("None");

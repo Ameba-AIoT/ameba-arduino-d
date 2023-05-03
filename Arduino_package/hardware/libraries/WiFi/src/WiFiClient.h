@@ -1,5 +1,5 @@
-#ifndef WifiClient_h
-#define WifiClient_h
+#ifndef WiFiClient_h
+#define WiFiClient_h
 
 #include "Print.h"
 #include "Client.h"

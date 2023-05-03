@@ -1,13 +1,12 @@
 #include <WiFi.h>
 
-char ssid[] = "yourNetwork";    // your network SSID (name)
-char pass[] = "Password";       // your network password
-int keyIndex = 0;               // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 //State the analog pin that you want to read
-int analogChannel = 0;
-
-int status = WL_IDLE_STATUS;
+int analogChannel = A0;
 
 WiFiServer server(80);
 void setup() {
@@ -38,7 +37,6 @@ void setup() {
     printWifiStatus();
 }
 
-
 void loop() {
     // listen for incoming clients
     WiFiClient client = server.available();
@@ -64,9 +62,7 @@ void loop() {
                     client.println("<html>");
                     // output the value of each analog input pin
                     int sensorReading = analogRead(analogChannel);
-                    client.print("analog input ");
-                    client.print(analogChannel);
-                    client.print(" is ");
+                    client.print("analog input reading is ");
                     client.print(sensorReading);
                     client.println("<br />");
                     client.println("</html>");
@@ -90,14 +86,13 @@ void loop() {
     }
 }
 
-
 void printWifiStatus() {
     // print the SSID of the network you're attached to:
     Serial.println();
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);
