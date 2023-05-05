@@ -238,6 +238,30 @@ void AmebaILI9341::clr(void)
     fillScreen(background);
 }
 
+void AmebaILI9341::drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const unsigned short *color)
+{
+    uint8_t color_hi, color_lo;
+    if((x >= _width) || (y >= _height)) {
+        return;
+    }
+    if ((x + w - 1) >= _width) {
+        w = _width - x;
+    }
+    if ((y + h - 1) >= _height) {
+        h = _height - y;
+    }
+    setAddress(x, y, (x + w - 1), (y + h - 1));
+    uint32_t pixelCount = h * w;
+    uint32_t i;
+    *portOutputRegister(_dcPort) |=  (_dcMask);
+    for (i = 0; i < pixelCount; i++) {
+		color_hi = color[i] >> 8;
+		color_lo = color[i] & 0xFF;		
+        _spi.transfer(color_hi);
+        _spi.transfer(color_lo);
+    }	
+}
+
 void AmebaILI9341::fillRectangle(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color)
 {
     uint8_t color_hi, color_lo;

@@ -9,8 +9,8 @@
  * published by the Free Software Foundation.
  */
 
-#ifndef _SPI_H_INCLUDED
-#define _SPI_H_INCLUDED
+#ifndef _SPI_H_
+#define _SPI_H_
 
 #include "variant.h"
 #include <stdio.h>
@@ -43,72 +43,71 @@ enum SPITransferMode {
     SPI_CONTINUE,
     SPI_LAST
 };
-    
+
 class SPISettings {
-public:
-    SPISettings(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
-        _clock = clock;
-        _bitOrder = bitOrder;
-        _dataMode = dataMode;
-    }
-    SPISettings() {
-        SPISettings(4000000, MSBFIRST, SPI_MODE0);
-    }
+    public:
+        SPISettings(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
+            _clock = clock;
+            _bitOrder = bitOrder;
+            _dataMode = dataMode;
+        }
+        SPISettings() {
+            SPISettings(4000000, MSBFIRST, SPI_MODE0);
+        }
 
-private:
-    uint32_t _clock;
-    BitOrder _bitOrder;
-    uint8_t _dataMode;
+    private:
+        uint32_t _clock;
+        BitOrder _bitOrder;
+        uint8_t _dataMode;
 
-    friend class SPIClass;
+        friend class SPIClass;
 };
 
 class SPIClass {
-public:
-    SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss);
+    public:
+        SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss);
 
-    byte transfer(byte _pin, uint8_t _data, SPITransferMode _mode = SPI_LAST);
-    byte transfer(uint8_t _data, SPITransferMode _mode = SPI_LAST);
+        byte transfer(byte _pin, uint8_t _data, SPITransferMode _mode = SPI_LAST);
+        byte transfer(uint8_t _data, SPITransferMode _mode = SPI_LAST);
 
-    void transfer(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
-    void transfer(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+        void transfer(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+        void transfer(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
 
-    uint16_t transfer16(byte _pin, uint16_t _data, SPITransferMode _mode = SPI_LAST);
-    uint16_t transfer16(uint16_t _data, SPITransferMode _mode = SPI_LAST);
+        uint16_t transfer16(byte _pin, uint16_t _data, SPITransferMode _mode = SPI_LAST);
+        uint16_t transfer16(uint16_t _data, SPITransferMode _mode = SPI_LAST);
 
-    void beginTransaction(uint8_t pin, SPISettings settings);
-    void beginTransaction(SPISettings settings);
-    void endTransaction(void);
+        void beginTransaction(uint8_t pin, SPISettings settings);
+        void beginTransaction(SPISettings settings);
+        void endTransaction(void);
 
-    void begin(void);
-    void begin(int ss);
-    void end(void);
+        void begin(void);
+        void begin(int ss);
+        void end(void);
 
-    void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
-    void setBitOrder(BitOrder _order);  
+        void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
+        void setBitOrder(BitOrder _order);
 
-    void setDataMode(uint8_t _bits, uint8_t _mode);
-    void setDataMode(uint8_t _mode);
-    
-    void setClockDivider(uint8_t _pin, uint8_t _divider);
-    void setClockDivider(uint8_t _div);
+        void setDataMode(uint8_t _bits, uint8_t _mode);
+        void setDataMode(uint8_t _mode);
 
-    /* extend api added by RTK */
-    void setDefaultFrequency(int _frequency);
-    
+        void setClockDivider(uint8_t _pin, uint8_t _divider);
+        void setClockDivider(uint8_t _div);
 
-private:
-    void *pSpiMaster;
-    int pinMOSI;
-    int pinMISO;
-    int pinCLK;
-    int pinSS;
-    int pinUserSS;
-    BitOrder bitOrder;
-    bool initStatus;   // flag to mark SPI init status
-    u8 dataBits;
-    u8 dataMode;
-    int defaultFrequency; 
+        /* extend api added by RTK */
+        void setDefaultFrequency(int _frequency);
+
+    private:
+        void *pSpiMaster;
+        int pinMOSI;
+        int pinMISO;
+        int pinCLK;
+        int pinSS;
+        int pinUserSS;
+        BitOrder bitOrder;
+        bool initStatus;   // flag to mark SPI init status
+        u8 dataBits;
+        u8 dataMode;
+        int defaultFrequency;
 };
 
 #if defined(BOARD_RTL8722DM)
