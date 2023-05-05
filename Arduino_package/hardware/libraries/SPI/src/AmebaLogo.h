@@ -4,8 +4,8 @@
 // Image Size     : 154x76 pixels
 // Memory usage   : 23408 bytes
 
-#ifndef INC_LOGO_H_
-#define INC_LOGO_H_
+#ifndef _AMEBA_LOGO_H_
+#define _AMEBA_LOGO_H_
 
 #if defined(__AVR__)
     #include <avr/pgmspace.h>

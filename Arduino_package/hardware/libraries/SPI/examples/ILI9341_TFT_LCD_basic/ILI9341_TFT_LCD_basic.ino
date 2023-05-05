@@ -14,7 +14,7 @@
 
 #include "SPI.h"
 #include "AmebaILI9341.h"
-#include "logo.h"
+#include "AmebaLogo.h"
 
 
 // For all supported boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
@@ -54,7 +54,6 @@ void setup() {
     Serial.println("test Bitmap");
     testBitmap(0,0,logoWidth,logoHeight,logo);
     delay(500);
-    while(1);
 
     Serial.println("test Text");
     testText();

@@ -47,10 +47,10 @@ Ameba_AMB21_AMB22.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM 
 Ameba_AMB21_AMB22.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ameba_AMB21_AMB22.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags} -DArduino_STD_PRINTF
 
-Ameba_AMB21_AMB22.menu.UploadBaudrate.921600=921600
-Ameba_AMB21_AMB22.menu.UploadBaudrate.921600.upload.speed=921600
 Ameba_AMB21_AMB22.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB21_AMB22.menu.UploadBaudrate.1500000.upload.speed=1500000
+Ameba_AMB21_AMB22.menu.UploadBaudrate.921600=921600
+Ameba_AMB21_AMB22.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
 Ameba_AMB23.name=AMB23 (RTL8722DM)
@@ -92,10 +92,10 @@ Ameba_AMB23.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOAR
 Ameba_AMB23.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ameba_AMB23.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI {build.usb_flags} -DArduino_STD_PRINTF
 
-Ameba_AMB23.menu.UploadBaudrate.921600=921600
-Ameba_AMB23.menu.UploadBaudrate.921600.upload.speed=921600
 Ameba_AMB23.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB23.menu.UploadBaudrate.1500000.upload.speed=1500000
+Ameba_AMB23.menu.UploadBaudrate.921600=921600
+Ameba_AMB23.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
 Ai-Thinker_BW16.name=Ai-Thinker BW16 (RTL8720DN)
@@ -137,10 +137,10 @@ Ai-Thinker_BW16.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -D
 Ai-Thinker_BW16.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ai-Thinker_BW16.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 {build.usb_flags} -DArduino_STD_PRINTF
 
-Ai-Thinker_BW16.menu.UploadBaudrate.921600=921600
-Ai-Thinker_BW16.menu.UploadBaudrate.921600.upload.speed=921600
 Ai-Thinker_BW16.menu.UploadBaudrate.1500000=1500000
 Ai-Thinker_BW16.menu.UploadBaudrate.1500000.upload.speed=1500000
+Ai-Thinker_BW16.menu.UploadBaudrate.921600=921600
+Ai-Thinker_BW16.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
 SparkFun_ThingPlus-AWCU488.name=SparkFun AzureWave Thing Plus - AW-CU488 (RTL8721DM)
@@ -182,10 +182,10 @@ SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DR
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags} -DArduino_STD_PRINTF
 
-SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600=921600
-SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600.upload.speed=921600
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.1500000=1500000
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.1500000.upload.speed=1500000
+SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600=921600
+SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
 Ameba_AMB25_AMB26.name=AMB25/AMB26 (RTL8720DF)
@@ -227,10 +227,10 @@ Ameba_AMB25_AMB26.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM 
 Ameba_AMB25_AMB26.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ameba_AMB25_AMB26.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags} -DArduino_STD_PRINTF
 
-Ameba_AMB25_AMB26.menu.UploadBaudrate.921600=921600
-Ameba_AMB25_AMB26.menu.UploadBaudrate.921600.upload.speed=921600
 Ameba_AMB25_AMB26.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB25_AMB26.menu.UploadBaudrate.1500000.upload.speed=1500000
+Ameba_AMB25_AMB26.menu.UploadBaudrate.921600=921600
+Ameba_AMB25_AMB26.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
 u-blox_NORA-W30.name=u-blox NORA-W30 series (RTL8720DF)
