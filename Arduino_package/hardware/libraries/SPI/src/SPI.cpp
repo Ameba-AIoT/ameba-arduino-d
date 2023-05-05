@@ -61,10 +61,11 @@ void SPIClass::beginTransaction(uint8_t pin, SPISettings settings)
     spi_frequency((spi_t *)pSpiMaster, settings._clock);
 
     //log_uart_disable_printf();
-
-    pinUserSS = pin;
-    pinMode(pinUserSS, OUTPUT);
-    digitalWrite(pinUserSS, 0);
+    
+	// comment out to avoid error log while using tft_eSPI library
+    // pinUserSS = pin;
+    // pinMode(pinUserSS, OUTPUT);
+    // digitalWrite(pinUserSS, 0);
 
     //log_uart_enable_printf();
 }
@@ -76,10 +77,11 @@ void SPIClass::beginTransaction(SPISettings settings)
 
 void SPIClass::endTransaction(void)
 {
-    if (pinUserSS >= 0) {
-        digitalWrite(pinUserSS, 1);
-        pinUserSS = -1;
-    }
+    // TBD: comment out to avoid error log while using tft_eSPI library
+    // if (pinUserSS >= 0) {
+    //     digitalWrite(pinUserSS, 1);
+    //     pinUserSS = -1;
+    // }
 }
 
 void SPIClass::begin(void)
