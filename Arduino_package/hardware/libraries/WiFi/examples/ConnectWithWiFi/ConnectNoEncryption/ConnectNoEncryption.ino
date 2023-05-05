@@ -1,7 +1,6 @@
 /*
-
  This example connects to an unencrypted Wifi network.
- Then it prints the MAC address of the Wifi shield,
+ Then it prints the MAC address,
  the IP address obtained, and other network details.
 
  created 13 July 2010
@@ -23,8 +22,8 @@
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
 
-char ssid[] = "yourNetwork";     // the name of your network
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:
@@ -64,7 +63,7 @@ void loop() {
 }
 
 void printWifiData() {
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

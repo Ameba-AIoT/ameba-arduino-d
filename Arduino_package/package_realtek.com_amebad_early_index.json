@@ -13,6 +13,42 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
+          "version": "3.1.7-build20230505",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d-3.1.7-build20230505.tar.gz",
+          "archiveFileName": "ameba_d-3.1.7-build20230505.tar.gz",
+          "checksum": "SHA-256:b4e5b19e8d3b4d7746332c97f1759b43eb475d037ca1c85dd9dc373cb98a8954",
+          "size": "15505809",
+          "boards": [
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM)"},
+            {"name": "BW16 (RTL8720DN)"},
+            {"name": "BW16-TypeC (RTL8720DN)"},
+            {"name": "AW-CU488 Thing Plus (RTL8721DM)"},
+            {"name": "AMB25 (RTL8720DF)"},
+            {"name": "AMB26 (RTL8720DF)"},
+            {"name": "NORA-W30 (RTL8720DF)"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.1.1"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
           "version": "3.1.6-build20230412",
           "category": "Contributed",
           "help": {
@@ -326,10 +362,10 @@
             },
             {
               "host": "x86_64-apple-darwin",
-              "archiveFileName": "ameba_d_tools_macos-1.1.1.tar.gz",
-              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.1.1.tar.gz",
-              "checksum": "SHA-256:08bc4505d8b74c0f6fb59c54223d7bfc10c6edb3c00ecd555c0663b9586b52cf",
-              "size": "1048610"
+              "archiveFileName": "ameba_d_tools_macos-1.1.1.1.tar.gz",
+              "url": "https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/release/ameba_d_tools_macos-1.1.1.1.tar.gz",
+              "checksum": "SHA-256:742b9feee1fd69509daae260593488d0008f7d37f3023d82d1da41e13afc7544",
+              "size": "1061561"
             }
           ]
         },

@@ -1,5 +1,4 @@
 /*
-
  This sketch provide a way to measure proper udp timeout value via dynamically changing udp
  receiving timeout value. If timeout happens, then add 1 to receiving timeout. Otherwise
  decrease receiving timeout.
@@ -19,10 +18,10 @@
 #include <WiFiUdp.h>
 #include <stdio.h>
 
-int status = WL_IDLE_STATUS;
-char ssid[] = "mynetwork";      //  your network SSID (name)
-char pass[] = "mypassword";     // your network password
-int keyIndex = 0;               // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 unsigned int localPort = 5001;  // local port to listen for UDP packets
 
@@ -115,7 +114,7 @@ int main(int argc, char **argv) {
     serveraddr.sin_addr.s_addr = inet_addr(hostname);
     serveraddr.sin_port = htons(portno);
 
-    while(1) {
+    while (1) {
         memset(buf, 0, BUFSIZE);
         counter = (counter + 1) % 10;
         sprintf(buf, "%d", counter);

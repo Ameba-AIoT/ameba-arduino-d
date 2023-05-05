@@ -1,7 +1,6 @@
 /*
-
- This example prints the Wifi shield's MAC address, and
- scans for available Wifi networks using the Wifi shield.
+ This example prints MAC address, and
+ scans for available Wifi networks.
  Every ten seconds, it scans again. It doesn't actually
  connect to any network, so no encryption scheme is specified.
 
@@ -42,10 +41,8 @@ void loop() {
 }
 
 void printMacAddress() {
-    // the MAC address of your Wifi shield
-    byte mac[6];
-
     // print your MAC address:
+    byte mac[6];
     WiFi.macAddress(mac);
     Serial.print("MAC: ");
     Serial.print(mac[0], HEX);
@@ -126,7 +123,6 @@ void printEncryptionTypeEx(uint32_t thisType) {
     }
 }
 
-
 void printEncryptionType(int thisType) {
     // read the encryption type and print out the name:
     switch (thisType) {
@@ -150,4 +146,3 @@ void printEncryptionType(int thisType) {
             break;
     }
 }
-

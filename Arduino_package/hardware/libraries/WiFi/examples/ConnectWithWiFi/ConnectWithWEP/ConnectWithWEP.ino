@@ -1,7 +1,6 @@
 /*
-
  This example connects to a WEP-encrypted Wifi network.
- Then it prints the  MAC address of the Wifi shield,
+ Then it prints the MAC address,
  the IP address obtained, and other network details.
 
  If you use 40-bit WEP, you need a key that is 10 characters long,
@@ -32,6 +31,7 @@
 // Initialise strings
 String str_ssid, str_pass, str_key;
 #endif
+
 // 0: Exactly 10 or 26 hexadecimal characters; 1:Exactly 5 or 13 ASCII characters
 #define password_type                           0
 
@@ -43,7 +43,7 @@ String str_ssid, str_pass, str_key;
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
 
-char ssid[] = "yourNetwork";                    // your network SSID (name)
+char ssid[] = "Network_SSID";                   // your network SSID (name)
 int keyIndex = 0;                               // your network key Index number
 #if (password_type == 0)
 char key[] = "D0D0DEADF00DABBADEAFBEADED";      // your network key, Exactly 10 or 26 hexadecimal characters
@@ -53,7 +53,7 @@ char pass[] = "D0D0D";                          // your network password, Exactl
     #error                                      // Error unsupported password type
 #endif
 
-int status = WL_IDLE_STATUS;                    // the Wifi radio's status
+int status = WL_IDLE_STATUS;                    // Indicater of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:
@@ -73,14 +73,14 @@ void setup() {
     while (status != WL_CONNECTED) {
 #ifdef MANUAL_INPUT
         Serial.println("Enter your ssid");
-        while (Serial.available() == 0){}
+        while (Serial.available() == 0) {}
         str_ssid = Serial.readString();
         str_ssid.trim();
         Serial.print("SSID entered: ");
         Serial.println(str_ssid);
 
         Serial.println("Enter your network key index number");
-        while (Serial.available() == 0){}
+        while (Serial.available() == 0) {}
         str_key = Serial.readString();
         str_key.trim();
         Serial.print("Key entered: ");
@@ -90,7 +90,7 @@ void setup() {
         while (Serial.available() == 0) {}
         str_pass = Serial.readString();
         str_pass.trim();
-            if (str_pass.length() != 0) {   // user has entered data
+            if (str_pass.length() != 0) { // user has entered data
                 while (str_pass.length() < 5 ) { // to catch pwd<5 exception
                     Serial.println("Password cannot be less than 5 characters! Try again");
                     while (Serial.available() == 0) {}
@@ -101,7 +101,6 @@ void setup() {
                     Serial.println(str_pass);
             }
 #endif
-
         Serial.print("Attempting to connect to WEP network, SSID: ");
 #ifndef MANUAL_INPUT
         Serial.println(ssid);
@@ -110,7 +109,7 @@ void setup() {
     #elif (password_type == 1)
         status = WiFi.begin(ssid, keyIndex, pass);
     #else
-        #error                                       // Error unsupported password type
+        #error      // Error unsupported password type
     #endif
 #else
         char ssid_cust[str_ssid.length()+1];
@@ -141,7 +140,7 @@ void loop() {
 }
 
 void printWifiData() {
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

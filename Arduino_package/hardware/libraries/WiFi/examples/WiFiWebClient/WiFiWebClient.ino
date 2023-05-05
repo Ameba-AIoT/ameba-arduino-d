@@ -6,13 +6,13 @@
 
 #include <WiFi.h>
 
-char ssid[] = "yourNetwork"; // your network SSID (name)
-char pass[] = "password";    // your network password (use for WPA, or use as key for WEP)
-int keyIndex = 0;            // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
-int status = WL_IDLE_STATUS;
 //IPAddress server(64,233,189,94);  // numeric IP for Google (no DNS)
-char server[] = "www.google.com";    // name address for Google (using DNS)
+char server[] = "www.google.com";   // name address for Google (using DNS)
 
 WiFiClient client;
 void setup() {
@@ -73,13 +73,12 @@ void loop() {
     }
 }
 
-
 void printWifiStatus() {
     // print the SSID of the network you're attached to:
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);
