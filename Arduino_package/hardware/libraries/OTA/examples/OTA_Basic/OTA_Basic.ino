@@ -4,11 +4,11 @@
 
 #define OTA_PORT 8082
 
-char ssid[] = "yourNetwork";  //Set the AP's SSID
-char pass[] = "Password";     //Set the AP's password
-int keyIndex = 0;  // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
-int status = WL_IDLE_STATUS;
 int ret = -1;
 
 OTA ota;
@@ -18,15 +18,7 @@ void setup() {
     // Initialize serial and wait for port to open:
     Serial.begin(115200);
     while (!Serial) {
-        ;  // wait for serial port to connect. Needed for native USB port only
-    }
-    
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("[MAIN] WiFi shield not present");
-        // don't continue:
-        while (true)
-            ;
+        ;  // wait for serial port to connect.
     }
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
@@ -76,7 +68,7 @@ void beginMDNSService(){
     service.addTxtRecord("auth_upload", strlen("no"), "no");
     service.addTxtRecord("tcp_check", strlen("no"), "no");
     service.addTxtRecord("ssh_upload", strlen("no"), "no");
-    
+
     printf("Start mDNS service\r\n");
     MDNS.begin();
 

@@ -6,9 +6,9 @@
 #include <PubSubClient.h>
 
 // Update these with values suitable for your network.
-char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "yourPassword";     	// your network password
-int status  = WL_IDLE_STATUS;    // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 WiFiSSLClient wifiClient;
 PubSubClient client(wifiClient);
@@ -21,11 +21,11 @@ char publishUpdateTopic[]   = "$aws/things/" THING_NAME "/shadow/update";
 char publishGetTopic[]      = "$aws/things/" THING_NAME "/shadow/get";
 char publishPayload[MQTT_MAX_PACKET_SIZE];
 char *subscribeTopic[5] = {
-  "$aws/things/" THING_NAME "/shadow/update/accepted",
-  "$aws/things/" THING_NAME "/shadow/update/rejected",
-  "$aws/things/" THING_NAME "/shadow/update/delta",
-  "$aws/things/" THING_NAME "/shadow/get/accepted",
-  "$aws/things/" THING_NAME "/shadow/get/rejected"
+    "$aws/things/" THING_NAME "/shadow/update/accepted",
+    "$aws/things/" THING_NAME "/shadow/update/rejected",
+    "$aws/things/" THING_NAME "/shadow/update/delta",
+    "$aws/things/" THING_NAME "/shadow/get/accepted",
+    "$aws/things/" THING_NAME "/shadow/get/rejected"
 };
 
 /* Amazon Root CA can be download here:
@@ -111,114 +111,114 @@ int led_pin = 10;
 int led_state = 1;
 
 void updateLedState(int desired_led_state) {
-  printf("change led_state to %d\r\n", desired_led_state);
-  led_state = desired_led_state;
-  digitalWrite(led_pin, led_state);
+    printf("change led_state to %d\r\n", desired_led_state);
+    led_state = desired_led_state;
+    digitalWrite(led_pin, led_state);
 
-  sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
-    led_state,
-    clientId
-  );
-  printf("Publish [%s] %s\r\n", publishUpdateTopic, publishPayload);
-  client.publish(publishUpdateTopic, publishPayload);
+    sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
+        led_state,
+        clientId
+    );
+    printf("Publish [%s] %s\r\n", publishUpdateTopic, publishPayload);
+    client.publish(publishUpdateTopic, publishPayload);
 }
 
 void checkLedState() {
-  printf("try to get led_state\r\n");
-  
-  sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
-    led_state,
-    clientId
-  );
-  printf("Publish [%s] %s\r\n", publishGetTopic, publishPayload);
-  client.publish(publishGetTopic, publishPayload);
+    printf("try to get led_state\r\n");
 
-  // After publish "get" command AWS IoT would send "get/accepted" message and we can check led state in callback
+    sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
+        led_state,
+        clientId
+    );
+    printf("Publish [%s] %s\r\n", publishGetTopic, publishPayload);
+    client.publish(publishGetTopic, publishPayload);
+
+    // After publish "get" command AWS IoT would send "get/accepted" message and we can check led state in callback
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  char buf[MQTT_MAX_PACKET_SIZE];
-  char *pch;
-  int desired_led_state;
+    char buf[MQTT_MAX_PACKET_SIZE];
+    char *pch;
+    int desired_led_state;
 
-  strncpy(buf, (const char *)payload, length);
-  buf[length] = '\0';
-  printf("Message arrived [%s] %s\r\n", topic, buf);
+    strncpy(buf, (const char *)payload, length);
+    buf[length] = '\0';
+    printf("Message arrived [%s] %s\r\n", topic, buf);
 
-  if ((strstr(topic, "/shadow/update/accepted") != NULL) || (strstr(topic, "/shadow/get/accepted") != NULL)) {
-    // payload format: {"state":{"reported":{"led":1},"desired":{"led":0}},"metadata":{"reported":{"led":{"timestamp":1466996558}},"desired":{"led":{"timestamp":1466996558}}},"version":7,"timestamp":1466996558}
-    pch = strstr(buf, "\"desired\":{\"led\":");
-    if (pch != NULL) {
-      pch += strlen("\"desired\":{\"led\":");
-      desired_led_state = *pch - '0';
-      if (desired_led_state != led_state) {
-        updateLedState(desired_led_state);
-      }
+    if ((strstr(topic, "/shadow/update/accepted") != NULL) || (strstr(topic, "/shadow/get/accepted") != NULL)) {
+        // payload format: {"state":{"reported":{"led":1},"desired":{"led":0}},"metadata":{"reported":{"led":{"timestamp":1466996558}},"desired":{"led":{"timestamp":1466996558}}},"version":7,"timestamp":1466996558}
+        pch = strstr(buf, "\"desired\":{\"led\":");
+        if (pch != NULL) {
+            pch += strlen("\"desired\":{\"led\":");
+            desired_led_state = *pch - '0';
+            if (desired_led_state != led_state) {
+                updateLedState(desired_led_state);
+            }
+        }
     }
-  }
 }
 
 void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Attempt to connect
-    if (client.connect(clientId)) {
-      Serial.println("connected");
+    // Loop until we're reconnected
+    while (!client.connected()) {
+        Serial.print("Attempting MQTT connection...");
+        // Attempt to connect
+        if (client.connect(clientId)) {
+            Serial.println("connected");
 
-      for (int i=0; i<5; i++) {
-        printf("subscribe [%s]\r\n", subscribeTopic[i]);
-        client.subscribe(subscribeTopic[i]);
-      }
+            for (int i=0; i<5; i++) {
+                printf("subscribe [%s]\r\n", subscribeTopic[i]);
+                client.subscribe(subscribeTopic[i]);
+            }
 
-      checkLedState();
-      updateLedState(led_state);
+            checkLedState();
+            updateLedState(led_state);
 
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
+        } else {
+            Serial.print("failed, rc=");
+            Serial.print(client.state());
+            Serial.println(" try again in 5 seconds");
+            // Wait 5 seconds before retrying
+            delay(5000);
+        }
     }
-  }
 }
 
 void setup() {
-  Serial.begin(115200);
-  pinMode(led_pin, OUTPUT);
-  digitalWrite(led_pin, led_state);
+    Serial.begin(115200);
+    pinMode(led_pin, OUTPUT);
+    digitalWrite(led_pin, led_state);
 
-  while (status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
-    if (status == WL_CONNECTED) break;
-    // retry after 1 second
-    delay(1000);
-  }
+    while (status != WL_CONNECTED) {
+        Serial.print("Attempting to connect to SSID: ");
+        Serial.println(ssid);
+        // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+        status = WiFi.begin(ssid, pass);
+        if (status == WL_CONNECTED) break;
+        // retry after 1 second
+        delay(1000);
+    }
 
-  wifiClient.setRootCA((unsigned char*)rootCABuff);
-  wifiClient.setClientCertificate((unsigned char*)certificateBuff, (unsigned char*)privateKeyBuff);
+    wifiClient.setRootCA((unsigned char*)rootCABuff);
+    wifiClient.setClientCertificate((unsigned char*)certificateBuff, (unsigned char*)privateKeyBuff);
 
-  client.setServer(mqttServer, 8883);
-  client.setCallback(callback);
+    client.setServer(mqttServer, 8883);
+    client.setCallback(callback);
 
-  // For publish qos1 that server will send ack
-  client.setPublishQos(MQTTQOS1);
+    // For publish qos1 that server will send ack
+    client.setPublishQos(MQTTQOS1);
 
-  // For subscribe or publish, wait ack can keep command sequence in order
-  client.waitForAck(true);
+    // For subscribe or publish, wait ack can keep command sequence in order
+    client.waitForAck(true);
 
-  // Allow the hardware to sort itself out
-  delay(1500);
+    // Allow the hardware to sort itself out
+    delay(1500);
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-  delay(1000);
+    if (!client.connected()) {
+        reconnect();
+    }
+    client.loop();
+    delay(1000);
 }

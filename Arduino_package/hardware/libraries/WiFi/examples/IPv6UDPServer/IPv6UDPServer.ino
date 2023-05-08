@@ -26,13 +26,6 @@ void setup() {
         ;
     }
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
-    }
-
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
         Serial.print("Attempting to connect to SSID: ");
@@ -58,9 +51,7 @@ void setup() {
     UDPserver.UDPServerv6();
 }
 
-void loop() {
-
-}
+void loop() {}
 
 void printWifiStatus() {
     // print the SSID of the network you're attached to:

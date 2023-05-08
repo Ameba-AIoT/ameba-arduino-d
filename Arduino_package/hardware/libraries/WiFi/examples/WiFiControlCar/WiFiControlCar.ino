@@ -29,12 +29,6 @@ void setup() {
     car.begin();
     Serial.begin(115200);            // initialize serial communication
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);                // don't continue
-    }
-
     String fv = WiFi.firmwareVersion();
     if (fv != "1.0.0") {
         Serial.println("Please upgrade the firmware");

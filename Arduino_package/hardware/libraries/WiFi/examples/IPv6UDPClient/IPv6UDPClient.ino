@@ -32,13 +32,6 @@ void setup() {
         ;
     }
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
-    }
-
     // enable ipv6 function
     if (UDPclient.enableIPv6()) {
         if ((UDPclient.getIPv6Status()) == 1) {

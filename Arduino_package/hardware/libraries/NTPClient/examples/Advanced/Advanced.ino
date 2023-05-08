@@ -8,8 +8,8 @@
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
-char ssid[] = "<SSID>";
-char pass[] = "<PASS>";
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
 
 WiFiUDP ntpUDP;
 

@@ -17,9 +17,9 @@ PubSubClient client(wifiClient);
 WiFiUDP udpClient;
 NTPClient timeClient(udpClient);
 
-char ssid[] = "ssid";       // your network SSID (name)
-char pass[] = "pass";       // your network password (use for WPA, or use as key for WEP)
-int keyIndex = 0;           // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
 
 char GOOGLE_MQTT_SERVER[] = "mqtt.googleapis.com";
 int  GOOGLE_MQTT_PORT = 8883;
@@ -142,81 +142,80 @@ char* rootCABuff  = \
 "-----END CERTIFICATE-----\n" ;
 
 void fillPrivateKey(const char *private_key) {
-  priv_key[8] = 0;
-  for (int i = 7; i >= 0; i--) {
-    priv_key[i] = 0;
-    for (int byte_num = 0; byte_num < 4; byte_num++) {
-      priv_key[i] = (priv_key[i] << 8) + strtoul(private_key, NULL, 16);
-      private_key += 3;
+    priv_key[8] = 0;
+    for (int i = 7; i >= 0; i--) {
+        priv_key[i] = 0;
+        for (int byte_num = 0; byte_num < 4; byte_num++) {
+            priv_key[i] = (priv_key[i] << 8) + strtoul(private_key, NULL, 16);
+            private_key += 3;
+        }
     }
-  }
 }
 
 void setup() {
-  Serial.begin(115200);
-  // attempt to connect to Wifi network:
-  while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
-    delay(1000);
-  }
-  Serial.println("Connected to wifi");
+    Serial.begin(115200);
+    // attempt to connect to Wifi network:
+    while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
+        delay(1000);
+    }
+    Serial.println("Connected to wifi");
 
-  fillPrivateKey(private_key_str);
-  timeClient.begin();
-  wifiClient.setRootCA((unsigned char*)rootCABuff);
+    fillPrivateKey(private_key_str);
+    timeClient.begin();
+    wifiClient.setRootCA((unsigned char*)rootCABuff);
 }
 
 void loop() {
-  boolean ret = 0;
-
-  if (WiFi.status() != WL_CONNECTED) {
-    while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
-      delay(1000);
+    boolean ret = 0;
+    if (WiFi.status() != WL_CONNECTED) {
+        while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
+            delay(1000);
+        }
+        Serial.println("Connected to wifi");
     }
-    Serial.println("Connected to wifi");
-  }
 
-  if(ret == 0) {
-    Serial.println("Ready for Publishing");
+    if(ret == 0) {
+        Serial.println("Ready for Publishing");
 
-    mqtt_id = (char *)malloc(strlen("projects/") + strlen(project_id) + strlen("/locations/") + strlen(location)
-             + strlen("/registries/") + strlen(registry_id) + strlen("/devices/") + strlen(device_id) + 1);
-    sprintf(mqtt_id, "projects/%s/locations/%s/registries/%s/devices/%s", project_id, location, registry_id, device_id);
+        mqtt_id = (char *)malloc(strlen("projects/") + strlen(project_id) + strlen("/locations/") + strlen(location)
+                 + strlen("/registries/") + strlen(registry_id) + strlen("/devices/") + strlen(device_id) + 1);
+        sprintf(mqtt_id, "projects/%s/locations/%s/registries/%s/devices/%s", project_id, location, registry_id, device_id);
 
-    pub_topic = (char *)malloc(strlen("/devices/") + strlen(device_id) + strlen("/events") + 1);
-    sprintf(pub_topic, "/devices/%s/events", device_id);
+        pub_topic = (char *)malloc(strlen("/devices/") + strlen(device_id) + strlen("/events") + 1);
+        sprintf(pub_topic, "/devices/%s/events", device_id);
 
-    clientPass = CreateJwt(project_id, timeClient.getEpochTime(), priv_key);
+        clientPass = CreateJwt(project_id, timeClient.getEpochTime(), priv_key);
 
-    client.setServer(GOOGLE_MQTT_SERVER, GOOGLE_MQTT_PORT);
-    client.setPublishQos(MQTTQOS1);
-    client.waitForAck(true);
-  }
+        client.setServer(GOOGLE_MQTT_SERVER, GOOGLE_MQTT_PORT);
+        client.setPublishQos(MQTTQOS1);
+        client.waitForAck(true);
+    }
 
-  Serial.println("client connecting...");
-  if (client.connect(mqtt_id, clientUser, clientPass.c_str())) {
-      for(int i = 0; i < count; i++) {
-        memset(payload, 0x0, 64);
-        sprintf(payload, "This is Ameba's %d message!!", i);
-        printf("Publishing the payload \"%s\" with len: %d\r\n", payload, strlen(payload));
-        ret = client.publish(pub_topic, payload);
-        if(ret == 1)
-          printf("client publish successfully!!! ret = %d\r\n",ret);
-        else {
-          printf("client publish failed!!! ret = %d\r\n",ret);
-          break;
+    Serial.println("client connecting...");
+    if (client.connect(mqtt_id, clientUser, clientPass.c_str())) {
+        for(int i = 0; i < count; i++) {
+            memset(payload, 0x0, 64);
+            sprintf(payload, "This is Ameba's %d message!!", i);
+            printf("Publishing the payload \"%s\" with len: %d\r\n", payload, strlen(payload));
+            ret = client.publish(pub_topic, payload);
+            if (ret == 1) {
+                printf("client publish successfully!!! ret = %d\r\n",ret);
+            } else {
+                printf("client publish failed!!! ret = %d\r\n",ret);
+                break;
+            }
+            if (!client.connected()) {
+                Serial.println("MQTT disconnected from server");
+                break;
+            }
+
+            delay(1000);
         }
-        if (!client.connected()) {
-          Serial.println("MQTT disconnected from server");
-          break;
-        }
+        client.disconnect();
+    }
 
-        delay(1000);
-      }
-      client.disconnect();
-  }
+    free(mqtt_id);
+    free(pub_topic);
 
-  free(mqtt_id);
-  free(pub_topic);
-
-  timeClient.update();
+    timeClient.update();
 }
