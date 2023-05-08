@@ -158,7 +158,7 @@ class WiFiDrv
          *
          * return: copy the ip address value in IPAddress object
          */
-        static void getIpAddress(IPAddress& ip);
+        static void getIpAddress(IPAddress& ip, uint8_t interface = 0);
 
 
         /*
@@ -173,14 +173,14 @@ class WiFiDrv
          *
          * return: copy the subnet mask address value in IPAddress object
          */
-        static void getSubnetMask(IPAddress& mask);
+        static void getSubnetMask(IPAddress& mask, uint8_t interface = 0);
 
         /*
          * Get the gateway ip address.
          *
          * return: copy the gateway ip address value in IPAddress object
          */
-        static void getGatewayIP(IPAddress& ip);
+        static void getGatewayIP(IPAddress& ip, uint8_t interface = 0);
 
         /*
          * Return the current SSID associated with the network
@@ -295,6 +295,7 @@ class WiFiDrv
         static const char* getHostname();
 };
 
+extern uint8_t arduino_wifi_mode_check;
 extern WiFiDrv wiFiDrv;
 
 #endif

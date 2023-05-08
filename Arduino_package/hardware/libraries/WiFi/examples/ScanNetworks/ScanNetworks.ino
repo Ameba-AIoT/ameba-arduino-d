@@ -9,11 +9,16 @@
  modified 21 Junn 2012
  by Tom Igoe and Jaymes Dec
 
+ modified 08 May 2023
+ by Realtek SG
+
  Example guide:
  https://www.amebaiot.com/en/amebad-arduino-scan-wifi/
  */
 
 #include <WiFi.h>
+
+int status = WL_IDLE_STATUS;    // Indicater of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:
@@ -22,13 +27,8 @@ void setup() {
         ; // wait for serial port to connect. Needed for native USB port only
     }
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
-    }
-
+    // check for WiFi status:
+    status = WiFi.status();
     // Print WiFi MAC address:
     printMacAddress();
 }

@@ -38,6 +38,8 @@ char* WiFiClass::firmwareVersion() {
 int WiFiClass::begin(char* ssid) {
     uint8_t status = WL_IDLE_STATUS;
 
+    arduino_wifi_mode_check = arduino_wifi_mode_check| 0x01;
+
     WiFiDrv::wifiDriverInit();
 
     if ((WiFiDrv::wifiSetNetwork(ssid, (strlen(ssid)))) != WL_FAILURE) {
@@ -50,6 +52,8 @@ int WiFiClass::begin(char* ssid) {
 
 int WiFiClass::begin(char* ssid, uint8_t key_idx, const char *key) {
     uint8_t status = WL_IDLE_STATUS;
+
+    arduino_wifi_mode_check = arduino_wifi_mode_check | 0x01;
 
     WiFiDrv::wifiDriverInit();
 
@@ -65,6 +69,8 @@ int WiFiClass::begin(char* ssid, uint8_t key_idx, const char *key) {
 int WiFiClass::begin(char* ssid, const char *passphrase) {
     uint8_t status = WL_IDLE_STATUS;
 
+    arduino_wifi_mode_check = arduino_wifi_mode_check | 0x01;
+
     WiFiDrv::wifiDriverInit();
 
     // set passphrase
@@ -74,6 +80,10 @@ int WiFiClass::begin(char* ssid, const char *passphrase) {
         status = WL_CONNECT_FAILED;
     }
     return status;
+}
+
+void WiFiClass::enableConcurrent(void) {
+    arduino_wifi_mode_check = arduino_wifi_mode_check | 0x11;
 }
 
 int WiFiClass::disconnect() {
@@ -86,9 +96,9 @@ uint8_t* WiFiClass::macAddress(uint8_t* mac) {
     return mac;
 }
 
-IPAddress WiFiClass::localIP() {
+IPAddress WiFiClass::localIP(uint8_t interface) {
     IPAddress ret;
-    WiFiDrv::getIpAddress(ret);
+    WiFiDrv::getIpAddress(ret, interface);
     return ret;
 }
 
@@ -96,15 +106,15 @@ void WiFiClass::printLocalIPv6() {
     WiFiDrv::getIpv6Address();
 }
 
-IPAddress WiFiClass::subnetMask() {
+IPAddress WiFiClass::subnetMask(uint8_t interface) {
     IPAddress ret;
-    WiFiDrv::getSubnetMask(ret);
+    WiFiDrv::getSubnetMask(ret, interface);
     return ret;
 }
 
-IPAddress WiFiClass::gatewayIP() {
+IPAddress WiFiClass::gatewayIP(uint8_t interface) {
     IPAddress ret;
-    WiFiDrv::getGatewayIP(ret);
+    WiFiDrv::getGatewayIP(ret, interface);
     return ret;
 }
 
@@ -172,6 +182,8 @@ int WiFiClass::hostByNamev6(const char* aHostname, IPv6Address& aResult) {
 
 int WiFiClass::apbegin(char* ssid, char* channel, uint8_t hidden_ssid) {
     uint8_t status = WL_IDLE_STATUS;
+    arduino_wifi_mode_check = arduino_wifi_mode_check | 0x10;
+    WiFiDrv::wifiDriverInit();
 
     if ((WiFiDrv::apSetNetwork(ssid, strlen(ssid))) != WL_FAILURE) {
         WiFiDrv::apSetChannel(channel);
@@ -189,6 +201,8 @@ int WiFiClass::apbegin(char* ssid, char* channel, uint8_t hidden_ssid) {
 
 int WiFiClass::apbegin(char* ssid, char* password, char* channel, uint8_t hidden_ssid) {
     uint8_t status = WL_IDLE_STATUS;
+    arduino_wifi_mode_check = arduino_wifi_mode_check | 0x10;
+    WiFiDrv::wifiDriverInit();
 
     if ((WiFiDrv::apSetNetwork(ssid, strlen(ssid))) != WL_FAILURE) {
         if ((WiFiDrv::apSetPassphrase(password, strlen(password))) != WL_FAILURE) {

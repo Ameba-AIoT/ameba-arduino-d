@@ -72,6 +72,11 @@ class WiFiClass
          */
         int begin(char* ssid, const char *passphrase);
 
+        /* Start Concurrent mode 
+         * (STA + AP mode)
+         */
+        void enableConcurrent(void);
+
         /* Change Ip configuration settings disabling the dhcp client
          *
          * param local_ip:   Static ip configuration
@@ -135,7 +140,7 @@ class WiFiClass
          *
          * return: Ip address value
          */
-        IPAddress localIP();
+        IPAddress localIP(uint8_t interface = 0);
 
          /*
          * Get the interface IPv6 address.
@@ -149,14 +154,14 @@ class WiFiClass
          *
          * return: subnet mask address value
          */
-        IPAddress subnetMask();
+        IPAddress subnetMask(uint8_t interface = 0);
 
         /*
          * Get the gateway ip address.
          *
          * return: gateway ip address value
          */
-        IPAddress gatewayIP();
+        IPAddress gatewayIP(uint8_t interface = 0);
 
         /*
          * Return the current SSID associated with the network
