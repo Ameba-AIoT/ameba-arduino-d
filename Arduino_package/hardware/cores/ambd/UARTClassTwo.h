@@ -15,7 +15,6 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-
 #ifndef _UART_CLASS_TWO_
 #define _UART_CLASS_TWO_
 
@@ -53,5 +52,4 @@ extern UARTClassTwo Serial1;
 #else
 extern UARTClassTwo Serial2;
 #endif
-
 #endif // _LOGUART_CLASS_

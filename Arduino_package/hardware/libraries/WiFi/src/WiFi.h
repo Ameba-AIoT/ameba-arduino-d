@@ -143,7 +143,7 @@ class WiFiClass
          * return: Ipv6 address value
          */
         void printLocalIPv6();
-        
+
         /*
          * Get the interface subnet mask address.
          *

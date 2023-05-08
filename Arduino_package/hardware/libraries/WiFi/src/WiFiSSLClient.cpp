@@ -164,7 +164,6 @@ int WiFiSSLClient::connect(IPAddress ip, uint16_t port) {
 }
 
 int WiFiSSLClient::connect(const char *host, uint16_t port) {
-
     if (_sni_hostname == NULL) {
         _sni_hostname = (char*)host;
     }

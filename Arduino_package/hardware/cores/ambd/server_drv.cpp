@@ -37,7 +37,6 @@ int ServerDrv::startServer(uint16_t port, uint8_t protMode) {
 
     if (getIPv6Status() == 0) {
         sock = start_server(port, protMode);
-
         if (sock >= 0) {
             if (protMode == TCP_MODE) {
                 //Make it listen to socket with max 20 connections
@@ -54,7 +53,6 @@ int ServerDrv::startServer(uint16_t port, uint8_t protMode) {
             }
         }
     }
-
     return sock;
 }
 
@@ -69,7 +67,6 @@ int ServerDrv::getAvailable(int sock) {
 int ServerDrv::availData(int sock) {
     int ret;
     uint8_t c;
-
     if (sock < 0) {
         return 0;
     }
@@ -191,8 +188,6 @@ int ServerDrv::getIPv6Status() {
 }
 
 void ServerDrv::setIPv6UDPServer(void) {
-
-
     ipv6_udp_server();
 }
 

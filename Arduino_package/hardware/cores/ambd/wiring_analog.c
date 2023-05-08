@@ -76,9 +76,9 @@ static inline uint32_t mapResolution(uint32_t value, uint32_t from, uint32_t to)
         return value;
     }
     if (from > to) {
-        return value >> (from-to);
+        return value >> (from - to);
     } else {
-        return value << (to-from);
+        return value << (to - from);
     }
 }
 
@@ -105,15 +105,15 @@ uint32_t analogRead(uint32_t ulPin) {
         u32 addressGain = 0x1D2;
 
         // Read pre-calibrated values from EFUSE
-        for (index = 0; index< 2; index++) {
-            EFUSE_PMAP_READ8(0, addressOffset+index, EfuseBuf + index, L25EOUTVOLTAGE);
+        for (index = 0; index < 2; index++) {
+            EFUSE_PMAP_READ8(0, (addressOffset + index), (EfuseBuf + index), L25EOUTVOLTAGE);
         }
         _offset = EfuseBuf[1]<<8|EfuseBuf[0];
 
-        for (index = 0; index< 2; index++) {
-            EFUSE_PMAP_READ8(0, addressGain+index, EfuseBuf + index, L25EOUTVOLTAGE);
+        for (index = 0; index < 2; index++) {
+            EFUSE_PMAP_READ8(0, (addressGain + index), (EfuseBuf + index), L25EOUTVOLTAGE);
         }
-        _gain = EfuseBuf[1]<<8|EfuseBuf[0];
+        _gain = EfuseBuf[1] << 8 | EfuseBuf[0];
 
         // Use default values if invalid values obtained from EFUSE
         if (_offset == 0xFFFF) {
@@ -211,7 +211,7 @@ void analogWrite (uint32_t ulPin, int32_t ulValue) {
             } else {
                 pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
                 pwmout_period_us(obj, _writePeriod);
-                pwmout_write(obj, ulValue * 1.0 / (1<<_writeResolution));
+                pwmout_write(obj, ulValue * 1.0 / (1 << _writeResolution));
             }
         }
     }

@@ -52,8 +52,7 @@ IPAddress WiFiDrv::_arduinoDns2;
 bool WiFiDrv::_useStaticIp = false;
 char WiFiDrv::_hostname[HOSTNAME_LEN+1] = {0};
 
-static void init_wifi_struct(void)
-{
+static void init_wifi_struct(void) {
     memset(wifi.ssid.val, 0, sizeof(wifi.ssid.val));
     memset(wifi.bssid.octet, 0, ETH_ALEN);
     memset(password, 0, sizeof(password));
@@ -68,8 +67,7 @@ static void init_wifi_struct(void)
     ap.channel = 1;
 }
 
-void WiFiDrv::wifiDriverInit()
-{
+void WiFiDrv::wifiDriverInit() {
     struct netif * pnetif = &xnetif[0];
 
     if (init_wlan == false) {
@@ -289,8 +287,7 @@ int8_t WiFiDrv::wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const 
     }
 }
 
-int8_t WiFiDrv::apSetNetwork(char* ssid, uint8_t ssid_len)
-{
+int8_t WiFiDrv::apSetNetwork(char* ssid, uint8_t ssid_len) {
     int ret = WL_SUCCESS;
 
     ap.ssid.len = ssid_len;
@@ -303,8 +300,7 @@ int8_t WiFiDrv::apSetNetwork(char* ssid, uint8_t ssid_len)
     return ret;
 }
 
-int8_t WiFiDrv::apSetPassphrase(const char *passphrase, uint8_t len)
-{
+int8_t WiFiDrv::apSetPassphrase(const char *passphrase, uint8_t len) {
     int ret = WL_SUCCESS;
     strcpy((char *)password, (char*)passphrase);
     ap.password = password;
@@ -316,8 +312,7 @@ int8_t WiFiDrv::apSetPassphrase(const char *passphrase, uint8_t len)
     return ret;
 }
 
-int8_t WiFiDrv::apSetChannel(const char *channel)
-{
+int8_t WiFiDrv::apSetChannel(const char *channel) {
     int ret = WL_SUCCESS;
     ap.channel = (unsigned char) atoi((const char *)channel);
     return ret;
@@ -416,14 +411,12 @@ exit:
     return ret;
 }
 
-int8_t WiFiDrv::disconnect()
-{
+int8_t WiFiDrv::disconnect() {
     wifi_disconnect();
     return WL_DISCONNECTED;
 }
 
-uint8_t WiFiDrv::getConnectionStatus()
-{
+uint8_t WiFiDrv::getConnectionStatus() {
     wifiDriverInit();
 
     if (wifi_is_connected_to_ap() == 0) {
@@ -433,62 +426,50 @@ uint8_t WiFiDrv::getConnectionStatus()
     }
 }
 
-uint8_t* WiFiDrv::getMacAddress()
-{
+uint8_t* WiFiDrv::getMacAddress() {
     return LwIP_GetMAC(&xnetif[0]);
 }
 
-void WiFiDrv::getIpAddress(IPAddress& ip)
-{
+void WiFiDrv::getIpAddress(IPAddress& ip) {
     ip = LwIP_GetIP(&xnetif[0]);
 }
 
-void WiFiDrv::getIpv6Address()
-{
+void WiFiDrv::getIpv6Address() {
     LwIP_AUTOIP_IPv6(&xnetif[0]);
     while(!ip6_addr_isvalid(netif_ip6_addr_state(&xnetif[0],0))) vTaskDelay(10);
 }
 
-void WiFiDrv::getSubnetMask(IPAddress& mask)
-{
+void WiFiDrv::getSubnetMask(IPAddress& mask) {
     mask = LwIP_GetMASK(&xnetif[0]);
 }
 
-void WiFiDrv::getGatewayIP(IPAddress& ip)
-{
+void WiFiDrv::getGatewayIP(IPAddress& ip) {
     ip = LwIP_GetGW(&xnetif[0]);
 }
 
-char* WiFiDrv::getCurrentSSID()
-{
+char* WiFiDrv::getCurrentSSID() {
     wifi_get_setting(WLAN0_NAME, &wifi_setting);
     return (char *)(wifi_setting.ssid);
 }
 
-uint8_t* WiFiDrv::getCurrentBSSID()
-{
-    // zzw
-    //uint8_t bssid[ETH_ALEN];
+uint8_t* WiFiDrv::getCurrentBSSID() {
     uint8_t* bssid = new uint8_t[ETH_ALEN];
     wext_get_bssid(WLAN0_NAME, bssid);
     return bssid;
 }
 
-int32_t WiFiDrv::getCurrentRSSI()
-{
+int32_t WiFiDrv::getCurrentRSSI() {
     int rssi = 0;
     wifi_get_rssi(&rssi);
     return rssi;
 }
 
-uint8_t WiFiDrv::getCurrentEncryptionType()
-{
+uint8_t WiFiDrv::getCurrentEncryptionType() {
     wifi_get_setting(WLAN0_NAME, &wifi_setting);
     return (wifi_setting.security_type);
 }
 
-rtw_result_t WiFiDrv::wifidrv_scan_result_handler( rtw_scan_handler_result_t* malloced_scan_result )
-{
+rtw_result_t WiFiDrv::wifidrv_scan_result_handler( rtw_scan_handler_result_t* malloced_scan_result ) {
     rtw_scan_result_t* record;
 
     if (malloced_scan_result->scan_complete != RTW_TRUE) {
@@ -506,8 +487,7 @@ rtw_result_t WiFiDrv::wifidrv_scan_result_handler( rtw_scan_handler_result_t* ma
     return RTW_SUCCESS;
 }
 
-int8_t WiFiDrv::startScanNetworks()
-{
+int8_t WiFiDrv::startScanNetworks() {
     _networkCount = 0;
     if (wifi_scan_networks(wifidrv_scan_result_handler, NULL ) != RTW_SUCCESS) {
         return WL_FAILURE;
@@ -516,13 +496,11 @@ int8_t WiFiDrv::startScanNetworks()
     return WL_SUCCESS;
 }
 
-uint8_t WiFiDrv::getScanNetworks()
-{
+uint8_t WiFiDrv::getScanNetworks() {
     return _networkCount;
 }
 
-char* WiFiDrv::getSSIDNetworks(uint8_t networkItem)
-{
+char* WiFiDrv::getSSIDNetworks(uint8_t networkItem) {
     if (networkItem >= WL_NETWORKS_LIST_MAXNUM) {
         return NULL;
     }
@@ -553,15 +531,12 @@ uint8_t WiFiDrv::getEncTypeNetworks(uint8_t networkItem) {
     return encType;
 }
 
-
-uint32_t WiFiDrv::getEncTypeNetworksEx(uint8_t networkItem)
-{
+uint32_t WiFiDrv::getEncTypeNetworksEx(uint8_t networkItem) {
     //return ((networkItem >= WL_NETWORKS_LIST_MAXNUM) ? NULL : _networkEncr[networkItem]);
     return ((networkItem >= WL_NETWORKS_LIST_MAXNUM) ? 0 : _networkEncr[networkItem]);
 }
 
-int32_t WiFiDrv::getRSSINetworks(uint8_t networkItem)
-{
+int32_t WiFiDrv::getRSSINetworks(uint8_t networkItem) {
     if (networkItem >= WL_NETWORKS_LIST_MAXNUM) {
         //return NULL;
         return 0;
@@ -570,22 +545,20 @@ int32_t WiFiDrv::getRSSINetworks(uint8_t networkItem)
     return _networkRssi[networkItem];
 }
 
-char* WiFiDrv::getFwVersion()
-{
+char* WiFiDrv::getFwVersion() {
     // The version is for compatible to arduino example code
     return "1.0.0";
 }
 
-int WiFiDrv::getHostByName(const char* aHostname, IPAddress& aResult)
-{
-    ip_addr_t ip_addr;  
+int WiFiDrv::getHostByName(const char* aHostname, IPAddress& aResult) {
+    ip_addr_t ip_addr;
     err_t err;
     err = netconn_gethostbyname_addrtype(aHostname, &ip_addr, NETCONN_DNS_IPV4);
     if (err != ERR_OK) {
         return WL_FAILURE;
     } else {
         aResult = ip_addr.u_addr.ip4.addr;
-        return WL_SUCCESS;    
+        return WL_SUCCESS;
     }
 }
 
@@ -619,13 +592,11 @@ int WiFiDrv::getHostByNamev6(const char* aHostname, IPv6Address& aResult) {
 }
 
 
-int WiFiDrv::disablePowerSave()
-{
+int WiFiDrv::disablePowerSave() {
     return wifi_disable_powersave();
 }
 
 void WiFiDrv::config(uint8_t validParams, IPAddress local_ip, IPAddress gateway, IPAddress subnet) {
-
     if (validParams == 1) {
         _arduinoIpAddr = local_ip;
         _arduinoApIpAddr = local_ip;
@@ -669,18 +640,18 @@ void WiFiDrv::setDNS(uint8_t validParams, IPAddress dns_server1, IPAddress dns_s
     LwIP_SetDNS(&dns);
 }
 
-int WiFiDrv::getIPv6Status(){
+int WiFiDrv::getIPv6Status() {
     return get_ipv6_status();
 }
 
 void WiFiDrv::setHostname(const char* hostname) {
-    if(hostname){
+    if (hostname) {
         snprintf(_hostname, HOSTNAME_LEN, "%s", hostname);
     }
 }
 
 const char* WiFiDrv::getHostname() {
-    if(_hostname[0] == 0){
+    if (_hostname[0] == 0) {
         uint8_t* eth_mac = NULL;
         eth_mac = getMacAddress();
         snprintf(_hostname, HOSTNAME_LEN, "%s%02X%02X%02X", "Ameba_", eth_mac[3], eth_mac[4], eth_mac[5]);

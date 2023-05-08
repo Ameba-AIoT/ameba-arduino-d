@@ -53,5 +53,4 @@ class UARTClassOne : public HardwareSerial
 extern UARTClassOne Serial1;
 
 #endif
-
 #endif // _LOGUART_CLASS_

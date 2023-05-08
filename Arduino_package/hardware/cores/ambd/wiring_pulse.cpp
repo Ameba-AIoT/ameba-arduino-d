@@ -35,6 +35,7 @@ extern void *gpio_pin_struct[];
  * or LOW, the type of pulse to measure.  Works on pulses from 2-3 microseconds
  * to 3 minutes in length, but must be called at least a few dozen microseconds
  * before the start of the pulse. */
+// timeout 1000000L
 extern uint32_t pulseIn(uint32_t ulPin, uint32_t state, uint32_t timeout)
 {
     // cache the port and bit of the pin in order to speed up the

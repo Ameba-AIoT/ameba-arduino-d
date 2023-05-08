@@ -32,10 +32,10 @@ void WiFiServer::begin() {
     _sock_ser = serverdrv.startServer(_port);
     if (_sock_ser < 0) {
         _is_connected = false;
-        printf("\n[ERROR] Socket conntect failed \n\r");
+        printf("\n[ERROR] Socket connect failed \n\r");
     } else {
         _is_connected = true;
-        printf("\n[INFO] Socket conntect successfully \n\r");
+        printf("\n[INFO] Socket connect successfully \n\r");
     }
 }
 

@@ -55,7 +55,7 @@ class WiFiDrv
         // settings of current selected network
         static rtw_wifi_setting_t wifi_setting;
 
-        static rtw_result_t wifidrv_scan_result_handler( rtw_scan_handler_result_t* malloced_scan_result );
+        static rtw_result_t wifidrv_scan_result_handler(rtw_scan_handler_result_t* malloced_scan_result);
 
         static IPAddress _arduinoIpAddr;
         static IPAddress _arduinoGwAddr;
@@ -167,8 +167,6 @@ class WiFiDrv
          * return: copy the ip address value in IPAddress object
          */
         static void getIpv6Address();
-        
-
 
         /*
          * Get the interface subnet mask address.
@@ -273,6 +271,7 @@ class WiFiDrv
          */
         static int getHostByName(const char* aHostname, IPAddress& aResult);
         static int getHostByNamev6(const char* aHostname, IPv6Address& aResult);
+
         /*
          * Get the firmware version
          * result: version as string with this format a.b.c

@@ -2,7 +2,7 @@
 #define SSL_DRV_H
 #include <inttypes.h>
 
-#define	DATA_LENTH  128
+#define DATA_LENTH  128
 #ifdef __cplusplus
 extern "C" {
 #include "ard_ssl.h"
