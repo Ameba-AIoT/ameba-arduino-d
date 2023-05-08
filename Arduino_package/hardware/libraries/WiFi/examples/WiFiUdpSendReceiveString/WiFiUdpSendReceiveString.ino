@@ -7,6 +7,9 @@
  created 30 December 2012
  by dlf (Metodo2 srl)
 
+ modified 08 May 2023
+ by Realtek SG
+
  Example guide:
  https://www.amebaiot.com/en/amebad-arduino-ameba-udp-server/
  */
@@ -31,13 +34,6 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
-    }
-
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
     }
 
     // attempt to connect to Wifi network:

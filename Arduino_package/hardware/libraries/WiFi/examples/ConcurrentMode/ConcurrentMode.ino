@@ -3,7 +3,7 @@
  Then it prints the MAC address,
  the IP address obtained, and other network details.
 
- modified 10 Apr 2023
+ modified 08 May 2023
  by Realtek SG
 
  Example guide:

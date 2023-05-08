@@ -19,11 +19,9 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-// Update these with values suitable for your network.
-
-char ssid[] = "yourNetwork";     // your network SSID (name)
-char pass[] = "secretPassword";  // your network password
-int status  = WL_IDLE_STATUS;    // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 char mqttServer[]     = "test.mosquitto.org";
 char clientId[]       = "amebaClient";
@@ -51,23 +49,28 @@ void reconnect() {
         // Attempt to connect
         if (client.connect(clientId)) {
             Serial.println("connected");
-            // Once connected, publish an announcement...
+            //Once connected, publish an announcement and resubscribe
             client.publish(publishTopic, publishPayload);
-            // ... and resubscribe
             client.subscribe(subscribeTopic);
         } else {
-            Serial.print("failed, rc=");
+            Serial.println("failed, rc=");
             Serial.print(client.state());
             Serial.println(" try again in 5 seconds");
-            // Wait 5 seconds before retrying
+            //Wait 5 seconds before retrying
             delay(5000);
         }
     }
 }
 
 void setup() {
+    //Initialize serial and wait for port to open:
     Serial.begin(115200);
+    // wait for serial port to connect.
+    while (!Serial) {
+        ;
+    }
 
+    //Attempt to connect to WiFi network
     while (status != WL_CONNECTED) {
         Serial.print("Attempting to connect to SSID: ");
         Serial.println(ssid);
@@ -81,7 +84,7 @@ void setup() {
     client.setServer(mqttServer, 1883);
     client.setCallback(callback);
 
-    // Allow the hardware to sort itself out
+    //Allow Hardware to sort itself out
     delay(1500);
 }
 

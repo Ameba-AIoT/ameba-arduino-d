@@ -7,10 +7,11 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-// Update these with values suitable for your network.
-char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "yourPassword";       // your network password (use for WPA, or use as key for WEP)
-int status  = WL_IDLE_STATUS;       // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+
+int keepAliveTimer = 30;
 
 char mqttServer[]     = "test.mosquitto.org";
 char clientId[]       = "amebaClient";
@@ -142,10 +143,10 @@ void setup() {
     Serial.println(ssid);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
     status = WiFi.begin(ssid, pass);
-    if (status == WL_CONNECTED) break;
-    // retry after 1 second
     delay(1000);
   }
+
+  client.setKeepAlive(keepAliveTimer);
 
   /*/
   wifiClient.setRootCA((unsigned char*)rootCABuff);
@@ -154,7 +155,7 @@ void setup() {
   /*/
   wifiClient.setRootCA((unsigned char*)rootCABuff);
   client.setServer(mqttServer, 8883);
-  //*/
+  
   client.setCallback(callback);
 
   // Allow the hardware to sort itself out

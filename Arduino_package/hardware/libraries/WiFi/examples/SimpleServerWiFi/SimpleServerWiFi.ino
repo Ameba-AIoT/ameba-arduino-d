@@ -16,12 +16,6 @@ WiFiServer server(5000);
 void setup() {
     Serial.begin(115200);           // initialize serial communication
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);       // don't continue
-    }
-
     // attempt to connect to Wifi network:
     while ( status != WL_CONNECTED) {
         Serial.print("Attempting to connect to Network named: ");

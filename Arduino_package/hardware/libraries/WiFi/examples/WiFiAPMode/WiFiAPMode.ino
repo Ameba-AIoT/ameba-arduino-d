@@ -30,12 +30,6 @@ void setup() {
         ; // wait for serial port to connect. Needed for native USB port only
     }
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);
-    }
-
     // attempt to start AP:
     while (status != WL_CONNECTED) {
 #ifdef MANUAL_INPUT

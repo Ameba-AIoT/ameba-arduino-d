@@ -22,11 +22,6 @@ WiFiServer server(80);
 void setup() {
     Serial.begin(115200);           // initialize serial communication
     pinMode(LED_PIN, OUTPUT);       // set the LED pin mode
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);           // don't continue
-    }
 
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
