@@ -1,0 +1,16 @@
+name: Greetings
+
+on: [pull_request_target, issues]
+
+jobs:
+  greeting:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+    - uses: actions/first-interaction@v1
+      with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        issue-message: "Hello, hope this message finds you well. Thank you for notified this issue. We will review it as soon as possiable. Feel free to have a look at https://www.amebaiot.com/en/ameba-arduino-summary/ for more information' first issue"
+        pr-message: "Hello, hope this message finds you well. Thank you for the work. Your contributions have been outstanding' first pull request"
