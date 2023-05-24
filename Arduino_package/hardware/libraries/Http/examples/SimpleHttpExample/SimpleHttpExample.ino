@@ -1,7 +1,7 @@
 /*
 
  Example guide:
- https://www.amebaiot.com/en/amebad-arduino-web-server-status/
+ https://www.amebaiot.com/en/amebad-arduino-web-client-http/
  */
 
 #include <HttpClient.h>
