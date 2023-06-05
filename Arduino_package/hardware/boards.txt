@@ -1,7 +1,7 @@
 
 menu.AutoUploadMode=* Auto Upload Mode
-menu.EraseFlash=* Erase Flash
-menu.StdLibInit=* Standard Lib Enable
+menu.EraseFlash=* Erase All Flash Memory (4MB)
+menu.StdLibInit=* Standard Lib
 menu.UploadBaudrate=* Upload Speed
 
 ##############################################################
@@ -34,7 +34,7 @@ Ameba_AMB21_AMB22.upload.speed=1500000
 
 Ameba_AMB21_AMB22.menu.EraseFlash.Disable=Disable
 Ameba_AMB21_AMB22.menu.EraseFlash.Disable.upload.erase_flash=Disable
-Ameba_AMB21_AMB22.menu.EraseFlash.Enable=Enable
+Ameba_AMB21_AMB22.menu.EraseFlash.Enable=Erase only
 Ameba_AMB21_AMB22.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
 #Ameba_AMB21_AMB22.menu.AutoUploadMode.Disable=Disable
@@ -42,7 +42,7 @@ Ameba_AMB21_AMB22.menu.EraseFlash.Enable.upload.erase_flash=Enable
 #Ameba_AMB21_AMB22.menu.AutoUploadMode.Enable=Enable
 #Ameba_AMB21_AMB22.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-Ameba_AMB21_AMB22.menu.StdLibInit.Disable=NA
+Ameba_AMB21_AMB22.menu.StdLibInit.Disable=Disable
 Ameba_AMB21_AMB22.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags}
 Ameba_AMB21_AMB22.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ameba_AMB21_AMB22.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM {build.usb_flags} -DArduino_STD_PRINTF
@@ -79,7 +79,7 @@ Ameba_AMB23.upload.speed=1500000
 
 Ameba_AMB23.menu.EraseFlash.Disable=Disable
 Ameba_AMB23.menu.EraseFlash.Disable.upload.erase_flash=Disable
-Ameba_AMB23.menu.EraseFlash.Enable=Enable
+Ameba_AMB23.menu.EraseFlash.Enable=Erase only
 Ameba_AMB23.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
 #Ameba_AMB23.menu.AutoUploadMode.Disable=Disable
@@ -87,7 +87,7 @@ Ameba_AMB23.menu.EraseFlash.Enable.upload.erase_flash=Enable
 #Ameba_AMB23.menu.AutoUploadMode.Enable=Enable
 #Ameba_AMB23.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-Ameba_AMB23.menu.StdLibInit.Disable=NA
+Ameba_AMB23.menu.StdLibInit.Disable=Disable
 Ameba_AMB23.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI {build.usb_flags}
 Ameba_AMB23.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ameba_AMB23.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI {build.usb_flags} -DArduino_STD_PRINTF
@@ -124,7 +124,7 @@ Ai-Thinker_BW16.upload.speed=1500000
 
 Ai-Thinker_BW16.menu.EraseFlash.Disable=Disable
 Ai-Thinker_BW16.menu.EraseFlash.Disable.upload.erase_flash=Disable
-Ai-Thinker_BW16.menu.EraseFlash.Enable=Enable
+Ai-Thinker_BW16.menu.EraseFlash.Enable=Erase only
 Ai-Thinker_BW16.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
 Ai-Thinker_BW16.menu.AutoUploadMode.Disable=Disable
@@ -132,7 +132,7 @@ Ai-Thinker_BW16.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
 Ai-Thinker_BW16.menu.AutoUploadMode.Enable=Enable
 Ai-Thinker_BW16.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-Ai-Thinker_BW16.menu.StdLibInit.Disable=NA
+Ai-Thinker_BW16.menu.StdLibInit.Disable=Disable
 Ai-Thinker_BW16.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 {build.usb_flags}
 Ai-Thinker_BW16.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ai-Thinker_BW16.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 {build.usb_flags} -DArduino_STD_PRINTF
@@ -169,7 +169,7 @@ SparkFun_ThingPlus-AWCU488.upload.speed=1500000
 
 SparkFun_ThingPlus-AWCU488.menu.EraseFlash.Disable=Disable
 SparkFun_ThingPlus-AWCU488.menu.EraseFlash.Disable.upload.erase_flash=Disable
-SparkFun_ThingPlus-AWCU488.menu.EraseFlash.Enable=Enable
+SparkFun_ThingPlus-AWCU488.menu.EraseFlash.Enable=Erase only
 SparkFun_ThingPlus-AWCU488.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
 SparkFun_ThingPlus-AWCU488.menu.AutoUploadMode.Disable=Disable
@@ -177,7 +177,7 @@ SparkFun_ThingPlus-AWCU488.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
 SparkFun_ThingPlus-AWCU488.menu.AutoUploadMode.Enable=Enable
 SparkFun_ThingPlus-AWCU488.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable=NA
+SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable=Disable
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags}
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM {build.usb_flags} -DArduino_STD_PRINTF
@@ -214,7 +214,7 @@ Ameba_AMB25_AMB26.upload.speed=1500000
 
 Ameba_AMB25_AMB26.menu.EraseFlash.Disable=Disable
 Ameba_AMB25_AMB26.menu.EraseFlash.Disable.upload.erase_flash=Disable
-Ameba_AMB25_AMB26.menu.EraseFlash.Enable=Enable
+Ameba_AMB25_AMB26.menu.EraseFlash.Enable=Erase only
 Ameba_AMB25_AMB26.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
 Ameba_AMB25_AMB26.menu.AutoUploadMode.Disable=Disable
@@ -222,7 +222,7 @@ Ameba_AMB25_AMB26.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
 Ameba_AMB25_AMB26.menu.AutoUploadMode.Enable=Enable
 Ameba_AMB25_AMB26.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-Ameba_AMB25_AMB26.menu.StdLibInit.Disable=NA
+Ameba_AMB25_AMB26.menu.StdLibInit.Disable=Disable
 Ameba_AMB25_AMB26.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags}
 Ameba_AMB25_AMB26.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 Ameba_AMB25_AMB26.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags} -DArduino_STD_PRINTF
@@ -257,7 +257,7 @@ u-blox_NORA-W30.upload.speed=921600
 
 u-blox_NORA-W30.menu.EraseFlash.Disable=Disable
 u-blox_NORA-W30.menu.EraseFlash.Disable.upload.erase_flash=Disable
-u-blox_NORA-W30.menu.EraseFlash.Enable=Enable
+u-blox_NORA-W30.menu.EraseFlash.Enable=Erase only
 u-blox_NORA-W30.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
 u-blox_NORA-W30.menu.AutoUploadMode.Disable=Disable
@@ -265,7 +265,7 @@ u-blox_NORA-W30.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
 u-blox_NORA-W30.menu.AutoUploadMode.Enable=Enable
 u-blox_NORA-W30.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-u-blox_NORA-W30.menu.StdLibInit.Disable=NA
+u-blox_NORA-W30.menu.StdLibInit.Disable=Disable
 u-blox_NORA-W30.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags}
 u-blox_NORA-W30.menu.StdLibInit.Enable=Arduino_STD_PRINTF
 u-blox_NORA-W30.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF {build.usb_flags} -DArduino_STD_PRINTF
