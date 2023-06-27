@@ -2,11 +2,8 @@
  This sketch provide a way to measure proper udp timeout value via dynamically changing udp
  receiving timeout value. If timeout happens, then add 1 to receiving timeout. Otherwise
  decrease receiving timeout.
- This sketch separate into two parts:
- The first part is Arduino code which play receiver role.
- The second part is PC code wich play sender role. Please compile the second part and run it.
 
- You can open Serial Plotter to check the change behavor of timeout value.
+ Please open Serial Plotter to check the change behavor of timeout value.
  The meaning of timeout value depends on the sending frequency from sender side.
  If the sender side send packets frequently, then the Arduino side can have smaller receiving timeout value.
 
@@ -27,12 +24,13 @@ unsigned int localPort = 5001;  // local port to listen for UDP packets
 
 // A UDP instance to let us send and receive packets over UDP
 WiFiUDP Udp;
+IPAddress ip;
 
 void setup() {
     //Initialize serial and wait for port to open:
     Serial.begin(115200);
     while (!Serial) {
-        ; // wait for serial port to connect. Needed for native USB port only
+        ; // wait for serial port to connect.
     }
 
     while (status != WL_CONNECTED) {
@@ -48,6 +46,8 @@ void setup() {
     }
 
     Serial.println("\n\rConnected to wifi");
+    ip = WiFi.localIP();
+
     Udp.begin(localPort);
 }
 
@@ -72,63 +72,11 @@ void loop() {
                 timeout = 1;
             }
         }
+
+        Serial.print("IP Address: ");
+        Serial.print(ip);
+        Serial.print("    Timeout: ");
         Serial.println(timeout);
         Udp.setRecvTimeout(timeout);
     }
 }
-
-/***** SECOND PART: Compile below code under PC environment and run it ******/
-
-#if 0
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-
-#define BUFSIZE 16
-
-const char *hostname = "192.168.1.213";
-int portno = 5001;
-
-int main(int argc, char **argv) {
-    int sockfd, n;
-    struct sockaddr_in serveraddr;
-    int serverlen = sizeof(serveraddr);
-    char buf[BUFSIZE];
-    int counter = 0;
-
-    /* socket: create the socket */
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sockfd < 0) {
-        printf("ERROR opening socket\r\n");
-        return -1;
-    }
-
-    /* build the server's Internet address */
-    memset(&serveraddr, 0, sizeof(serveraddr));
-    serveraddr.sin_family = AF_INET;
-    serveraddr.sin_addr.s_addr = inet_addr(hostname);
-    serveraddr.sin_port = htons(portno);
-
-    while (1) {
-        memset(buf, 0, BUFSIZE);
-        counter = (counter + 1) % 10;
-        sprintf(buf, "%d", counter);
-
-        /* send the message to the server */
-        n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen);
-        if (n < 0) {
-            printf("ERROR in sendto\r\n");
-            return -1;
-        }
-        usleep(5 * 1000);
-    }
-
-    return 0;
-}
-
-#endif
