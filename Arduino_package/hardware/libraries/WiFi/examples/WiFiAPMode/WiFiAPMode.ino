@@ -58,6 +58,7 @@ void setup() {
         Serial.println("Enter your channel number");
         while (Serial.available() == 0) {}
             str_channel = Serial.readString();
+            str_channel.trim();
             int checker = str_channel.toInt();
             while(str_channel != (String(checker))){
                 Serial.println("channel should be a number!");
@@ -65,7 +66,6 @@ void setup() {
                 str_channel = Serial.readString();
                 checker = str_channel.toInt();
             }
-            str_channel.trim();
             Serial.print("channel entered: ");
             Serial.println(str_channel);
 #endif
@@ -81,7 +81,7 @@ void setup() {
         strcpy(pass_cust, str_pass.c_str());
         strcpy(channel_cust, str_channel.c_str());
         Serial.println(str_ssid.c_str());
-        status = WiFi.apbegin(ssid_cust, pass_cust, channel, ssid_status);
+        status = WiFi.apbegin(ssid_cust, pass_cust, channel_cust, ssid_status);
         str_ssid = str_pass = str_channel = "";
 #endif
         delay(10000);
