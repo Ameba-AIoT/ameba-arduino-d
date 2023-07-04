@@ -44,7 +44,7 @@ PubSubClient client(wifiClient);
 void reconnect() {
     // Loop until we're reconnected
     while (!(client.connected())) {
-        Serial.print("\nAttempting MQTT connection...");
+        Serial.print("\r\nAttempting MQTT connection...");
         // Attempt to connect
         if (client.connect(clientId)) {
             Serial.println("connected");
@@ -71,7 +71,7 @@ void setup() {
 
     //Attempt to connect to WiFi network
     while (status != WL_CONNECTED) {
-        Serial.print("Attempting to connect to SSID: ");
+        Serial.print("\r\nAttempting to connect to SSID: ");
         Serial.println(ssid);
         // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
         status = WiFi.begin(ssid, pass);
