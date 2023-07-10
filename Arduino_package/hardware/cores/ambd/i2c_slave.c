@@ -160,7 +160,8 @@ void I2CISRHandle(void *data)
         
     	/* Receive data till the RX FIFO is empty */
     	DBG("rx full, reading data out")
-    	printf("receivedEvent triggered[%d]\r\n", obj->rx_datalength);
+    	//printf("receivedEvent triggered[%d]\r\n", obj->rx_datalength);
+    	DelayUs(1000);
     	while (I2C_CheckFlagState(obj->i2c_slave_dev->I2Cx, (BIT_IC_STATUS_RFNE | BIT_IC_STATUS_RFF))) {                  
     		
     		u32 data = 0;
