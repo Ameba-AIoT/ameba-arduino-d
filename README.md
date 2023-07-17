@@ -5,8 +5,8 @@
 
 |Branch|Usage|Remarks|
 |:-----|:-----|:-----|
+|`master` | stable release| `master` branch is only for hosting stable release by link https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json, refer to section 2 to use the stable release |
 |`dev`| merge `PR` & early release| `dev` branch is open to `Pull Request`(PR) for ***feature addition*** and ***bug fix***. It will also have the latest features which you can access via this link https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek.com_amebad_early_index.json (refer below for steps to install early release on Arduino IDE, but please be noted that as this is a **early release**, bugs and/or performance issue might occur and break your program) |
-|`master` | stable release| `master` branch is only for hosting stable release, no `PR` will be merged, refer to the following steps to use the stable release |
 
 
 For all `release` information, please visit this [link](https://github.com/ambiot/ambd_arduino/releases).
@@ -26,9 +26,9 @@ For all `release` information, please visit this [link](https://github.com/ambio
     
     **"File" -> "Preferences" -> "Additional Boards Manager URLs:"**
 
-    Simply copy and paste the following link into the field and click "OK",
+    Copy and paste the following link into the field and click "OK",
 
-     https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json
+    https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json
 
     > We also suggest to enable "Show verbose output" options on "compilation" and "upload" in Preference for easier debugging.
     
