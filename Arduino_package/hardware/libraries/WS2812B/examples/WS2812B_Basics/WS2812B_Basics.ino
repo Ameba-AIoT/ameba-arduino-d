@@ -6,7 +6,9 @@
 
 #include "WS2812B.h"
 
+#define TOTAL_NUM_OF_LED 16
 #define NUM_OF_LEDS 8
+
 // There are mutiple choice of SPI_MOSI pins depends on different boards. The default is SPI_MOSI/SPI1_MOSI
 // AMB21/AMB22              pin 11 /  pin21
 // AMB23                    pin 9  /  pin 4
@@ -14,7 +16,7 @@
 // AW-CU488 ThingPlus       pin 1  /  pin 14
 // AMB25/AMB26              pin 17 /  pin 3
 
-WS2812B led(SPI_MOSI, NUM_OF_LEDS);
+WS2812B led(SPI_MOSI, TOTAL_NUM_OF_LED);
 
 void setup() {
     Serial.begin(115200);
