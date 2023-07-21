@@ -109,12 +109,12 @@ uint32_t TL_Suspend_function(void) {
         break;
     }
 
-    printf("\r\nSytem suspend. Tickless mode enabled.    \r\n");
+    printf("\r\nSystem suspend. Tickless mode enabled.    \r\n");
     return TRUE;
 }
 
 uint32_t TL_Resume_fnction(void) {
-    printf("\r\nTickless mode resume. Wait 5s enter tickless again.     \r\n");
+    printf("\r\nTickless mode resumed. Wait %ds enter tickless again.\r\n", (TL_SYSACTIVE_TIME/1000));
 
     PowerSave.TL_sysactive_time(TL_SYSACTIVE_TIME);
     return TRUE;
