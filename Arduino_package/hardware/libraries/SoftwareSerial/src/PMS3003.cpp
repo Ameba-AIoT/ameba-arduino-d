@@ -121,14 +121,14 @@ void PMS3003::update_cache() {
     uint32_t checksum_calculate;
     uint32_t checksum_compare;
     unsigned char buf[PMS3003_BUF_SIZE];
+    int max_checksum = 0;
 
     if (((millis() - last_update_time) < PMS3003_REFRESH_TIME) && (last_update_time != 0)) {
         return;
     }
 
-    while (1) {
+    while (max_checksum != 10) {
         memcpy(buf, rb, PMS3003_BUF_SIZE);
-
         header_idx = -1;
         for (int i = 0; i < PMS3003_BUF_SIZE - 1; i++) {
             if ((buf[i] == 0x42) && (buf[(i + 1)] == 0x4d)) {
@@ -141,15 +141,21 @@ void PMS3003::update_cache() {
             // calculate checksum
             checksum_calculate = 0;
             for (int i = 0; i < 30; i++) {
-                checksum_calculate += buf[(header_idx + i)];
+                checksum_calculate = checksum_calculate + buf[(header_idx + i)];
             }
-            checksum_compare = buf[(header_idx + 30)] << 8 | buf[(header_idx + 31)];
+            checksum_compare = (buf[(header_idx + 30)] << 8) | (buf[(header_idx + 31)]);
             if (checksum_calculate == checksum_compare) {
                 break;
             }
         }
         delay(100); // no valid packet, wait 100ms and check again
+        max_checksum++;
     }
+
+//    if (max_checksum == 10) {
+//        printf("    warning checksum not match! \r\n");
+//    }
+
     pm1p0_cf1 = buf[(header_idx +  4)] << 8 | buf[(header_idx +  5)];
     pm2p5_cf1 = buf[(header_idx +  6)] << 8 | buf[(header_idx +  7)];
     pm10_cf1  = buf[(header_idx +  8)] << 8 | buf[(header_idx +  9)];
