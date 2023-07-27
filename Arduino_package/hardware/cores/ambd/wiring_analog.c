@@ -51,8 +51,9 @@ static int _readResolution = 10;
 extern void *gpio_pin_struct[];
 static int _writeResolution = 8;
 static int _writePeriod = 1000;
-static uint16_t _offset = 0;
-static uint16_t _gain = 0;
+static float _offset = 0;
+static float _gain = 0;
+static int _calibrate_en = 0;
 
 void analogReadResolution(int res) {
     if (res > 12) {
@@ -88,42 +89,47 @@ void analogReference(eAnalogReference ulMode) {
     analog_reference = ulMode;
 }
 
-uint32_t analogRead(uint32_t ulPin) {
-    uint16_t ret = 0;
-//    float    voltage;
-    uint32_t mv;
+void analogSet(float gain, float offset){
+    _offset = offset;
+    _gain = gain;
+    _calibrate_en = 1;
+}
 
+uint32_t analogRead(uint32_t ulPin) {
+    //float    voltage;
+    float ret = 0;
+    float mv;
     if ((g_APinDescription[ulPin].ulPinType & TYPE_ANALOG) != TYPE_ANALOG) {
         printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
         return 0;
     }
+    if (_calibrate_en == 0) {
+        if ((_offset == 0) || (_gain == 0)) {
+            u8 EfuseBuf[2];
+            u32 index;
+            u32 addressOffset = 0x1D0;
+            u32 addressGain = 0x1D2;
 
-    if ((_offset == 0) || (_gain == 0)) {
-        u8 EfuseBuf[2];
-        u32 index;
-        u32 addressOffset = 0x1D0;
-        u32 addressGain = 0x1D2;
+            // Read pre-calibrated values from EFUSE
+            for (index = 0; index < 2; index++) {
+                EFUSE_PMAP_READ8(0, (addressOffset + index), (EfuseBuf + index), L25EOUTVOLTAGE);
+            }
+            _offset = EfuseBuf[1]<<8|EfuseBuf[0];
 
-        // Read pre-calibrated values from EFUSE
-        for (index = 0; index < 2; index++) {
-            EFUSE_PMAP_READ8(0, (addressOffset + index), (EfuseBuf + index), L25EOUTVOLTAGE);
-        }
-        _offset = EfuseBuf[1]<<8|EfuseBuf[0];
+            for (index = 0; index < 2; index++) {
+                EFUSE_PMAP_READ8(0, (addressGain + index), (EfuseBuf + index), L25EOUTVOLTAGE);
+            }
+            _gain = EfuseBuf[1] << 8 | EfuseBuf[0];
 
-        for (index = 0; index < 2; index++) {
-            EFUSE_PMAP_READ8(0, (addressGain + index), (EfuseBuf + index), L25EOUTVOLTAGE);
-        }
-        _gain = EfuseBuf[1] << 8 | EfuseBuf[0];
-
-        // Use default values if invalid values obtained from EFUSE
-        if (_offset == 0xFFFF) {
-            _offset = 0x9B0;
-        }
-        if (_gain == 0xFFFF) {
-            _gain = 0x2F12;
+            // Use default values if invalid values obtained from EFUSE
+            if (_offset == 0xFFFF) {
+                _offset = 0x9B0;
+            }
+            if (_gain == 0xFFFF) {
+                _gain = 0x2F12;
+            }
         }
     }
-
     pinRemoveMode(ulPin);
 
     switch (g_APinDescription[ulPin].pinname) {
@@ -159,14 +165,14 @@ uint32_t analogRead(uint32_t ulPin) {
             printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
             return 0;
     }
-
+   
     if (ret < 0xfa) {
         mv = 0; // Ignore persistent low voltage measurement error
     } else {
         mv = ((10 * ret - _offset) * 1000 / _gain); // Convert measured ADC value to millivolts
-    }
+   }
+    
     ret = (mv/3300.0) * (1 << _readResolution); // Return user required resolution
-
     return ret;
 }
 
