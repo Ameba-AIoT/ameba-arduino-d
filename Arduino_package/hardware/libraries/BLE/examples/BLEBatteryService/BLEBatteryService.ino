@@ -65,7 +65,7 @@ void setup() {
 }
 
 void loop() {
-    battlevel = (battlevel + 1)%100;
+    battlevel = (battlevel + 1) % 100;
     battChar.writeData8(battlevel);
     if (BLE.connected(0) && notify) {
         battChar.notify(0);
