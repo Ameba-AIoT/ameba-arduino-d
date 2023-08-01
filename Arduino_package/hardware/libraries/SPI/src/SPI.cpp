@@ -44,7 +44,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     pinUserSS = -1;
     initStatus = false;
     dataBits = 8;           // default databits is 8 bits
-    dataMode = SPI_MODE0;   // default datamode is mode 0
+    dataMode = SPI_DATA_MODE0;   // default datamode is mode 0
 
 #if defined(BOARD_RTL8721DM)
     defaultFrequency = 2000000;
@@ -52,7 +52,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     defaultFrequency = 20000000;
 #endif
 
-    SPI_Mode = 'master';
+    SPI_Mode = SPI_MODE_MASTER;
 }
 
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings) {
@@ -132,11 +132,11 @@ void SPIClass::begin(int ss) {
     initStatus = true;
 }
 
-void begin(char mode) {
+void SPIClass::begin(char mode) {
     SPI_Mode = mode;
-    if (SPI_Mode == 'master') {
+    if (SPI_Mode == SPI_MODE_MASTER) {
         begin();
-    } else if (SPI_Mode == 'slave') {
+    } else if (SPI_Mode == SPI_MODE_SLAVE) {
         if (pinMOSI == PA_16 || pinMOSI == PB_18) {
             ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
         } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
@@ -166,11 +166,11 @@ void begin(char mode) {
     }
 }
 
-void begin(int ss, char mode) {
+void SPIClass::begin(int ss, char mode) {
     SPI_Mode = mode;
-    if (SPI_Mode == 'master') {
+    if (SPI_Mode == SPI_MODE_MASTER) {
         begin(ss);
-    } else if (SPI_Mode == 'slave') {
+    } else if (SPI_Mode == SPI_MODE_SLAVE) {
         pinSS = (PinName)g_APinDescription[ss].pinname;
 
         if (pinMOSI == PA_16 || pinMOSI == PB_18) {

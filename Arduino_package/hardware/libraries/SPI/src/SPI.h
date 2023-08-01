@@ -34,10 +34,13 @@
 //   - beginTransaction(pin, SPISettings settings) (if transactions are available)
 #define SPI_HAS_EXTENDED_CS_PIN_HANDLING 1
 
-#define SPI_MODE0 0x00
-#define SPI_MODE1 0x01
-#define SPI_MODE2 0x02
-#define SPI_MODE3 0x03
+#define SPI_DATA_MODE0      0x00
+#define SPI_DATA_MODE1      0x01
+#define SPI_DATA_MODE2      0x02
+#define SPI_DATA_MODE3      0x03
+
+#define SPI_MODE_MASTER     'M'
+#define SPI_MODE_SLAVE      'S'
 
 enum SPITransferMode {
     SPI_CONTINUE,
@@ -52,7 +55,7 @@ class SPISettings {
             _dataMode = dataMode;
         }
         SPISettings() {
-            SPISettings(4000000, MSBFIRST, SPI_MODE0);
+            SPISettings(4000000, MSBFIRST, SPI_DATA_MODE0);
         }
 
     private:
