@@ -82,6 +82,8 @@ class SPIClass {
 
         void begin(void);
         void begin(int ss);
+        void begin(char mode);
+        void begin(int ss, char mode);
         void end(void);
 
         void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
@@ -108,6 +110,7 @@ class SPIClass {
         u8 dataBits;
         u8 dataMode;
         int defaultFrequency;
+        char SPI_Mode;
 };
 
 #if defined(BOARD_RTL8722DM)
