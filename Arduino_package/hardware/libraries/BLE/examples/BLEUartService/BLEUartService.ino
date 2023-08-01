@@ -20,11 +20,17 @@ BLEAdvertData scndata;
 bool notify = false;
 
 void readCB (BLECharacteristic* chr, uint8_t connID) {
-    printf("Characteristic %s read by connection %d \n", chr->getUUID().str(), connID);
+    Serial.print("Characteristic ");
+    Serial.print(chr->getUUID().str());
+    Serial.print(" read by connection ");
+    Serial.println(connID);
 }
 
 void writeCB (BLECharacteristic* chr, uint8_t connID) {
-    printf("Characteristic %s write by connection %d :\n", chr->getUUID().str(), connID);
+    Serial.print("Characteristic ");
+    Serial.print(chr->getUUID().str());
+    Serial.print(" write by connection ");
+    Serial.println(connID);
     if (chr->getDataLen() > 0) {
         Serial.print("Received string: ");
         Serial.print(chr->readString());
@@ -32,14 +38,19 @@ void writeCB (BLECharacteristic* chr, uint8_t connID) {
     }
 }
 
-void notifCB (BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
+void notifCB(BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
     if (cccd & GATT_CLIENT_CHAR_CONFIG_NOTIFY) {
-        printf("Notifications enabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        //printf("Notifications enabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        Serial.print("Notifications enabled on Characteristic");
         notify = true;
     } else {
-        printf("Notifications disabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        //printf("Notifications disabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        Serial.print("Notifications disabled on Characteristic");
         notify = false;
     }
+    Serial.print(chr->getUUID().str());
+    Serial.print(" for connection");
+    Serial.println(connID);
 }
 
 void setup() {

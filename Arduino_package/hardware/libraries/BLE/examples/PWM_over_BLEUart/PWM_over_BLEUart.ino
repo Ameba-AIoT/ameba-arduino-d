@@ -29,19 +29,31 @@ BLEAdvertData scndata;
 bool notify = false;
 
 void readCB (BLECharacteristic* chr, uint8_t connID) {
-    printf("Characteristic %s read by connection %d \n", chr->getUUID().str(), connID);
+    Serial.print("Characteristic ");
+    Serial.print(chr->getUUID().str());
+    Serial.print(" read by connection ");
+    Serial.println(connID);
 }
 
 void writeCB (BLECharacteristic* chr, uint8_t connID) {
-    printf("Characteristic %s write by connection %d :\n", chr->getUUID().str(), connID);
+    Serial.print("Characteristic ");
+    Serial.print(chr->getUUID().str());
+    Serial.print(" write by connection ");
+    Serial.println(connID);
     uint16_t datalen = chr->getDataLen();
     if (datalen > 0) {
         if (chr->readData8() == '!') {
             uint8_t command[datalen];
             chr->getData(command, datalen);
             if (command[1] == 'C') {
+                Serial.print("Color command R = ");
+                Serial.print(command[2]);
+                Serial.print(" G = ");
+                Serial.print(command[3]);
+                Serial.print(" B = ");
+                Serial.println(command[4]);
                 // print hex
-                printf("Color command R = %x G = %x B = %x \n", command[2], command[3], command[4]);
+                //printf("Color command R = %x G = %x B = %x \n", command[2], command[3], command[4]);
                 // print decimal
                 //printf("Color command R = %d G = %d B = %d \n", command[2], command[3], command[4]);
 #if defined(CathodeRGB)
@@ -53,7 +65,8 @@ void writeCB (BLECharacteristic* chr, uint8_t connID) {
                 analogWrite(LED_GRN, (255 - command[3]));
                 analogWrite(LED_BLU, (255 - command[4]));
 #else
-                printf("Error, please choose the RGB LED type \n");
+                //printf("Error, please choose the RGB LED type \n");
+                Serial.println("Error, please choose the RGB LED type");
 #endif
             }
         } else {
@@ -64,14 +77,19 @@ void writeCB (BLECharacteristic* chr, uint8_t connID) {
     }
 }
 
-void notifCB (BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
+void notifCB(BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
     if (cccd & GATT_CLIENT_CHAR_CONFIG_NOTIFY) {
-        printf("Notifications enabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        //printf("Notifications enabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        Serial.print("Notifications enabled on Characteristic");
         notify = true;
     } else {
-        printf("Notifications disabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        //printf("Notifications disabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        Serial.print("Notifications disabled on Characteristic");
         notify = false;
     }
+    Serial.print(chr->getUUID().str());
+    Serial.print(" for connection");
+    Serial.println(connID);
 }
 
 void setup() {
