@@ -44,7 +44,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     pinUserSS = -1;
     initStatus = false;
     dataBits = 8;           // default databits is 8 bits
-    dataMode = SPI_MODE0;   // default datamode is mode 0
+    dataMode = SPI_DATA_MODE0;   // default datamode is mode 0
 
 #if defined(BOARD_RTL8721DM)
     defaultFrequency = 2000000;
@@ -52,6 +52,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
     defaultFrequency = 20000000;
 #endif
 
+    SPI_Mode = SPI_MODE_MASTER;
 }
 
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings) {
@@ -87,7 +88,7 @@ void SPIClass::begin(void) {
     } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
+        printf("SPI begin: error. wrong spi_idx \r\n");
         return;
     }
 
@@ -113,7 +114,7 @@ void SPIClass::begin(int ss) {
     } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
     } else {
-        printf("spi_init: error. wrong spi_idx \r\n");
+        printf("SPI begin: error. wrong spi_idx \r\n");
         return;
     }
 
@@ -129,6 +130,76 @@ void SPIClass::begin(int ss) {
 
     // Mark SPI init status
     initStatus = true;
+}
+
+void SPIClass::begin(char mode) {
+    SPI_Mode = mode;
+    if (SPI_Mode == SPI_MODE_MASTER) {
+        begin();
+    } else if (SPI_Mode == SPI_MODE_SLAVE) {
+        if (pinMOSI == PA_16 || pinMOSI == PB_18) {
+            ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
+        } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
+            //((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+            printf("SPI begin: error. SPI1 does not support slave mode \r\n");
+            return;
+        } else {
+            printf("SPI begin: error. wrong spi_idx \r\n");
+            return;
+        }
+
+        spi_init(
+            (spi_t *)pSpiMaster, 
+            (PinName)pinMOSI, 
+            (PinName)pinMISO, 
+            (PinName)pinCLK, 
+            (PinName)pinSS
+        );
+        spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 1);
+        //spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+
+        // Mark SPI init status
+        initStatus = true;
+    } else {
+        printf("SPI begin: error. SPI mode \r\n");
+        return;
+    }
+}
+
+void SPIClass::begin(int ss, char mode) {
+    SPI_Mode = mode;
+    if (SPI_Mode == SPI_MODE_MASTER) {
+        begin(ss);
+    } else if (SPI_Mode == SPI_MODE_SLAVE) {
+        pinSS = (PinName)g_APinDescription[ss].pinname;
+
+        if (pinMOSI == PA_16 || pinMOSI == PB_18) {
+            ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
+        } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
+            //((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
+            printf("SPI begin: error. SPI1 does not support slave mode \r\n");
+            return;
+        } else {
+            printf("SPI begin: error. wrong spi_idx \r\n");
+            return;
+        }
+
+        spi_init(
+            (spi_t *)pSpiMaster, 
+            (PinName)pinMOSI, 
+            (PinName)pinMISO, 
+            (PinName)pinCLK, 
+            (PinName)pinSS
+        );
+        spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 1);
+        //spi_frequency((spi_t *)pSpiMaster, defaultFrequency);
+
+        // Mark SPI init status
+        initStatus = true;
+    } else {
+        printf("SPI begin: error. SPI mode \r\n");
+        return;
+    }
 }
 
 void SPIClass::end(void)
