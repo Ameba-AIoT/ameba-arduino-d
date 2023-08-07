@@ -57,7 +57,6 @@ BLEAdvertData scndata;
 bool notify = false;
 uint8_t Count;
 
-String CMDRefer[5] = {"SS2","SS4","SRT","SR2","SRV"};
 _rCMD bleReciveData[MaxNumValue];
 
 void backward(){
@@ -148,19 +147,6 @@ void notifCB(BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
 void ParseCMDString(String cmd)
 {
     int comdLength = cmd.length();
-    int chkx;
-    int CMDMaxNUM = sizeof(CMDRefer)/sizeof(String);
-
-
-    for(chkx = 0; chkx < CMDMaxNUM ;chkx++){
-        if(cmd.indexOf(CMDRefer[chkx].c_str()) > -1)
-            break;
-    }
-
-    if(chkx >= CMDMaxNUM && cmd.charAt(comdLength - 1) != '#')
-        return;
-    
-
     
     if(cmd.indexOf("SRT") > -1 ){
 
