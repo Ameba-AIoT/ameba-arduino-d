@@ -29,6 +29,9 @@ class WiFiServer : public Server {
         virtual void end();
 
         virtual void close();
+
+        virtual void setBlocking();
+
         // extend API from RTK
         virtual int setTimeout(int timeout);
         // IPv6 related
@@ -45,6 +48,7 @@ class WiFiServer : public Server {
         bool _is_connected;
         uint8_t data[DATA_LENTH];
         int recvTimeout;
+        bool _is_blocked = false; 
 };
 
 #endif

@@ -169,6 +169,22 @@ int start_client_v6(char ipv6Address[], uint16_t port, uint8_t protMode) {
     return _sock;
 }
 
+int set_nonblocking(int fd) {
+    int flags;
+
+    flags = fcntl(fd, F_GETFL, 0);
+    if (flags == -1) {
+        return -1;
+    }
+    flags |= O_NONBLOCK;
+    if (fcntl(fd, F_SETFL, flags) == -1) {
+        
+        return -1;
+    }
+ 
+    return 0;
+}
+
 int start_server(uint16_t port, uint8_t protMode) {
     int _sock;
     int timeout;

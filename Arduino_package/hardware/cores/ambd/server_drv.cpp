@@ -32,24 +32,48 @@ int ServerDrv::startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t protM
     return sock;
 }
 
-int ServerDrv::startServer(uint16_t port, uint8_t protMode) {
+int ServerDrv::startServer(uint16_t port, int blockMode, uint8_t protMode) {
     int sock;
 
-    if (getIPv6Status() == 0) {
-        sock = start_server(port, protMode);
-        if (sock >= 0) {
-            if (protMode == TCP_MODE) {
-                //Make it listen to socket with max 20 connections
-                sock_listen(sock, 1);
+    if (blockMode == 1) {
+        if (getIPv6Status() == 0) {
+            sock = start_server(port, protMode);
+            if (sock >= 0) {
+                if (protMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 1);
+                }
+            }
+        } else {
+            sock = start_server_v6(port, protMode);
+
+            if (sock >= 0) {
+                if (protMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 20);
+                }
             }
         }
-    } else {
-        sock = start_server_v6(port, protMode);
-
-        if (sock >= 0) {
-            if (protMode == TCP_MODE) {
-                //Make it listen to socket with max 20 connections
-                sock_listen(sock, 20);
+    }
+    else {
+        if (getIPv6Status() == 0) {
+            sock = start_server(port, protMode);
+            set_nonblocking(sock);
+            if (sock >= 0) {
+                if (protMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 1);
+                    
+                }
+            }
+        } else {
+            sock = start_server_v6(port, protMode);
+            set_nonblocking(sock);
+            if (sock >= 0) {
+                if (protMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 20);
+                }
             }
         }
     }

@@ -29,7 +29,7 @@ WiFiServer::WiFiServer(uint16_t port) {
 
 void WiFiServer::begin() {
     _is_connected = false;
-    _sock_ser = serverdrv.startServer(_port);
+    _sock_ser = serverdrv.startServer(_port, _is_blocked);
     if (_sock_ser < 0) {
         _is_connected = false;
         printf("\n[ERROR] Socket connect failed \n\r");
@@ -124,6 +124,11 @@ void WiFiServer::end() {
 void WiFiServer::close() {
     stop();
 }
+
+// set WiFi server to blocking mode
+void WiFiServer::setBlocking() {
+    _is_blocked = !_is_blocked; 
+};
 
 // extend API from RTK
 int WiFiServer::setTimeout(int timeout) {
