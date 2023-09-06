@@ -23,8 +23,6 @@
  * 
  *******************************************************/
 
-
-
 #include "BLEDevice.h"
 
 #define UART_SERVICE_UUID      "6E400001-B5A3-F393-E0A9-E50E24DCCA9E"
@@ -32,7 +30,7 @@
 #define CHARACTERISTIC_UUID_TX "6E400003-B5A3-F393-E0A9-E50E24DCCA9E"
 
 #define STRING_BUF_SIZE 100
-#define MaxNumValue      2
+#define MaxNumValue     2
 
 #define value1  0
 #define value2  1
@@ -43,11 +41,11 @@
 #define MotoB_1A 2
 #define MotoB_1B 3
 
-typedef struct{
+typedef struct {
     bool reciveCMDFlag;
     int  ReciveValue;
 
-}_rCMD;
+} _rCMD;
 
 BLEService UartService(UART_SERVICE_UUID);
 BLECharacteristic Rx(CHARACTERISTIC_UUID_RX);
@@ -59,128 +57,113 @@ uint8_t Count;
 
 _rCMD bleReciveData[MaxNumValue];
 
-void backward(){
-  digitalWrite(MotoA_1A,HIGH);
-  analogWrite(MotoA_1B,5);  
+void backward() {
+    digitalWrite(MotoA_1A,HIGH);
+    analogWrite(MotoA_1B,5);
 
-  digitalWrite(MotoB_1A,HIGH);
-  analogWrite(MotoB_1B,5);
+    digitalWrite(MotoB_1A,HIGH);
+    analogWrite(MotoB_1B,5);
 
-  delay(50);
+    delay(50);
 }
 
+void forward() {
+    digitalWrite(MotoA_1A,LOW);
+    analogWrite(MotoA_1B,250);
 
-void forward(){
-  digitalWrite(MotoA_1A,LOW);
-  analogWrite(MotoA_1B,250);
+    digitalWrite(MotoB_1A,LOW);
+    analogWrite(MotoB_1B,250);
 
-  digitalWrite(MotoB_1A,LOW);
-  analogWrite(MotoB_1B,250);
-  
-  delay(50);
+    delay(50);
 }
 
-void turnRight(){
+void turnRight() {
+    digitalWrite(MotoA_1A,HIGH);
+    analogWrite(MotoA_1B,5);
 
-  digitalWrite(MotoA_1A,HIGH);
-  analogWrite(MotoA_1B,5);
+    digitalWrite(MotoB_1A,LOW);
+    analogWrite(MotoB_1B,250);
 
-  digitalWrite(MotoB_1A,LOW);
-  analogWrite(MotoB_1B,250);
-
-  delay(50);
+    delay(50);
 }
 
-void turnLeft(){
+void turnLeft() {
+    digitalWrite(MotoA_1A,LOW);
+    analogWrite(MotoA_1B,250);
 
-  digitalWrite(MotoA_1A,LOW);
-  analogWrite(MotoA_1B,250);
+    digitalWrite(MotoB_1A,HIGH);
+    analogWrite(MotoB_1B,5);
 
-  digitalWrite(MotoB_1A,HIGH);
-  analogWrite(MotoB_1B,5);
-
-  delay(50);
+    delay(50);
 }
 
-void BrakeAll(){
-  digitalWrite(MotoA_1A,LOW);
-  analogWrite(MotoA_1B,0);
+void BrakeAll() {
+    digitalWrite(MotoA_1A,LOW);
+    analogWrite(MotoA_1B,0);
 
-  digitalWrite(MotoB_1A,LOW);
-  analogWrite(MotoB_1B,0);
-  
-  delay(50);
+    digitalWrite(MotoB_1A,LOW);
+    analogWrite(MotoB_1B,0);
+
+    delay(50);
 }
 
-void readCB (BLECharacteristic* chr, uint8_t connID) {
+void readCB(BLECharacteristic* chr, uint8_t connID) {
     //printf("Characteristic %s read by connection %d \n", chr->getUUID().str(), connID);
 }
 
-void writeCB (BLECharacteristic* chr, uint8_t connID) {
+void writeCB(BLECharacteristic* chr, uint8_t connID) {
     //printf("Characteristic %s write by connection %d :\n", chr->getUUID().str(), connID);
     if (chr->getDataLen() > 0) {
-      ParseCMDString(chr->readString());
-
-        
+        ParseCMDString(chr->readString());
         Serial.print("Received string: ");
         Serial.print(chr->readString());
-        Serial.println();   
-        
+        Serial.println();
     }
 }
 
 void notifCB(BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
-  if (cccd & GATT_CLIENT_CHAR_CONFIG_NOTIFY) {
-    //printf("Notifications enabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
-    Serial.print("Notifications enabled on Characteristic");
-    notify = true;
-  } else {
-    //printf("Notifications disabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
-    Serial.print("Notifications disabled on Characteristic");
-    notify = false;
-  }
-  Serial.print(chr->getUUID().str());
-  Serial.print(" for connection");
-  Serial.println(connID);
+    if (cccd & GATT_CLIENT_CHAR_CONFIG_NOTIFY) {
+        //printf("Notifications enabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        Serial.print("Notifications enabled on Characteristic");
+        notify = true;
+    } else {
+        //printf("Notifications disabled on Characteristic %s for connection %d \n", chr->getUUID().str(), connID);
+        Serial.print("Notifications disabled on Characteristic");
+        notify = false;
+    }
+    Serial.print(chr->getUUID().str());
+    Serial.print(" for connection");
+    Serial.println(connID);
 }
 
-void ParseCMDString(String cmd)
-{
+void ParseCMDString(String cmd) {
     int comdLength = cmd.length();
-    
-    if(cmd.indexOf("SRT") > -1 ){
 
+    if(cmd.indexOf("SRT") > -1 ) {
         int x = 3;
         int ValueIndex = 0;
 
-        while(x < comdLength - 1){
+        while (x < (comdLength - 1)) {
             if(x + 3 < comdLength){
                 String _NumString = cmd.substring(x,x + 4);
                 //Serial.println(_NumString);
 
-                if(ValueIndex < MaxNumValue){
-                    if(bleReciveData[ValueIndex].ReciveValue != _NumString.toInt()){
+                if (ValueIndex < MaxNumValue) {
+                    if (bleReciveData[ValueIndex].ReciveValue != _NumString.toInt()) {
                         bleReciveData[ValueIndex].ReciveValue = _NumString.toInt();
                         bleReciveData[ValueIndex].reciveCMDFlag = true;
                     }
                 }
-
             }
-
             ValueIndex++;
-
             x += 4;
             //Serial.println();
         }
-        
     }
 }
 
-
-
-void setup()
-{
-	  Serial.begin(115200);
+void setup() {
+    Serial.begin(115200);
 
     pinMode(MotoA_1A,OUTPUT);
     pinMode(MotoA_1B,OUTPUT);
@@ -218,29 +201,25 @@ void setup()
     BLE.addService(UartService);
 
     BLE.beginPeripheral();
-   
 }
 
-void loop()
-{
+void loop() {
     while(Count < MaxNumValue) {
-        if(bleReciveData[Count].reciveCMDFlag){
+        if(bleReciveData[Count].reciveCMDFlag) {
             bleReciveData[Count].reciveCMDFlag = false;
 
-            if(abs( bleReciveData[value1].ReciveValue- 1500) < 100 && abs(bleReciveData[value2].ReciveValue - 1500) < 100){
+            if (abs(bleReciveData[value1].ReciveValue- 1500) < 100 && abs(bleReciveData[value2].ReciveValue - 1500) < 100) {
                 BrakeAll();
-            }else if(abs(bleReciveData[value1].ReciveValue - 1500) > abs(bleReciveData[value2].ReciveValue - 1500) ){
-                if(bleReciveData[value1].ReciveValue > 1500){
+            } else if (abs(bleReciveData[value1].ReciveValue - 1500) > abs(bleReciveData[value2].ReciveValue - 1500)) {
+                if (bleReciveData[value1].ReciveValue > 1500) {
                     turnRight();
-                }
-                else{
+                } else {
                     turnLeft();
                 }
-            }else{
-                if(bleReciveData[value2].ReciveValue > 1500){
+            } else {
+                if (bleReciveData[value2].ReciveValue > 1500) {
                     forward();
-                }
-                else{
+                } else {
                     backward();
                 }
             }
@@ -248,8 +227,5 @@ void loop()
         Count++;
     }
     Count = 0;
-
-
-
-    delay(1);	
+    delay(1);
 }
