@@ -27,9 +27,14 @@ WiFiServer::WiFiServer(uint16_t port) {
     _port = port;
 }
 
-void WiFiServer::begin(uint8_t protMode) {
+WiFiServer::WiFiServer(uint16_t port, tProtMode portMode) {
+    _port = port;
+    _portMode = portMode;
+}
+
+void WiFiServer::begin() {
     _is_connected = false;
-    _sock_ser = serverdrv.startServer(_port, protMode, _is_blocked);
+    _sock_ser = serverdrv.startServer(_port, _portMode, _is_blocked);
     if (_sock_ser < 0) {
         _is_connected = false;
         printf("\n[ERROR] Socket connect failed \n\r");

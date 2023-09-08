@@ -9,7 +9,8 @@ class WiFiClient;
 class WiFiServer : public Server {
     public:
         WiFiServer(uint16_t);
-        virtual void begin(uint8_t protMode = TCP_MODE);
+        WiFiServer(uint16_t, tProtMode);
+        virtual void begin();
         WiFiClient available(uint8_t* status = NULL);
         virtual int available(int server_fd);
         virtual uint8_t connected();
@@ -35,6 +36,7 @@ class WiFiServer : public Server {
         uint8_t data[DATA_LENTH];
         int recvTimeout;
         bool _is_blocked = false;
+        tProtMode _portMode = TCP_MODE;
 };
 
 #endif
