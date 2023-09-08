@@ -32,10 +32,10 @@ int ServerDrv::startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t protM
     return sock;
 }
 
-int ServerDrv::startServer(uint16_t port, int blockMode, uint8_t protMode) {
+int ServerDrv::startServer(uint16_t port, uint8_t protMode, bool blockMode) {
     int sock;
 
-    if (blockMode == 1) {
+    if (blockMode) {
         if (getIPv6Status() == 0) {
             sock = start_server(port, protMode);
             if (sock >= 0) {
@@ -54,8 +54,7 @@ int ServerDrv::startServer(uint16_t port, int blockMode, uint8_t protMode) {
                 }
             }
         }
-    }
-    else {
+    } else {
         if (getIPv6Status() == 0) {
             sock = start_server(port, protMode);
             set_nonblocking(sock);
@@ -214,4 +213,3 @@ int ServerDrv::getIPv6Status() {
 void ServerDrv::setIPv6UDPServer(void) {
     ipv6_udp_server();
 }
-

@@ -9,36 +9,22 @@ class WiFiClient;
 class WiFiServer : public Server {
     public:
         WiFiServer(uint16_t);
-
-        virtual void begin();
-
+        virtual void begin(uint8_t protMode = TCP_MODE);
         WiFiClient available(uint8_t* status = NULL);
-
         virtual int available(int server_fd);
-
         virtual uint8_t connected();
-
         virtual int recv(uint8_t* buf, size_t size);
-
         virtual size_t write(uint8_t b);
-
         virtual size_t write(const uint8_t* buf, size_t size);
-
         virtual void stop();
-
         virtual void end();
-
         virtual void close();
-
         virtual void setBlocking();
-
         // extend API from RTK
         virtual int setTimeout(int timeout);
         // IPv6 related
         int enableIPv6();
-
         int getIPv6Status();
-
         using Print::write;
 
     private:
@@ -48,7 +34,7 @@ class WiFiServer : public Server {
         bool _is_connected;
         uint8_t data[DATA_LENTH];
         int recvTimeout;
-        bool _is_blocked = false; 
+        bool _is_blocked = false;
 };
 
 #endif

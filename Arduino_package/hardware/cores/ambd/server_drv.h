@@ -33,7 +33,7 @@ class ServerDrv {
 
         int startClientV6(const char *ipv6Address, uint16_t port, uint8_t protMode);
 
-        int startServer(uint16_t port, int blockMode, uint8_t protMode = TCP_MODE);
+        int startServer(uint16_t port, uint8_t protMode = TCP_MODE, bool blockMode = false);
 
         int getAvailable(int sock);
 
