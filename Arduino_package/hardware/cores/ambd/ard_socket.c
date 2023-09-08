@@ -11,8 +11,6 @@
 #define UDP_SERVER_PORT 5002
 #define TCP_SERVER_PORT 5003
 
-
-
 static int EXAMPLE_IPV6 = 0;
 
 int start_client(uint32_t ipAddress, uint16_t port, uint8_t protMode) {
@@ -21,7 +19,8 @@ int start_client(uint32_t ipAddress, uint16_t port, uint8_t protMode) {
     int _sock;
 
     //create socket
-    if (protMode == 0) {  // TCP
+    if (protMode == 0) {
+        // TCP
         _sock = lwip_socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     } else {
         _sock = lwip_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -40,7 +39,8 @@ int start_client(uint32_t ipAddress, uint16_t port, uint8_t protMode) {
     serv_addr.sin_port = htons(port);
 
     //Connecting to server
-    if (protMode == 0) {  //TCP MODE
+    if (protMode == 0) {
+        //TCP MODE
         if (connect(_sock, ((struct sockaddr *)&serv_addr), sizeof(serv_addr)) == 0) {
             printf("\r\n[INFO] Connect to Server successfully!\r\n");
             timeout = 3000;
@@ -67,7 +67,8 @@ int start_clientv6(uint32_t *ipv6Address, uint16_t port, uint8_t protMode) {
     int _sock;
 
     //create socket
-    if (protMode == 0) {  // TCP
+    if (protMode == 0) {
+        // TCP
         _sock = lwip_socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
     } else {
         _sock = lwip_socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
@@ -89,7 +90,8 @@ int start_clientv6(uint32_t *ipv6Address, uint16_t port, uint8_t protMode) {
     }
 
     // connection starts
-    if (protMode == 0) {  //TCP MODE
+    if (protMode == 0) {
+        //TCP MODE
         if (connect(_sock, (struct sockaddr *)(&serv_addr6), sizeof(serv_addr6)) == -1) {
             printf("\n\r[ERROR] Connect to server failed\n");
         }
@@ -124,7 +126,8 @@ int start_client_v6(char ipv6Address[], uint16_t port, uint8_t protMode) {
     struct sockaddr_in6 ser_addr;
 
     // create socket
-    if (protMode == 0) {  // TCP
+    if (protMode == 0) {
+        // TCP
         _sock = lwip_socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
     } else {
         _sock = lwip_socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
@@ -146,7 +149,8 @@ int start_client_v6(char ipv6Address[], uint16_t port, uint8_t protMode) {
     // }
 
     // Connecting to server
-    if (protMode == 0) {  //TCP MODE
+    if (protMode == 0) {
+        //TCP MODE
         if (connect(_sock, ((struct sockaddr *)&ser_addr), sizeof(ser_addr)) == 0) {
             printf("\n\r[INFO] Connect to server successfully\n");
             timeout = 3000;
@@ -162,11 +166,27 @@ int start_client_v6(char ipv6Address[], uint16_t port, uint8_t protMode) {
             return -1;
         }
     }
-    // else {  // UDP
+    // else {
+        // UDP
     // printf("\n\r[INFO] UDP client setup Server's information successful!\n");
     // }
 
     return _sock;
+}
+
+int set_nonblocking(int fd) {
+    int flags;
+
+    flags = fcntl(fd, F_GETFL, 0);
+    if (flags == -1) {
+        return -1;
+    }
+    flags |= O_NONBLOCK;
+    if (fcntl(fd, F_SETFL, flags) == -1) {
+        
+        return -1;
+    }
+    return 0;
 }
 
 int start_server(uint16_t port, uint8_t protMode) {
@@ -205,7 +225,6 @@ int start_server(uint16_t port, uint8_t protMode) {
         return -1;
     }
     //lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
-	
     return _sock;
 }
 
@@ -214,7 +233,8 @@ int start_server_v6(uint16_t port, uint8_t protMode) {
     int timeout;
 
     //create socket
-    if (protMode == 0) {  // TCP
+    if (protMode == 0) {
+        // TCP
         timeout = 3000;
         _sock = socket(AF_INET6, SOCK_STREAM, IPPROTO_TCP);
         setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
@@ -246,7 +266,6 @@ int start_server_v6(uint16_t port, uint8_t protMode) {
     }
     //lwip_fcntl(_sock, F_SETFL, O_NONBLOCK);
     printf("\n\r[INFO] Bind socket successfully\n");
-   
     return _sock;
 }
 
@@ -275,6 +294,7 @@ int get_ipv6_status(void) {
     // return current ipv6 enabled status
     return EXAMPLE_IPV6;
 }
+
 // TCP
 int sock_listen(int sock, int max) {
     if (listen(sock, max) < 0) {
@@ -363,7 +383,6 @@ int recv_data(int sock, const uint8_t *data, uint16_t len, int flag) {
     int ret;
 
     ret = lwip_recv(sock, (void *)data, len, flag);
-
     return ret;
 }
 
@@ -376,7 +395,6 @@ int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
 }
 
 // UDP
-
 int sendto_data(int sock, const uint8_t *data, uint16_t len, uint32_t peer_ip, uint16_t peer_port) {
     int ret;
     struct sockaddr_in peer_addr;
@@ -395,13 +413,13 @@ int sendto_data_v6(int sock, const void *send_data, size_t len, uint32_t peer_ip
     int ret = 0;
     struct sockaddr_in6 peer_addr;
 
-	peer_ip = peer_ip;
-	peer_port = peer_port;
+    peer_ip = peer_ip;
+    peer_port = peer_port;
 
     memset(&peer_addr, 0, sizeof(peer_addr));
     peer_addr.sin6_family = AF_INET6;
     peer_addr.sin6_port = htons(UDP_SERVER_PORT);
-	inet_pton(AF_INET6, (char*)peer_ip, &(peer_addr.sin6_addr));
+    inet_pton(AF_INET6, (char*)peer_ip, &(peer_addr.sin6_addr));
 
     ret = lwip_sendto(sock, send_data, len, 0, ((struct sockaddr *)&peer_addr), sizeof(peer_addr));
 
@@ -452,8 +470,8 @@ int get_receive_v6(int sock, void *recv_data, int len, int flags, uint32_t *peer
     struct sockaddr_in6 peer_addr;
     unsigned int peer_len = sizeof(struct sockaddr_in6);
 
-	peer_ip = peer_ip;
-	peer_port = peer_port;
+    peer_ip = peer_ip;
+    peer_port = peer_port;
 
     ret = lwip_recvfrom(sock, recv_data, len, flags, ((struct sockaddr *)&peer_addr), &peer_len);
     //printf("get_rec_v6 lwip_recvfrom: %d\r\n", ret);

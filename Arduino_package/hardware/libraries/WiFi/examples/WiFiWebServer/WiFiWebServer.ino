@@ -31,6 +31,7 @@ void setup() {
         // wait 10 seconds for connection:
         delay(10000);
     }
+    // server.setBlocking();
     server.begin();
     // you're connected now, so print out the status:
     printWifiStatus();

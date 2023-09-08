@@ -7,49 +7,72 @@ extern "C" {
 }
 #endif
 
-int ServerDrv::startClient(uint32_t ipAddress, uint16_t port, uint8_t protMode) {
+int ServerDrv::startClient(uint32_t ipAddress, uint16_t port, uint8_t portMode) {
     printf("\n\r[INFO]server_drv.cpp:  start_client");
     int sock;
 
-    sock = start_client(ipAddress, port, protMode);
+    sock = start_client(ipAddress, port, portMode);
 
     return sock;
 }
 
-int ServerDrv::startClientV6(const char *ipv6Address, uint16_t port, uint8_t protMode) {
+int ServerDrv::startClientV6(const char *ipv6Address, uint16_t port, uint8_t portMode) {
     printf("\n\r[INFO]server_drv.cpp startClientV6() ipv6 addr: %s\n\r", ipv6Address);
     int sock;
 
-    sock = start_client_v6((char *)ipv6Address, port, protMode);
+    sock = start_client_v6((char *)ipv6Address, port, portMode);
 
     return sock;
 }
 
-int ServerDrv::startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t protMode) {
+int ServerDrv::startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode) {
     int sock;
-    sock = start_clientv6(ipv6Address, port, protMode);
+    sock = start_clientv6(ipv6Address, port, portMode);
     printf("\n\r[INFO]server_drv.cpp:  startClientv6() sock value: %x\n\r", sock);
     return sock;
 }
 
-int ServerDrv::startServer(uint16_t port, uint8_t protMode) {
+int ServerDrv::startServer(uint16_t port, uint8_t portMode, bool blockMode) {
     int sock;
 
-    if (getIPv6Status() == 0) {
-        sock = start_server(port, protMode);
-        if (sock >= 0) {
-            if (protMode == TCP_MODE) {
-                //Make it listen to socket with max 20 connections
-                sock_listen(sock, 1);
+    if (blockMode) {
+        if (getIPv6Status() == 0) {
+            sock = start_server(port, portMode);
+            if (sock >= 0) {
+                if (portMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 1);
+                }
+            }
+        } else {
+            sock = start_server_v6(port, portMode);
+
+            if (sock >= 0) {
+                if (portMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 20);
+                }
             }
         }
     } else {
-        sock = start_server_v6(port, protMode);
-
-        if (sock >= 0) {
-            if (protMode == TCP_MODE) {
-                //Make it listen to socket with max 20 connections
-                sock_listen(sock, 20);
+        if (getIPv6Status() == 0) {
+            sock = start_server(port, portMode);
+            set_nonblocking(sock);
+            if (sock >= 0) {
+                if (portMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 1);
+                    
+                }
+            }
+        } else {
+            sock = start_server_v6(port, portMode);
+            set_nonblocking(sock);
+            if (sock >= 0) {
+                if (portMode == TCP_MODE) {
+                    //Make it listen to socket with max 20 connections
+                    sock_listen(sock, 20);
+                }
             }
         }
     }
@@ -190,4 +213,3 @@ int ServerDrv::getIPv6Status() {
 void ServerDrv::setIPv6UDPServer(void) {
     ipv6_udp_server();
 }
-
