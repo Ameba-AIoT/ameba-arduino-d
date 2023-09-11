@@ -51,7 +51,6 @@ uint8_t WiFiUDP::begin(uint16_t port) {
     if (_sock >= 0) {
         return 1;
     }
-
     return 0;
 }
 
@@ -69,7 +68,6 @@ int WiFiUDP::connect(const char *host, uint16_t port) {
             //printf("[INFO]WiFiUDP.cpp: connect v6 \n\r");
             //printf("[INFO]WiFiUDP.cpp: connect ipv6 %s\n\r", host);
             _sock = clientDrv.startClientV6(host, port, UDP_MODE);
-        } else {
         }
 
         // whether sock is connected

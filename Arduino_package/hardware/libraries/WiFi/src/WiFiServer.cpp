@@ -33,7 +33,7 @@ WiFiServer::WiFiServer(uint16_t port, tProtMode portMode) {
 }
 
 WiFiServer::~WiFiServer() {
-	close();
+    close();
 }
 
 void WiFiServer::begin() {

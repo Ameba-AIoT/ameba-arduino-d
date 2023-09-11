@@ -45,7 +45,7 @@ WiFiSSLClient::WiFiSSLClient(uint8_t sock) {
 }
 
 WiFiSSLClient::~WiFiSSLClient() {
-   stop();
+    stop();
 }
 
 uint8_t WiFiSSLClient::connected() {
