@@ -32,6 +32,10 @@ WiFiServer::WiFiServer(uint16_t port, tProtMode portMode) {
     _portMode = portMode;
 }
 
+WiFiServer::~WiFiServer() {
+    close();
+}
+
 void WiFiServer::begin() {
     _is_connected = false;
     _sock_ser = serverdrv.startServer(_port, _portMode, _is_blocked);
@@ -130,6 +134,7 @@ void WiFiServer::close() {
 
 // set WiFi server to blocking mode
 void WiFiServer::setBlocking() {
+    // printf("WiFi server is set to blocking mode\r\n");
     _is_blocked = !_is_blocked;
 }
 

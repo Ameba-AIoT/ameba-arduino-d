@@ -32,6 +32,9 @@ class WiFiUDP : public UDP {
         // Constructor
         WiFiUDP();
 
+        // Destructor
+        ~WiFiUDP();
+
         // initialize, start listening on specified port. Returns 1 if successful, 0 if there are no sockets available to use
         virtual uint8_t begin(uint16_t);
 

@@ -26,6 +26,10 @@ WiFiClient::WiFiClient(uint8_t sock) {
     recvTimeout = 3000;
 }
 
+WiFiClient::~WiFiClient() {
+    stop();
+}
+
 uint8_t WiFiClient::connected() {
     if ((_sock < 0) || (_sock == 0xFF)) {
         _is_connected = false;
@@ -48,13 +52,15 @@ int WiFiClient::available() {
         return 0;
     }
     if (_sock >= 0) {
-try_again:
+    try_again:
         ret = clientdrv.availData(_sock);
         if (ret > 0) {
             return 1;
         } else {
             err = clientdrv.getLastErrno(_sock);
-            if (err == EAGAIN) goto try_again;
+            if (err == EAGAIN) {
+                goto try_again;
+            }
             if (err != 0) {
                 _is_connected = false;
             }
@@ -83,7 +89,6 @@ int WiFiClient::read() {
             _is_connected = false;
         }
     }
-
     return ret;
 }
 
@@ -145,7 +150,6 @@ size_t WiFiClient::write(const uint8_t *buf, size_t size) {
         _is_connected = false;
         return 0;
     }
-
     return size;
 }
 
@@ -234,7 +238,6 @@ int WiFiClient::setRecvTimeout(int timeout) {
         recvTimeout = timeout;
         clientdrv.setSockRecvTimeout(_sock, recvTimeout);
     }
-
     return 0;
 }
 

@@ -35,12 +35,12 @@ extern "C" {
 #include "WiFiSSLClient.h"
 #include "WiFiUdp.h"
 
-class WiFiClass
-{
+class WiFiClass {
     private:
         static void init();
     public:
         WiFiClass();
+        ~WiFiClass();
 
         /*
          * Get firmware version

@@ -11,6 +11,7 @@ class WiFiClient : public Client {
     public:
         WiFiClient();
         WiFiClient(uint8_t sock);
+        ~WiFiClient();
 
         uint8_t status();
         virtual uint8_t connected();
@@ -42,7 +43,6 @@ class WiFiClient : public Client {
         ServerDrv clientdrv;
         bool _is_connected;
         uint8_t data[DATA_LENTH];
-
         int recvTimeout;
 };
 

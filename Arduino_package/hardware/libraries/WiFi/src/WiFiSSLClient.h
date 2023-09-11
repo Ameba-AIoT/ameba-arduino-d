@@ -8,10 +8,10 @@
 
 struct mbedtls_ssl_context;
 class WiFiSSLClient : public Client {
-
     public:
         WiFiSSLClient();
         WiFiSSLClient(uint8_t sock);
+        ~WiFiSSLClient();
 
         uint8_t status();
         virtual int connect(IPAddress ip, uint16_t port);
