@@ -1,6 +1,8 @@
 /*
 
  Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-web-server-status/
+ 
  */
 
 #include <WiFi.h>
@@ -41,10 +43,10 @@ void loop() {
     // listen for incoming clients
     WiFiClient client = server.available();
     if (client) {
-        Serial.println("new client");
         // an http request ends with a blank line
         boolean currentLineIsBlank = true;
         while (client.connected()) {
+            Serial.println("new client connected.");
             if (client.available()) {
                 char c = client.read();
                 Serial.write(c);
@@ -81,9 +83,12 @@ void loop() {
         delay(1);
 
         // close the connection:
-        client.stop();
+        // client.stop(); // remove this line since destructor will be called automatically
         Serial.println("client disonnected");
     }
+    // continue with user code in WiFi server non-blocking mode 
+    Serial.println("User code implementing here...");
+    delay(5000);
 }
 
 void printWifiStatus() {

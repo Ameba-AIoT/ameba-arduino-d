@@ -33,6 +33,11 @@ extern "C" {
 /* Constructor */
 WiFiUDP::WiFiUDP() : _sock(-1), _client_sock(-1) {}
 
+/* Destructor */
+WiFiUDP::~WiFiUDP() {
+    stop();
+}
+
 /* Start WiFiUDP socket, listening at local port PORT */
 uint8_t WiFiUDP::begin(uint16_t port) {
     //printf("\n\rWiFiUDP::begin port %d", port);

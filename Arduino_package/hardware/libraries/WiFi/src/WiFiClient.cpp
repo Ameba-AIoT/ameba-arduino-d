@@ -26,6 +26,10 @@ WiFiClient::WiFiClient(uint8_t sock) {
     recvTimeout = 3000;
 }
 
+WiFiClient::~WiFiClient() {
+    stop();
+}
+
 uint8_t WiFiClient::connected() {
     if ((_sock < 0) || (_sock == 0xFF)) {
         _is_connected = false;

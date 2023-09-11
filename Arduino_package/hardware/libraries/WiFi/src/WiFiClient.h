@@ -11,6 +11,7 @@ class WiFiClient : public Client {
     public:
         WiFiClient();
         WiFiClient(uint8_t sock);
+        ~WiFiClient();
 
         uint8_t status();
         virtual uint8_t connected();

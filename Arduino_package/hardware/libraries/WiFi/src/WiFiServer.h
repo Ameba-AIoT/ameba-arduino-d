@@ -10,6 +10,8 @@ class WiFiServer : public Server {
     public:
         WiFiServer(uint16_t);
         WiFiServer(uint16_t, tProtMode);
+        ~WiFiServer();
+        
         virtual void begin();
         WiFiClient available(uint8_t* status = NULL);
         virtual int available(int server_fd);

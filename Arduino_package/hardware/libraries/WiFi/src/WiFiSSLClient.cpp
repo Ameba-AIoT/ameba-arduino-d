@@ -44,6 +44,10 @@ WiFiSSLClient::WiFiSSLClient(uint8_t sock) {
     _sni_hostname = NULL;
 }
 
+WiFiSSLClient::~WiFiSSLClient() {
+   stop();
+}
+
 uint8_t WiFiSSLClient::connected() {
     if (sslclient.socket < 0) {
         _is_connected = false;

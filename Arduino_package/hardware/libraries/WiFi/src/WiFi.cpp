@@ -24,8 +24,9 @@
 #include "wifi_drv.h"
 #include "wiring.h"
 
-WiFiClass::WiFiClass() {
-}
+WiFiClass::WiFiClass() {}
+
+WiFiClass::~WiFiClass() {}
 
 void WiFiClass::init() {
     WiFiDrv::wifiDriverInit();

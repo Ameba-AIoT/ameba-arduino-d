@@ -41,6 +41,7 @@ class WiFiClass
         static void init();
     public:
         WiFiClass();
+        ~WiFiClass();
 
         /*
          * Get firmware version
