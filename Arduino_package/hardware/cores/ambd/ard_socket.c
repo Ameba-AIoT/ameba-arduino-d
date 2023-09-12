@@ -392,23 +392,23 @@ int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
     int ret;
     int retry = MAX_RETRY_COUNT;
     int total_count = len;
+    int err;
 
     printf("len %d\r\n", len);
-    while(retry) {
+    while (retry) {
         int count = TCP_MSS;
         retry--;
-        if(count > len) {
+        if (count > len) {
             count = len;
         }
         ret = lwip_send(sock, data, count, flag);
         // printf("\r\n[INFO] [ard_socket.c][send_data] lwip_send(sock=%d, data, count=%d, flag=%d) = %d\r\n", sock, count, flag, ret);
 
         // error handler
-        if(ret < 0) {
-            int err;
+        if (ret < 0) {
             err = get_sock_errno(sock);
             //printf("err = %d\r\n",err);
-            if(err != EAGAIN) {
+            if (err != EAGAIN) {
                 retry = 0;
             }
         } else {
@@ -427,8 +427,7 @@ int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
         }
     }
 
-    if(ret < 0) {
-        int err;
+    if (ret < 0) {
         err = get_sock_errno(sock);
         printf("\r\n[INFO] [ard_socket.c][send_data] err = %d\r\n", err);
     }
