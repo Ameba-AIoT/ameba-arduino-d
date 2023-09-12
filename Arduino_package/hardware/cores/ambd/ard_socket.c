@@ -11,6 +11,8 @@
 #define UDP_SERVER_PORT 5002
 #define TCP_SERVER_PORT 5003
 
+#define MAX_RETRY_COUNT 10
+
 static int EXAMPLE_IPV6 = 0;
 
 int start_client(uint32_t ipAddress, uint16_t port, uint8_t protMode) {
@@ -388,8 +390,48 @@ int recv_data(int sock, const uint8_t *data, uint16_t len, int flag) {
 
 int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
     int ret;
-    //printf("[info] ard_socket.c send_data()\r\n");
-    ret = lwip_send(sock, data, len, flag);
+    int retry = MAX_RETRY_COUNT;
+    int total_count = len;
+
+    printf("len %d\r\n", len);
+    while(retry) {
+        int count = TCP_MSS;
+        retry--;
+        if(count > len) {
+            count = len;
+        }
+        ret = lwip_send(sock, data, count, flag);
+        // printf("\r\n[INFO] [ard_socket.c][send_data] lwip_send(sock=%d, data, count=%d, flag=%d) = %d\r\n", sock, count, flag, ret);
+
+        // error handler
+        if(ret < 0) {
+            int err;
+            err = get_sock_errno(sock);
+            //printf("err = %d\r\n",err);
+            if(err != EAGAIN) {
+                retry = 0;
+            }
+        } else {
+            printf("write count = %d\r\n",ret);
+            len -= ret;
+            data += ret;
+            printf("len %d\r\n", len);
+            printf("data %d\r\n", data);
+            // finished data transmission
+            if(len == 0) { 
+                ret = total_count;
+                retry = 0;
+                break;
+            }
+            retry = MAX_RETRY_COUNT;
+        }
+    }
+
+    if(ret < 0) {
+        int err;
+        err = get_sock_errno(sock);
+        printf("\r\n[INFO] [ard_socket.c][send_data] err = %d\r\n", err);
+    }
 
     return ret;
 }
