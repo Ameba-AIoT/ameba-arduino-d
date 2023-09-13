@@ -29,7 +29,7 @@
 #include "binary.h"
 
 //#define Arduino_STD_PRINTF
-// #ifdef Arduino_STD_PRINTF
+#ifdef Arduino_STD_PRINTF
 #define STD_PRINTF
 
 #ifdef __cplusplus
@@ -37,7 +37,7 @@
 #endif // __cplusplus
 
 #include <stdio.h>
-// #endif
+#endif
 
 #ifdef __cplusplus
 extern "C" {
