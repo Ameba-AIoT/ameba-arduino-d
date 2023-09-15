@@ -6,12 +6,17 @@
 // Before debugging, make sure to edit debug_custom.json and ensure that the "serverArgs" field has the correct directory to the JLinkScript file
 // Default directories are shown below, where you will need to replace * with your account username, and replace ** with the version number of the installed tools:
 // Windows: C:/Users/*/AppData/Local/Arduino15/packages/realtek/tools/ameba_d_tools/**/debug/RTL872x_Arduino_debug.JLinkScript
-// Linux:	/home/*/.arduino15/packages/realtek/tools/ameba_d_tools/**/debug/RTL872x_Arduino_debug.JLinkScript
-// MacOS:	/Users/*/Library/Arduino15/packages/realtek/tools/ameba_d_tools/**/debug/RTL872x_Arduino_debug.JLinkScript
+// Linux: /home/*/.arduino15/packages/realtek/tools/ameba_d_tools/**/debug/RTL872x_Arduino_debug.JLinkScript
+// MacOS: /Users/*/Library/Arduino15/packages/realtek/tools/ameba_d_tools/**/debug/RTL872x_Arduino_debug.JLinkScript
 
 // Also, ensure you have enabled Sketch > Optimize for Debugging
 
 // If you wish to debug your own sketches, copy the debug_custom.json file into your sketch folder
+
+/*
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-debug/
+ */
 
 #define LED_PIN LED_BUILTIN
 

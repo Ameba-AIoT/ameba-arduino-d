@@ -58,10 +58,7 @@ UARTClassTwo::UARTClassTwo(RingBuffer* pRx_buffer) {
 
 // Protected Methods //////////////////////////////////////////////////////////////
 
-
-
-
-// Public Methods //////////////////////////////////////////////////////////////
+// Public Methods /////////////////////////////////////////////////////////////////
 void UARTClassTwo::IrqHandler(void) {
     uint8_t     data = 0;
     BOOL        PullMode = _FALSE;
@@ -85,7 +82,10 @@ void UARTClassTwo::IrqHandler(void) {
 }
 
 void UARTClassTwo::begin(const uint32_t dwBaudRate, uint8_t serial_config_value) {
-#if defined(BOARD_RTL8720DN_BW16)
+#if defined(BOARD_AITHINKER_BW16)
+    //amb_ard_pin_check_fun(SERIAL1_TX, PIO_UART);
+    //amb_ard_pin_check_fun(SERIAL1_RX, PIO_UART);
+
     // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
     //serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
@@ -97,6 +97,9 @@ void UARTClassTwo::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     //serial_init(&uart_obj, PA_12, PA_13);
     serial_init(&uart_obj, PinName(g_APinDescription[SERIAL1_TX].pinname), PinName(g_APinDescription[SERIAL1_RX].pinname));
 #else
+    //amb_ard_pin_check_fun(SERIAL2_TX, PIO_UART);
+    //amb_ard_pin_check_fun(SERIAL2_RX, PIO_UART);
+
     // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
     //serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
@@ -114,7 +117,7 @@ void UARTClassTwo::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     serial_init(&uart_obj, PinName(g_APinDescription[SERIAL2_TX].pinname), PinName(g_APinDescription[SERIAL2_RX].pinname));
 #endif
 
-    switch(serial_config_value) {
+    switch (serial_config_value) {
         case SERIAL_7N1:
             serial_format(&uart_obj, 7, ParityNone, 1);
             break;
@@ -240,13 +243,15 @@ size_t UARTClassTwo::write(const uint8_t uc_data) {
     return 1;
 }
 
-#if defined(BOARD_RTL8720DN_BW16)
+#if defined(BOARD_AITHINKER_BW16)
 UARTClassTwo Serial1(&rx_buffer2);
+
 bool Serial1_available() {
     return Serial1.available() > 0;
 }
 #else
 UARTClassTwo Serial2(&rx_buffer2);
+
 bool Serial2_available() {
     return Serial2.available() > 0;
 }

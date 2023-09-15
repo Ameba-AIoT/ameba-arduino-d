@@ -14,7 +14,6 @@ iBeacon beacon;
 // https://www.uuidgenerator.net/
 #define UUID "00112233-4455-6677-8899-AABBCCDDEEFF"
 
-
 void setup() {
     // For all possible BLE manufacturer IDs, refer to:
     // www.bluetooth.com/specifications/assigned-numbers/company-identifiers/

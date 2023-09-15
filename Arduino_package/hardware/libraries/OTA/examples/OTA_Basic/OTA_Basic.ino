@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ota/
+ */
+
 #include <OTA.h>
 #include <WiFi.h>
 #include <AmebaMDNS.h>
@@ -40,7 +46,6 @@ void setup() {
     // start connecting to OTA server and reboot 
     // with the new image
     ota.beginOTA(OTA_PORT);
-
 }
 
 void loop() {}
@@ -63,7 +68,7 @@ void printWifiStatus() {
     Serial.println(" dBm");
 }
 
-void beginMDNSService(){
+void beginMDNSService() {
     service.addTxtRecord("board", strlen("ameba_rtl8721d"), "ameba_rtl8721d");
     service.addTxtRecord("auth_upload", strlen("no"), "no");
     service.addTxtRecord("tcp_check", strlen("no"), "no");

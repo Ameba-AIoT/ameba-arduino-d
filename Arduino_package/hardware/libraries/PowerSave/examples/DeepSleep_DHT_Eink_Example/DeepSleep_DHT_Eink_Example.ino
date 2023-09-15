@@ -75,7 +75,6 @@ DHT dht(DHTPIN, DHTTYPE);
     //SET_AON_GPIO_WAKEUP_PA25          // pin 7
     //SET_AON_GPIO_WAKEUP_PA26          // pin 6
 
-
 #define DS_WAKEUP_SOURCE                SET_DS_AON_TIMER_WAKEUP
 
 #define AON_TIMER_SLEEP_DURATION        5000

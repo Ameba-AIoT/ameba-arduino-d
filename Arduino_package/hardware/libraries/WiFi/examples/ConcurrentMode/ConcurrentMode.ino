@@ -57,16 +57,16 @@ void setup() {
         while (Serial.available() == 0) {}
         str_pass = Serial.readString();
         str_pass.trim();
-            if (str_pass.length() != 0) {
-                while (str_pass.length() < 8) {
-                    Serial.println("Password cannot be less than 8 characters! Try again");
-                    while (Serial.available() == 0) {}
-                    str_pass = Serial.readString();
-                    str_pass.trim();
-                }
-                    Serial.print("Password entered: ");
-                    Serial.println(str_pass);
+        if (str_pass.length() != 0) {
+            while (str_pass.length() < 8) {
+                Serial.println("Password cannot be less than 8 characters! Try again");
+                while (Serial.available() == 0) {}
+                str_pass = Serial.readString();
+                str_pass.trim();
             }
+                Serial.print("Password entered: ");
+                Serial.println(str_pass);
+        }
 
         Serial.println("Enter your AP ssid:");
         while (Serial.available() == 0) {}
@@ -79,29 +79,29 @@ void setup() {
         while (Serial.available() == 0) {}
         str_appass = Serial.readString();
         str_appass.trim();
-            if (str_appass.length() != 0) {
-                while (str_appass.length() < 8) {
-                    Serial.println("Password cannot be less than 8 characters! Try again");
-                    while (Serial.available() == 0) {}
-                    str_appass = Serial.readString();
-                    str_appass.trim();
-                }
-                    Serial.print("Password entered: ");
-                    Serial.println(str_appass);
+        if (str_appass.length() != 0) {
+            while (str_appass.length() < 8) {
+                Serial.println("Password cannot be less than 8 characters! Try again");
+                while (Serial.available() == 0) {}
+                str_appass = Serial.readString();
+                str_appass.trim();
             }
+                Serial.print("Password entered: ");
+                Serial.println(str_appass);
+        }
         Serial.println("Enter your channel number:");
         while (Serial.available() == 0) {}
+        str_channel = Serial.readString();
+        int checker = str_channel.toInt();
+        while(str_channel != (String(checker))){
+            Serial.println("channel should be a number!");
+            while (Serial.available() == 0) {}
             str_channel = Serial.readString();
-            int checker = str_channel.toInt();
-            while(str_channel != (String(checker))){
-                Serial.println("channel should be a number!");
-                while (Serial.available() == 0) {}
-                str_channel = Serial.readString();
-                checker = str_channel.toInt();
-            }
-            str_channel.trim();
-            Serial.print("channel entered: ");
-            Serial.println(str_channel);
+            checker = str_channel.toInt();
+        }
+        str_channel.trim();
+        Serial.print("channel entered: ");
+        Serial.println(str_channel);
 #endif
 
 #ifndef MANUAL_INPUT

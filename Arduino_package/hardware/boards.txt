@@ -18,7 +18,7 @@ Ameba_AMB21_AMB22.build.f_cpu=200000000L
 Ameba_AMB21_AMB22.build.usb_product="AMB21"
 Ameba_AMB21_AMB22.build.board=AMEBA
 Ameba_AMB21_AMB22.build.core=ambd
-Ameba_AMB21_AMB22.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM -DBOARD_AMB21_AMB22 {build.usb_flags}
+Ameba_AMB21_AMB22.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB21_AMB22 {build.usb_flags}
 Ameba_AMB21_AMB22.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
 Ameba_AMB21_AMB22.build.variant=rtl8722dm
 
@@ -43,9 +43,9 @@ Ameba_AMB21_AMB22.menu.EraseFlash.Enable.upload.erase_flash=Enable
 #Ameba_AMB21_AMB22.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
 Ameba_AMB21_AMB22.menu.StdLibInit.Disable=Disable
-Ameba_AMB21_AMB22.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM -DBOARD_AMB21_AMB22 {build.usb_flags}
+Ameba_AMB21_AMB22.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB21_AMB22 {build.usb_flags}
 Ameba_AMB21_AMB22.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-Ameba_AMB21_AMB22.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM -DBOARD_AMB21_AMB22 {build.usb_flags} -DArduino_STD_PRINTF
+Ameba_AMB21_AMB22.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB21_AMB22 {build.usb_flags} -DArduino_STD_PRINTF
 
 Ameba_AMB21_AMB22.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB21_AMB22.menu.UploadBaudrate.1500000.upload.speed=1500000
@@ -63,7 +63,7 @@ Ameba_AMB23.build.f_cpu=200000000L
 Ameba_AMB23.build.usb_product="AMB23"
 Ameba_AMB23.build.board=AMEBA
 Ameba_AMB23.build.core=ambd
-Ameba_AMB23.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI -DBOARD_AMB23 {build.usb_flags}
+Ameba_AMB23.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB23 {build.usb_flags}
 Ameba_AMB23.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
 Ameba_AMB23.build.variant=rtl8722dm_mini
 
@@ -88,9 +88,9 @@ Ameba_AMB23.menu.EraseFlash.Enable.upload.erase_flash=Enable
 #Ameba_AMB23.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
 Ameba_AMB23.menu.StdLibInit.Disable=Disable
-Ameba_AMB23.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI -DBOARD_AMB23 {build.usb_flags}
+Ameba_AMB23.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB23 {build.usb_flags}
 Ameba_AMB23.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-Ameba_AMB23.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8722DM_MINI -DBOARD_AMB23 {build.usb_flags} -DArduino_STD_PRINTF
+Ameba_AMB23.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB23 {build.usb_flags} -DArduino_STD_PRINTF
 
 Ameba_AMB23.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB23.menu.UploadBaudrate.1500000.upload.speed=1500000
@@ -108,7 +108,7 @@ Ai-Thinker_BW16.build.f_cpu=200000000L
 Ai-Thinker_BW16.build.usb_product="BW16"
 Ai-Thinker_BW16.build.board=AMEBA
 Ai-Thinker_BW16.build.core=ambd
-Ai-Thinker_BW16.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 -DBOARD_BW16 {build.usb_flags}
+Ai-Thinker_BW16.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AITHINKER_BW16 {build.usb_flags}
 Ai-Thinker_BW16.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
 Ai-Thinker_BW16.build.variant=rtl8720dn_bw16
 
@@ -133,9 +133,9 @@ Ai-Thinker_BW16.menu.AutoUploadMode.Enable=Enable
 Ai-Thinker_BW16.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
 Ai-Thinker_BW16.menu.StdLibInit.Disable=Disable
-Ai-Thinker_BW16.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 -DBOARD_BW16 {build.usb_flags}
+Ai-Thinker_BW16.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AITHINKER_BW16 {build.usb_flags}
 Ai-Thinker_BW16.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-Ai-Thinker_BW16.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DN_BW16 -DBOARD_BW16 {build.usb_flags} -DArduino_STD_PRINTF
+Ai-Thinker_BW16.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AITHINKER_BW16 {build.usb_flags} -DArduino_STD_PRINTF
 
 Ai-Thinker_BW16.menu.UploadBaudrate.1500000=1500000
 Ai-Thinker_BW16.menu.UploadBaudrate.1500000.upload.speed=1500000
@@ -153,7 +153,7 @@ SparkFun_ThingPlus-AWCU488.build.f_cpu=200000000L
 SparkFun_ThingPlus-AWCU488.build.usb_product="AW-CU488_ThingPlus"
 SparkFun_ThingPlus-AWCU488.build.board=AMEBA
 SparkFun_ThingPlus-AWCU488.build.core=ambd
-SparkFun_ThingPlus-AWCU488.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM -DBOARD_SPARKFUN_AWCU488 {build.usb_flags}
+SparkFun_ThingPlus-AWCU488.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_AWCU488 {build.usb_flags}
 SparkFun_ThingPlus-AWCU488.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
 SparkFun_ThingPlus-AWCU488.build.variant=sparkfun_thingplus-awcu488
 
@@ -178,9 +178,9 @@ SparkFun_ThingPlus-AWCU488.menu.AutoUploadMode.Enable=Enable
 SparkFun_ThingPlus-AWCU488.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable=Disable
-SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM -DBOARD_SPARKFUN_AWCU488 {build.usb_flags}
+SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_AWCU488 {build.usb_flags}
 SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8721DM -DBOARD_SPARKFUN_AWCU488 {build.usb_flags} -DArduino_STD_PRINTF
+SparkFun_ThingPlus-AWCU488.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_AWCU488 {build.usb_flags} -DArduino_STD_PRINTF
 
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.1500000=1500000
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.1500000.upload.speed=1500000
@@ -188,49 +188,94 @@ SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600=921600
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
-Ameba_AMB25_AMB26.name=AMB25/AMB26 (RTL8720DF)
-#Ameba_AMB25_AMB26.vid.0=0x10C4
-#Ameba_AMB25_AMB26.pid.0=0xEA60
+Ameba_AMB25.name=AMB25 (RTL8720DF)
+#Ameba_AMB25.vid.0=0x10C4
+#Ameba_AMB25.pid.0=0xEA60
 
-Ameba_AMB25_AMB26.build.tarch=cortex-m33
-Ameba_AMB25_AMB26.build.mcu=RTL8720DF
-Ameba_AMB25_AMB26.build.f_cpu=200000000L
-Ameba_AMB25_AMB26.build.usb_product="AMB25/AMB26"
-Ameba_AMB25_AMB26.build.board=AMEBA
-Ameba_AMB25_AMB26.build.core=ambd
-Ameba_AMB25_AMB26.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF -DBOARD_AMB25_AMB26 {build.usb_flags}
-Ameba_AMB25_AMB26.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
-Ameba_AMB25_AMB26.build.variant=ameba_amb25_amb26
+Ameba_AMB25.build.tarch=cortex-m33
+Ameba_AMB25.build.mcu=RTL8720DF
+Ameba_AMB25.build.f_cpu=200000000L
+Ameba_AMB25.build.usb_product="AMB25"
+Ameba_AMB25.build.board=AMEBA
+Ameba_AMB25.build.core=ambd
+Ameba_AMB25.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB25 {build.usb_flags}
+Ameba_AMB25.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
+Ameba_AMB25.build.variant=ameba_amb25_amb26
 
-Ameba_AMB25_AMB26.upload.tool=ameba_d_tools
-Ameba_AMB25_AMB26.upload.protocol=usb_serial
-Ameba_AMB25_AMB26.upload.maximum_size=2097152
-Ameba_AMB25_AMB26.upload.use_1200bps_touch=false
-Ameba_AMB25_AMB26.upload.wait_for_upload_port=false
-Ameba_AMB25_AMB26.upload.native_usb=false
-Ameba_AMB25_AMB26.upload.auto_mode=Disable
-Ameba_AMB25_AMB26.upload.erase_flash=Disable
-Ameba_AMB25_AMB26.upload.speed=1500000
+Ameba_AMB25.upload.tool=ameba_d_tools
+Ameba_AMB25.upload.protocol=usb_serial
+Ameba_AMB25.upload.maximum_size=2097152
+Ameba_AMB25.upload.use_1200bps_touch=false
+Ameba_AMB25.upload.wait_for_upload_port=false
+Ameba_AMB25.upload.native_usb=false
+Ameba_AMB25.upload.auto_mode=Disable
+Ameba_AMB25.upload.erase_flash=Disable
+Ameba_AMB25.upload.speed=1500000
 
-Ameba_AMB25_AMB26.menu.EraseFlash.Disable=Disable
-Ameba_AMB25_AMB26.menu.EraseFlash.Disable.upload.erase_flash=Disable
-Ameba_AMB25_AMB26.menu.EraseFlash.Enable=Erase only
-Ameba_AMB25_AMB26.menu.EraseFlash.Enable.upload.erase_flash=Enable
+Ameba_AMB25.menu.EraseFlash.Disable=Disable
+Ameba_AMB25.menu.EraseFlash.Disable.upload.erase_flash=Disable
+Ameba_AMB25.menu.EraseFlash.Enable=Erase only
+Ameba_AMB25.menu.EraseFlash.Enable.upload.erase_flash=Enable
 
-Ameba_AMB25_AMB26.menu.AutoUploadMode.Disable=Disable
-Ameba_AMB25_AMB26.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
-Ameba_AMB25_AMB26.menu.AutoUploadMode.Enable=Enable
-Ameba_AMB25_AMB26.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
+Ameba_AMB25.menu.AutoUploadMode.Disable=Disable
+Ameba_AMB25.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
+Ameba_AMB25.menu.AutoUploadMode.Enable=Enable
+Ameba_AMB25.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
-Ameba_AMB25_AMB26.menu.StdLibInit.Disable=Disable
-Ameba_AMB25_AMB26.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF -DBOARD_AMB25_AMB26 {build.usb_flags}
-Ameba_AMB25_AMB26.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-Ameba_AMB25_AMB26.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF -DBOARD_AMB25_AMB26 {build.usb_flags} -DArduino_STD_PRINTF
+Ameba_AMB25.menu.StdLibInit.Disable=Disable
+Ameba_AMB25.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB25 {build.usb_flags}
+Ameba_AMB25.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+Ameba_AMB25.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB25 {build.usb_flags} -DArduino_STD_PRINTF
 
-Ameba_AMB25_AMB26.menu.UploadBaudrate.1500000=1500000
-Ameba_AMB25_AMB26.menu.UploadBaudrate.1500000.upload.speed=1500000
-Ameba_AMB25_AMB26.menu.UploadBaudrate.921600=921600
-Ameba_AMB25_AMB26.menu.UploadBaudrate.921600.upload.speed=921600
+Ameba_AMB25.menu.UploadBaudrate.1500000=1500000
+Ameba_AMB25.menu.UploadBaudrate.1500000.upload.speed=1500000
+Ameba_AMB25.menu.UploadBaudrate.921600=921600
+Ameba_AMB25.menu.UploadBaudrate.921600.upload.speed=921600
+##############################################################
+
+Ameba_AMB26.name=AMB26 (RTL8720DF)
+#Ameba_AMB26.vid.0=0x10C4
+#Ameba_AMB26.pid.0=0xEA60
+
+Ameba_AMB26.build.tarch=cortex-m33
+Ameba_AMB26.build.mcu=RTL8720DF
+Ameba_AMB26.build.f_cpu=200000000L
+Ameba_AMB26.build.usb_product="AMB26"
+Ameba_AMB26.build.board=AMEBA
+Ameba_AMB26.build.core=ambd
+Ameba_AMB26.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB26 {build.usb_flags}
+Ameba_AMB26.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
+Ameba_AMB26.build.variant=ameba_amb25_amb26
+
+Ameba_AMB26.upload.tool=ameba_d_tools
+Ameba_AMB26.upload.protocol=usb_serial
+Ameba_AMB26.upload.maximum_size=2097152
+Ameba_AMB26.upload.use_1200bps_touch=false
+Ameba_AMB26.upload.wait_for_upload_port=false
+Ameba_AMB26.upload.native_usb=false
+Ameba_AMB26.upload.auto_mode=Disable
+Ameba_AMB26.upload.erase_flash=Disable
+Ameba_AMB26.upload.speed=1500000
+
+Ameba_AMB26.menu.EraseFlash.Disable=Disable
+Ameba_AMB26.menu.EraseFlash.Disable.upload.erase_flash=Disable
+Ameba_AMB26.menu.EraseFlash.Enable=Erase only
+Ameba_AMB26.menu.EraseFlash.Enable.upload.erase_flash=Enable
+
+Ameba_AMB26.menu.AutoUploadMode.Disable=Disable
+Ameba_AMB26.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
+Ameba_AMB26.menu.AutoUploadMode.Enable=Enable
+Ameba_AMB26.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
+
+Ameba_AMB26.menu.StdLibInit.Disable=Disable
+Ameba_AMB26.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB26 {build.usb_flags}
+Ameba_AMB26.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+Ameba_AMB26.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_AMB26 {build.usb_flags} -DArduino_STD_PRINTF
+
+Ameba_AMB26.menu.UploadBaudrate.1500000=1500000
+Ameba_AMB26.menu.UploadBaudrate.1500000.upload.speed=1500000
+Ameba_AMB26.menu.UploadBaudrate.921600=921600
+Ameba_AMB26.menu.UploadBaudrate.921600.upload.speed=921600
 ##############################################################
 
 u-blox_NORA-W30.name=u-blox NORA-W30 series (RTL8720DF)
@@ -241,7 +286,7 @@ u-blox_NORA-W30.build.f_cpu=200000000L
 u-blox_NORA-W30.build.usb_product="u-blox_NORA-W30"
 u-blox_NORA-W30.build.board=AMEBA
 u-blox_NORA-W30.build.core=ambd
-u-blox_NORA-W30.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF -DBOARD_UBLOX_NORAW30 {build.usb_flags}
+u-blox_NORA-W30.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_UBLOX_NORAW30 {build.usb_flags}
 u-blox_NORA-W30.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
 u-blox_NORA-W30.build.variant=u-blox_NORA-W30
 
@@ -266,9 +311,9 @@ u-blox_NORA-W30.menu.AutoUploadMode.Enable=Enable
 u-blox_NORA-W30.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
 
 u-blox_NORA-W30.menu.StdLibInit.Disable=Disable
-u-blox_NORA-W30.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF -DBOARD_UBLOX_NORAW30 {build.usb_flags}
+u-blox_NORA-W30.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_UBLOX_NORAW30 {build.usb_flags}
 u-blox_NORA-W30.menu.StdLibInit.Enable=Arduino_STD_PRINTF
-u-blox_NORA-W30.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_RTL8720DF -DBOARD_UBLOX_NORAW30 {build.usb_flags} -DArduino_STD_PRINTF
+u-blox_NORA-W30.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_UBLOX_NORAW30 {build.usb_flags} -DArduino_STD_PRINTF
 
 u-blox_NORA-W30.menu.UploadBaudrate.921600=921600
 u-blox_NORA-W30.menu.UploadBaudrate.921600.upload.speed=921600

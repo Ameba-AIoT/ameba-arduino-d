@@ -18,15 +18,14 @@
 #ifndef _UART_CLASS_ONE_
 #define _UART_CLASS_ONE_
 
-#if defined(BOARD_RTL8720DN_BW16)
+#if defined(BOARD_AITHINKER_BW16)
 //Not available
 #else
 
 #include "HardwareSerial.h"
 #include "RingBuffer.h"
 
-class UARTClassOne : public HardwareSerial
-{
+class UARTClassOne : public HardwareSerial {
     public:
         UARTClassOne(int dwIrq, RingBuffer* pRx_buffer);
         void begin(const uint32_t dwBaudRate) { begin(dwBaudRate, SERIAL_8N1); }

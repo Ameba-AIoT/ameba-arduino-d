@@ -14,10 +14,6 @@ extern "C" {
 }
 #endif
 
-#if defined(BOARD_RTL8722DM_MINI)
-#error AMB23/RTL8722DM_MINI do not support IRDevice.
-#endif
-
 static IR_InitTypeDef IR_InitStruct;  // Structure to store configuration information
 static IR_DataTypeDef IR_DataStruct;  // Structure to store encoded data
 xSemaphoreHandle IR_Recv_end_sema = NULL;
@@ -141,12 +137,13 @@ IRDevice::~IRDevice() {
 }
 
 void IRDevice::setTxPin(uint8_t transmitPin) {
+    amb_ard_pin_check_fun(transmitPin, PIO_IR);
     /* there are three groups of pinmux and pad settings:
     *  |  IR_TX  |  PA_25  |  PB_23 |  PB_31 |
     */
     if ((g_APinDescription[transmitPin].pinname) == PA_25) {
         Pinmux_Config(PA_25, PINMUX_FUNCTION_IR);
-#ifndef BOARD_RTL8720DN_BW16
+#ifndef DBOARD_AITHINKER_BW16
     } else if ((g_APinDescription[transmitPin].pinname) == PB_23) {
         Pinmux_Config(PB_23, PINMUX_FUNCTION_IR);
     } else if ((g_APinDescription[transmitPin].pinname) == PB_31) {
@@ -161,13 +158,14 @@ void IRDevice::setTxPin(uint8_t transmitPin) {
 }
 
 void IRDevice::setRxPin(uint8_t receivePin) {
+    amb_ard_pin_check_fun(receivePin, PIO_IR);
     /* there are three groups of pinmux and pad settings:
     *  |  IR_RX  |  PA_26  |  PB_22 |  PB_29 |
     */
     if ((g_APinDescription[receivePin].pinname) == PA_26) {
         PAD_PullCtrl(PA_26, PullNone);
         Pinmux_Config(PA_26, PINMUX_FUNCTION_IR);
-#ifndef BOARD_RTL8720DN_BW16
+#ifndef DBOARD_AITHINKER_BW16
     } else if ((g_APinDescription[receivePin].pinname) == PB_22) {
         Pinmux_Config(PB_22, PINMUX_FUNCTION_IR);
     } else if ((g_APinDescription[receivePin].pinname) == PB_29) {
@@ -334,7 +332,7 @@ void IRDevice::beginNEC(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode
         } else {
             IR_InitStruct.IR_RxCntThrType = IR_RX_COUNT_LOW_LEVEL;  //the idle level of receiving waveform is low
         }
-        IR_InitStruct.IR_RxCntThr = 0xa1644;  // 66.1ms at 10MHz	if(IR_Recv_end_sema == NULL) {
+        IR_InitStruct.IR_RxCntThr = 0xa1644;  // 66.1ms at 10MHz    if(IR_Recv_end_sema == NULL) {
         vSemaphoreCreateBinary(IR_Recv_end_sema);
         xSemaphoreTake(IR_Recv_end_sema, 1 / portTICK_RATE_MS);
     } else {

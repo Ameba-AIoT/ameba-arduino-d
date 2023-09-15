@@ -1,20 +1,13 @@
+/*
+
+ Example guide: TBD
+ */
 #include "IRDevice.h"
 
-#if defined(BOARD_RTL8722DM)
+// Set IR TX and RX pins
+// check the board pin mapping for available IR pins
 #define IR_RX_PIN       8
 #define IR_TX_PIN       9
-#elif defined(BOARD_RTL8722DM_MINI)
-#error Sorry, RTL8722DM_MINI do not support.
-#elif defined(BOARD_RTL8720DN_BW16)
-#define IR_RX_PIN       PA26
-#define IR_TX_PIN       PA25
-#elif defined(BOARD_RTL8721DM)
-#define IR_RX_PIN       5
-#define IR_TX_PIN       6
-#elif defined(BOARD_RTL8720DF)
-#define IR_RX_PIN       6
-#define IR_TX_PIN       7
-#endif
 
 uint8_t adr = 0;
 uint8_t cmd = 0;

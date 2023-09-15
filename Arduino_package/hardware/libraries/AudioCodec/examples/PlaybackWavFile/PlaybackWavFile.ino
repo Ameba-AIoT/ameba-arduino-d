@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-wav/
+ */
+
 #include "FatFs_SD.h"
 #include "PlaybackWav.h"
 #include "AudioCodec.h"
@@ -36,7 +42,7 @@ void setup() {
 
 void loop() {
     // If playback has reached end of file, jump to 35s
-    if(playWav.getPositionMillis() == playWav.getLengthMillis()) {
+    if (playWav.getPositionMillis() == playWav.getLengthMillis()) {
         playWav.setPositionMillis(35000);
     }
     delay(100);

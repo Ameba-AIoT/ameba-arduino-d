@@ -1,6 +1,7 @@
 /*
- Basic Amazon AWS IoT example
-*/
+
+ Example guide: TBD
+ */
 
 #include <WiFi.h>
 #include <PubSubClient.h>

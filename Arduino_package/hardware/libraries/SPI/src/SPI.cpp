@@ -21,9 +21,6 @@ extern "C" {
 #include "PinNames.h"
 #include "cmsis_os.h"
 
-//extern void log_uart_enable_printf(void);
-//extern void log_uart_disable_printf(void);
-
 #ifdef __cplusplus
 }
 #endif
@@ -31,22 +28,20 @@ extern "C" {
 spi_t spi_obj0;
 spi_t spi_obj1;
 
-SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss)
-{
+SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss) {
     pSpiMaster = pSpiObj;
 
-    /* These 4 pins should belong same spi pinmux*/
-    pinMOSI = (PinName)g_APinDescription[mosi].pinname;
-    pinMISO = (PinName)g_APinDescription[miso].pinname;
-    pinCLK = (PinName)g_APinDescription[clk].pinname;
-    pinSS = (PinName)g_APinDescription[ss].pinname;
+    pinMOSI = mosi;
+    pinMISO = miso;
+    pinCLK = clk;
+    pinSS = ss;
 
     pinUserSS = -1;
     initStatus = false;
     dataBits = 8;           // default databits is 8 bits
     dataMode = SPI_DATA_MODE0;   // default datamode is mode 0
 
-#if defined(BOARD_RTL8721DM)
+#if defined(BOARD_SPARKFUN_AWCU488)
     defaultFrequency = 2000000;
 #else
     defaultFrequency = 20000000;
@@ -83,6 +78,16 @@ void SPIClass::endTransaction(void) {
 }
 
 void SPIClass::begin(void) {
+    amb_ard_pin_check_fun(pinMOSI, PIO_SPI);
+    amb_ard_pin_check_fun(pinMISO, PIO_SPI);
+    amb_ard_pin_check_fun(pinCLK, PIO_SPI);
+    amb_ard_pin_check_fun(pinSS, PIO_SPI);
+
+    pinMOSI = (PinName)g_APinDescription[pinMOSI].pinname;
+    pinMISO = (PinName)g_APinDescription[pinMISO].pinname;
+    pinCLK = (PinName)g_APinDescription[pinCLK].pinname;
+    pinSS = (PinName)g_APinDescription[pinSS].pinname;
+
     if (pinMOSI == PA_16 || pinMOSI == PB_18) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
     } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
@@ -107,7 +112,17 @@ void SPIClass::begin(void) {
 }
 
 void SPIClass::begin(int ss) {
-    pinSS = (PinName)g_APinDescription[ss].pinname;
+    pinSS = ss;
+
+    amb_ard_pin_check_fun(pinMOSI, PIO_SPI);
+    amb_ard_pin_check_fun(pinMISO, PIO_SPI);
+    amb_ard_pin_check_fun(pinCLK, PIO_SPI);
+    amb_ard_pin_check_fun(pinSS, PIO_SPI);
+
+    pinMOSI = (PinName)g_APinDescription[pinMOSI].pinname;
+    pinMISO = (PinName)g_APinDescription[pinMISO].pinname;
+    pinCLK = (PinName)g_APinDescription[pinCLK].pinname;
+    pinSS = (PinName)g_APinDescription[pinSS].pinname;
 
     if (pinMOSI == PA_16 || pinMOSI == PB_18) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
@@ -137,6 +152,16 @@ void SPIClass::begin(char mode) {
     if (SPI_Mode == SPI_MODE_MASTER) {
         begin();
     } else if (SPI_Mode == SPI_MODE_SLAVE) {
+        amb_ard_pin_check_fun(pinMOSI, PIO_SPI);
+        amb_ard_pin_check_fun(pinMISO, PIO_SPI);
+        amb_ard_pin_check_fun(pinCLK, PIO_SPI);
+        amb_ard_pin_check_fun(pinSS, PIO_SPI);
+
+        pinMOSI = (PinName)g_APinDescription[pinMOSI].pinname;
+        pinMISO = (PinName)g_APinDescription[pinMISO].pinname;
+        pinCLK = (PinName)g_APinDescription[pinCLK].pinname;
+        pinSS = (PinName)g_APinDescription[pinSS].pinname;
+
         if (pinMOSI == PA_16 || pinMOSI == PB_18) {
             ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
         } else if (pinMOSI == PA_12 || pinMOSI == PB_4) {
@@ -171,7 +196,17 @@ void SPIClass::begin(int ss, char mode) {
     if (SPI_Mode == SPI_MODE_MASTER) {
         begin(ss);
     } else if (SPI_Mode == SPI_MODE_SLAVE) {
-        pinSS = (PinName)g_APinDescription[ss].pinname;
+        pinSS = ss;
+
+        amb_ard_pin_check_fun(pinMOSI, PIO_SPI);
+        amb_ard_pin_check_fun(pinMISO, PIO_SPI);
+        amb_ard_pin_check_fun(pinCLK, PIO_SPI);
+        amb_ard_pin_check_fun(pinSS, PIO_SPI);
+
+        pinMOSI = (PinName)g_APinDescription[pinMOSI].pinname;
+        pinMISO = (PinName)g_APinDescription[pinMISO].pinname;
+        pinCLK = (PinName)g_APinDescription[pinCLK].pinname;
+        pinSS = (PinName)g_APinDescription[pinSS].pinname;
 
         if (pinMOSI == PA_16 || pinMOSI == PB_18) {
             ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
@@ -202,10 +237,9 @@ void SPIClass::begin(int ss, char mode) {
     }
 }
 
-void SPIClass::end(void)
-{
+void SPIClass::end(void) {
     spi_free((spi_t *)pSpiMaster);
-    
+
     // Mark SPI init status
     initStatus = false;
 }
@@ -328,14 +362,12 @@ void SPIClass::setDataMode(uint8_t _mode) {
     setDataMode(dataBits, _mode);
 }
 
-
 void SPIClass::setClockDivider(uint8_t _pin, uint8_t _divider) {
     (void)_pin;
     (void)_divider;
 
     // no effect on Ameba
 }
-
 
 void SPIClass::setClockDivider(uint8_t _div) {
     (void)_div;
@@ -350,22 +382,21 @@ void SPIClass::setDefaultFrequency(int _frequency) {
     }
 }
 
-
-#if defined(BOARD_RTL8722DM)
+#if defined(BOARD_AMB21_AMB22)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 11, 12, 13, 10
 SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 21, 20, 19, 18
 
-#elif defined(BOARD_RTL8722DM_MINI)
+#elif defined(BOARD_AMB23)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 9, 10, 11, 12 or 4, 5, 6, 7
 
-#elif defined(BOARD_RTL8720DN_BW16)
+#elif defined(BOARD_AITHINKER_BW16)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // PA12, PA13, PA14, PA15
 
-#elif defined(BOARD_RTL8721DM)
+#elif defined(BOARD_SPARKFUN_AWCU488)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 1, 2, 0, 8
 SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 14, 15, 16, 17 or 4, 3, 29, 28 
 
-#elif defined(BOARD_RTL8720DF)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 17, 16, 19, 18
 SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 3, 2, 1, 0
 

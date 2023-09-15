@@ -30,7 +30,6 @@
 typedef void(*user_onRequest)(void);
 typedef void(*user_onReceive)(int);
 
-
 class TwoWire : public Stream {
     public:
         TwoWire(uint32_t dwSDAPin, uint32_t dwSCLPin);
@@ -66,7 +65,6 @@ class TwoWire : public Stream {
         size_t slaveWrite(char *);
         size_t slaveWrite(uint8_t *, size_t);
 
-
     private:
         bool is_slave;
 
@@ -79,7 +77,6 @@ class TwoWire : public Stream {
         uint8_t txAddress;
         uint8_t txBuffer[BUFFER_LENGTH];
         uint8_t txBufferLength;
-
 
         // Callback user functions
         void (*user_onRequest)(void);
@@ -101,17 +98,17 @@ class TwoWire : public Stream {
         static const uint32_t XMIT_TIMEOUT = 100000;
 };
 
-#if defined(BOARD_RTL8722DM)
+#if defined(BOARD_AMB21_AMB22)
 extern TwoWire Wire;
 extern TwoWire Wire1;
-#elif defined(BOARD_RTL8722DM_MINI)
+#elif defined(BOARD_AMB23)
 extern TwoWire Wire;
 extern TwoWire Wire1;
-#elif defined(BOARD_RTL8720DN_BW16)
+#elif defined(BOARD_AITHINKER_BW16)
 extern TwoWire Wire;
-#elif defined(BOARD_RTL8721DM)
+#elif defined(BOARD_SPARKFUN_AWCU488)
 extern TwoWire Wire;
-#elif defined(BOARD_RTL8720DF)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
 extern TwoWire Wire;
 #endif
 

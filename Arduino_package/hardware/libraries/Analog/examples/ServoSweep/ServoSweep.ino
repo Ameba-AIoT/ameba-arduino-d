@@ -21,26 +21,12 @@ AmebaServo myservo;
 // variable to store the servo position
 int pos = 0;
 
+// attaches the servo on PWM pins to the servo object
+// check the board pin mapping for available PWM pins
+int myservo_PWM_pin = 8;
+
 void setup() {
-#if defined(BOARD_RTL8722DM)
-    // attaches the servo on PWM pin 8 to the servo object
-    myservo.attach(8);
-#elif defined(BOARD_RTL8722DM_MINI)
-    // attaches the servo on PWM pin 7 to the servo object
-    myservo.attach(7);
-#elif defined(BOARD_RTL8720DN_BW16)
-    // attaches the servo on PWM pin PA25 to the servo object
-    myservo.attach(PA25);
-#elif defined(BOARD_RTL8721DM)
-    // attaches the servo on PWM pin 3 to the servo object
-    myservo.attach(3);
-#elif defined(BOARD_RTL8720DF)
-    // attaches the servo on PWM pin 7 to the servo object
-    myservo.attach(7);
-#else
-    // attaches the servo on PWM pin 10 to the servo object
-    myservo.attach(10);
-#endif
+    myservo.attach(myservo_PWM_pin);
 }
 
 void loop() {

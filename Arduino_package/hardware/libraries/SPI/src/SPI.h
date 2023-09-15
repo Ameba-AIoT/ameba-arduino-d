@@ -116,17 +116,17 @@ class SPIClass {
         char SPI_Mode;
 };
 
-#if defined(BOARD_RTL8722DM)
+#if defined(BOARD_AMB21_AMB22)
 extern SPIClass SPI;
 extern SPIClass SPI1;
-#elif defined(BOARD_RTL8722DM_MINI)
+#elif defined(BOARD_AMB23)
 extern SPIClass SPI;
-#elif defined(BOARD_RTL8720DN_BW16)
+#elif defined(BOARD_AITHINKER_BW16)
 extern SPIClass SPI;
-#elif defined(BOARD_RTL8721DM)
+#elif defined(BOARD_SPARKFUN_AWCU488)
 extern SPIClass SPI;
 extern SPIClass SPI1;
-#elif defined(BOARD_RTL8720DF)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
 extern SPIClass SPI;
 extern SPIClass SPI1;
 #else

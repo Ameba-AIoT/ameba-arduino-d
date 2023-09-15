@@ -16,7 +16,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#if defined(BOARD_RTL8720DN_BW16)
+#if defined(BOARD_AITHINKER_BW16)
 //Not available
 #else
 
@@ -61,10 +61,7 @@ UARTClassOne::UARTClassOne(int dwIrq, RingBuffer* pRx_buffer) {
 
 // Protected Methods //////////////////////////////////////////////////////////////
 
-
-
-
-// Public Methods //////////////////////////////////////////////////////////////
+// Public Methods /////////////////////////////////////////////////////////////////
 void UARTClassOne::IrqHandler(void) {
     uint8_t     data = 0;
     BOOL        PullMode = _FALSE;
@@ -88,6 +85,9 @@ void UARTClassOne::IrqHandler(void) {
 }
 
 void UARTClassOne::begin(const uint32_t dwBaudRate, uint8_t serial_config_value) {
+    //amb_ard_pin_check_fun(SERIAL1_TX, PIO_UART);
+    //amb_ard_pin_check_fun(SERIAL1_RX, PIO_UART);
+
     // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
     //serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
@@ -104,7 +104,7 @@ void UARTClassOne::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     //serial_init(&uart_obj, PA_12, PA_13);
     //serial_init(&uart_obj, PinName(g_APinDescription[SERIAL2_TX].pinname), PinName(g_APinDescription[SERIAL2_RX].pinname));
 
-    switch(serial_config_value) {
+    switch (serial_config_value) {
         case SERIAL_7N1:
             serial_format(&uart_obj, 7, ParityNone, 1);
             break;
@@ -231,6 +231,7 @@ size_t UARTClassOne::write(const uint8_t uc_data) {
 }
 
 UARTClassOne Serial1(UART0_IRQ, &rx_buffer1);
+
 bool Serial1_available() {
     return Serial1.available() > 0;
 }

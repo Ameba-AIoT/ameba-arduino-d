@@ -48,19 +48,9 @@ byte ntpRecvBuffer[ NTP_PACKET_SIZE ];
 static  const uint8_t monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // API starts months from 1, this array starts from 0
 uint32_t epochSystem = 0; // timestamp of system boot up
 
-#if defined(BOARD_RTL8722DM)
-PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8722DM_MINI)
-PMS3003 pms(2, 1);      // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8720DN_BW16)
-PMS3003 pms(PB2, PB1);  // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8721DM)
-PMS3003 pms(3, 4);  // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8720DF)
-PMS3003 pms(17, 16);  // SoftwareSerial RX/TX
-#else
-PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
-#endif
+// SoftwareSerial RX/TX pins
+// check the board pin mapping for available UART/Serial pins
+PMS3003 pms(0, 1);
 
 void reconnectWiFi() {
     // attempt to connect to Wifi network:

@@ -52,8 +52,7 @@ http://arduiniana.org.
 #define FLOW_CONTROL_CTS    (2)
 #define FLOW_CONTROL_RTSCTS (3)
 
-class SoftwareSerial : public Stream
-{
+class SoftwareSerial : public Stream {
     private:
         void* pUART;
         uint8_t receivePin;

@@ -66,7 +66,6 @@ DHT dht(DHTPIN, DHTTYPE);
 #define DS_RTC_ALARM_MIN                0
 #define DS_RTC_ALARM_SEC                10
 
-
 void DeepSleep_wakeup(void) {
     printf("\r\nDeep sleep wakeuped! \r\n");
     uint32_t wakereason_number = PowerSave.AONWakeReason();

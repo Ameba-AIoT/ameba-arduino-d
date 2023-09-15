@@ -177,8 +177,7 @@ void loop() {
     if(ret == 0) {
         Serial.println("Ready for Publishing");
 
-        mqtt_id = (char *)malloc(strlen("projects/") + strlen(project_id) + strlen("/locations/") + strlen(location)
-                 + strlen("/registries/") + strlen(registry_id) + strlen("/devices/") + strlen(device_id) + 1);
+        mqtt_id = (char *)malloc(strlen("projects/") + strlen(project_id) + strlen("/locations/") + strlen(location) + strlen("/registries/") + strlen(registry_id) + strlen("/devices/") + strlen(device_id) + 1);
         sprintf(mqtt_id, "projects/%s/locations/%s/registries/%s/devices/%s", project_id, location, registry_id, device_id);
 
         pub_topic = (char *)malloc(strlen("/devices/") + strlen(device_id) + strlen("/events") + 1);

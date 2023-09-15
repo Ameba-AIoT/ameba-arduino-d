@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-wav/
+ */
+
 #include "FatFs_SD.h"
 #include "RecordWav.h"
 #include "AudioCodec.h"
@@ -40,11 +46,10 @@ void loop() {
         Serial.println("Recording started");
         recWav.openFile(absolute_filename);
         Codec.begin(TRUE, FALSE);
-    } else if((digitalRead(RECORDBTN) == LOW) && (recWav.fileOpened())) {
+    } else if ((digitalRead(RECORDBTN) == LOW) && (recWav.fileOpened())) {
         Codec.end();
         recWav.closeFile();
         Serial.println("Recording stopped");
     }
     delay(100);
-
 }

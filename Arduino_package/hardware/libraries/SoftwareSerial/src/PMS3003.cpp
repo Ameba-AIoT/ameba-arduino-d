@@ -25,11 +25,12 @@ void pms3003_handle_interrupt(uint32_t id, uint32_t event) {
     }
 }
 
-PMS3003::PMS3003(int _rx, int _tx, int _set, int _reset) {
+PMS3003::PMS3003(int _rx, int _tx, int _set, int _reset, int _serial_baudrates) {
     setpin = _set;
     rxpin = _rx;
     txpin = _tx;
     resetpin = _reset;
+    serial_baudrates = _serial_baudrates;
 
     rbidx = 0;
     memset(rb, 0, PMS3003_BUF_SIZE);
@@ -40,18 +41,19 @@ PMS3003::PMS3003(int _rx, int _tx, int _set, int _reset) {
 }
 
 void PMS3003::begin() {
-
     pUART = malloc(sizeof(serial_t));
     memset(pUART, 0, sizeof(serial_t));
 
+    amb_ard_pin_check_fun(txpin, PIO_UART);
+    amb_ard_pin_check_fun(rxpin, PIO_UART);
+
     serial_init(((serial_t *)pUART), ((PinName)g_APinDescription[txpin].pinname), ((PinName)g_APinDescription[rxpin].pinname));
-    serial_baud(((serial_t *)pUART), 9600);
+    serial_baud(((serial_t *)pUART), serial_baudrates);
     serial_format(((serial_t *)pUART), 8, ParityNone, 1);
 
     serial_irq_handler(((serial_t *)pUART), (uart_irq_handler)pms3003_handle_interrupt, (uint32_t)this);
     serial_irq_set(((serial_t *)pUART), RxIrq, 1);
     serial_irq_set(((serial_t *)pUART), TxIrq, 1);
-
 }
 
 void PMS3003::end() {

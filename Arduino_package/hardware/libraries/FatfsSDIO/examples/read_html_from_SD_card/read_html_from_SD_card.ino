@@ -7,7 +7,7 @@
 
 #include <WiFi.h>
 #include "FatFs_SD.h"
-char ssid[] = "yourNetwork";        //  your network SSID (name)
+char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
 
@@ -18,14 +18,7 @@ char filename_Web_test[] = "Web_UI.html"; //name of the HTML file saved in SD ca
 FatFsSD fs;
 
 void setup() {
-    
     Serial.begin(115200);         // initialize serial communication
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);           // don't continue
-    }
-
     // attempt to connect to Wifi network:
     while (status != WL_CONNECTED) {
         Serial.print("Attempting to connect to Network named: ");
@@ -39,7 +32,6 @@ void setup() {
     server.begin();                           // start the web server on port 80
     printWifiStatus();                        // you're connected now, so print out the status
 }
-
 
 void loop() {
     char absolute_filename_html[128];
@@ -65,7 +57,7 @@ void loop() {
                         client.println();
 
                         fs.begin();
-                        
+
                         sprintf(absolute_filename_html, "%s%s", fs.getRootPath(), filename_Web_test);
                         SdFatFile file = fs.open(absolute_filename_html);
                         
@@ -73,7 +65,7 @@ void loop() {
                           while(file.available()){
                             client.write(file.read());
                           }
-                          file.close();              
+                          file.close();
                         }
                         fs.end();
                         // break out of the while loop:
@@ -108,7 +100,7 @@ void printWifiStatus() {
     Serial.print("signal strength (RSSI):");
     Serial.print(rssi);
     Serial.println(" dBm");
-    
+
     // print where to go in a browser:
     Serial.print("To see this page in action, open a browser to http://");
     Serial.println(ip);

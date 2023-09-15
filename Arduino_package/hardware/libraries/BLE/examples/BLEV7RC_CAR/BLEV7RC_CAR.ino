@@ -21,6 +21,9 @@
  * 
  * For more information about our company, please visit: www.makdev.net
  * 
+ * Example guide: TBD
+ */
+
  *******************************************************/
 
 #include "BLEDevice.h"

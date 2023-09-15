@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-ntpclient/
+ */
+
 #include <NTPClient.h>
 #include <WiFi.h>
 #include <WiFiUdp.h>

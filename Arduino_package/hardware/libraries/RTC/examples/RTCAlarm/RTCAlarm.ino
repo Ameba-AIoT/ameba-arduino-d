@@ -63,8 +63,7 @@ void DisableAlarm(void) {
 
 void rtc_handler(void) {
     Serial.println("====   Alarm Matched   ====");
-    while (1)
-        ;
+    while (1);
 }
 
 void printStringTime(void) {

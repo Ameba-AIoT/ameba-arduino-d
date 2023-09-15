@@ -99,10 +99,10 @@ uint32_t analogRead(uint32_t ulPin) {
     //float    voltage;
     float ret = 0;
     float mv;
-    if ((g_APinDescription[ulPin].ulPinType & TYPE_ANALOG) != TYPE_ANALOG) {
-        printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
-        return 0;
-    }
+
+    amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
+    amb_ard_pin_check_fun(ulPin, PIO_ADC);
+
     if (_calibrate_en == 0) {
         if ((_offset == 0) || (_gain == 0)) {
             u8 EfuseBuf[2];
@@ -165,13 +165,13 @@ uint32_t analogRead(uint32_t ulPin) {
             printf("%s : ulPin %d wrong\n", __FUNCTION__, ((int)ulPin));
             return 0;
     }
-   
+
     if (ret < 0xfa) {
         mv = 0; // Ignore persistent low voltage measurement error
     } else {
         mv = ((10 * ret - _offset) * 1000 / _gain); // Convert measured ADC value to millivolts
-   }
-    
+    }
+
     ret = (mv/3300.0) * (1 << _readResolution); // Return user required resolution
     return ret;
 }
@@ -185,10 +185,7 @@ void analogOutputInit(void) {
 // pins_*.c file.  For the rest of the pins, we default
 // to digital output.
 void analogWrite (uint32_t ulPin, int32_t ulValue) {
-    if (((g_APinDescription[ulPin].ulPinType & TYPE_ANALOG) != TYPE_ANALOG) && ((g_APinDescription[ulPin].ulPinAttribute & PIO_PWM) != PIO_PWM)) {
-        printf("Error, pin not supported. \r\n");
-        return;
-    }
+    amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
 
 #ifdef FEATURE_DAC
     if (ulPin == DAC0)
@@ -203,22 +200,20 @@ void analogWrite (uint32_t ulPin, int32_t ulValue) {
     else
 #endif // #ifdef FEATURE_DAC
     {
-        if ((g_APinDescription[ulPin].ulPinAttribute & PIO_PWM) == PIO_PWM) {
-            /* Handle */
-            if ((g_APinDescription[ulPin].ulPinMode & PWM_MODE_ENABLED) != PWM_MODE_ENABLED) {
-                pinRemoveMode(ulPin);
-                gpio_pin_struct[ulPin] = malloc(sizeof(pwmout_t));
-                pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
-                pwmout_init(obj, g_APinDescription[ulPin].pinname);
-                pwmout_period_us(obj, _writePeriod);
-                pwmout_write(obj, ulValue * 1.0 / (1<<_writeResolution));
-                g_APinDescription[ulPin].ulPinMode |= PWM_MODE_ENABLED;
-                g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
-            } else {
-                pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
-                pwmout_period_us(obj, _writePeriod);
-                pwmout_write(obj, ulValue * 1.0 / (1 << _writeResolution));
-            }
+        amb_ard_pin_check_fun(ulPin, PIO_PWM);
+        if ((g_APinDescription[ulPin].ulPinMode & PWM_MODE_ENABLED) != PWM_MODE_ENABLED) {
+            pinRemoveMode(ulPin);
+            gpio_pin_struct[ulPin] = malloc(sizeof(pwmout_t));
+            pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
+            pwmout_init(obj, g_APinDescription[ulPin].pinname);
+            pwmout_period_us(obj, _writePeriod);
+            pwmout_write(obj, ulValue * 1.0 / (1<<_writeResolution));
+            g_APinDescription[ulPin].ulPinMode |= PWM_MODE_ENABLED;
+            g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
+        } else {
+            pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
+            pwmout_period_us(obj, _writePeriod);
+            pwmout_write(obj, ulValue * 1.0 / (1 << _writeResolution));
         }
     }
 }
@@ -226,7 +221,7 @@ void analogWrite (uint32_t ulPin, int32_t ulValue) {
 typedef struct _tone_argument {
     uint32_t ulPin;
     uint32_t timer_id;
-}tone_argument;
+} tone_argument;
 
 void _tone_timer_handler(void const* argument) {
     // passed in value is a double pointer to a tone_argument struct
@@ -242,34 +237,31 @@ void _tone_timer_handler(void const* argument) {
 
 void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration) {
     static tone_argument* ptimer = NULL;
-    if (((g_APinDescription[ulPin].ulPinType & TYPE_ANALOG) != TYPE_ANALOG) && ((g_APinDescription[ulPin].ulPinAttribute & PIO_PWM) != PIO_PWM)) {
-        printf("Error, pin not supported. \r\n");
-        return;
-    }
 
-    if ((g_APinDescription[ulPin].ulPinAttribute & PIO_PWM) == PIO_PWM) {
-        if ((g_APinDescription[ulPin].ulPinMode & PWM_MODE_ENABLED) != PWM_MODE_ENABLED) {
-            pinRemoveMode(ulPin);
-            gpio_pin_struct[ulPin] = malloc(sizeof(pwmout_t));
-            pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
-            pwmout_init(obj, g_APinDescription[ulPin].pinname);
-            if (frequency == 0) {
-                pwmout_pulsewidth(obj, 0);
-            } else {
-                pwmout_period(obj, 1.0/frequency);
-                pwmout_pulsewidth(obj, 1.0/(frequency * 2));
-            }
-            g_APinDescription[ulPin].ulPinMode |= PWM_MODE_ENABLED;
-            g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
+    amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
+    amb_ard_pin_check_fun(ulPin, PIO_PWM);
+
+    if ((g_APinDescription[ulPin].ulPinMode & PWM_MODE_ENABLED) != PWM_MODE_ENABLED) {
+        pinRemoveMode(ulPin);
+        gpio_pin_struct[ulPin] = malloc(sizeof(pwmout_t));
+        pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
+        pwmout_init(obj, g_APinDescription[ulPin].pinname);
+        if (frequency == 0) {
+            pwmout_pulsewidth(obj, 0);
         } else {
-            // There is already a PWM configured
-            pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
-            if (frequency == 0) {
-                pwmout_pulsewidth(obj, 0);
-            } else {
-                pwmout_period(obj, 1.0/frequency);
-                pwmout_pulsewidth(obj, 1.0/(frequency * 2));
-            }
+            pwmout_period(obj, 1.0/frequency);
+            pwmout_pulsewidth(obj, 1.0/(frequency * 2));
+        }
+        g_APinDescription[ulPin].ulPinMode |= PWM_MODE_ENABLED;
+        g_APinDescription[ulPin].ulPinMode &= (~MODE_NOT_INITIAL);
+    } else {
+        // There is already a PWM configured
+        pwmout_t *obj = (pwmout_t *)gpio_pin_struct[ulPin];
+        if (frequency == 0) {
+            pwmout_pulsewidth(obj, 0);
+        } else {
+            pwmout_period(obj, 1.0/frequency);
+            pwmout_pulsewidth(obj, 1.0/(frequency * 2));
         }
     }
 

@@ -5,7 +5,6 @@
 #include <cstdint>
 #include "SPI.h"
 
-
 #define ILI9341_TFTWIDTH     240
 #define ILI9341_TFTHEIGHT    320
 
@@ -92,69 +91,68 @@
 #define ILI9341_PINK        0xF81F
 
 class AmebaILI9341 : public Print {
+    public:
+        AmebaILI9341(int csPin, int dcPin, int resetPin, SPIClass& targetSPI = SPI);
 
-public:
-    AmebaILI9341(int csPin, int dcPin, int resetPin, SPIClass& targetSPI = SPI);
+        void begin(void);
 
-    void begin(void);
+        void setAddress(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
-    void setAddress(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
+        void writecommand(uint8_t command);
+        void writedata(uint8_t data);
+        void writedata(uint8_t *data, size_t datasize);
 
-    void writecommand(uint8_t command);
-    void writedata(uint8_t data);
-    void writedata(uint8_t *data, size_t datasize);
+        void setRotation(uint8_t m);
 
-    void setRotation(uint8_t m);
+        void fillScreen(uint16_t color);
+        void clr();
 
-    void fillScreen(uint16_t color);
-    void clr();
+        void fillRectangle(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+        void drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const unsigned short *color);
+        void drawPixel(int16_t x, int16_t y, uint16_t color);
 
-    void fillRectangle(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
-	void drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const unsigned short *color);
-    void drawPixel(int16_t x, int16_t y, uint16_t color);
+        void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t fontcolor, uint16_t background, uint8_t fontsize);
+        void drawChar(unsigned char c);
 
-    void drawChar(int16_t x, int16_t y, unsigned char c, uint16_t fontcolor, uint16_t background, uint8_t fontsize);
-    void drawChar(unsigned char c);
+        void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
+        void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 
-    void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, uint16_t color);
-    void drawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
+        void drawRectangle(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
+        void drawRectangle(int16_t x, int16_t y, int16_t w, int16_t h);
 
-    void drawRectangle(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color);
-    void drawRectangle(int16_t x, int16_t y, int16_t w, int16_t h);
+        void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
+        void drawCircle(int16_t x0, int16_t y0, int16_t r);
 
-    void drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
-    void drawCircle(int16_t x0, int16_t y0, int16_t r);
+        virtual size_t write(uint8_t);
 
-    virtual size_t write(uint8_t);
+        int16_t getWidth();
+        int16_t getHeight();
 
-    int16_t getWidth();
-    int16_t getHeight();
+        void setCursor(int16_t x, int16_t y);
+        void setForeground(uint16_t color);
+        void setBackground(uint16_t color);
+        void setFontSize(uint8_t size);
 
-    void setCursor(int16_t x, int16_t y);
-    void setForeground(uint16_t color);
-    void setBackground(uint16_t color);
-    void setFontSize(uint8_t size);
+    private:
+        void reset(void);
 
-private:
-    void reset(void);
+        int _csPin;
+        int _dcPin;
+        int _resetPin;
 
-    int _csPin;
-    int _dcPin;
-    int _resetPin;
+        uint32_t _dcPort;
+        uint32_t _dcMask;
 
-    uint32_t _dcPort;
-    uint32_t _dcMask;
+        int16_t _width;
+        int16_t _height;
 
-    int16_t _width;
-    int16_t _height;
-
-    int16_t cursor_x;
-    int16_t cursor_y;
-    uint16_t foreground;
-    uint16_t background;
-    uint8_t fontsize;
-    uint8_t rotation;
-    SPIClass& _spi;
+        int16_t cursor_x;
+        int16_t cursor_y;
+        uint16_t foreground;
+        uint16_t background;
+        uint8_t fontsize;
+        uint8_t rotation;
+        SPIClass& _spi;
 };
 
 #endif

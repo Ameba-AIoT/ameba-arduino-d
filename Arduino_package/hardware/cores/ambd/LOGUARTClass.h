@@ -22,8 +22,7 @@
 #include "HardwareSerial.h"
 #include "RingBuffer.h"
 
-class LOGUARTClass : public HardwareSerial
-{
+class LOGUARTClass : public HardwareSerial {
     public:
         LOGUARTClass(int dwIrq, RingBuffer* pRx_buffer);
         void begin(const uint32_t dwBaudRate) { begin(dwBaudRate, SERIAL_8N1); }

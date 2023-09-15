@@ -66,8 +66,7 @@
 #define SERIAL_702 0x5C
 #define SERIAL_802 0x5E
 
-class HardwareSerial : public Stream
-{
+class HardwareSerial : public Stream {
     public:
         virtual void begin(unsigned long baud) { begin(baud, SERIAL_8N1); }
         virtual void begin(unsigned long, uint8_t) = 0;
