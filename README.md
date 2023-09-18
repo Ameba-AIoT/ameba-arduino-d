@@ -5,8 +5,8 @@
 
 |Branch|Usage|Remarks|
 |:-----|:-----|:-----|
-|`master` | stable release| `master` branch is only for hosting stable release by link https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json, refer to section 2 to use the stable release |
-|`dev`| merge `PR` & early release| `dev` branch is open to `Pull Request`(PR) for ***feature addition*** and ***bug fix***. It will also have the latest features which you can access via this link https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek.com_amebad_early_index.json (refer below for steps to install early release on Arduino IDE, but please be noted that as this is a **early release**, bugs and/or performance issue might occur and break your program) |
+|`master` | stable release| https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json or https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json|
+|`dev`| merge `Pull Request` & early release| https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek_amebad_early_index.json or https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek.com_amebad_early_index.json|
 
 
 For all `release` information, please visit this [link](https://github.com/ambiot/ambd_arduino/releases).
