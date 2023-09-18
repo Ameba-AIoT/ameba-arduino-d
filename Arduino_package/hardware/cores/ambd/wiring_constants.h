@@ -80,6 +80,8 @@ enum BitOrder {
 // #define max(a,b) ((a)>(b)?(a):(b))
 // #endif // max
 // >>>>>>>>>>>>>>>>>>>>>>
+#ifndef Arduino_STD_PRINTF
+
 #ifdef min 
 #undef min // undefine std lib min function
 #define min(a,b) ((a)<(b)?(a):(b))
@@ -89,6 +91,8 @@ enum BitOrder {
 #undef max // undefine std lib max function
 #define max(a,b) ((a)<(b)?(a):(b))
 #endif 
+
+#endif
 
 #define abs(x) ((x)>0?(x):-(x))
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
