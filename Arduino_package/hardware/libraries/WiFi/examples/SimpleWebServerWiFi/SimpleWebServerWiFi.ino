@@ -13,11 +13,8 @@ int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 WiFiServer server(80);
 
-#if defined(BOARD_RTL8720DN_BW16)
+// Choose any digital pin connect to LED or onboard LED
 #define LED_PIN 5
-#else
-#define LED_PIN 13
-#endif
 
 void setup() {
     Serial.begin(115200);           // initialize serial communication

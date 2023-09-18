@@ -2,7 +2,6 @@
 
  Example guide:
  https://www.amebaiot.com/en/amebad-arduino-web-server-status/
- 
  */
 
 #include <WiFi.h>

@@ -23,11 +23,11 @@ int status = WL_IDLE_STATUS;        // Indicater of Wifi status
 
 WiFiServer server(80);
 
-Car2wd car(8,9,10,11,12,13);         // Pins needed for L298N module
+Car2wd car(8, 9, 10, 11, 12, 13);   // Pins needed for L298N module
 
 void setup() {
     car.begin();
-    Serial.begin(115200);            // initialize serial communication
+    Serial.begin(115200);           // initialize serial communication
 
     String fv = WiFi.firmwareVersion();
     if (fv != "1.0.0") {
