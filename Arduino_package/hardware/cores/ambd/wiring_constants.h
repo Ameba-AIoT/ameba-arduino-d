@@ -71,13 +71,24 @@ enum BitOrder {
 #undef abs
 #endif // abs
 
-#ifndef min
-#define min(a,b) ((a)<(b)?(a):(b))
-#endif // min
+// <<<<<<<<<<<<<<<<<<<<<<
+// #ifndef min
+// #define min(a,b) ((a)<(b)?(a):(b))
+// #endif // min
 
-#ifndef max
-#define max(a,b) ((a)>(b)?(a):(b))
-#endif // max
+// #ifndef max
+// #define max(a,b) ((a)>(b)?(a):(b))
+// #endif // max
+// >>>>>>>>>>>>>>>>>>>>>>
+#ifdef min 
+#undef min // undefine std lib min function
+#define min(a,b) ((a)<(b)?(a):(b))
+#endif 
+
+#ifdef max
+#undef max // undefine std lib max function
+#define max(a,b) ((a)<(b)?(a):(b))
+#endif 
 
 #define abs(x) ((x)>0?(x):-(x))
 #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))

@@ -36,10 +36,14 @@
 #ifdef __cplusplus
 #include <string>
 #endif // __cplusplus
-#include <stdio.h>
-#endif // Arduino_STD_PRINTF
+
+// #include <stdio.h>
+#endif
 
 #ifdef __cplusplus
+
+#include <stdio.h> // include before callig min/max in wiring_constants.h
+
 extern "C" {
 #endif // __cplusplus
 
