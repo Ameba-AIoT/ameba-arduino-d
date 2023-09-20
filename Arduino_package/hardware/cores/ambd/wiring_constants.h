@@ -72,12 +72,10 @@ enum BitOrder {
 #endif // abs
 
 #ifndef Arduino_STD_PRINTF
-#ifdef min 
-#undef min // undefine std lib min function
+#ifndef min 
 #define min(a,b) ((a)<(b)?(a):(b))
 #endif // min
-#ifdef max
-#undef max // undefine std lib max function
+#ifndef max
 #define max(a,b) ((a)>(b)?(a):(b))
 #endif // max
 #endif // Arduino_STD_PRINTF
