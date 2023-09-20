@@ -30,16 +30,16 @@
 
 #define AMEBA_ARDUINO_Pin_Mapping_Check
 
-//#define Arduino_STD_PRINTF
 #ifdef Arduino_STD_PRINTF
 #define STD_PRINTF
 #ifdef __cplusplus
 #include <string>
 #endif // __cplusplus
-#include <stdio.h>
+// #include <stdio.h>
 #endif // Arduino_STD_PRINTF
 
 #ifdef __cplusplus
+#include <stdio.h> // include before callig min/max in wiring_constants.h
 extern "C" {
 #endif // __cplusplus
 
