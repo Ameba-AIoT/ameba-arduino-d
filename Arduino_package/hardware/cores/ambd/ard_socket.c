@@ -395,7 +395,7 @@ int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
     int err;
 
     // printf("len %d\r\n", len);
-    while(retry) {
+    while (retry) {
         int count = TCP_MSS;
         retry--;
         if (count > len) {
@@ -418,7 +418,7 @@ int send_data(int sock, const uint8_t *data, uint16_t len, int flag) {
             // printf("len %d\r\n", len);
             // printf("data %d\r\n", data);
             // finished data transmission
-            if(len == 0) { 
+            if (len == 0) { 
                 ret = total_count;
                 retry = 0;
                 break;
