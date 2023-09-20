@@ -21,9 +21,6 @@
  * 
  * For more information about our company, please visit: www.makdev.net
  * 
- * Example guide: TBD
- */
-
  *******************************************************/
 
 #include "BLEDevice.h"
@@ -38,7 +35,6 @@
 #define value1  0
 #define value2  1
 
-
 #define MotoA_1A 6
 #define MotoA_1B 12
 #define MotoB_1A 2
@@ -47,7 +43,6 @@
 typedef struct {
     bool reciveCMDFlag;
     int  ReciveValue;
-
 } _rCMD;
 
 BLEService UartService(UART_SERVICE_UUID);
@@ -61,51 +56,51 @@ uint8_t Count;
 _rCMD bleReciveData[MaxNumValue];
 
 void backward() {
-    digitalWrite(MotoA_1A,HIGH);
-    analogWrite(MotoA_1B,5);
+    digitalWrite(MotoA_1A, HIGH);
+    analogWrite(MotoA_1B, 5);
 
-    digitalWrite(MotoB_1A,HIGH);
-    analogWrite(MotoB_1B,5);
+    digitalWrite(MotoB_1A, HIGH);
+    analogWrite(MotoB_1B, 5);
 
     delay(50);
 }
 
 void forward() {
-    digitalWrite(MotoA_1A,LOW);
-    analogWrite(MotoA_1B,250);
+    digitalWrite(MotoA_1A, LOW);
+    analogWrite(MotoA_1B, 250);
 
-    digitalWrite(MotoB_1A,LOW);
-    analogWrite(MotoB_1B,250);
+    digitalWrite(MotoB_1A, LOW);
+    analogWrite(MotoB_1B, 250);
 
     delay(50);
 }
 
 void turnRight() {
-    digitalWrite(MotoA_1A,HIGH);
-    analogWrite(MotoA_1B,5);
+    digitalWrite(MotoA_1A, HIGH);
+    analogWrite(MotoA_1B, 5);
 
-    digitalWrite(MotoB_1A,LOW);
-    analogWrite(MotoB_1B,250);
+    digitalWrite(MotoB_1A, LOW);
+    analogWrite(MotoB_1B, 250);
 
     delay(50);
 }
 
 void turnLeft() {
-    digitalWrite(MotoA_1A,LOW);
-    analogWrite(MotoA_1B,250);
+    digitalWrite(MotoA_1A, LOW);
+    analogWrite(MotoA_1B, 250);
 
-    digitalWrite(MotoB_1A,HIGH);
-    analogWrite(MotoB_1B,5);
+    digitalWrite(MotoB_1A, HIGH);
+    analogWrite(MotoB_1B, 5);
 
     delay(50);
 }
 
 void BrakeAll() {
-    digitalWrite(MotoA_1A,LOW);
-    analogWrite(MotoA_1B,0);
+    digitalWrite(MotoA_1A, LOW);
+    analogWrite(MotoA_1B, 0);
 
-    digitalWrite(MotoB_1A,LOW);
-    analogWrite(MotoB_1B,0);
+    digitalWrite(MotoB_1A, LOW);
+    analogWrite(MotoB_1B, 0);
 
     delay(50);
 }
@@ -142,15 +137,14 @@ void notifCB(BLECharacteristic* chr, uint8_t connID, uint16_t cccd) {
 void ParseCMDString(String cmd) {
     int comdLength = cmd.length();
 
-    if(cmd.indexOf("SRT") > -1 ) {
+    if (cmd.indexOf("SRT") > -1) {
         int x = 3;
         int ValueIndex = 0;
 
         while (x < (comdLength - 1)) {
-            if(x + 3 < comdLength){
-                String _NumString = cmd.substring(x,x + 4);
+            if ((x + 3) < comdLength) {
+                String _NumString = cmd.substring(x, (x + 4));
                 //Serial.println(_NumString);
-
                 if (ValueIndex < MaxNumValue) {
                     if (bleReciveData[ValueIndex].ReciveValue != _NumString.toInt()) {
                         bleReciveData[ValueIndex].ReciveValue = _NumString.toInt();
@@ -160,7 +154,6 @@ void ParseCMDString(String cmd) {
             }
             ValueIndex++;
             x += 4;
-            //Serial.println();
         }
     }
 }
@@ -168,15 +161,15 @@ void ParseCMDString(String cmd) {
 void setup() {
     Serial.begin(115200);
 
-    pinMode(MotoA_1A,OUTPUT);
-    pinMode(MotoA_1B,OUTPUT);
-    pinMode(MotoB_1A,OUTPUT);
-    pinMode(MotoB_1B,OUTPUT);
+    pinMode(MotoA_1A, OUTPUT);
+    pinMode(MotoA_1B, OUTPUT);
+    pinMode(MotoB_1A, OUTPUT);
+    pinMode(MotoB_1B, OUTPUT);
 
-    digitalWrite(MotoA_1A,LOW);
-    digitalWrite(MotoA_1B,LOW);
-    digitalWrite(MotoB_1A,LOW);
-    digitalWrite(MotoB_1B,LOW);
+    digitalWrite(MotoA_1A, LOW);
+    digitalWrite(MotoA_1B, LOW);
+    digitalWrite(MotoB_1A, LOW);
+    digitalWrite(MotoB_1B, LOW);
 
     advdata.addFlags(GAP_ADTYPE_FLAGS_LIMITED | GAP_ADTYPE_FLAGS_BREDR_NOT_SUPPORTED);
     advdata.addCompleteName("AMEBA_BLE_DEV");
@@ -193,7 +186,7 @@ void setup() {
     Tx.setNotifyProperty(true);
     Tx.setCCCDCallback(notifCB);
     Tx.setBufferLen(STRING_BUF_SIZE);
-    
+
     UartService.addCharacteristic(Rx);
     UartService.addCharacteristic(Tx);
 
@@ -211,7 +204,7 @@ void loop() {
         if(bleReciveData[Count].reciveCMDFlag) {
             bleReciveData[Count].reciveCMDFlag = false;
 
-            if (abs(bleReciveData[value1].ReciveValue- 1500) < 100 && abs(bleReciveData[value2].ReciveValue - 1500) < 100) {
+            if (abs(bleReciveData[value1].ReciveValue - 1500) < 100 && abs(bleReciveData[value2].ReciveValue - 1500) < 100) {
                 BrakeAll();
             } else if (abs(bleReciveData[value1].ReciveValue - 1500) > abs(bleReciveData[value2].ReciveValue - 1500)) {
                 if (bleReciveData[value1].ReciveValue > 1500) {

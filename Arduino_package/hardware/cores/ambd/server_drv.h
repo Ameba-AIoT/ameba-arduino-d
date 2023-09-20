@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef Server_Drv_h
-#define Server_Drv_h
+#ifndef SERVER_DRV_H
+#define SERVER_DRV_H
 
 #include <inttypes.h>
 
@@ -31,9 +31,9 @@ typedef enum eProtMode {
 class ServerDrv {
     public:
         int startClient(uint32_t ipAddress, uint16_t port, uint8_t portMode = TCP_MODE);
+        int startServer(uint16_t port, uint8_t portMode = TCP_MODE, bool blockMode = false);
         int startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode = TCP_MODE);
         int startClientV6(const char *ipv6Address, uint16_t port, uint8_t portMode);
-        int startServer(uint16_t port, uint8_t portMode = TCP_MODE, bool blockMode = false);
         int getAvailable(int sock);
         int availData(int sock);
         bool recvData(int sock, uint8_t *_data, uint16_t _dataLen);

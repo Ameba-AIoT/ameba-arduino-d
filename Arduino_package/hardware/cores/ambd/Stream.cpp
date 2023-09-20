@@ -29,33 +29,30 @@
 #define NO_SKIP_CHAR  1  // a magic char not found in a valid ASCII numeric field
 
 // private method to read stream with timeout
-int Stream::timedRead()
-{
+int Stream::timedRead() {
     int c;
     _startMillis = millis();
     do {
         c = read();
         if (c >= 0) return c;
-    } while(millis() - _startMillis < _timeout);
+    } while ((millis() - _startMillis) < _timeout);
     return -1;     // -1 indicates timeout
 }
 
 // private method to peek stream with timeout
-int Stream::timedPeek()
-{
+int Stream::timedPeek() {
     int c;
     _startMillis = millis();
     do {
         c = peek();
         if (c >= 0) return c;
-    } while(millis() - _startMillis < _timeout);
+    } while ((millis() - _startMillis) < _timeout);
     return -1;     // -1 indicates timeout
 }
 
 // returns peek of the next digit in the stream or -1 if timeout
 // discards non-numeric characters
-int Stream::peekNextDigit()
-{
+int Stream::peekNextDigit() {
     int c;
     while (1) {
         c = timedPeek();
@@ -69,35 +66,31 @@ int Stream::peekNextDigit()
 // Public Methods
 //////////////////////////////////////////////////////////////
 
-void Stream::setTimeout(unsigned long timeout)  // sets the maximum number of milliseconds to wait
-{
+void Stream::setTimeout(unsigned long timeout) {
+    // sets the maximum number of milliseconds to wait
     _timeout = timeout;
 }
 
  // find returns true if the target string is found
-bool  Stream::find(char *target)
-{
+bool  Stream::find(char *target) {
     return findUntil(target, strlen(target), NULL, 0);
 }
 
 // reads data from the stream until the target string of given length is found
 // returns true if target string is found, false if timed out
-bool Stream::find(char *target, size_t length)
-{
+bool Stream::find(char *target, size_t length) {
     return findUntil(target, length, NULL, 0);
 }
 
 // as find but search ends if the terminator string is found
-bool  Stream::findUntil(char *target, char *terminator)
-{
+bool  Stream::findUntil(char *target, char *terminator) {
     return findUntil(target, strlen(target), terminator, strlen(terminator));
 }
 
 // reads data from the stream until the target string of the given length is found
 // search terminated if the terminator string is found
 // returns true if target string is found, false if terminated or timed out
-bool Stream::findUntil(char *target, size_t targetLen, char *terminator, size_t termLen)
-{
+bool Stream::findUntil(char *target, size_t targetLen, char *terminator, size_t termLen) {
     if (terminator == NULL) {
         MultiTarget t[1] = {{target, targetLen, 0}};
         return findMulti(t, 1) == 0 ? true : false;
@@ -111,25 +104,24 @@ bool Stream::findUntil(char *target, size_t targetLen, char *terminator, size_t 
 // returns the first valid (long) integer value from the current position.
 // initial characters that are not digits (or the minus sign) are skipped
 // function is terminated by the first character that is not a digit.
-long Stream::parseInt()
-{
+long Stream::parseInt() {
   return parseInt(NO_SKIP_CHAR); // terminate on first non-digit character (or timeout)
 }
 
 // as above but a given skipChar is ignored
 // this allows format characters (typically commas) in values to be ignored
-long Stream::parseInt(char skipChar)
-{
+long Stream::parseInt(char skipChar) {
     bool isNegative = false;
     long value = 0;
     int c;
 
     c = peekNextDigit();
     // ignore non numeric leading characters
-    if(c < 0)
+    if (c < 0) {
         return 0; // zero returned if timeout
+    }
 
-    do{
+    do {
         if (c == skipChar) {
             ; // ignore this charactor
         } else if(c == '-') {
@@ -140,23 +132,23 @@ long Stream::parseInt(char skipChar)
         read();  // consume the character we got with peek
         c = timedPeek();
     }
-    while( (c >= '0' && c <= '9') || c == skipChar );
+    while((c >= '0' && c <= '9') || c == skipChar );
 
-    if(isNegative)
+    if (isNegative) {
         value = -value;
+    }
     return value;
 }
 
 
 // as parseInt but returns a floating point value
-float Stream::parseFloat()
-{
+float Stream::parseFloat() {
     return parseFloat(NO_SKIP_CHAR);
 }
 
 // as above but the given skipChar is ignored
 // this allows format characters (typically commas) in values to be ignored
-float Stream::parseFloat(char skipChar){
+float Stream::parseFloat(char skipChar) {
     bool isNegative = false;
     bool isFraction = false;
     long value = 0;
@@ -207,8 +199,7 @@ float Stream::parseFloat(char skipChar){
 // returns the number of characters placed in the buffer
 // the buffer is NOT null terminated.
 //
-size_t Stream::readBytes(char *buffer, size_t length)
-{
+size_t Stream::readBytes(char *buffer, size_t length) {
     size_t count = 0;
     while (count < length) {
         int c = timedRead();
@@ -224,8 +215,7 @@ size_t Stream::readBytes(char *buffer, size_t length)
 // terminates if length characters have been read, timeout, or if the terminator character  detected
 // returns the number of characters placed in the buffer (0 means no valid data found)
 
-size_t Stream::readBytesUntil(char terminator, char *buffer, size_t length)
-{
+size_t Stream::readBytesUntil(char terminator, char *buffer, size_t length) {
     if (length < 1) return 0;
     size_t index = 0;
     while (index < length) {
@@ -237,8 +227,7 @@ size_t Stream::readBytesUntil(char terminator, char *buffer, size_t length)
     return index; // return number of characters, not including null terminator
 }
 
-String Stream::readString()
-{
+String Stream::readString() {
     String ret;
     int c = timedRead();
     while (c >= 0) {
@@ -248,8 +237,7 @@ String Stream::readString()
     return ret;
 }
 
-String Stream::readStringUntil(char terminator)
-{
+String Stream::readStringUntil(char terminator) {
     String ret;
     int c = timedRead();
     while (c >= 0 && c != terminator) {

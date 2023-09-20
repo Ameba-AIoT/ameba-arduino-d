@@ -23,8 +23,8 @@
  *      Author: dlafauci
  */
 
-#ifndef WL_DEFINITIONS_H_
-#define WL_DEFINITIONS_H_
+#ifndef WL_DEFINITIONS_H
+#define WL_DEFINITIONS_H
 
 // Maximum size of a SSID
 #define WL_SSID_MAX_LENGTH          32
@@ -61,7 +61,7 @@ typedef enum {
 /* Encryption modes */
 enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
     ENC_TYPE_WEP  = 5,
-    ENC_TYPE_WPA = 2,
+    ENC_TYPE_WPA  = 2,
     ENC_TYPE_WPA3 = 3,
     ENC_TYPE_WPA2 = 4,
     /* ... except these two, 7 and 8 are reserved in 802.11-2007 */
@@ -99,4 +99,3 @@ enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
 #define SECURITY_WPA2_WPA3_MIXED (WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED)
 
 #endif /* WL_DEFINITIONS_H_ */
-

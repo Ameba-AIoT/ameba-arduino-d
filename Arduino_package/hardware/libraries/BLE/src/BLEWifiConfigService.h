@@ -1,5 +1,5 @@
-#ifndef _BLE_BATTSERVICE_H_
-#define _BLE_BATTSERVICE_H_
+#ifndef _BLE_WIFICONFIGSERVICE_H_
+#define _BLE_WIFICONFIGSERVICE_H_
 
 #include <Arduino.h>
 #include "BLEAdvertData.h"

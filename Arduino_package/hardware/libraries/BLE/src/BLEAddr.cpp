@@ -52,7 +52,7 @@ BLEAddr::BLEAddr(const char* str) {
 }
 
 const char* BLEAddr::str() {
-    sprintf(_str, "%2X:%2X:%2X:%2X:%2X:%2X", _btAddr[5], _btAddr[4], _btAddr[3], _btAddr[2], _btAddr[1], _btAddr[0]);
+    sprintf(_str, "%02X:%02X:%02X:%02X:%02X:%02X", _btAddr[5], _btAddr[4], _btAddr[3], _btAddr[2], _btAddr[1], _btAddr[0]);
     return _str;
 }
 

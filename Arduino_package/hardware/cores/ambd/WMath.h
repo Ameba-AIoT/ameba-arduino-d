@@ -16,8 +16,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _WIRING_MATH_
-#define _WIRING_MATH_
+#ifndef _WMATH_
+#define _WMATH_
 
 extern long random(long);
 extern long random(long, long);

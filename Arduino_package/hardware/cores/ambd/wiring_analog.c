@@ -171,7 +171,6 @@ uint32_t analogRead(uint32_t ulPin) {
     } else {
         mv = ((10 * ret - _offset) * 1000 / _gain); // Convert measured ADC value to millivolts
     }
-
     ret = (mv/3300.0) * (1 << _readResolution); // Return user required resolution
     return ret;
 }
@@ -185,7 +184,7 @@ void analogOutputInit(void) {
 // pins_*.c file.  For the rest of the pins, we default
 // to digital output.
 void analogWrite (uint32_t ulPin, int32_t ulValue) {
-    amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
+    //amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
 
 #ifdef FEATURE_DAC
     if (ulPin == DAC0)
@@ -238,7 +237,7 @@ void _tone_timer_handler(void const* argument) {
 void _tone(uint32_t ulPin, unsigned int frequency, unsigned long duration) {
     static tone_argument* ptimer = NULL;
 
-    amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
+    //amb_ard_pin_check_type(ulPin, TYPE_ANALOG);
     amb_ard_pin_check_fun(ulPin, PIO_PWM);
 
     if ((g_APinDescription[ulPin].ulPinMode & PWM_MODE_ENABLED) != PWM_MODE_ENABLED) {

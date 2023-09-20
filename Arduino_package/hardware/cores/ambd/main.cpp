@@ -37,8 +37,7 @@ void initVariant() { }
 /*
  * //app_mbedtls_rom_init 
  */
-static void* app_mbedtls_calloc_func(size_t nelements, size_t elementSize)
-{
+static void* app_mbedtls_calloc_func(size_t nelements, size_t elementSize) {
     size_t size;
     void *ptr = NULL;
 
@@ -52,8 +51,7 @@ static void* app_mbedtls_calloc_func(size_t nelements, size_t elementSize)
     return ptr;
 }
 
-void app_mbedtls_rom_init(void)
-{
+void app_mbedtls_rom_init(void) {
     mbedtls_platform_set_calloc_free(app_mbedtls_calloc_func, vPortFree);
     //rom_ssl_ram_map.use_hw_crypto_func = 1;
     rtl_cryptoEngine_init();
@@ -64,10 +62,10 @@ void app_mbedtls_rom_init(void)
  */
 #if defined(Arduino_STD_PRINTF)
 // Redirect regular printf output to UART
-int _write(int file, char *ptr, unsigned int len){
+int _write(int file, char *ptr, unsigned int len) {
     (void)file;
     unsigned int i;
-    for(i = 0; i < len; i++){
+    for (i = 0; i < len; i++) {
         while (!UART_Writable((UART_TypeDef*)UART2_DEV));
         UART_CharPut((UART_TypeDef*)UART2_DEV, ptr[i]);
     }
@@ -77,8 +75,7 @@ int _write(int file, char *ptr, unsigned int len){
 
 //void main_task(void const *arg)
 //void main_task(void *arg)
-void main_task(void)
-{
+void main_task(void) {
 //    (void)arg;
 
     delay(1);
@@ -98,8 +95,7 @@ void main_task(void)
 /*
  * \brief Main entry point of Arduino application
  */
-int main(void)
-{
+int main(void) {
     init();
 
     initVariant();
@@ -119,10 +115,9 @@ int main(void)
 
     osKernelStart();
 #else
-    if(xTaskCreate(main_task, ((const char*)"init"), MAIN_THREAD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 + PRIORITIE_OFFSET, NULL) != pdPASS) {
+    if (xTaskCreate(main_task, ((const char*)"init"), MAIN_THREAD_STACK_SIZE, NULL, tskIDLE_PRIORITY + 3 + PRIORITIE_OFFSET, NULL) != pdPASS) {
         printf("\n\r%s xTaskCreate(main_task) failed", __FUNCTION__);
     }
-
     vTaskStartScheduler();
 #endif
 

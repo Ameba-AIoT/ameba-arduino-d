@@ -173,7 +173,6 @@ void TwoWire::beginTransmission(int address) {
     beginTransmission(((uint8_t)address));
 }
 
-//
 //  Originally, 'endTransmission' was an f(void) function.
 //  It has been modified to take one parameter indicating
 //  whether or not a STOP should be performed on the bus.
@@ -185,7 +184,6 @@ void TwoWire::beginTransmission(int address) {
 //  is very possible to leave the bus in a hung state if
 //  no call to endTransmission(true) is made. Some I2C
 //  devices will behave oddly if they do not see a STOP.
-//
 uint8_t TwoWire::endTransmission(uint8_t sendStop) {
     int length;
     uint8_t error = 0;
@@ -195,13 +193,12 @@ uint8_t TwoWire::endTransmission(uint8_t sendStop) {
         error = 1;
     }
 
-    txBufferLength = 0;     // empty buffer
+    txBufferLength = 0; // empty buffer
     return error;
 }
 
 // This provides backwards compatibility with the original
 // definition, and expected behaviour, of endTransmission
-//
 uint8_t TwoWire::endTransmission(void) {
     return endTransmission(true);
 }
@@ -265,8 +262,8 @@ void TwoWire::onReceiveService(uint8_t *inBytes, size_t numBytes, bool stop, voi
     if(!wire->user_onReceive){
         return;
     }
-    for(uint8_t i = 0; i < numBytes; ++i){
-        wire->rxBuffer[i] = inBytes[i];    
+    for (uint8_t i = 0; i < numBytes; ++i) {
+        wire->rxBuffer[i] = inBytes[i];
     }
     wire->rxBufferIndex = 0;
     wire->rxBufferLength = numBytes;
@@ -280,7 +277,7 @@ void TwoWire::onRequestService(void * arg) {
     }
     wire->txBufferLength = 0;
     wire->user_onRequest(); // user callback normally write data into txbuffer
-    if(wire->txBufferLength){
+    if (wire->txBufferLength){
         wire->slaveWrite((uint8_t*)wire->txBuffer, wire->txBufferLength);
         //wire->slaveWrite((uint8_t*)txBuffer, txBufferLength);
     }

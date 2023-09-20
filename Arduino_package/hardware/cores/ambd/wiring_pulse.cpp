@@ -36,8 +36,7 @@ extern void *gpio_pin_struct[];
  * to 3 minutes in length, but must be called at least a few dozen microseconds
  * before the start of the pulse. */
 // timeout 1000000L
-extern uint32_t pulseIn(uint32_t ulPin, uint32_t state, uint32_t timeout)
-{
+extern uint32_t pulseIn(uint32_t ulPin, uint32_t state, uint32_t timeout) {
     // cache the port and bit of the pin in order to speed up the
     // pulse width measuring loop and achieve finer resolution.  calling
     // digitalRead() instead yields much coarser resolution.
@@ -45,14 +44,8 @@ extern uint32_t pulseIn(uint32_t ulPin, uint32_t state, uint32_t timeout)
 
     uint32_t start_ticks, cur_ticks;
 
-    //if (ulPin < 0 || ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC)) return 0;
-    if (ulPin > TOTAL_GPIO_PIN_NUM || (g_APinDescription[ulPin].pinname == NC)) return 0;
-
-    /* Handle */
-    //if (g_APinDescription[ulPin].ulPinType != PIO_GPIO) {
-    if ((g_APinDescription[ulPin].ulPinAttribute & PIO_GPIO) != PIO_GPIO){
-        return 0;
-    }
+    amb_ard_pin_check_name(ulPin);
+    amb_ard_pin_check_fun(ulPin, PIO_GPIO);
 
     pGpio_t = (gpio_t *)gpio_pin_struct[ulPin];
 
@@ -88,4 +81,3 @@ extern uint32_t pulseIn(uint32_t ulPin, uint32_t state, uint32_t timeout)
 #ifdef __cplusplus
 }
 #endif
-

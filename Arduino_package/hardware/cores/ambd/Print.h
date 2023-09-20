@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef Print_h
-#define Print_h
+#ifndef PRINT_H
+#define PRINT_H
 
 #include <inttypes.h>
 #include <stdio.h> // for size_t
@@ -31,8 +31,7 @@
 #define OCT 8
 #define BIN 2
 
-class Print
-{
+class Print {
     private:
         int write_error;
         size_t printNumber(unsigned long, uint8_t);

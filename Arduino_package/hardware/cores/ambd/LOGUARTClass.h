@@ -16,8 +16,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _LOGUART_CLASS_
-#define _LOGUART_CLASS_
+#ifndef _LOGUARTCLASS_
+#define _LOGUARTCLASS_
 
 #include "HardwareSerial.h"
 #include "RingBuffer.h"

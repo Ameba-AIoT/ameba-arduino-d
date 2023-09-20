@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef Printable_h
-#define Printable_h
+#ifndef PRINTABLE_H
+#define PRINTABLE_H
 
 #include <stdlib.h>
 
@@ -30,8 +30,7 @@ class Print;
     Print::print and Print::println methods.
 */
 
-class Printable
-{
+class Printable {
     public:
         virtual size_t printTo(Print& p) const = 0;
 };

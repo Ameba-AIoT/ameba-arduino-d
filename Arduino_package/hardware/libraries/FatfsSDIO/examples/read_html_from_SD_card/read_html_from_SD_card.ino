@@ -7,6 +7,7 @@
 
 #include <WiFi.h>
 #include "FatFs_SD.h"
+
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
@@ -60,7 +61,7 @@ void loop() {
 
                         sprintf(absolute_filename_html, "%s%s", fs.getRootPath(), filename_Web_test);
                         SdFatFile file = fs.open(absolute_filename_html);
-                        
+
                         if(file){
                           while(file.available()){
                             client.write(file.read());

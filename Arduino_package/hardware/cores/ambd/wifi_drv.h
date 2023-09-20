@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef WiFi_Drv_h
-#define WiFi_Drv_h
+#ifndef WIFI_DRV_H
+#define WIFI_DRV_H
 
 #include <inttypes.h>
 #include "IPAddress.h"
@@ -41,10 +41,9 @@ extern "C" {
 // firmware version string length
 #define WL_FW_VER_LENGTH            6
 // Host name length limit
-#define HOSTNAME_LEN            20
+#define HOSTNAME_LEN                20
 
-class WiFiDrv
-{
+class WiFiDrv {
     private:
         // settings of requested network
         static uint8_t  _networkCount;
@@ -159,7 +158,6 @@ class WiFiDrv
          * return: copy the ip address value in IPAddress object
          */
         static void getIpAddress(IPAddress& ip, uint8_t interface = 0);
-
 
         /*
          * Get the interface IPv6 address.

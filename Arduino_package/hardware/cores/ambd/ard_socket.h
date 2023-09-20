@@ -1,27 +1,18 @@
 #ifndef ARD_SOCKET_H
 #define ARD_SOCKET_H
+
 #include "main.h"
 
 int set_nonblocking(int fd);
-
-int start_server(uint16_t port, uint8_t protMode);
-
-int start_server_v6(uint16_t port, uint8_t protMode);
-
-int start_client(uint32_t ipAddress, uint16_t port, uint8_t protMode);
-
-int start_clientv6(uint32_t *ipv6Address, uint16_t port, uint8_t protMode);
-
-int start_client_v6(char ipv6Address[], uint16_t port, uint8_t protMode);
-
+int start_server(uint16_t port, uint8_t portMode);
+int start_server_v6(uint16_t port, uint8_t portMode);
+int start_client(uint32_t ipAddress, uint16_t port, uint8_t portMode);
+int start_clientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode);
+int start_client_v6(char ipv6Address[], uint16_t port, uint8_t portMode);
 int get_sock_errno(int sock);
-
 int set_sock_recv_timeout(int sock, int timeout);
-
 void close_socket(int sock);
-
 int enable_ipv6(void);
-
 int get_ipv6_status(void);
 
 // TCP

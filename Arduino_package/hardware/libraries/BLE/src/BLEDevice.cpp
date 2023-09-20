@@ -193,7 +193,7 @@ void BLEDevice::beginCentral(uint8_t connCount) {
     le_set_gap_param(GAP_PARAM_DEFAULT_TX_PHYS_PREFER, sizeof(tx_phys), &tx_phys);
     le_set_gap_param(GAP_PARAM_DEFAULT_RX_PHYS_PREFER, sizeof(rx_phys), &rx_phys);
 
-    // update device parameters
+    // update GAP device parameters
     le_set_gap_param(GAP_PARAM_DEVICE_NAME, GAP_DEVICE_NAME_LEN, _deviceName);
     le_set_gap_param(GAP_PARAM_APPEARANCE, sizeof(_appearance), &_appearance);
 
@@ -215,7 +215,7 @@ void BLEDevice::beginCentral(uint8_t connCount) {
     bt_coex_init();
     if (BTDEBUG) printf("Coex init\r\n");
 
-    /*Wait BT init complete*/
+    //Wait BT init complete
     do {
         vTaskDelay(100 / portTICK_RATE_MS);
         le_get_gap_param(GAP_PARAM_DEV_STATE , &new_state);
@@ -248,7 +248,7 @@ void BLEDevice::beginPeripheral() {
     le_set_gap_param(GAP_PARAM_DEFAULT_TX_PHYS_PREFER, sizeof(tx_phys), &tx_phys);
     le_set_gap_param(GAP_PARAM_DEFAULT_RX_PHYS_PREFER, sizeof(rx_phys), &rx_phys);
 
-    // update device parameters
+    // update GAP device parameters
     le_set_gap_param(GAP_PARAM_DEVICE_NAME, GAP_DEVICE_NAME_LEN, _deviceName);
     le_set_gap_param(GAP_PARAM_APPEARANCE, sizeof(_appearance), &_appearance);
     le_set_gap_param(GAP_PARAM_SLAVE_INIT_GATT_MTU_REQ, sizeof(slave_init_mtu_req), &slave_init_mtu_req);

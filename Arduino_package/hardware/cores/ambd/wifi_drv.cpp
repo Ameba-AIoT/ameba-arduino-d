@@ -676,10 +676,9 @@ void WiFiDrv::setDNS(uint8_t validParams, IPAddress dns_server1, IPAddress dns_s
         return;
     }
 
-    if(getIPv6Status()==0){
+    if (getIPv6Status()==0) {
         IP4_ADDR(ip_2_ip4(&dns), _arduinoDns1[0], _arduinoDns1[1], _arduinoDns1[2], _arduinoDns1[3]);
-    }
-    else{
+    } else {
         IP6_ADDR(ip_2_ip6(&dns), _arduinoDns1[0], _arduinoDns1[1], _arduinoDns1[2], _arduinoDns1[3]);
     }
     LwIP_SetDNS(&dns);
