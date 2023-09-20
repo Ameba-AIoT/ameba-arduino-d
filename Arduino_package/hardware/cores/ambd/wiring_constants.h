@@ -78,7 +78,7 @@ enum BitOrder {
 #endif // min
 #ifdef max
 #undef max // undefine std lib max function
-#define max(a,b) ((a)<(b)?(a):(b))
+#define max(a,b) ((a)>(b)?(a):(b))
 #endif // max
 #endif // Arduino_STD_PRINTF
 
