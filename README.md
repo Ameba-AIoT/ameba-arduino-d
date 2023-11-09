@@ -28,7 +28,7 @@ For all `release` information, please visit this [link](https://github.com/ambio
 
     Copy and paste the following link into the field and click "OK",
 
-    https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json
+    https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json
 
     > We also suggest to enable "Show verbose output" options on "compilation" and "upload" in Preference for easier debugging.
     
