@@ -5,8 +5,8 @@
 
 |Branch|Usage|Remarks|
 |:-----|:-----|:-----|
-|`master` | stable release| https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json or https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek.com_amebad_index.json|
-|`dev`| merge `Pull Request` & early release| https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek_amebad_early_index.json or https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek.com_amebad_early_index.json|
+|`master` | stable release| https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json|
+|`dev`| merge `Pull Request` & early release| https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek_amebad_early_index.json|
 
 
 For all `release` information, please visit this [link](https://github.com/ambiot/ambd_arduino/releases).
