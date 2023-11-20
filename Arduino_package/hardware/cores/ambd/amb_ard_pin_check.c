@@ -43,7 +43,8 @@ void amb_ard_pin_check_type(int pin, uint32_t pin_type) {
             printf("Error %s. Incorrect pin_type input!!! \n\r", __FUNCTION__);
     }
 
-    while ((g_APinDescription[pin].ulPinType & pin_type) != pin_type) {
+    uint32_t check_bit = (g_APinDescription[pin].ulPinType & pin_type); 
+    while (check_bit != pin_type) {
         printf("Error %s. %s is not supported by the pin: %d !!! \n\r", __FUNCTION__, pin_type_name, pin);
         printf("Please check if pin or board is correct \n\r");
         delay(5000);
@@ -96,9 +97,7 @@ void amb_ard_pin_check_fun(int pin, uint32_t pin_fun) {
     }
 
     uint32_t check_bit = (g_APinDescription[pin].ulPinAttribute & pin_fun); 
-
-    while (check_bit != pin_fun) 
-    {
+    while (check_bit != pin_fun) {
         printf("Error %s. %s is not supported by the pin: %d !!! \n\r", __FUNCTION__, pin_fun_name, pin);
         printf("Please check if pin or board is correct \n\r");
         delay(5000);
