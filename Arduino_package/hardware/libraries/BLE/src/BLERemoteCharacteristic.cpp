@@ -101,11 +101,11 @@ uint32_t BLERemoteCharacteristic::readData32() {
 //--------- Write Char Value --------//
 
 bool BLERemoteCharacteristic::writeString(String str, T_GATT_WRITE_TYPE type) {
-    return writeString(str.c_str());
+    return writeString(str.c_str(), type);
 }
 
 bool BLERemoteCharacteristic::writeString(const char* str, T_GATT_WRITE_TYPE type) {
-    return setData((uint8_t*) str, strlen(str));
+    return setData((uint8_t*) str, strlen(str), type);
 }
 
 bool BLERemoteCharacteristic::writeData8(uint8_t num) {
