@@ -1,0 +1,3 @@
+[submodule "Arduino_package/hardware/libraries/Preferences"]
+	path = Arduino_package/hardware/libraries/Preferences
+	url = https://github.com/vshymanskyy/Preferences.git
