@@ -8,7 +8,7 @@
 
 class PMS3003 {
     public:
-        PMS3003(int _rx, int _tx, int _set = -1, int _reset = -1, _serial_baudrates = 115200);
+        PMS3003(int _rx, int _tx, int _set = -1, int _reset = -1, int _serial_baudrates = 115200);
         void begin();
         void end();
         int get_pm1p0_cf1();
