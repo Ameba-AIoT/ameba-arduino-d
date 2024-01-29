@@ -1,4 +1,4 @@
-## How to contribute to Ambiot repos - ambpro2_arduino
+## How to contribute to Ambiot repos - ambd_arduino
 
 #### **Find a bug?**
 
