@@ -1,0 +1,154 @@
+name: Bug Report
+description: Report any bugs or issues
+labels: ["Status: Awaiting triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        * Please check [Online Documentation](https://www.amebaiot.com/en/ameba-arduino-summary/)
+        * Please check [FAQ](https://forum.amebaiot.com/c/faq/48), [forum](https://forum.amebaiot.com/) and [GitHub Wiki](https://github.com/ambiot/ambd_arduino/wiki)
+        * Please check and search in [List of closed issues](https://github.com/ambiot/ambd_arduino/issues?q=is%3Aissue+is%3Aclosed)
+        * Please check and search in [List of existing issues](https://github.com/ambiot/ambd_arduino/issues?q=is%3Aopen+is%3Aissue)
+        * If still experiencing the issue, please provide as many details as possible below about your hardware, environment setup and software.
+  - type: input
+    id: br-boards
+    attributes:
+      label: Boards
+      description: What is the hardware/module using?
+      placeholder: eg. AMB01, AMB23, BW16 or AMB82-mini...
+    validations:
+      required: true
+  - type: textarea
+    id: br-ex-hw
+    attributes:
+      label: External Hardware
+      description: Any external hardware that Ameba board attached to?
+      placeholder: eg. third-party extension, plain module on breadboard, customized hardware... please attach a photo if necessary.
+    validations:
+       required: true
+  - type: textarea
+    id: br-addon-hw
+    attributes:
+      label: Hardware Configuration
+      description: Is anything else attached to the Hardware?
+      placeholder: eg. sensors, peripherals...
+    validations:
+      required: true
+  - type: dropdown
+    id: br-version
+    attributes:
+      label: Version
+      description: What version of ambpro2_arduino SDK? Please use the latest version if possible.
+      options:
+        - latest dev (checkout manually)
+        - latest master (checkout manually)
+        - v3.1.6
+        - v3.1.5
+        - v3.1.4
+        - v3.1.3
+        - v3.1.2
+        - v3.1.1
+        - v3.1.0
+        - v3.0.11
+        - v3.0.10
+        - v3.0.7
+        - v3.0.5
+        - other
+    validations:
+      required: true
+  - type: input
+    id: br-ide
+    attributes:
+     label: IDE Name
+     description: What is the IDE?
+     placeholder: eg. Arduino IDE 2.2.1
+    validations:
+     required: true
+  - type: input
+    id: br-os
+    attributes:
+      label: Operating System
+      description: On which OS does this issue occur?
+      placeholder: eg. macOS Monterey (version 12), Windows 11, ubuntu22...
+    validations:
+      required: true
+  - type: dropdown
+    id: br-auto-flash-mode
+    attributes:
+      label: Auto Flash Mode
+      description: Is auto flash mode enabled?
+      options:
+        - 'Disable'
+        - 'Enable'
+    validations:
+      required: true
+  - type: dropdown
+    id: br-erase-flash-mode
+    attributes:
+      label: Erase All Flash Memory (4MB)
+      description: Is erase flash enabled?
+      options:
+        - 'Disable'
+        - 'Erase only'
+    validations:
+      required: true
+  - type: dropdown
+    id: br-standard-lib
+    attributes:
+      label: Standard Lib
+      description: Is Standard Lib enabled?
+      options:
+        - 'Arduino_STD_PRINTF'
+        - 'Disable'
+    validations:
+      required: true
+  - type: dropdown
+    id: br-upload-speed
+    attributes:
+      label: Upload Speed
+      description: What is the Upload speed?
+      options:
+        - '1500000'
+        - '921600'
+    validations:
+      required: true
+  - type: textarea
+    id: br-description
+    attributes:
+      label: Description
+      description: Please describe the issue/bug here and expected behaviour
+      placeholder: eg. compile error/hard fault/connectiong issue/weird behaviour/missing parameter...
+    validations:
+      required: true
+  - type: textarea
+    id: br-sketch
+    attributes:
+      label: Sketch
+      description: Please provide sketch/code that can be used to reproduce the bug/issue
+      placeholder: eg. aruino example ino files...
+      render: cpp
+    validations:
+     required: true
+  - type: textarea
+    id: br-error
+    attributes:
+      label: Error/Debug Message
+      description: Please provide error/debug message.
+      placeholder: eg. error message from Arduino IDE...
+      render: plain
+    validations:
+      required: true
+  - type: textarea
+    id: br-remarks
+    attributes:
+      label: Reproduce remarks
+      description: Is there additional information that will help to reproduce?
+      placeholder: eg. disabled erase mode and there is no issues/tried under ubuntu18 did not work but macos and ubuntu22 works...
+  - type: checkboxes
+    id: br-confirmation
+    attributes:
+      label: I have checked online documentation, FAQ, GitHub Wiki and existing/closed issues.
+      description: Before opening a new issue, please check all resources above.
+      options:
+        - label: I confirm I have checked online documentation, FAQ, GitHub Wiki and existing/closed issues.
+          required: true

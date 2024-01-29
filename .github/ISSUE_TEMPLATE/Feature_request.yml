@@ -1,0 +1,56 @@
+name: Feature Request
+description: Suggest an feature for this SDK
+labels: ["Type: Feature request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        * We welcome any feature requests! It is helpful if you can explain exactly why the feature would be useful.
+        * There are some outstanding feature requests in the [List of existing issues](https://github.com/ambiot/ambd_arduino/issues?q=is%3Aopen+is%3Aissue) and [List of closed issues](https://github.com/ambiot/ambd_arduino/issues?q=is%3Aissue+is%3Aclosed), feel free to add any comments.
+        * If you would like to contribute, please refer to the [Contributing guide](https://github.com/ambiot/ambd_arduino/blob/dev/CONTRIBUTING.md).
+  - type: input
+    id: fr-hw
+    attributes:
+      label: Hardware Environment
+      description: Please describe your suggested hardware setup/environment.
+      placeholder: eg. Support for AMB23, AMB82-mini with a power bank...
+    validations:
+      required: true
+  - type: input
+    id: fr-area
+    attributes:
+      label: Related technical area
+      description: Please briefly explain the technical area of Feature Request.
+      placeholder: eg. Boards, Peripherals, BT, Wifi, flash, add libraries, add sensors...
+    validations:
+      required: true
+  - type: textarea
+    id: fr-issue-related
+    attributes:
+      label: Is the feature request related to an un-fixed issue?
+      description: Please provide more information/link of the issue.
+      placeholder: eg. This feature request is realted to *#issue_number*...
+    validations:
+      required: true
+  - type: textarea
+    id: fr-ideal-solution
+    attributes:
+      label: Describe the ideal solution/reault/output.
+      description: Please provide a clear and concise description of what you want to happen.
+      placeholder: eg. With this request implemented, sensor xxx will be fully supported...
+    validations:
+      required: true
+  - type: textarea
+    id: fr-remarks
+    attributes:
+      label: Additional remarks
+      description: Please add any additional context, diagram or screenshots...
+      placeholder: eg. The feature should work with xxx sensor/The feature should work with or without wifi...
+  - type: checkboxes
+    id: fr-confirmation
+    attributes:
+      label: I have checked existing/closed list of issues and the Contributing Guide.
+      description: Before opening a new Feature request, please check all resources above.
+      options:
+        - label: I confirm I have checked existing/closed list of issues and the Contributing Guide.
+          required: true

@@ -1,5 +1,5 @@
 
-menu.AutoUploadMode=* Auto Upload Mode
+menu.AutoUploadMode=* Auto Flash Mode
 menu.EraseFlash=* Erase All Flash Memory (4MB)
 menu.StdLibInit=* Standard Lib
 menu.UploadBaudrate=* Upload Speed
