@@ -1,6 +1,6 @@
 name: Bug Report
 description: Report any bugs or issues
-labels: ["Status: Awaiting triage"]
+labels: ["pending"]
 body:
   - type: markdown
     attributes:

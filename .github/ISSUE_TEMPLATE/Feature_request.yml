@@ -1,6 +1,6 @@
 name: Feature Request
 description: Suggest an feature for this SDK
-labels: ["Type: Feature request"]
+labels: ["pending", "enhancement"]
 body:
   - type: markdown
     attributes:
