@@ -20,7 +20,7 @@ String str_ssid, str_pass, str_channel;
 char ssid[] = "AP_Network_SSID";    // Set the AP SSID
 char pass[] = "AP_Password";        // Set the AP password
 char channel[] = "1";               // Set the AP channel
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 int ssid_status = 0;                // Set SSID status, 1 hidden, 0 not hidden
 
 void setup() {

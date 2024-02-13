@@ -26,7 +26,7 @@
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
 
 char ssid[] = "Network_SSID";       // your network SSID (name)
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:

@@ -67,7 +67,7 @@ class FlashMemoryClass
         /**
          * @brief Read 4 bytes from flash memory
          *
-         * Read 4 byte from specifc offset based on base address.
+         * Read 4 byte from specific offset based on base address.
          *
          * @param[in] offset The offset according to base address
          * @return the read data with size of 4 bytes

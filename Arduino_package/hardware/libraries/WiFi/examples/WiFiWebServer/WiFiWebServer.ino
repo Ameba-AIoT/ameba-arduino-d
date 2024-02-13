@@ -9,7 +9,7 @@
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 //State the analog pin that you want to read
 int analogChannel = A0;
@@ -83,7 +83,7 @@ void loop() {
 
         // close the connection:
         // client.stop(); // remove this line since destructor will be called automatically
-        Serial.println("client disonnected");
+        Serial.println("client disconnected");
     }
     // continue with user code in WiFi server non-blocking mode 
     Serial.println("User code implementing here...");

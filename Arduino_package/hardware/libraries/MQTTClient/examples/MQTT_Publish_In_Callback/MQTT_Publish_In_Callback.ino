@@ -20,7 +20,7 @@
 
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char mqttServer[]     = "cloud.amebaiot.com";
 char clientId[]       = "amebaClient";
@@ -43,7 +43,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println();
 
     // In order to republish this payload, a copy must be made
-    // as the orignal payload buffer will be overwritten whilst
+    // as the original payload buffer will be overwritten whilst
     // constructing the PUBLISH packet.
 
     // Allocate the correct amount of memory for the payload copy

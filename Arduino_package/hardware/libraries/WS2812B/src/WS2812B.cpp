@@ -59,13 +59,13 @@ void WS2812B::show(void) {
     if (_input_pin == SPI_MOSI) {
     //Initialise SPI
         spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI_MISO].pinname, (PinName)g_APinDescription[SPI_SCLK].pinname, (PinName)g_APinDescription[SPI_SS].pinname);
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
     } else if (_input_pin == SPI1_MOSI) {
         spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI1_MISO].pinname, (PinName)g_APinDescription[SPI1_SCLK].pinname, (PinName)g_APinDescription[SPI1_SS].pinname);
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SS].pinname, PINMUX_FUNCTION_GPIO);
@@ -79,7 +79,7 @@ void WS2812B::show(void) {
     if (_input_pin == SPI_MOSI) {
         //Initialise SPI
         SPI.begin();
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI_MISO].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
@@ -89,7 +89,7 @@ void WS2812B::show(void) {
     } else if (_input_pin == SPI1_MOSI) {
         //Initialise SPI
         SPI1.begin();
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI1_MISO].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SS].pinname, PINMUX_FUNCTION_GPIO);
@@ -126,7 +126,7 @@ void WS2812B::setLEDCount (uint16_t num_leds) {
     _led_array = (pixel*)realloc(_led_array, num_leds*sizeof(pixel));
     //Check if memory allocation is successful
     if (_led_array == NULL) {
-        printf("Insufficient memory avaliable \r\n");
+        printf("Insufficient memory available \r\n");
         _num_leds = 0;
     } else {
         memset(_led_array, 0, num_leds*sizeof(pixel));

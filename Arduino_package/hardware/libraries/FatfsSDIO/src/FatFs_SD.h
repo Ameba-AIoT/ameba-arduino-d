@@ -44,7 +44,7 @@ class FatFsSD {
          * @brief List items under specific folder
          *
          * List items under specific folder and store the result in the buffer that user specified.
-         * Each item are seperated by '\0'.
+         * Each item are separated by '\0'.
          *
          * @param[in] path The absolute directory path to be listed
          * @param[in] result_buf The buffer to be stored results
@@ -73,7 +73,7 @@ class FatFsSD {
          * @brief Check if a specific path is a directory
          *
          * @param[in] absolute_path The absolute path to be queried
-         * @return Return 1 if it is directory. And 0 vise versa.
+         * @return Return 1 if it is directory. And 0 vice versa.
          */
         unsigned char isDir(char *absolute_path);
 
@@ -81,7 +81,7 @@ class FatFsSD {
          * @brief Check if a specific path is a file
          *
          * @param[in] absolute_path The absolute path to be queried
-         * @return Return 1 if it is file. And 0 vise versa.
+         * @return Return 1 if it is file. And 0 vice versa.
          */
         unsigned char isFile(char *absolute_path);
 
@@ -126,7 +126,7 @@ class FatFsSD {
         /**
          * @brief Return current status of SD
          *
-         * @return Return 1 if ready to use. Return 0 if status is inactivate or abnormal.
+         * @return Return 1 if ready to use. Return 0 if status is not activate or abnormal.
          */
         int status();
 

@@ -1,0 +1,29 @@
+# This workflow runs spell_check test for Ameba Arduino SDK
+
+name: Check word spell
+on: [push, pull_request]
+#  workflow_dispatch:
+jobs:
+  spell-check:
+    name: Run spell-check check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path:
+          - 'Arduino_package/hardware/cores'
+          - 'Arduino_package/hardware/libraries'
+    steps:
+    - name: Checkout repository # and submodules
+      uses: actions/checkout@v4
+#      with:
+#        submodules: recursive
+    - name: Run spell-check for multi-floders
+#      uses: codespell-project/actions-codespell@master
+      uses: codespell-project/actions-codespell@v2
+      with:
+        skip: Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.h,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.h
+# Google_Cloud_IoT.ino - bellow
+# DHT.cpp - celcius
+        ignore_words_list: ameba,bellow,celcius
+#        ignore_words_file: Ameba_misc/Spell_Check_Ignore/.codespellignore
+        path: ${{ matrix.path }}

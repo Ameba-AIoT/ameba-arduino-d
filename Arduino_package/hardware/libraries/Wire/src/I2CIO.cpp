@@ -218,7 +218,7 @@ bool I2CIO::isAvailable (uint8_t i2cAddr)
    {
      return true;
    }
-   else //Some error occured
+   else //Some error occurred
    {
      return false;
    }   

@@ -33,7 +33,7 @@ class FFT {
         void calculate(float* inputBuf, float* outputBuf, uint16_t sampleCount);
         void calculate(int16_t* inputBuf, float* outputBuf, uint16_t sampleCount);
         
-        // Get the corresponding FFT frequency bins for a given smaple rate and sample count
+        // Get the corresponding FFT frequency bins for a given sample rate and sample count
         void getFrequencyBins(uint16_t* outputBuf, uint16_t sampleCount, uint32_t sampleRate);
         uint16_t getFFTSize(uint16_t sampleCount);
 

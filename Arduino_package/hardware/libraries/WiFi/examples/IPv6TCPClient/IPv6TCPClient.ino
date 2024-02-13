@@ -12,7 +12,7 @@
 
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Update Server's IPv6 address according to log printed by [IPv6TCPServer] example //
@@ -59,7 +59,7 @@ void setup() {
 }
 
 void loop() {
-    // continously send data to server:
+    // continuously send data to server:
     if (client.write(data_send, MAX_SEND_SIZE)) {
         Serial.println("\n[CLIENT] Send data to server successfully");
     } else {

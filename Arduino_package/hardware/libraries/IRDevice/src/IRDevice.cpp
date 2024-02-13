@@ -438,7 +438,7 @@ uint8_t IRDevice::recvNEC(uint8_t &adr, uint8_t &cmd, uint32_t timeout) {
 */
 const IR_ProtocolTypeDef_Sony SONY_PROTOCOL =
     {
-        40000,                                      /* Carrier freqency */
+        40000,                                      /* Carrier frequency */
         2,                                          /* headerLen */
         {PULSE_HIGH | 2400, PULSE_LOW | (600 / 5)}, /* headerBuf unit: us*/
         {PULSE_HIGH | 600, PULSE_LOW | 600},        /* log0Buf */
@@ -446,9 +446,9 @@ const IR_ProtocolTypeDef_Sony SONY_PROTOCOL =
 };
 
 /**
- * @brief:This fucntion is meant to send IR signal with Sony protocol.
+ * @brief:This function is meant to send IR signal with Sony protocol.
  * @param data: Sony IR data 
- * @param len: number of bits containted in the data
+ * @param len: number of bits contained in the data
  * @return The function returns nothing
 */
 void IRDevice::sendSONY(unsigned long data, uint16_t len) {

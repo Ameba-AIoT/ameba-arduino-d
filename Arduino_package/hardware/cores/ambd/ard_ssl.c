@@ -7,7 +7,7 @@
 #include <mbedtls/debug.h>
 #include "ard_ssl.h"
 
-#define ARDUINO_MBEDTLS_DEBUG_LEVEL     0   // Set to 0 to disable debug messsages, 5 to enable all debug messages
+#define ARDUINO_MBEDTLS_DEBUG_LEVEL     0   // Set to 0 to disable debug messages, 5 to enable all debug messages
 
 static unsigned int ard_ssl_arc4random(void) {
     unsigned int res = xTaskGetTickCount();

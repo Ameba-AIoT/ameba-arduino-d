@@ -39,7 +39,7 @@
 #endif // Arduino_STD_PRINTF
 
 #ifdef __cplusplus
-#include <stdio.h> // include before callig min/max in wiring_constants.h
+#include <stdio.h> // include before calling min/max in wiring_constants.h
 extern "C" {
 #endif // __cplusplus
 
@@ -121,7 +121,7 @@ typedef struct _PinDescription
     uint32_t    ulPinMode;
 } PinDescription;
 
-/* Pins table to be instanciated into variant.cpp */
+/* Pins table to be instantiated into variant.cpp */
 extern PinDescription g_APinDescription[];
 
 #ifdef __cplusplus

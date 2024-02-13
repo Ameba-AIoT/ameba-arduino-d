@@ -2,14 +2,14 @@
 #define SECP256R1
 #define THIRTYTWO_BIT_PROCESSOR
 /**
- * \defgroup nn Natural Number Arithmatic
+ * \defgroup nn Natural Number Arithmetic
  *
  * @{
  */
 
 /**
  * \file
- * Header file for the Natural Number Arithmatic operations.
+ * Header file for the Natural Number Arithmetic operations.
  * \author
  * Kasun Hewage <kasun.ch@gmail.com>
  *
@@ -308,7 +308,7 @@ void NN_ModInv(NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, NN_UINT digits);
 /**
  * \brief       Computes a = b * c mod d
  *              d is generalized mersenne prime, d = 2^KEYBITS - omega
- *              (Integer multipication with curve-specific optimizations)
+ *              (Integer multiplication with curve-specific optimizations)
  */
 void NN_ModMultOpt(NN_DIGIT * a, NN_DIGIT * b, NN_DIGIT * c, NN_DIGIT * d, NN_DIGIT * omega, NN_UINT digits);
 /**
@@ -320,7 +320,7 @@ void NN_ModDivOpt(NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, NN_DIGIT *d, NN_UINT di
 /**
  * \brief       Computes a = b^2 mod d
  *              d is generalized mersenne prime, d = 2^KEYBITS - omega
- *              (Integer multipication with curve-specific optimizations)
+ *              (Integer multiplication with curve-specific optimizations)
  */
 void NN_ModSqrOpt(NN_DIGIT * a, NN_DIGIT * b, NN_DIGIT * d, NN_DIGIT * omega, NN_UINT digits);
 

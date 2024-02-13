@@ -558,7 +558,7 @@ int ota_bind_socket(int server_socket, int OTAport) {
         printf("\n[Error] Can not create socket\n");
         return -1;
     }
-    // initilize structure dest
+    // initialize structure dest
     memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(OTAport);

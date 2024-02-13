@@ -13,7 +13,7 @@ public:
     OTA(void);
     ~OTA(void);
 
-    // Starts to connect to OTA server and receiv the new firmware
+    // Starts to connect to OTA server and receive the new firmware
     void beginOTA(int port);
 
 private:
