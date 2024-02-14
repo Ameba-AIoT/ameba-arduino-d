@@ -110,7 +110,7 @@ String CreateJwt(String project_id, long long int time, NN_DIGIT *priv_key, int 
   unsigned char sha256[SHA256_DIGEST_LENGTH];
   sha256Instance.final(sha256);
 
-  // Signing sha with ec key. Bellow is the ec private key.
+  // Signing sha with ec key. Below is the ec private key.
   point_t pub_key;
   ecc_gen_pub_key(priv_key, &pub_key);
 

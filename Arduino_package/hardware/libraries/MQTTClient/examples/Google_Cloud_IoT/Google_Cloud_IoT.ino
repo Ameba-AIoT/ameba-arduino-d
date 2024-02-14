@@ -40,7 +40,7 @@ NN_DIGIT priv_key[9];
 // used to create the certificate uploaded to google cloud iot):
 // openssl ec -in <private-key.pem> -noout -text
 // and copy priv: part.
-// The key length should be exactly the same as the key length bellow (32 pairs
+// The key length should be exactly the same as the key length below (32 pairs
 // of hex digits). If it's bigger and it starts with "00:" delete the "00:". If
 // it's smaller add "00:" to the start. If it's too big or too small something
 // is probably wrong with your key.

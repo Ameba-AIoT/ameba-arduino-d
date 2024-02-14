@@ -79,7 +79,7 @@ void DHT::begin(uint8_t usec) {
  *  @param  S
  *          Scale. Boolean value:
  *					- true = Fahrenheit
- *					- false = Celcius
+ *					- false = Celsius
  *  @param  force
  *          true if in force mode
  *	@return Temperature value in selected scale

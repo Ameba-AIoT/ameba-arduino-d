@@ -22,8 +22,6 @@ jobs:
       uses: codespell-project/actions-codespell@v2
       with:
         skip: Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.h,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.h
-# Google_Cloud_IoT.ino - bellow
-# DHT.cpp - celcius
-        ignore_words_list: ameba,bellow,celcius
+        ignore_words_list: ameba
 #        ignore_words_file: Ameba_misc/Spell_Check_Ignore/.codespellignore
         path: ${{ matrix.path }}
