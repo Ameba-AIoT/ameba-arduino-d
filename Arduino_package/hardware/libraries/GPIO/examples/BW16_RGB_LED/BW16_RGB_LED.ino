@@ -9,7 +9,7 @@
   This example code is in the public domain.
 */
 
-#ifndef BOARD_RTL8720DN_BW16
+#ifndef BOARD_AITHINKER_BW16
 #error "Please use this example on the BW16 Board"
 #endif
 
