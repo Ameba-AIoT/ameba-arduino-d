@@ -11,12 +11,21 @@
 
 -----------
 ## Description of Change
-Please describe your proposed Pull Request and it's impact.
+Please describe your proposed Pull Request and it's impact. \
+*eg.*
+- Feature:
+- API Updates:
+- Misc:
 
 ## Tests and Environments 
-Please describe on what Hardware, SDK, IDE, OS that tested this Pull Request and how if necessary.
-(*eg. Tested on AMB21, ambpd_arduino V3.1.7, Arduino IDE 2.3.0, Windows 10*)
+Please describe on what Hardware, SDK, IDE, OS that tested this Pull Request and how if necessary.  \
+*eg.*
+- AMB21
+- ambd_arduino V3.1.7
+- Arduino IDE 2.3.0
+- Windows 10
 
 ## Remark related links
-Please provide links to related issue, PRs etc.
-(*eg. Closes #issue_number*)
+Please provide links to related issue, PRs etc. \
+*eg.*
+- Closes #issue_number
