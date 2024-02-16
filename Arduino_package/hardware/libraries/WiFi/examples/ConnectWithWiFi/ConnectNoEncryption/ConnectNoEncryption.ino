@@ -1,13 +1,15 @@
 /*
-
  This example connects to an unencrypted Wifi network.
- Then it prints the MAC address of the Wifi shield,
+ Then it prints the MAC address,
  the IP address obtained, and other network details.
 
  created 13 July 2010
  by dlf (Metodo2 srl)
  modified 31 May 2012
  by Tom Igoe
+
+ modified 08 May 2023
+ by Realtek SG
 
  Example guide:
  https://www.amebaiot.com/en/amebad-arduino-connect-wifi/
@@ -23,21 +25,14 @@
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
 
-char ssid[] = "yourNetwork";     // the name of your network
-int status = WL_IDLE_STATUS;     // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:
     Serial.begin(115200);
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
-    }
-
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
     }
 
     // attempt to connect to Wifi network:
@@ -64,7 +59,7 @@ void loop() {
 }
 
 void printWifiData() {
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

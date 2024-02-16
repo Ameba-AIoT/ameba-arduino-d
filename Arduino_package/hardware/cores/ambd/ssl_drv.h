@@ -2,15 +2,14 @@
 #define SSL_DRV_H
 #include <inttypes.h>
 
-#define	DATA_LENTH  128
+#define DATA_LENTH  128
 #ifdef __cplusplus
 extern "C" {
 #include "ard_ssl.h"
 }
 #endif
 
-class SSLDrv
-{
+class SSLDrv {
     public:
         int startClient(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey, char* SNI_hostname);
         void stopClient(sslclient_context *ssl_client);

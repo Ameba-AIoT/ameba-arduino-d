@@ -6,18 +6,19 @@
 
 #include "WS2812B.h"
 
+#define TOTAL_NUM_OF_LED 16
 #define NUM_OF_LEDS 8
 
 uint32_t rgbhue;
 
-// There are mutiple choice of SPI_MOSI pins depends on different boards. The default is SPI_MOSI/SPI1_MOSI
+// There are multiple choice of SPI_MOSI pins depends on different boards. The default is SPI_MOSI/SPI1_MOSI
 // AMB21/AMB22              pin 11 /  pin21
 // AMB23                    pin 9  /  pin 4
 // BW16/BW16 Type C         pin 12
 // AW-CU488 ThingPlus       pin 1  /  pin 14
 // AMB25/AMB26              pin 17 /  pin 3
 
-WS2812B led(SPI_MOSI,NUM_OF_LEDS);
+WS2812B led(SPI_MOSI,TOTAL_NUM_OF_LED);
 
 void setup() {
     Serial.begin(115200);
@@ -48,11 +49,11 @@ void colorWipe(uint8_t rColor, uint8_t gColor, uint8_t bColor, uint8_t wait) {
 }
 
 void rainbow(uint8_t wait) {
-  for(long firstPixelHue = 0; firstPixelHue < 3*65536; firstPixelHue += 256) {
-    led.rainbow(firstPixelHue);
-    led.show();
-    delay(wait);
-  }
+    for (long firstPixelHue = 0; firstPixelHue < 3*65536; firstPixelHue += 256) {
+        led.rainbow(firstPixelHue);
+        led.show();
+        delay(wait);
+    }
 }
 
 void theaterChase(uint8_t rColor, uint8_t gColor, uint8_t bColor, uint8_t wait) {
@@ -72,12 +73,12 @@ void theaterChaseRainbow(uint8_t wait) {
     //First pixel starts at red (hue 0)
     int firstPixelHue = 0;
     //Repeat 30 times...
-    for(int a=0; a<30; a++) {
+    for (int a=0; a<30; a++) {
         //'b' counts from 0 to 2...
-        for(int b=0; b<3; b++) {
+        for (int b=0; b<3; b++) {
             led.clear();
             //'c' counts up from 'b' to end of strip in increments of 3...
-            for(int c=b; c < NUM_OF_LEDS; c += 3) {
+            for (int c=b; c < NUM_OF_LEDS; c += 3) {
                 // hue of pixel 'c' is offset by an amount to make one full
                 // revolution of the color wheel (range 65536) along the length
                 // of the strip (strip.numPixels() steps):
@@ -95,4 +96,3 @@ void theaterChaseRainbow(uint8_t wait) {
         }
     }
 }
-

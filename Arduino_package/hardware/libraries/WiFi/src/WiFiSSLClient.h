@@ -1,5 +1,5 @@
-#ifndef WifiSSLClient_h
-#define WifiSSLClient_h
+#ifndef WiFiSSLClient_h
+#define WiFiSSLClient_h
 
 #include "Print.h"
 #include "Client.h"
@@ -8,10 +8,10 @@
 
 struct mbedtls_ssl_context;
 class WiFiSSLClient : public Client {
-
     public:
         WiFiSSLClient();
         WiFiSSLClient(uint8_t sock);
+        ~WiFiSSLClient();
 
         uint8_t status();
         virtual int connect(IPAddress ip, uint16_t port);

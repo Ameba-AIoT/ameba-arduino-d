@@ -218,7 +218,7 @@ uint32_t PlaybackWav::readAudioData(int8_t* dst, uint32_t len) {
         memset(dst, 0, len);
         return 0;
     }
-    // Check if requested data is less than remaing data
+    // Check if requested data is less than remaining data
     if (len > (f_size(&_file) - f_tell(&_file))) {
         memset(dst, 0, len);
     }

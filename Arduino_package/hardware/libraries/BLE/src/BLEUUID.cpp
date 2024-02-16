@@ -74,18 +74,18 @@ BLEUUID::BLEUUID(uint8_t* data, uint8_t length) {
 
 const char* BLEUUID::str() {
     if (_length == 2) {
-        sprintf(_str, "%2x%2x", 
+        sprintf(_str, "%02X%02X", 
                 _dataNative[1], _dataNative[0]);
     }
 
     if (_length == 4) {
-        sprintf(_str, "%2x%2x%2x%2x", 
+        sprintf(_str, "%02X%02X%02X%02X", 
                 _dataNative[3], _dataNative[2],
                 _dataNative[1], _dataNative[0]);
     }
 
     if (_length == 16) {
-        sprintf(_str, "%2x%2x%2x%2x-%2x%2x-%2x%2x-%2x%2x-%2x%2x%2x%2x%2x%2x", 
+        sprintf(_str, "%02X%02X%02X%02X-%02X%02X-%02X%02X-%02X%02X-%02X%02X%02X%02X%02X%02X", 
                 _dataNative[15], _dataNative[14],
                 _dataNative[13], _dataNative[12],
                 _dataNative[11], _dataNative[10],

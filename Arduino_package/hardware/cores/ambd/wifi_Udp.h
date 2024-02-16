@@ -31,8 +31,8 @@
  *
  * bjoern@cs.stanford.edu 12/30/2008
  */
-#ifndef udp_h
-#define udp_h
+#ifndef WIFI_UDP_H
+#define WIFI_UDP_H
 
 #include <Stream.h>
 #include <IPAddress.h>
@@ -79,6 +79,7 @@ class UDP : public Stream {
         virtual IPAddress remoteIP() = 0;
         // Return the port of the host who sent the current incoming packet
         virtual uint16_t remotePort() = 0;
+
     protected:
         uint8_t* rawIPAddress(IPAddress& addr) { return addr.raw_address(); };
 };

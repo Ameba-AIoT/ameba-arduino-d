@@ -29,7 +29,7 @@ class BLEAdvertData {
         uint8_t addShortName(const char* str);
         uint8_t addCompleteName(const char* str);
 
-        // Methods used for processing received advertisments
+        // Methods used for processing received advertisements
         void parseScanInfo(T_LE_CB_DATA *p_data);
 
         bool hasFlags();
@@ -56,7 +56,7 @@ class BLEAdvertData {
         uint8_t _data[31] ={0};     // array for storing formatted advertising data for receiving and sending
         uint8_t _dataSize = 0;
 
-        // Variables used for processing received advertisments
+        // Variables used for processing received advertisements
         T_GAP_ADV_EVT_TYPE _advType;
         T_GAP_REMOTE_ADDR_TYPE _addrType;
         BLEAddr     _address;

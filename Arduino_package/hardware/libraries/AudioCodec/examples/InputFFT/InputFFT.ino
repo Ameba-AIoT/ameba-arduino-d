@@ -28,13 +28,12 @@ void setup() {
         Serial.print(" Hz | ");
     }
     Serial.println();
-    
     Codec.setSampleRate(SAMPLERATE);
     Codec.begin(TRUE, FALSE);
 }
 
 void loop() {
-    if(Codec.readAvaliable()) {
+    if (Codec.readAvaliable()) {
         Codec.readDataPage(audio_buffer, SAMPLECOUNT);    // read latest received data from buffer
         fft.calculate(audio_buffer, fft_buffer, SAMPLECOUNT);
         for (i = 0; i < (SAMPLECOUNT/2); i++) {

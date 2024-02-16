@@ -25,7 +25,7 @@ extern void wdt_reset(void);
  * @ingroup watchdog
  * @brief Enable watchdog
  *
- * After enbling watchdog, user defined code needs to reset it before watchdog barks. Otherwise it would make system reboot.
+ * After enabling watchdog, user defined code needs to reset it before watchdog barks. Otherwise it would make system reboot.
  *
  * @param[in] timeout_ms The timeout value that watchdog barks. The maximum value is 8 seconds.
  */

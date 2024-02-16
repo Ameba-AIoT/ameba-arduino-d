@@ -17,8 +17,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef WiFi_Drv_h
-#define WiFi_Drv_h
+#ifndef WIFI_DRV_H
+#define WIFI_DRV_H
 
 #include <inttypes.h>
 #include "IPAddress.h"
@@ -41,10 +41,9 @@ extern "C" {
 // firmware version string length
 #define WL_FW_VER_LENGTH            6
 // Host name length limit
-#define HOSTNAME_LEN            20
+#define HOSTNAME_LEN                20
 
-class WiFiDrv
-{
+class WiFiDrv {
     private:
         // settings of requested network
         static uint8_t  _networkCount;
@@ -55,7 +54,7 @@ class WiFiDrv
         // settings of current selected network
         static rtw_wifi_setting_t wifi_setting;
 
-        static rtw_result_t wifidrv_scan_result_handler( rtw_scan_handler_result_t* malloced_scan_result );
+        static rtw_result_t wifidrv_scan_result_handler(rtw_scan_handler_result_t* malloced_scan_result);
 
         static IPAddress _arduinoIpAddr;
         static IPAddress _arduinoGwAddr;
@@ -81,7 +80,7 @@ class WiFiDrv
          * The ssid of the desired network should be specified.
          *
          * param ssid: The ssid of the desired network.
-         * param ssid_len: Lenght of ssid string.
+         * param ssid_len: Length of ssid string.
          * return: WL_SUCCESS or WL_FAILURE
          */
         static int8_t wifiSetNetwork(char* ssid, uint8_t ssid_len);
@@ -90,10 +89,10 @@ class WiFiDrv
          * the most secure supported mode will be automatically selected
          *
          * param ssid: Pointer to the SSID string.
-         * param ssid_len: Lenght of ssid string.
+         * param ssid_len: Length of ssid string.
          * param passphrase: Passphrase. Valid characters in a passphrase
          *        must be between ASCII 32-126 (decimal).
-         * param len: Lenght of passphrase string.
+         * param len: Length of passphrase string.
          * return: WL_SUCCESS or WL_FAILURE
          */
         static int8_t wifiSetPassphrase(char* ssid, uint8_t ssid_len, const char *passphrase, const uint8_t len);
@@ -103,10 +102,10 @@ class WiFiDrv
          * is determined by the size of the key (5 bytes for WEP-40, 13 bytes for WEP-104).
          *
          * param ssid: Pointer to the SSID string.
-         * param ssid_len: Lenght of ssid string.
+         * param ssid_len: Length of ssid string.
          * param key_idx: The key index to set. Valid values are 0-3.
          * param key: Key input buffer.
-         * param len: Lenght of key string.
+         * param len: Length of key string.
          * return: WL_SUCCESS or WL_FAILURE
          */
         static int8_t wifiSetKey(char* ssid, uint8_t ssid_len, uint8_t key_idx, const void *key, const uint8_t len);
@@ -158,8 +157,7 @@ class WiFiDrv
          *
          * return: copy the ip address value in IPAddress object
          */
-        static void getIpAddress(IPAddress& ip);
-
+        static void getIpAddress(IPAddress& ip, uint8_t interface = 0);
 
         /*
          * Get the interface IPv6 address.
@@ -167,22 +165,20 @@ class WiFiDrv
          * return: copy the ip address value in IPAddress object
          */
         static void getIpv6Address();
-        
-
 
         /*
          * Get the interface subnet mask address.
          *
          * return: copy the subnet mask address value in IPAddress object
          */
-        static void getSubnetMask(IPAddress& mask);
+        static void getSubnetMask(IPAddress& mask, uint8_t interface = 0);
 
         /*
          * Get the gateway ip address.
          *
          * return: copy the gateway ip address value in IPAddress object
          */
-        static void getGatewayIP(IPAddress& ip);
+        static void getGatewayIP(IPAddress& ip, uint8_t interface = 0);
 
         /*
          * Return the current SSID associated with the network
@@ -273,6 +269,7 @@ class WiFiDrv
          */
         static int getHostByName(const char* aHostname, IPAddress& aResult);
         static int getHostByNamev6(const char* aHostname, IPv6Address& aResult);
+
         /*
          * Get the firmware version
          * result: version as string with this format a.b.c
@@ -296,6 +293,7 @@ class WiFiDrv
         static const char* getHostname();
 };
 
+extern uint8_t arduino_wifi_mode_check;
 extern WiFiDrv wiFiDrv;
 
 #endif

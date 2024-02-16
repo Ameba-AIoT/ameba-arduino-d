@@ -10,9 +10,9 @@
 #include <PubSubClient.h>
 
 // Update these with values suitable for your network.
-char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "yourPassword";     	// your network password (use for WPA, or use as key for WEP)
-int status  = WL_IDLE_STATUS;    	// the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 WiFiSSLClient wifiClient;
 PubSubClient client(wifiClient);
@@ -24,11 +24,11 @@ char clientId[]       = "amebaClient";
 char publishTopic[]   = "$aws/things/" THING_NAME "/shadow/update";
 char publishPayload[MQTT_MAX_PACKET_SIZE];
 char *subscribeTopic[5] = {
-  "$aws/things/" THING_NAME "/shadow/update/accepted",
-  "$aws/things/" THING_NAME "/shadow/update/rejected",
-  "$aws/things/" THING_NAME "/shadow/update/delta",
-  "$aws/things/" THING_NAME "/shadow/get/accepted",
-  "$aws/things/" THING_NAME "/shadow/get/rejected"
+    "$aws/things/" THING_NAME "/shadow/update/accepted",
+    "$aws/things/" THING_NAME "/shadow/update/rejected",
+    "$aws/things/" THING_NAME "/shadow/update/delta",
+    "$aws/things/" THING_NAME "/shadow/get/accepted",
+    "$aws/things/" THING_NAME "/shadow/get/rejected"
 };
 
 /* Amazon Root CA can be download here:
@@ -114,97 +114,96 @@ int led_pin = 10;
 int led_state = 1;
 
 void updateLedState(int desired_led_state) {
-  printf("change led_state to %d\r\n", desired_led_state);
-  led_state = desired_led_state;
-  digitalWrite(led_pin, led_state);
+    printf("change led_state to %d\r\n", desired_led_state);
+    led_state = desired_led_state;
+    digitalWrite(led_pin, led_state);
 
-  sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
-    led_state,
-    clientId
-  );
-  client.publish(publishTopic, publishPayload);
-  printf("Publish [%s] %s\r\n", publishTopic, publishPayload);
+    sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
+        led_state,
+        clientId
+    );
+    client.publish(publishTopic, publishPayload);
+    printf("Publish [%s] %s\r\n", publishTopic, publishPayload);
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  char buf[MQTT_MAX_PACKET_SIZE];
-  char *pch;
-  int desired_led_state;
+    char buf[MQTT_MAX_PACKET_SIZE];
+    char *pch;
+    int desired_led_state;
 
-  strncpy(buf, (const char *)payload, length);
-  buf[length] = '\0';
-  printf("Message arrived [%s] %s\r\n", topic, buf);
+    strncpy(buf, (const char *)payload, length);
+    buf[length] = '\0';
+    printf("Message arrived [%s] %s\r\n", topic, buf);
 
-  if ((strstr(topic, "/shadow/get/accepted") != NULL) || (strstr(topic, "/shadow/update/accepted") != NULL)) {
-    pch = strstr(buf, "\"reported\":{\"led\":");
-    if (pch != NULL) {
-      pch += strlen("\"reported\":{\"led\":");
-      desired_led_state = *pch - '0';
-      if (desired_led_state != led_state) {
-        updateLedState(desired_led_state);
-      }
+    if ((strstr(topic, "/shadow/get/accepted") != NULL) || (strstr(topic, "/shadow/update/accepted") != NULL)) {
+        pch = strstr(buf, "\"reported\":{\"led\":");
+        if (pch != NULL) {
+            pch += strlen("\"reported\":{\"led\":");
+            desired_led_state = *pch - '0';
+            if (desired_led_state != led_state) {
+                updateLedState(desired_led_state);
+            }
+        }
     }
-  }
 }
 
 void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
+    // Loop until we're reconnected
+    while (!client.connected()) {
     Serial.print("\r\n Attempting MQTT connection...");
-    // Attempt to connect
-    if (client.connect(clientId)) {
-      Serial.println("connected");
+        // Attempt to connect
+        if (client.connect(clientId)) {
+            Serial.println("connected");
 
-      for (int i=0; i<5; i++) {
-        client.subscribe(subscribeTopic[i]);
-      }
+            for (int i=0; i<5; i++) {
+                client.subscribe(subscribeTopic[i]);
+            }
+            sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
+                led_state,
+                clientId
+            );
+            client.publish(publishTopic, publishPayload);
+            printf("Publish [%s] %s\r\n", publishTopic, publishPayload);
 
-      sprintf(publishPayload, "{\"state\":{\"reported\":{\"led\":%d}},\"clientToken\":\"%s\"}",
-        led_state,
-        clientId
-      );
-      client.publish(publishTopic, publishPayload);
-      printf("Publish [%s] %s\r\n", publishTopic, publishPayload);
-
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
+        } else {
+            Serial.print("failed, rc=");
+            Serial.print(client.state());
+            Serial.println(" try again in 5 seconds");
+            // Wait 5 seconds before retrying
+            delay(5000);
+        }
     }
-  }
 }
 
 void setup() {
-  Serial.begin(115200);
-  pinMode(led_pin, OUTPUT);
-  digitalWrite(led_pin, led_state);
+    Serial.begin(115200);
+    pinMode(led_pin, OUTPUT);
+    digitalWrite(led_pin, led_state);
 
-  while (status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
-    if (status == WL_CONNECTED) break;
-    // retry after 1 second
-    delay(1000);
-  }
+    while (status != WL_CONNECTED) {
+        Serial.print("Attempting to connect to SSID: ");
+        Serial.println(ssid);
+        // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+        status = WiFi.begin(ssid, pass);
+        if (status == WL_CONNECTED) break;
+        // retry after 1 second
+        delay(1000);
+    }
 
-  wifiClient.setRootCA((unsigned char*)rootCABuff);
-  wifiClient.setClientCertificate((unsigned char*)certificateBuff, (unsigned char*)privateKeyBuff);
+    wifiClient.setRootCA((unsigned char*)rootCABuff);
+    wifiClient.setClientCertificate((unsigned char*)certificateBuff, (unsigned char*)privateKeyBuff);
 
-  client.setServer(mqttServer, 8883);
-  client.setCallback(callback);
+    client.setServer(mqttServer, 8883);
+    client.setCallback(callback);
 
-  // Allow the hardware to sort itself out
-  delay(1500);
+    // Allow the hardware to sort itself out
+    delay(1500);
 }
 
 void loop() {
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-  delay(1000);
+    if (!client.connected()) {
+        reconnect();
+    }
+    client.loop();
+    delay(1000);
 }

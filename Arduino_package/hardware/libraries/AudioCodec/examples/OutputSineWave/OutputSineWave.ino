@@ -16,8 +16,8 @@ void setup() {
     // generate sine wave and fill buffer with required samples
     double delta_t = 1.0/SAMPLERATE;
     double current_t = 0;
-    for(int i = 0; i < SAMPLECOUNT; i++){
-        sine_buffer[i] = (int16_t)(sin(2 * PI  * FREQUENCY * current_t) * (pow(2,15)-1));
+    for (int i = 0; i < SAMPLECOUNT; i++) {
+        sine_buffer[i] = (int16_t)(sin(2 * PI  * FREQUENCY * current_t) * (pow(2, 15) - 1));
         current_t += delta_t;
     }
 
@@ -26,7 +26,7 @@ void setup() {
 }
 
 void loop() {
-    if(Codec.writeAvaliable()) {
+    if (Codec.writeAvaliable()) {
         Codec.writeDataPage(sine_buffer, SAMPLECOUNT);
     }
     delay(1);

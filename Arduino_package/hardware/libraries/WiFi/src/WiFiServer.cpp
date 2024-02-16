@@ -27,15 +27,24 @@ WiFiServer::WiFiServer(uint16_t port) {
     _port = port;
 }
 
+WiFiServer::WiFiServer(uint16_t port, tProtMode portMode) {
+    _port = port;
+    _portMode = portMode;
+}
+
+WiFiServer::~WiFiServer() {
+    close();
+}
+
 void WiFiServer::begin() {
     _is_connected = false;
-    _sock_ser = serverdrv.startServer(_port);
+    _sock_ser = serverdrv.startServer(_port, _portMode, _is_blocked);
     if (_sock_ser < 0) {
         _is_connected = false;
-        printf("\n[ERROR] Socket conntect failed \n\r");
+        printf("\n[ERROR] Socket connect failed \n\r");
     } else {
         _is_connected = true;
-        printf("\n[INFO] Socket conntect successfully \n\r");
+        printf("\n[INFO] Socket connect successfully \n\r");
     }
 }
 
@@ -82,7 +91,6 @@ int WiFiServer::recv(uint8_t* buf, size_t size) {
             _is_connected = false;
         }
     }
-
     return ret;
 }
 
@@ -104,7 +112,6 @@ size_t WiFiServer::write(const uint8_t *buf, size_t size) {
         setWriteError();
         return 0;
     }
-
     return size;
 }
 
@@ -125,6 +132,12 @@ void WiFiServer::close() {
     stop();
 }
 
+// set WiFi server to blocking mode
+void WiFiServer::setBlocking() {
+    // printf("WiFi server is set to blocking mode\r\n");
+    _is_blocked = !_is_blocked;
+}
+
 // extend API from RTK
 int WiFiServer::setTimeout(int timeout) {
     if (connected()) {
@@ -142,4 +155,3 @@ int WiFiServer::enableIPv6() {
 int WiFiServer::getIPv6Status() {
     return serverdrv.getIPv6Status();
 }
-

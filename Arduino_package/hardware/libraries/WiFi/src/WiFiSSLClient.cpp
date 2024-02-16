@@ -44,6 +44,10 @@ WiFiSSLClient::WiFiSSLClient(uint8_t sock) {
     _sni_hostname = NULL;
 }
 
+WiFiSSLClient::~WiFiSSLClient() {
+    stop();
+}
+
 uint8_t WiFiSSLClient::connected() {
     if (sslclient.socket < 0) {
         _is_connected = false;
@@ -164,7 +168,6 @@ int WiFiSSLClient::connect(IPAddress ip, uint16_t port) {
 }
 
 int WiFiSSLClient::connect(const char *host, uint16_t port) {
-
     if (_sni_hostname == NULL) {
         _sni_hostname = (char*)host;
     }

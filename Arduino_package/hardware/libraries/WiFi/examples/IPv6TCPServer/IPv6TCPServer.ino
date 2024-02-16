@@ -10,10 +10,9 @@
 #define MAX_RECV_SIZE 1500
 #define TCP_SERVER_PORT 5003
 
-char ssid[] = "yourNetwork"; //  your network SSID (name)
-char pass[] = "password";    // your network password (use for WPA, or use as key for WEP)
-
-int status = WL_IDLE_STATUS;
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char data_send[MAX_SEND_SIZE] = "Hi client!!";
 char data_recv[MAX_RECV_SIZE];
@@ -26,13 +25,6 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) {
         ;
-    }
-
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
     }
 
     // attempt to connect to Wifi network:
@@ -55,14 +47,14 @@ void setup() {
     }
     printWifiStatus();
 
-    // conenct to server and listen for incoming sockets
+    // connect to server and listen for incoming sockets
     server.begin();
     client_fd = server.available(server_fd);
     delay(100);
 }
 
 void loop() {
-    // continously read from to client:
+    // continuously read from to client:
     if (server.recv((uint8_t*)data_recv, MAX_RECV_SIZE) > 0) {
         Serial.print("\n[SERVER] Receive data: ");
         Serial.println(data_recv);

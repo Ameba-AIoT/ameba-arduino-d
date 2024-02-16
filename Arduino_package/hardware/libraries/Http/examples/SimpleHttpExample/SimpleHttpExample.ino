@@ -1,7 +1,7 @@
 /*
 
  Example guide:
- https://www.amebaiot.com/en/amebad-arduino-web-server-status/
+ https://www.amebaiot.com/en/amebad-arduino-web-client-http/
  */
 
 #include <HttpClient.h>
@@ -9,10 +9,9 @@
 #include <WiFiClient.h>
 
 // This example downloads the URL "http://www.amebaiot.com"
-
-char ssid[] = "YourNetwork"; // your network SSID (name) 
-char pass[] = "password";    // your network password (use for WPA, or use as key for WEP)
-int keyIndex = 0;            // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
 
 // Name of the server we want to connect to
 const char kHostname[] = "www.amebaiot.com";
@@ -25,21 +24,20 @@ const int kNetworkDelay = 1000;
 int status = WL_IDLE_STATUS;
 
 void setup() {
-    Serial.begin(115200); 
-
-    while ( status != WL_CONNECTED) { 
+    Serial.begin(115200);
+    while (status != WL_CONNECTED) {
         Serial.print("Attempting to connect to SSID: ");
         Serial.println(ssid);
         status = WiFi.begin(ssid, pass);
         // wait 10 seconds for connection:
         delay(10000);
-    } 
-    Serial.println("\n\rConnected to wifi");
+    }
+    Serial.println("Connected to wifi");
     printWifiStatus();
 }
 
 void loop() {
-    int err =0;
+    int err = 0;
 
     WiFiClient c;
     HttpClient http(c);
@@ -56,8 +54,10 @@ void loop() {
             // Usually you'd check that the response code is 200 or a
             // similar "success" code (200-299) before carrying on,
             // but we'll print out whatever response we get
-
             err = http.skipResponseHeaders();
+            Serial.print("err updated");
+            Serial.println(err);
+
             if (err >= 0) {
                 int bodyLen = http.contentLength();
                 Serial.print("Content length is: ");
@@ -74,7 +74,6 @@ void loop() {
                         c = http.read();
                         // Print out this character
                         Serial.print(c);
-
                         bodyLen--;
                         // We read something, reset the timeout counter
                         timeoutStart = millis();
@@ -98,7 +97,7 @@ void loop() {
     http.stop();
 
     // And just stop, now that we've tried a download
-    while(1);
+    while (1);
 }
 
 void printWifiStatus() {
@@ -106,7 +105,7 @@ void printWifiStatus() {
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

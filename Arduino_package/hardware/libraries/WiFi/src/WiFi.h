@@ -35,12 +35,12 @@ extern "C" {
 #include "WiFiSSLClient.h"
 #include "WiFiUdp.h"
 
-class WiFiClass
-{
+class WiFiClass {
     private:
         static void init();
     public:
         WiFiClass();
+        ~WiFiClass();
 
         /*
          * Get firmware version
@@ -71,6 +71,11 @@ class WiFiClass
          *        must be between ASCII 32-126 (decimal).
          */
         int begin(char* ssid, const char *passphrase);
+
+        /* Start Concurrent mode 
+         * (STA + AP mode)
+         */
+        void enableConcurrent(void);
 
         /* Change Ip configuration settings disabling the dhcp client
          *
@@ -135,7 +140,7 @@ class WiFiClass
          *
          * return: Ip address value
          */
-        IPAddress localIP();
+        IPAddress localIP(uint8_t interface = 0);
 
          /*
          * Get the interface IPv6 address.
@@ -143,20 +148,20 @@ class WiFiClass
          * return: Ipv6 address value
          */
         void printLocalIPv6();
-        
+
         /*
          * Get the interface subnet mask address.
          *
          * return: subnet mask address value
          */
-        IPAddress subnetMask();
+        IPAddress subnetMask(uint8_t interface = 0);
 
         /*
          * Get the gateway ip address.
          *
          * return: gateway ip address value
          */
-        IPAddress gatewayIP();
+        IPAddress gatewayIP(uint8_t interface = 0);
 
         /*
          * Return the current SSID associated with the network

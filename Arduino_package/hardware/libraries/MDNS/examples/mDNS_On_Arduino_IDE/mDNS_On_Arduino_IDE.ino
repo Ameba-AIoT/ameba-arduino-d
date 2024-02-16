@@ -11,8 +11,8 @@
 #include <WiFi.h>
 #include <AmebaMDNS.h>
 
-char ssid[] = "yourNetwork";     //  your network SSID (name)
-char pass[] = "secretPassword";  // your network password
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
 
 MDNSService service("MyAmeba", "_arduino._tcp", "local", 5000);
 

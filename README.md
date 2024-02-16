@@ -3,7 +3,7 @@
 
 ## 1. About `dev` & `master` branch
 
-|Branch|Usage|Remarks|
+|Branch|Usage|json links|
 |:-----|:-----|:-----|
 |`master` | stable release| https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json|
 |`dev`| merge `Pull Request` & early release| https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek_amebad_early_index.json|

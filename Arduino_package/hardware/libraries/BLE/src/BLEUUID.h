@@ -29,7 +29,7 @@
 class BLEUUID {
     public: 
         BLEUUID();
-        BLEUUID(const char* str);      // Build a BLEUUID object from an UUID string. Use of hyphens (-) to seperate UUID sections in the string is acceptable.
+        BLEUUID(const char* str);      // Build a BLEUUID object from an UUID string. Use of hyphens (-) to separate UUID sections in the string is acceptable.
         BLEUUID(uint8_t* data, uint8_t length);
         const char* str();
         const uint8_t* data();

@@ -118,9 +118,9 @@ void BLEService::printAttr() {
     printf("--------------------------------------------------------\n");
     for (i = 0; i < _total_attr_count; i++) {
         printf("Attribute num %d:\n", i);
-        printf("Flags: \t 0x%4x \n", _service_attr_tbl[i].flags);
-        printf("Value Length: \t 0x%4x \n", _service_attr_tbl[i].value_len);
-        printf("Type Value: \t %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x %2x\n",
+        printf("Flags: \t 0x%04X \n", _service_attr_tbl[i].flags);
+        printf("Value Length: \t 0x%04X \n", _service_attr_tbl[i].value_len);
+        printf("Type Value: \t %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\n",
             _service_attr_tbl[i].type_value[0],
             _service_attr_tbl[i].type_value[1],
             _service_attr_tbl[i].type_value[2],
@@ -139,13 +139,13 @@ void BLEService::printAttr() {
             _service_attr_tbl[i].type_value[15]);
         if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_PRIMARY_SERVICE)) && 
             (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_PRIMARY_SERVICE))) {
-            printf("Type Value: GATT UUID Primary Service (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            printf("Type Value: GATT UUID Primary Service (0x%02X 0x%02X)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
         }
         if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHARACTERISTIC)) && 
             (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHARACTERISTIC))) {
-            printf("Type Value: GATT UUID Characteristic (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            printf("Type Value: GATT UUID Characteristic (0x%02X 0x%02X)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
             uint8_t char_props = _service_attr_tbl[i].type_value[2];
-            printf("Characteristic Properties: (0x%2x)\n", char_props);
+            printf("Characteristic Properties: (0x%02X)\n", char_props);
             printf("Read %d | WriteNR %d | Write %d | Notif %d | Indicate %d\n",
                 (char_props & GATT_CHAR_PROP_READ) != 0,
                 (char_props & GATT_CHAR_PROP_WRITE_NO_RSP) != 0,
@@ -155,19 +155,19 @@ void BLEService::printAttr() {
         }
         if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_CLIENT_CONFIG)) && 
             (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_CLIENT_CONFIG))) {
-            printf("Type Value: GATT UUID CCCD (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            printf("Type Value: GATT UUID CCCD (0x%02X 0x%02X)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
         }
         if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_USER_DESCR)) && 
             (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_USER_DESCR))) {
-            printf("Type Value: GATT UUID Char User Descriptor (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            printf("Type Value: GATT UUID Char User Descriptor (0x%02X 0x%02X)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
         }
         if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_FORMAT)) && 
             (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_FORMAT))) {
-            printf("Type Value: GATT UUID Char Format (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            printf("Type Value: GATT UUID Char Format (0x%02X 0x%02X)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
         }
         if ((_service_attr_tbl[i].type_value[0] == LO_WORD(GATT_UUID_CHAR_REPORT_REFERENCE)) && 
             (_service_attr_tbl[i].type_value[1] == HI_WORD(GATT_UUID_CHAR_REPORT_REFERENCE))) {
-            printf("Type Value: GATT UUID Char Report Ref (0x%2x 0x%2x)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
+            printf("Type Value: GATT UUID Char Report Ref (0x%02X 0x%02X)\n", _service_attr_tbl[i].type_value[0], _service_attr_tbl[i].type_value[1]);
         }
         if (_service_attr_tbl[i].p_value_context != NULL) {
             printf("Context Value Pointer as string: %s \n", (char*)(_service_attr_tbl[i].p_value_context));
@@ -175,7 +175,7 @@ void BLEService::printAttr() {
             printf("Context Value Pointer: NULL \n");
         }
         uint32_t attr_perms = _service_attr_tbl[i].permissions;
-        printf("Permissions: 0x%4x %4x\n", (uint16_t)(attr_perms >> 16), (uint16_t)(attr_perms & 0xFFFF));
+        printf("Permissions: 0x%04X %04X\n", (uint16_t)(attr_perms >> 16), (uint16_t)(attr_perms & 0xFFFF));
         printf("Read %d | Authen %d | Author %d | Encrypted %d | Authen SC Req %d \n",
             (attr_perms & GATT_PERM_READ) != 0,
             (attr_perms & GATT_PERM_READ_AUTHEN_REQ) != 0,

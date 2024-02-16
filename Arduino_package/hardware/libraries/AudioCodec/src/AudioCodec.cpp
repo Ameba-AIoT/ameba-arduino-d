@@ -408,8 +408,8 @@ void AudioCodec::callback_task(void* param) {
     vTaskDelete(NULL);
 }
 
-// Check for presence of a free Tx buffer page avaliable for data write
-// Returns pointer to first byte of buffer if avaliable
+// Check for presence of a free Tx buffer page available for data write
+// Returns pointer to first byte of buffer if available
 uint8_t* AudioCodec::getFreeTxPage(void) {
     TX_BLOCK* ptx_block = &(_txBufferInfo.tx_block[_txBufferInfo.tx_usr_cnt]);
 
@@ -455,7 +455,7 @@ void AudioCodec::releaseTxPage(void) {
 }
 
 // Check for presence of a Tx buffer page with user data ready for GDMA transfer
-// Returns pointer to first byte of buffer if avaliable
+// Returns pointer to first byte of buffer if available
 // Otherwise returns pointer to buffer of zeros, (no data output)
 uint8_t* AudioCodec::getReadyTxPage(void) {
     TX_BLOCK* ptx_block = &(_txBufferInfo.tx_block[_txBufferInfo.tx_gdma_cnt]);
@@ -483,7 +483,7 @@ uint32_t AudioCodec::getReadyTxLength(void) {
 }
 
 // Check for presence of a Rx buffer page with data ready for user read
-// Returns pointer to first byte of buffer if avaliable
+// Returns pointer to first byte of buffer if available
 uint8_t* AudioCodec::getReadyRxPage(void) {
     RX_BLOCK* prx_block = &(_rxBufferInfo.rx_block[_rxBufferInfo.rx_usr_cnt]);
 
@@ -526,7 +526,7 @@ void AudioCodec::releaseRxPage(void) {
 }
 
 // Check for presence of a Rx buffer page ready for GDMA transfer of new data
-// Returns pointer to first byte of buffer if avaliable
+// Returns pointer to first byte of buffer if available
 // Otherwise returns pointer to overflow buffer, (new data lost)
 uint8_t* AudioCodec::getFreeRxPage(void) {
     RX_BLOCK* prx_block = &(_rxBufferInfo.rx_block[_rxBufferInfo.rx_gdma_cnt]);

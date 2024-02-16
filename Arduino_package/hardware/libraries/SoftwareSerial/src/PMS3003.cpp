@@ -25,11 +25,12 @@ void pms3003_handle_interrupt(uint32_t id, uint32_t event) {
     }
 }
 
-PMS3003::PMS3003(int _rx, int _tx, int _set, int _reset) {
+PMS3003::PMS3003(int _rx, int _tx, int _set, int _reset, int _serial_baudrates) {
     setpin = _set;
     rxpin = _rx;
     txpin = _tx;
     resetpin = _reset;
+    serial_baudrates = _serial_baudrates;
 
     rbidx = 0;
     memset(rb, 0, PMS3003_BUF_SIZE);
@@ -40,18 +41,19 @@ PMS3003::PMS3003(int _rx, int _tx, int _set, int _reset) {
 }
 
 void PMS3003::begin() {
-
     pUART = malloc(sizeof(serial_t));
     memset(pUART, 0, sizeof(serial_t));
 
+    amb_ard_pin_check_fun(txpin, PIO_UART);
+    amb_ard_pin_check_fun(rxpin, PIO_UART);
+
     serial_init(((serial_t *)pUART), ((PinName)g_APinDescription[txpin].pinname), ((PinName)g_APinDescription[rxpin].pinname));
-    serial_baud(((serial_t *)pUART), 9600);
+    serial_baud(((serial_t *)pUART), serial_baudrates);
     serial_format(((serial_t *)pUART), 8, ParityNone, 1);
 
     serial_irq_handler(((serial_t *)pUART), (uart_irq_handler)pms3003_handle_interrupt, (uint32_t)this);
     serial_irq_set(((serial_t *)pUART), RxIrq, 1);
     serial_irq_set(((serial_t *)pUART), TxIrq, 1);
-
 }
 
 void PMS3003::end() {
@@ -90,7 +92,7 @@ int PMS3003::get_pm10_air() {
 }
 
 /*
-One package has 32 bytes. Illustrate the formate by using below raw data:
+One package has 32 bytes. Illustrate the format by using below raw data:
     42 4d 00 1c 00 1b 00 21 00 29 00 1a 00 21 00 29 2b fb 04 be 00 6b 00 10 00 04 00 04 67 00 04 46 
 
     42 4d : header signature
@@ -101,12 +103,12 @@ One package has 32 bytes. Illustrate the formate by using below raw data:
     00 1a : PM1.0 under air
     00 21 : PM2.5 under air
     00 29 : PM10 under air
-    2b fb : number of pariticle, diameter size 0.3 um in 0.1 liter air
-    04 be : number of pariticle, diameter size 0.5 um in 0.1 liter air
-    00 6b : number of pariticle, diameter size 1.0 um in 0.1 liter air
-    00 10 : number of pariticle, diameter size 2.5 um in 0.1 liter air
-    00 04 : number of pariticle, diameter size 5.0 um in 0.1 liter air
-    00 04 : number of pariticle, diameter size 10 um in 0.1 liter air
+    2b fb : number of particle, diameter size 0.3 um in 0.1 liter air
+    04 be : number of particle, diameter size 0.5 um in 0.1 liter air
+    00 6b : number of particle, diameter size 1.0 um in 0.1 liter air
+    00 10 : number of particle, diameter size 2.5 um in 0.1 liter air
+    00 04 : number of particle, diameter size 5.0 um in 0.1 liter air
+    00 04 : number of particle, diameter size 10 um in 0.1 liter air
     67 : serial number
     00 : error code
     04 46 : checksum,
@@ -121,14 +123,14 @@ void PMS3003::update_cache() {
     uint32_t checksum_calculate;
     uint32_t checksum_compare;
     unsigned char buf[PMS3003_BUF_SIZE];
+    int max_checksum = 0;
 
     if (((millis() - last_update_time) < PMS3003_REFRESH_TIME) && (last_update_time != 0)) {
         return;
     }
 
-    while (1) {
+    while (max_checksum != 10) {
         memcpy(buf, rb, PMS3003_BUF_SIZE);
-
         header_idx = -1;
         for (int i = 0; i < PMS3003_BUF_SIZE - 1; i++) {
             if ((buf[i] == 0x42) && (buf[(i + 1)] == 0x4d)) {
@@ -141,15 +143,21 @@ void PMS3003::update_cache() {
             // calculate checksum
             checksum_calculate = 0;
             for (int i = 0; i < 30; i++) {
-                checksum_calculate += buf[(header_idx + i)];
+                checksum_calculate = checksum_calculate + buf[(header_idx + i)];
             }
-            checksum_compare = buf[(header_idx + 30)] << 8 | buf[(header_idx + 31)];
+            checksum_compare = (buf[(header_idx + 30)] << 8) | (buf[(header_idx + 31)]);
             if (checksum_calculate == checksum_compare) {
                 break;
             }
         }
         delay(100); // no valid packet, wait 100ms and check again
+        max_checksum++;
     }
+
+//    if (max_checksum == 10) {
+//        printf("    warning checksum not match! \r\n");
+//    }
+
     pm1p0_cf1 = buf[(header_idx +  4)] << 8 | buf[(header_idx +  5)];
     pm2p5_cf1 = buf[(header_idx +  6)] << 8 | buf[(header_idx +  7)];
     pm10_cf1  = buf[(header_idx +  8)] << 8 | buf[(header_idx +  9)];

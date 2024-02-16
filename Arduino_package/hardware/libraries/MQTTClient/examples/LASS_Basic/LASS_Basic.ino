@@ -19,9 +19,9 @@
 #include <WiFiUdp.h>
 #include <PMS3003.h>
 
-char ssid[] = "yourNetwork";    // your network SSID (name)
-char pass[] = "secretPassword"; // your network password
-int keyIndex = 0;               // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
 
 char gps_lat[] = "24.7814033";  // device's gps latitude
 char gps_lon[] = "120.9933676"; // device's gps longitude
@@ -38,9 +38,9 @@ const char ntpServer[] = "pool.ntp.org";
 
 const int NTP_PACKET_SIZE = 48; // NTP time stamp is in the first 48 bytes of the message
 const byte nptSendPacket[ NTP_PACKET_SIZE] = {
-  0xE3, 0x00, 0x06, 0xEC, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x31, 0x4E, 0x31, 0x34,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+    0xE3, 0x00, 0x06, 0xEC, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x31, 0x4E, 0x31, 0x34,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 byte ntpRecvBuffer[ NTP_PACKET_SIZE ];
 
@@ -48,23 +48,13 @@ byte ntpRecvBuffer[ NTP_PACKET_SIZE ];
 static  const uint8_t monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; // API starts months from 1, this array starts from 0
 uint32_t epochSystem = 0; // timestamp of system boot up
 
-#if defined(BOARD_RTL8722DM)
-PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8722DM_MINI)
-PMS3003 pms(2, 1);      // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8720DN_BW16)
-PMS3003 pms(PB2, PB1);  // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8721DM)
-PMS3003 pms(3, 4);  // SoftwareSerial RX/TX
-#elif defined(BOARD_RTL8720DF)
-PMS3003 pms(17, 16);  // SoftwareSerial RX/TX
-#else
-PMS3003 pms(0, 1);      // SoftwareSerial RX/TX
-#endif
+// SoftwareSerial RX/TX pins
+// check the board pin mapping for available UART/Serial pins
+PMS3003 pms(0, 1);
 
 void reconnectWiFi() {
     // attempt to connect to Wifi network:
-    if ( WiFi.status() != WL_CONNECTED ) {
+    if (WiFi.status() != WL_CONNECTED) {
         Serial.print("Try connect to wifi ssid: ");
         Serial.println(ssid);
         while (WiFi.begin(ssid, pass) != WL_CONNECTED) {

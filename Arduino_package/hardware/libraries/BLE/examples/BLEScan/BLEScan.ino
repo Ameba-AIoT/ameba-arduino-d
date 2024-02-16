@@ -24,11 +24,11 @@ void scanFunction(T_LE_CB_DATA* p_data) {
     }
     uint8_t serviceCount = foundDevice.getServiceCount();
     if (serviceCount > 0) {
-    BLEUUID* serviceList = foundDevice.getServiceList();
+        BLEUUID* serviceList = foundDevice.getServiceList();
         for (uint8_t i = 0; i < serviceCount; i++) {
             if (serviceList[i] == BLEUUID("180F")) {
-            Serial.print("Found Battery Service at address ");
-            Serial.println(foundDevice.getAddr().str());
+                Serial.print("Found Battery Service at address ");
+                Serial.println(foundDevice.getAddr().str());
             }
         }
     }

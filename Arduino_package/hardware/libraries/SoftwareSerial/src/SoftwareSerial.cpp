@@ -53,8 +53,7 @@ extern PinDescription g_APinDescription[];
 // Private methods
 //
 
-void handle_interrupt(uint32_t id, uint32_t event)
-{
+void handle_interrupt(uint32_t id, uint32_t event) {
     volatile char d = 0;
     uint8_t next;
     SoftwareSerial *pSwSerial = (SoftwareSerial *)id;
@@ -76,9 +75,11 @@ void handle_interrupt(uint32_t id, uint32_t event)
 
 // This function sets the current object as the "listening"
 // one and returns true if it replaces another 
-bool SoftwareSerial::listen()
-{
+bool SoftwareSerial::listen() {
     bool ret = false;
+
+    amb_ard_pin_check_fun(transmitPin, PIO_UART);
+    amb_ard_pin_check_fun(receivePin, PIO_UART);
 
     serial_init(((serial_t *)pUART), ((PinName)g_APinDescription[transmitPin].pinname), ((PinName)g_APinDescription[receivePin].pinname));
     serial_baud(((serial_t *)pUART), speed);
@@ -93,8 +94,7 @@ bool SoftwareSerial::listen()
 }
 
 // Stop listening. Returns true if we were actually listening.
-bool SoftwareSerial::stopListening()
-{
+bool SoftwareSerial::stopListening() {
     serial_free((serial_t *)pUART);
     free((serial_t *)pUART);
     pUART = NULL;
@@ -105,8 +105,7 @@ bool SoftwareSerial::stopListening()
 // Constructor
 //
 SoftwareSerial::SoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inverse_logic /* = false */) : 
-    _buffer_overflow(false)
-{
+    _buffer_overflow(false) {
     inverse_logic = inverse_logic;
     this->receivePin = receivePin;
     this->transmitPin = transmitPin;
@@ -124,8 +123,7 @@ SoftwareSerial::SoftwareSerial(uint8_t receivePin, uint8_t transmitPin, bool inv
 //
 // Destructor
 //
-SoftwareSerial::~SoftwareSerial()
-{
+SoftwareSerial::~SoftwareSerial() {
     end();
 }
 
@@ -133,8 +131,7 @@ SoftwareSerial::~SoftwareSerial()
 // Public methods
 //
 
-void SoftwareSerial::begin(long speed)
-{
+void SoftwareSerial::begin(long speed) {
     pUART = malloc(sizeof(serial_t));
     if (pUART == NULL) {
         printf("fail to malloc\r\n");
@@ -143,8 +140,7 @@ void SoftwareSerial::begin(long speed)
     listen();
 }
 
-void SoftwareSerial::end()
-{
+void SoftwareSerial::end() {
     if (_receive_buffer != NULL) {
         free(_receive_buffer);
         _receive_buffer = NULL;
@@ -154,8 +150,7 @@ void SoftwareSerial::end()
 
 
 // Read data from buffer
-int SoftwareSerial::read()
-{
+int SoftwareSerial::read() {
     if (!isListening()) {
         return -1;
     }
@@ -172,8 +167,7 @@ int SoftwareSerial::read()
     return d;
 }
 
-int SoftwareSerial::available()
-{
+int SoftwareSerial::available() {
     if (!isListening()) {
         return 0;
     }
@@ -181,8 +175,7 @@ int SoftwareSerial::available()
     return (_receive_buffer_tail + _receive_buffer_size - _receive_buffer_head) % _receive_buffer_size;
 }
 
-size_t SoftwareSerial::write(uint8_t b)
-{
+size_t SoftwareSerial::write(uint8_t b) {
     int ret = 0;
 
     ret = serial_send_blocked(((serial_t *)pUART), ((char *)&b), 1, 10);
@@ -190,8 +183,7 @@ size_t SoftwareSerial::write(uint8_t b)
     return ret;
 }
 
-void SoftwareSerial::flush()
-{
+void SoftwareSerial::flush() {
     if (!isListening()) {
         return;
     }
@@ -200,8 +192,7 @@ void SoftwareSerial::flush()
     _buffer_overflow = false;
 }
 
-int SoftwareSerial::peek()
-{
+int SoftwareSerial::peek() {
     if (!isListening()) {
         return -1;
     }
@@ -216,8 +207,7 @@ int SoftwareSerial::peek()
 }
 
 /* Extend API provide by RTK */
-void SoftwareSerial::setBufferSize(uint32_t buffer_size)
-{
+void SoftwareSerial::setBufferSize(uint32_t buffer_size) {
     if (_receive_buffer != NULL) {
         if (realloc(_receive_buffer, buffer_size) != NULL) {
             _receive_buffer_size = buffer_size;
@@ -225,13 +215,11 @@ void SoftwareSerial::setBufferSize(uint32_t buffer_size)
     }
 }
 
-void SoftwareSerial::setAvailableCallback(void (*callback)(char c))
-{
+void SoftwareSerial::setAvailableCallback(void (*callback)(char c)) {
     availableCallback = callback;
 }
 
-void SoftwareSerial::begin(long speed, int data_bits, int parity, int stop_bits)
-{
+void SoftwareSerial::begin(long speed, int data_bits, int parity, int stop_bits) {
     pUART = malloc(sizeof(serial_t));
     if (pUART == NULL) {
         printf("fail to malloc\r\n"); 
@@ -243,8 +231,7 @@ void SoftwareSerial::begin(long speed, int data_bits, int parity, int stop_bits)
     listen();
 }
 
-void SoftwareSerial::begin(long speed, int data_bits, int parity, int stop_bits, int flowctrl, int rtsPin, int ctsPin)
-{
+void SoftwareSerial::begin(long speed, int data_bits, int parity, int stop_bits, int flowctrl, int rtsPin, int ctsPin) {
     rtsPin = rtsPin;
     ctsPin = ctsPin;
     pUART = malloc(sizeof(serial_t));

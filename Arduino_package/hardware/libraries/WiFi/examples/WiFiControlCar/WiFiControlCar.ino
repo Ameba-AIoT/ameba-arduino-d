@@ -16,24 +16,18 @@
 #include "Car2wd.h"
 #include <WiFi.h>
 
-char ssid[] = "YourWiFiSSID";        //  your network SSID (name)
-char pass[] = "WiFiPassword";        // your network password
-int keyIndex = 0;                    // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
-int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
-Car2wd car(8,9,10,11,12,13);         // Pins needed for L298N module
+Car2wd car(8, 9, 10, 11, 12, 13);   // Pins needed for L298N module
 
 void setup() {
     car.begin();
-    Serial.begin(115200);            // initialize serial communication
-
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);                // don't continue
-    }
+    Serial.begin(115200);           // initialize serial communication
 
     String fv = WiFi.firmwareVersion();
     if (fv != "1.0.0") {
@@ -121,7 +115,7 @@ void loop() {
         }
         // close the connection:
         client.stop();
-        Serial.println("client disonnected");
+        Serial.println("client disconnected");
     }
   
 }

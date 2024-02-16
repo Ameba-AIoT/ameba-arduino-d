@@ -3,7 +3,7 @@
 
  Set callback function "mySerialCalback" to software serial. Whenever there is data comes in,
  "mySerialCallback" is invoked. In this sketch, it do nothing s until a end of line.
- And then it send a semphore.
+ And then it send a semaphore.
  The loop() use a non-busy loop to wait semaphore.
 
  To test this sketch, you need type something on software serial and then press Enter.
@@ -49,7 +49,7 @@ uint32_t semaID;
 /* The callback is hook at UART IRQ handler and please don't do heavy task here. */
 void mySerialCallback(char c)
 {
-    /*  The parameter c is only for peeking. The actuall data is
+    /*  The parameter c is only for peeking. The actual data is
     *  still in the buffer of SoftwareSerial.
     */
     if ((c == '\r') || (c == '\n')) {

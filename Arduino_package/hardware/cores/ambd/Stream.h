@@ -19,13 +19,13 @@
   parsing functions based on TextFinder library by Michael Margolis
 */
 
-#ifndef Stream_h
-#define Stream_h
+#ifndef STREAM_H
+#define STREAM_H
 
 #include <inttypes.h>
 #include "Print.h"
 
-// compatability macros for testing
+// compatibility macros for testing
 /*
 #define   getInt()            parseInt()
 #define   getInt(skipChar)    parseInt(skipchar)
@@ -35,8 +35,7 @@
 readBytesBetween(pre_string, terminator, buffer, length)
 */
 
-class Stream : public Print
-{
+class Stream : public Print {
     protected:
         unsigned long _timeout;      // number of milliseconds to wait for the next char before aborting timed read
         unsigned long _startMillis;  // used for timeout measurement

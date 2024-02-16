@@ -27,8 +27,7 @@
 // location from which to read.
 #define SERIAL_BUFFER_SIZE 128
 
-class RingBuffer
-{
+class RingBuffer {
     public:
         volatile uint8_t _aucBuffer[SERIAL_BUFFER_SIZE];
         volatile int _iHead;

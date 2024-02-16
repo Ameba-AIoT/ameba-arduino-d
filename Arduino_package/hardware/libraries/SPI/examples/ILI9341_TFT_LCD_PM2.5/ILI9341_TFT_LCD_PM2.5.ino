@@ -30,7 +30,6 @@
 #include <SPI.h>
 #include <AmebaILI9341.h>
 
-// For all supported boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
 // Select 2 GPIO pins connect to TFT_RESET and TFT_DC. And default SPI_SS/SPI1_SS connect to TFT_CS.
 // Do NOT change this pin setting, as softserial is currently only supported on selected pins, (SERIAL1_RX, SERIAL1_TX) or (SERIAL2_RX, SERIAL2_TX)
 SoftwareSerial mySerial(SERIAL1_RX, SERIAL1_TX); // RX, TX

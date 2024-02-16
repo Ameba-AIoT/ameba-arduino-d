@@ -12,9 +12,9 @@
 #include <PubSubClient.h>
 
 // Update these with values suitable for your hardware/network.
-char ssid[] = "yourNetwork";     // your network SSID (name)
-char pass[] = "secretPassword";  // your network password
-int status  = WL_IDLE_STATUS;    // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char mqttServer[]     = "cloud.amebaiot.com";
 char clientId[]       = "amebaClient"; 

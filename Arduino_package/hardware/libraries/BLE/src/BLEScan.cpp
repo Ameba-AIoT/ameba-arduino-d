@@ -126,7 +126,7 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
             (scan_info->remote_addr_type == GAP_REMOTE_ADDR_LE_RANDOM)? "random":"unknown");
 
     printf("ADVType\t\t\t| AddrType\t| BT_Addr\t\t| rssi\n\r");
-    printf("%s\t\t| %s\t| %02x:%02x:%02x:%02x:%02x:%02x\t| %d\n\r",
+    printf("%s\t\t| %s\t| %02X:%02X:%02X:%02X:%02X:%02X\t| %d\n\r",
             adv_type,
             remote_addr_type,
             (scan_info->bd_addr)[5],
@@ -152,7 +152,7 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
             type = scan_info->data[pos];
 
             if (BTDEBUG) {
-                printf("printScanInfo: AD Structure Info: AD type 0x%x, AD Data Length %d\r\n", type, (length - 1));
+                printf("printScanInfo: AD Structure Info: AD type 0x%X, AD Data Length %d\r\n", type, (length - 1));
             }
 
             switch (type) {
@@ -163,7 +163,7 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
                     // (0x08) -- Simultaneous LE and BR/EDR to Same Device Capable (Controller)
                     // (0x10) -- Simultaneous LE and BR/EDR to Same Device Capable (Host)
                     uint8_t flags = scan_info->data[(pos + 1)];
-                    printf("GAP_ADTYPE_FLAGS: 0x%x\n\r", flags);
+                    printf("GAP_ADTYPE_FLAGS: 0x%X\n\r", flags);
                     break;
                 }
 
@@ -173,7 +173,7 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
                     uint8_t i = length - 1;
 
                     while (i >= 2) {
-                        printf("GAP_ADTYPE_16BIT_XXX: 0x%x\n\r", *p_uuid);
+                        printf("GAP_ADTYPE_16BIT_XXX: 0x%04X\n\r", *p_uuid);
                         p_uuid ++;
                         i -= 2;
                     }
@@ -186,7 +186,7 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
                     uint8_t    i     = length - 1;
 
                     while (i >= 4) {
-                        printf("GAP_ADTYPE_32BIT_XXX: 0x%x\n\r", (unsigned int)*p_uuid);
+                        printf("GAP_ADTYPE_32BIT_XXX: 0x%08X\n\r", (unsigned int)*p_uuid);
                         p_uuid ++;
                         i -= 4;
                     }
@@ -196,7 +196,7 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
                 case GAP_ADTYPE_128BIT_MORE:
                 case GAP_ADTYPE_128BIT_COMPLETE: {
                     uint32_t *p_uuid = (uint32_t *)(buffer);
-                    printf("GAP_ADTYPE_128BIT_XXX: 0x%8x%8x%8x%8x\n\r", (unsigned int)p_uuid[3], (unsigned int)p_uuid[2], (unsigned int)p_uuid[1], (unsigned int)p_uuid[0]);
+                    printf("GAP_ADTYPE_128BIT_XXX: 0x%08X%08X%08X%08X\n\r", (unsigned int)p_uuid[3], (unsigned int)p_uuid[2], (unsigned int)p_uuid[1], (unsigned int)p_uuid[0]);
                     break;
                 }
 
@@ -208,21 +208,21 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
                 }
 
                 case GAP_ADTYPE_POWER_LEVEL: {
-                    printf("GAP_ADTYPE_POWER_LEVEL: 0x%x\n\r", scan_info->data[(pos + 1)]);
+                    printf("GAP_ADTYPE_POWER_LEVEL: 0x%X\n\r", scan_info->data[(pos + 1)]);
                     break;
                 }
 
                 case GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE: {
                     uint16_t *p_min = (uint16_t *)(buffer);
                     uint16_t *p_max = p_min + 1;
-                    printf("GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE: 0x%x - 0x%x\n\r", *p_min, *p_max);
+                    printf("GAP_ADTYPE_SLAVE_CONN_INTERVAL_RANGE: 0x%X - 0x%X\n\r", *p_min, *p_max);
                     break;
                 }
 
                 case GAP_ADTYPE_SERVICE_DATA: {
                     uint16_t *p_uuid = (uint16_t *)(buffer);
                     uint8_t data_len = length - 3;
-                    printf("GAP_ADTYPE_SERVICE_DATA: UUID 0x%x, len %d\n\r", *p_uuid, data_len);
+                    printf("GAP_ADTYPE_SERVICE_DATA: UUID 0x%X, len %d\n\r", *p_uuid, data_len);
                     break;
                 }
 
@@ -235,14 +235,14 @@ void BLEScan::printScanInfo(T_LE_CB_DATA *p_data) {
                 case GAP_ADTYPE_MANUFACTURER_SPECIFIC: {
                     uint8_t data_len = length - 3;
                     uint16_t *p_company_id = (uint16_t *)(buffer);
-                    printf("GAP_ADTYPE_MANUFACTURER_SPECIFIC: company_id 0x%x, len %d\n\r", *p_company_id, data_len);
+                    printf("GAP_ADTYPE_MANUFACTURER_SPECIFIC: company_id 0x%X, len %d\n\r", *p_company_id, data_len);
                     break;
                 }
 
                 default: {
                     uint8_t i = 0;
                     for (i = 0; i < (length - 1); i++) {
-                        printf("AD Data: Unhandled Data = 0x%x\n\r", scan_info->data[(pos + i)]);
+                        printf("AD Data: Unhandled Data = 0x%X\n\r", scan_info->data[(pos + i)]);
                     }
                     break;
                 }

@@ -1,3 +1,9 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-audio-wav/
+ */
+
 #include "FatFs_SD.h"
 #include "PlaybackWav.h"
 #include "RecordWav.h"
@@ -24,7 +30,7 @@ void readCBFunc() {
 }
 
 void writeCBFunc() {
-    if(Codec.writeAvaliable() && playWav.fileOpened()) {
+    if (Codec.writeAvaliable() && playWav.fileOpened()) {
         playWav.readAudioData(buffer, BUFFERSIZE);
         Codec.writeDataPage(buffer, BUFFERSIZE);
     }
@@ -56,7 +62,7 @@ void loop() {
         playWav.openFile(absolute_filename);
     }
     if (playWav.fileOpened()) {
-        if(playWav.getPositionMillis() == playWav.getLengthMillis()) {
+        if (playWav.getPositionMillis() == playWav.getLengthMillis()) {
             playWav.setPositionMillis(0);
         }
     }

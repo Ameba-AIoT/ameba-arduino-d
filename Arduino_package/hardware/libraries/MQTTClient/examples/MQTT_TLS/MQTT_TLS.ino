@@ -7,10 +7,11 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-// Update these with values suitable for your network.
-char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "yourPassword";       // your network password (use for WPA, or use as key for WEP)
-int status  = WL_IDLE_STATUS;       // the Wifi radio's status
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
+
+int keepAliveTimer = 30;
 
 char mqttServer[]     = "test.mosquitto.org";
 char clientId[]       = "amebaClient";
@@ -20,6 +21,8 @@ char subscribeTopic[] = "inTopic";
 
 WiFiSSLClient wifiClient;
 PubSubClient client(wifiClient);
+
+#define MQTT_TLS_SERVER_AUTH 0
 
 /* Mosquitto Root CA can be download here:
  * https://test.mosquitto.org/
@@ -50,6 +53,7 @@ char* rootCABuff = \
 "m/XriWr/Cq4h/JfB7NTsezVslgkBaoU=\n" \
 "-----END CERTIFICATE-----\n";
 
+#if MQTT_TLS_SERVER_AUTH
 char* certificateBuff = \
 "-----BEGIN CERTIFICATE-----\n" \
 "MIIDjTCCAnWgAwIBAgIBADANBgkqhkiG9w0BAQsFADCBkDELMAkGA1UEBhMCR0Ix\n" \
@@ -75,7 +79,7 @@ char* certificateBuff = \
 "-----END CERTIFICATE-----\n";
 
 char* privateKeyBuff = \
-"-----BEGIN RSA PRIVATE KEY-----\n" \
+"-----BEGIN PRIVATE KEY-----\n" \
 "MIIEpAIBAAKCAQEAmog1ck7TyKdDw/943tfGLvwY/rz6DCZkosOQCYEZhjMSjX4M\n" \
 "BNcCU/rhwm8EP+1uYZfHrdsijalMuSUGUOi9Y1t+SqzYLvvgLi8+h3LIGiGvqqhs\n" \
 "97iyWNu1WfWEMqBxjRVAI7/+u3b/1Ztkz9UBN7+/y4jGLTsaW4IRQ5qCwt58ov+Q\n" \
@@ -101,7 +105,8 @@ char* privateKeyBuff = \
 "mlEBWNsCgYBAsNfSFgDnSTcsSkfx/dYSXaQmKuoEDCztWjx+lDii3nvkI1HigM4P\n" \
 "Q0fJ6v8y/ivow9zRYuO+k8VN5TRe7ml3VsKYk6rCX80MuKR9oOPvwyuoJ6Bi/51h\n" \
 "6keVd5li5TtenbNLgDZxKTelJtDO8zSf1Fix/UnbN1kRM8ka+yAflw==\n" \
-"-----END RSA PRIVATE KEY-----\n";
+"-----END PRIVATE KEY-----\n";
+#endif
 
 void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print("Message arrived [");
@@ -116,7 +121,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 void reconnect() {
     // Loop until we're reconnected
     while (!(client.connected())) {
-        Serial.println("Attempting MQTT connection...");
+        Serial.println("\r\nAttempting MQTT connection...");
         // Attempt to connect
         if (client.connect(clientId)) {
             Serial.println("connected");
@@ -135,37 +140,37 @@ void reconnect() {
 }
 
 void setup() {
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  while (status != WL_CONNECTED) {
-    Serial.print("\r\n Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
-    if (status == WL_CONNECTED) break;
-    // retry after 1 second
-    delay(1000);
-  }
+    while (status != WL_CONNECTED) {
+        Serial.print("\r\nAttempting to connect to SSID: ");
+        Serial.println(ssid);
+        // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+        status = WiFi.begin(ssid, pass);
+        delay(1000);
+    }
 
-  /*/
-  wifiClient.setRootCA((unsigned char*)rootCABuff);
-  wifiClient.setClientCertificate((unsigned char*)certificateBuff, (unsigned char*)privateKeyBuff);
-  client.setServer(mqttServer, 8884);
-  /*/
-  wifiClient.setRootCA((unsigned char*)rootCABuff);
-  client.setServer(mqttServer, 8883);
-  //*/
-  client.setCallback(callback);
+    client.setKeepAlive(keepAliveTimer);
 
-  // Allow the hardware to sort itself out
-  delay(1500);
+#if MQTT_TLS_SERVER_AUTH
+    wifiClient.setRootCA((unsigned char*)rootCABuff);
+    wifiClient.setClientCertificate((unsigned char*)certificateBuff, (unsigned char*)privateKeyBuff);
+    client.setServer(mqttServer, 8884);
+#else
+    wifiClient.setRootCA((unsigned char*)rootCABuff);
+    client.setServer(mqttServer, 8883);
+#endif
+
+    client.setCallback(callback);
+
+    // Allow the hardware to sort itself out
+    delay(1500);
 }
 
-void loop()
-{
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
-  delay(1000);
+void loop() {
+    if (!client.connected()) {
+        reconnect();
+    }
+    client.loop();
+    delay(1000);
 }

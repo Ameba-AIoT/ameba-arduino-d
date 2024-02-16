@@ -91,7 +91,7 @@ class AudioCodec {
         static void initHAL();
         static void deinitHAL();
 
-        // Function for checking for avaliable audio data and calling callback functions
+        // Function for checking for available audio data and calling callback functions
         static void callback_task(void* param);
 
         // Functions for accessing and managing DMA buffer use

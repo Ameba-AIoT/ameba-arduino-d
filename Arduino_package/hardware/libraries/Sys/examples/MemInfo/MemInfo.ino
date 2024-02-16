@@ -3,6 +3,8 @@
  *
  * In FreeRTOS, there is a heap for memory allocale and creating thread.
  * If heap size is too low, then some function may behave abnormal from the failure of memory allocation.
+ *
+ * Example guide: TBD
  */
 
 void setup() {

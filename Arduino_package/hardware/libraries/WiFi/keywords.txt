@@ -53,6 +53,7 @@ remoteIP	KEYWORD2
 remotePort	KEYWORD2
 setHostName	KEYWORD2
 getHostName	KEYWORD2
+setBlocking KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

@@ -1,7 +1,6 @@
 /*
-
- This example prints the Wifi shield's MAC address, and
- scans for available Wifi networks using the Wifi shield.
+ This example prints MAC address, and
+ scans for available Wifi networks.
  Every ten seconds, it scans again. It doesn't actually
  connect to any network, so no encryption scheme is specified.
 
@@ -10,11 +9,16 @@
  modified 21 Junn 2012
  by Tom Igoe and Jaymes Dec
 
+ modified 08 May 2023
+ by Realtek SG
+
  Example guide:
  https://www.amebaiot.com/en/amebad-arduino-scan-wifi/
  */
 
 #include <WiFi.h>
+
+int status = WL_IDLE_STATUS;    // Indicator of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:
@@ -23,13 +27,8 @@ void setup() {
         ; // wait for serial port to connect. Needed for native USB port only
     }
 
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
-    }
-
+    // check for WiFi status:
+    status = WiFi.status();
     // Print WiFi MAC address:
     printMacAddress();
 }
@@ -42,10 +41,8 @@ void loop() {
 }
 
 void printMacAddress() {
-    // the MAC address of your Wifi shield
-    byte mac[6];
-
     // print your MAC address:
+    byte mac[6];
     WiFi.macAddress(mac);
     Serial.print("MAC: ");
     Serial.print(mac[0], HEX);
@@ -126,7 +123,6 @@ void printEncryptionTypeEx(uint32_t thisType) {
     }
 }
 
-
 void printEncryptionType(int thisType) {
     // read the encryption type and print out the name:
     switch (thisType) {
@@ -150,4 +146,3 @@ void printEncryptionType(int thisType) {
             break;
     }
 }
-

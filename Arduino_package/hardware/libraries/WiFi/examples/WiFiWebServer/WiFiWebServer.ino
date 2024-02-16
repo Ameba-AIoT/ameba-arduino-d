@@ -1,13 +1,18 @@
+/*
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-web-server-status/
+ */
+
 #include <WiFi.h>
 
-char ssid[] = "yourNetwork";    // your network SSID (name)
-char pass[] = "Password";       // your network password
-int keyIndex = 0;               // your network key Index number (needed only for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
+int keyIndex = 0;                   // your network key Index number (needed only for WEP)
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 //State the analog pin that you want to read
 int analogChannel = A0;
-
-int status = WL_IDLE_STATUS;
 
 WiFiServer server(80);
 void setup() {
@@ -15,12 +20,6 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
-    }
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
     }
 
     // attempt to connect to Wifi network:
@@ -33,19 +32,19 @@ void setup() {
         // wait 10 seconds for connection:
         delay(10000);
     }
+    // server.setBlocking();
     server.begin();
     // you're connected now, so print out the status:
     printWifiStatus();
 }
 
-
 void loop() {
     // listen for incoming clients
     WiFiClient client = server.available();
     if (client) {
-        Serial.println("new client");
         // an http request ends with a blank line
         boolean currentLineIsBlank = true;
+        Serial.println("new client");
         while (client.connected()) {
             if (client.available()) {
                 char c = client.read();
@@ -83,11 +82,13 @@ void loop() {
         delay(1);
 
         // close the connection:
-        client.stop();
-        Serial.println("client disonnected");
+        // client.stop(); // remove this line since destructor will be called automatically
+        Serial.println("client disconnected");
     }
+    // continue with user code in WiFi server non-blocking mode 
+    Serial.println("User code implementing here...");
+    delay(5000);
 }
-
 
 void printWifiStatus() {
     // print the SSID of the network you're attached to:
@@ -95,7 +96,7 @@ void printWifiStatus() {
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

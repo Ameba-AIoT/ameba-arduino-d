@@ -1,24 +1,21 @@
 /*
- Basic MQTT example with Authentication
-
-  - connects to an MQTT server, providing username
-    and password
+ MQTT Authentication example
+  - connects to an MQTT server, providing username and password
   - publishes "hello world" to the topic "outTopic"
   - subscribes to the topic "inTopic"
-*/
+
+ Example guide:
+ https://www.amebaiot.com/en/amebad-arduino-mqtt-upload-listen/
+ */
 
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-// Update these with values suitable for your network.
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
-char ssid[] = "yourNetwork";     // your network SSID (name)
-char pass[] = "secretPassword";  // your network password
-
-int status  = WL_IDLE_STATUS;    // the Wifi radio's status
-
-char mqttServer[] = "cloud.amebaiot.com";
-
+char mqttServer[]     = "cloud.amebaiot.com";
 char clientId[]       = "amebaClient";
 char clientUser[]     = "testuser";
 char clientPass[]     = "testpass";
@@ -27,20 +24,29 @@ char publishPayload[] = "hello world";
 char subscribeTopic[] = "inTopic";
 
 void callback(char* topic, byte* payload, unsigned int length) {
-    // handle message arrived
+    Serial.print("Message arrived [");
+    Serial.print(topic);
+    Serial.print("] ");
+    for (unsigned int i = 0; i < length; i++) {
+        Serial.print((char)(payload[i]));
+    }
+    Serial.println();
 }
 
 WiFiClient wifiClient;
 PubSubClient client(mqttServer, 1883, callback, wifiClient);
 
 void setup() {
+    //Initialize serial and wait for port to open:
     Serial.begin(115200);
+    // wait for serial port to connect.
     while (!Serial) {
         ;
     }
 
+    //Attempt to connect to WiFi network
     while (status != WL_CONNECTED) {
-        Serial.print("Attempting to connect to SSID: ");
+        Serial.print("\r\nAttempting to connect to SSID: ");
         Serial.println(ssid);
         // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
         status = WiFi.begin(ssid, pass);

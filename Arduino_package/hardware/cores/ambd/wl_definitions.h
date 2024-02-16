@@ -23,8 +23,8 @@
  *      Author: dlafauci
  */
 
-#ifndef WL_DEFINITIONS_H_
-#define WL_DEFINITIONS_H_
+#ifndef WL_DEFINITIONS_H
+#define WL_DEFINITIONS_H
 
 // Maximum size of a SSID
 #define WL_SSID_MAX_LENGTH          32
@@ -38,13 +38,13 @@
 #define WL_IPV4_LENGTH              4
 // Maximum size of a SSID list
 #define WL_NETWORKS_LIST_MAXNUM     50
-// Maxmium number of socket
+// Maximum number of socket
 #define	MAX_SOCK_NUM                4
 // Socket not available constant
 #define SOCK_NOT_AVAIL              255
 // Default state value for Wifi state field
 #define NA_STATE                    -1
-//Maximum number of attempts to establish wifi connection
+// Maximum number of attempts to establish wifi connection
 #define WL_MAX_ATTEMPT_CONNECTION   10
 
 typedef enum {
@@ -61,10 +61,9 @@ typedef enum {
 /* Encryption modes */
 enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
     ENC_TYPE_WEP  = 5,
-    ENC_TYPE_WPA = 2,
+    ENC_TYPE_WPA  = 2,
     ENC_TYPE_WPA3 = 3,
     ENC_TYPE_WPA2 = 4,
-    
     /* ... except these two, 7 and 8 are reserved in 802.11-2007 */
     ENC_TYPE_NONE = 7,
     ENC_TYPE_AUTO = 8
@@ -100,4 +99,3 @@ enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
 #define SECURITY_WPA2_WPA3_MIXED (WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED)
 
 #endif /* WL_DEFINITIONS_H_ */
-

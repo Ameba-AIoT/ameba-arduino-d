@@ -6,11 +6,10 @@
 
 #include <WiFi.h>
 
-char ssid[] = "yourNetwork";        // your network SSID (name)
-char pass[] = "yourPassword";     	// your network password (use for WPA, or use as key for WEP)
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
-
-int status = WL_IDLE_STATUS;
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char HTTPS_SERVER[] = "os.mbed.com";
 char HTTPS_PATH[] = "/media/uploads/mbed_official/hello.txt";
@@ -57,7 +56,7 @@ void setup() {
     printWifiStatus();
 
     Serial.println("\nStarting connection to server...");
-	client.setRootCA((unsigned char*)rootCABuff);
+    client.setRootCA((unsigned char*)rootCABuff);
     // if a connection is formed, report back via serial
     if (client.connect(HTTPS_SERVER, 443)) {
         Serial.println("connected to server");
@@ -99,7 +98,7 @@ void printWifiStatus() {
     Serial.print("SSID: ");
     Serial.println(WiFi.SSID());
 
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);

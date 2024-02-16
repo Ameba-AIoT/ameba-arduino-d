@@ -16,8 +16,8 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef WiringPrivate_h
-#define WiringPrivate_h
+#ifndef WIRING_PRIVATE_H
+#define WIRING_PRIVATE_H
 
 #include <stdint.h>
 #include <stdio.h>

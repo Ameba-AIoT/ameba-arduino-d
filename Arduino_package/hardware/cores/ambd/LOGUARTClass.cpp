@@ -40,8 +40,7 @@ serial_t log_uart_obj;
 
 RingBuffer rx_buffer0;
 
-void arduino_loguart_irq_handler(uint32_t id, SerialIrq event)
-{
+void arduino_loguart_irq_handler(uint32_t id, SerialIrq event) {
     char c;
     RingBuffer *pRxBuffer = (RingBuffer *)id;
 
@@ -51,22 +50,15 @@ void arduino_loguart_irq_handler(uint32_t id, SerialIrq event)
     }
 }
 
-LOGUARTClass::LOGUARTClass(int dwIrq, RingBuffer* pRx_buffer)
-{
+LOGUARTClass::LOGUARTClass(int dwIrq, RingBuffer* pRx_buffer) {
     _rx_buffer = pRx_buffer;
     _dwIrq = dwIrq;
 }
 
 // Protected Methods //////////////////////////////////////////////////////////////
 
-
-
-
-// Public Methods //////////////////////////////////////////////////////////////
-
-
-void LOGUARTClass::IrqHandler(void)
-{
+// Public Methods /////////////////////////////////////////////////////////////////
+void LOGUARTClass::IrqHandler(void) {
     uint8_t     data = 0;
     BOOL        PullMode = _FALSE;
 
@@ -88,8 +80,10 @@ void LOGUARTClass::IrqHandler(void)
     serial_irq_set(&log_uart_obj, RxIrq, IrqEn);
 }
 
-void LOGUARTClass::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
-{
+void LOGUARTClass::begin(const uint32_t dwBaudRate, uint8_t serial_config_value) {
+    //amb_ard_pin_check_fun(LOG_TX, PIO_UART);
+    //amb_ard_pin_check_fun(LOG_RX, PIO_UART);
+
     // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
     serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
@@ -106,7 +100,7 @@ void LOGUARTClass::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     //serial_init(&uart_obj, PA_12, PA_13);
     //serial_init(&uart_obj, PinName(g_APinDescription[SERIAL2_TX].pinname), PinName(g_APinDescription[SERIAL2_RX].pinname));
 
-    switch(serial_config_value) {
+    switch (serial_config_value) {
 //      case SERIAL_5N1:
 //          break;
 //      case SERIAL_6N1:
@@ -227,41 +221,36 @@ void LOGUARTClass::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     serial_irq_set(&log_uart_obj, RxIrq, 1);
 }
 
-void LOGUARTClass::end(void)
-{
+void LOGUARTClass::end(void) {
     // clear any received data
     _rx_buffer->_iHead = _rx_buffer->_iTail;
 
     serial_free(&log_uart_obj);
 }
 
-int LOGUARTClass::available(void)
-{
+int LOGUARTClass::available(void) {
   return (uint32_t)(SERIAL_BUFFER_SIZE + _rx_buffer->_iHead - _rx_buffer->_iTail) % SERIAL_BUFFER_SIZE;
 }
 
-int LOGUARTClass::peek(void)
-{
+int LOGUARTClass::peek(void) {
     if (_rx_buffer->_iHead == _rx_buffer->_iTail)
         return -1;
 
     return _rx_buffer->_aucBuffer[_rx_buffer->_iTail];
 }
 
-int LOGUARTClass::read(void)
-{
+int LOGUARTClass::read(void) {
     // if the head isn't ahead of the tail, we don't have any characters
-    if (_rx_buffer->_iHead == _rx_buffer->_iTail)
+    if (_rx_buffer->_iHead == _rx_buffer->_iTail) {
         return -1;
+    }
 
     uint8_t uc = _rx_buffer->_aucBuffer[_rx_buffer->_iTail];
     _rx_buffer->_iTail = (unsigned int)(_rx_buffer->_iTail + 1) % SERIAL_BUFFER_SIZE;
     return uc;
-
 }
 
-void LOGUARTClass::flush(void)
-{
+void LOGUARTClass::flush(void) {
 // TODO: 
 // while ( serial_writable(&(this->sobj)) != 1 );
 /*
@@ -271,13 +260,13 @@ void LOGUARTClass::flush(void)
 */
 }
 
-size_t LOGUARTClass::write(const uint8_t uc_data)
-{
+size_t LOGUARTClass::write(const uint8_t uc_data) {
     serial_putc(&log_uart_obj, ((int)uc_data));
     return 1;
 }
 
 LOGUARTClass Serial(UART_LOG_IRQ, &rx_buffer0);
+
 bool Serial_available() {
     return Serial.available() > 0;
 }

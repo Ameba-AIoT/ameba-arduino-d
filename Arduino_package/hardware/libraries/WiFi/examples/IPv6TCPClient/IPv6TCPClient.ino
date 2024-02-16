@@ -10,10 +10,9 @@
 #define MAX_RECV_SIZE 1500
 #define TCP_SERVER_PORT 5003
 
-char ssid[] = "yourNetwork"; //  your network SSID (name)
-char pass[] = "password";    // your network password (use for WPA, or use as key for WEP)
-
-int status = WL_IDLE_STATUS;
+char ssid[] = "Network_SSID";       // your network SSID (name)
+char pass[] = "Password";           // your network password
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 //////////////////////////////////////////////////////////////////////////////////////
 // Update Server's IPv6 address according to log printed by [IPv6TCPServer] example //
@@ -29,13 +28,6 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) {
         ;
-    }
-
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        // don't continue:
-        while (true);
     }
 
     // attempt to connect to Wifi network:
@@ -67,7 +59,7 @@ void setup() {
 }
 
 void loop() {
-    // continously send data to server:
+    // continuously send data to server:
     if (client.write(data_send, MAX_SEND_SIZE)) {
         Serial.println("\n[CLIENT] Send data to server successfully");
     } else {

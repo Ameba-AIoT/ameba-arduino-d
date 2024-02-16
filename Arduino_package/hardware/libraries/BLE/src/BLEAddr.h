@@ -7,7 +7,7 @@ class BLEAddr {
     public:
         BLEAddr();
         BLEAddr(uint8_t (&addr)[6]);
-        BLEAddr(const char * str);      // Build a BLEAddr object from an address string. Use of colons (:) to seperate address bytes in the string is acceptable.
+        BLEAddr(const char * str);      // Build a BLEAddr object from an address string. Use of colons (:) to separate address bytes in the string is acceptable.
         const char* str();
         uint8_t* data();
         bool operator ==(const BLEAddr &addr);

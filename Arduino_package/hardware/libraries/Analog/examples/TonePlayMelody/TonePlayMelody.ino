@@ -110,23 +110,15 @@ int noteDurations[] = {
     6, 16, 8, 8, 8, 8, 4
 };
 
-void play(int *melody, int *noteDurations, int num) {
-    for (int note = 0; note < num; note++) {
-        int noteDuration = 3000 / noteDurations[note];
+// check the board pin mapping for available PWM pins
+int melody_PWM_pin = 8;
 
-#if defined(BOARD_RTL8722DM)
-    tone(8, melody[note], noteDuration);
-#elif defined(BOARD_RTL8722DM_MINI)
-    tone(7, melody[note], noteDuration);
-#elif defined(BOARD_RTL8720DN_BW16)
-    tone(PA25, melody[note], noteDuration);
-#elif defined(BOARD_RTL8721DM)
-    tone(3, melody[note], noteDuration);
-#elif defined(BOARD_RTL8720DF)
-    tone(7, melody[note], noteDuration);
-#else
-    tone(10, melody[note], noteDuration);
-#endif
+void play(int *melody, int *noteDurations, int num) {
+    int noteDuration;
+    for (int note = 0; note < num; note++) {
+        noteDuration = 3000 / noteDurations[note];
+
+        tone(melody_PWM_pin, melody[note], noteDuration);
 
         delay(noteDuration * 1.30);
     }

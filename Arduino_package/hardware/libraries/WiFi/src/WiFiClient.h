@@ -1,5 +1,5 @@
-#ifndef WifiClient_h
-#define WifiClient_h
+#ifndef WiFiClient_h
+#define WiFiClient_h
 
 #include "Print.h"
 #include "Client.h"
@@ -11,6 +11,7 @@ class WiFiClient : public Client {
     public:
         WiFiClient();
         WiFiClient(uint8_t sock);
+        ~WiFiClient();
 
         uint8_t status();
         virtual uint8_t connected();
@@ -38,11 +39,10 @@ class WiFiClient : public Client {
         using Print::write;
 
     private:
-        int _sock;
+        uint8_t _sock;
         ServerDrv clientdrv;
         bool _is_connected;
         uint8_t data[DATA_LENTH];
-
         int recvTimeout;
 };
 

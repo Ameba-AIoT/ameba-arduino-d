@@ -16,7 +16,7 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#if defined(BOARD_RTL8720DN_BW16)
+#if defined(BOARD_AITHINKER_BW16)
 //Not available
 #else
 
@@ -44,8 +44,7 @@ static serial_t uart_obj;
 
 RingBuffer rx_buffer1;
 
-static void arduino_uart_irq_handler(uint32_t id, SerialIrq event)
-{
+static void arduino_uart_irq_handler(uint32_t id, SerialIrq event) {
     char c;
     RingBuffer *pRxBuffer = (RingBuffer *)id;
 
@@ -55,22 +54,15 @@ static void arduino_uart_irq_handler(uint32_t id, SerialIrq event)
     }
 }
 
-UARTClassOne::UARTClassOne(int dwIrq, RingBuffer* pRx_buffer)
-{
+UARTClassOne::UARTClassOne(int dwIrq, RingBuffer* pRx_buffer) {
     _rx_buffer = pRx_buffer;
     _dwIrq = dwIrq;
 }
 
 // Protected Methods //////////////////////////////////////////////////////////////
 
-
-
-
-// Public Methods //////////////////////////////////////////////////////////////
-
-
-void UARTClassOne::IrqHandler(void)
-{
+// Public Methods /////////////////////////////////////////////////////////////////
+void UARTClassOne::IrqHandler(void) {
     uint8_t     data = 0;
     BOOL        PullMode = _FALSE;
 
@@ -92,8 +84,10 @@ void UARTClassOne::IrqHandler(void)
     serial_irq_set(&uart_obj, RxIrq, IrqEn);
 }
 
-void UARTClassOne::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
-{
+void UARTClassOne::begin(const uint32_t dwBaudRate, uint8_t serial_config_value) {
+    //amb_ard_pin_check_fun(SERIAL1_TX, PIO_UART);
+    //amb_ard_pin_check_fun(SERIAL1_RX, PIO_UART);
+
     // Log, UART_LOG
     //serial_init(&log_uart_obj, PA_7, PA_8);
     //serial_init(&log_uart_obj, PinName(g_APinDescription[LOG_TX].pinname), PinName(g_APinDescription[LOG_RX].pinname));
@@ -110,7 +104,7 @@ void UARTClassOne::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     //serial_init(&uart_obj, PA_12, PA_13);
     //serial_init(&uart_obj, PinName(g_APinDescription[SERIAL2_TX].pinname), PinName(g_APinDescription[SERIAL2_RX].pinname));
 
-    switch(serial_config_value) {
+    switch (serial_config_value) {
         case SERIAL_7N1:
             serial_format(&uart_obj, 7, ParityNone, 1);
             break;
@@ -192,41 +186,36 @@ void UARTClassOne::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
     serial_irq_handler(&uart_obj, arduino_uart_irq_handler, (uint32_t)_rx_buffer);
 }
 
-void UARTClassOne::end(void)
-{
+void UARTClassOne::end(void) {
     // clear any received data
     _rx_buffer->_iHead = _rx_buffer->_iTail;
 
     serial_free(&uart_obj);
 }
 
-int UARTClassOne::available(void)
-{
-  return (uint32_t)(SERIAL_BUFFER_SIZE + _rx_buffer->_iHead - _rx_buffer->_iTail) % SERIAL_BUFFER_SIZE;
+int UARTClassOne::available(void) {
+    return (uint32_t)(SERIAL_BUFFER_SIZE + _rx_buffer->_iHead - _rx_buffer->_iTail) % SERIAL_BUFFER_SIZE;
 }
 
-int UARTClassOne::peek(void)
-{
+int UARTClassOne::peek(void) {
     if (_rx_buffer->_iHead == _rx_buffer->_iTail)
         return -1;
 
     return _rx_buffer->_aucBuffer[_rx_buffer->_iTail];
 }
 
-int UARTClassOne::read(void)
-{
+int UARTClassOne::read(void) {
     // if the head isn't ahead of the tail, we don't have any characters
-    if (_rx_buffer->_iHead == _rx_buffer->_iTail)
+    if (_rx_buffer->_iHead == _rx_buffer->_iTail) {
         return -1;
+    }
 
     uint8_t uc = _rx_buffer->_aucBuffer[_rx_buffer->_iTail];
     _rx_buffer->_iTail = (unsigned int)(_rx_buffer->_iTail + 1) % SERIAL_BUFFER_SIZE;
     return uc;
-
 }
 
-void UARTClassOne::flush(void)
-{
+void UARTClassOne::flush(void) {
 // TODO: 
 // while ( serial_writable(&(this->sobj)) != 1 );
 /*
@@ -236,13 +225,13 @@ void UARTClassOne::flush(void)
 */
 }
 
-size_t UARTClassOne::write(const uint8_t uc_data)
-{
+size_t UARTClassOne::write(const uint8_t uc_data) {
     serial_putc(&uart_obj, (int)(uc_data));
     return 1;
 }
 
 UARTClassOne Serial1(UART0_IRQ, &rx_buffer1);
+
 bool Serial1_available() {
     return Serial1.available() > 0;
 }

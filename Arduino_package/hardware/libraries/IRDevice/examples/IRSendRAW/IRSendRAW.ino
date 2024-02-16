@@ -6,35 +6,31 @@
 
 #include "IRDevice.h"
 
-// User defined txPin, rxPin and carrier frequency
-#if defined(BOARD_RTL8722DM)
+// Set IR TX and RX pins
+// check the board pin mapping for available IR pins
 #define IR_RX_PIN       8
 #define IR_TX_PIN       9
-#elif defined(BOARD_RTL8722DM_MINI)
-#error Sorry, RTL8722DM_MINI do not support.
-#elif defined(BOARD_RTL8720DN_BW16)
-#define IR_RX_PIN       PA26
-#define IR_TX_PIN       PA25
-#elif defined(BOARD_RTL8721DM)
-#define IR_RX_PIN       5
-#define IR_TX_PIN       6
-#elif defined(BOARD_RTL8720DF)
-#define IR_RX_PIN       6
-#define IR_TX_PIN       7
-#endif
 
-#define CARRIER_FREQ        38000
+// User defined carrier frequency
+#define CARRIER_FREQ    38000
 
 unsigned int irRawSignal[] = {
-    9000, 4500,                                                                            // starting bit
-    560, 560, 560, 560, 560, 1690, 560, 560, 560, 560, 560, 560, 560, 560, 560, 560,       // address   00100000 ： 4
-    560, 1690, 560, 1690, 560, 560, 560, 1690, 560, 1690, 560, 1690, 560, 1690, 560, 1690, // ~address  11011111
-    560, 560, 560, 560, 560, 560, 560, 1690, 560, 560, 560, 560, 560, 560, 560, 560,       // data      00010000 ： 8
-    560, 1690, 560, 1690, 560, 1690, 560, 560, 560, 1690, 560, 1690, 560, 1690, 560, 1690, //~data      11101111
-    560                                                                                    // stoping bit
+// starting bit
+    9000, 4500,
+// address   00100000 ： 4
+    560, 560, 560, 560, 560, 1690, 560, 560, 560, 560, 560, 560, 560, 560, 560, 560,
+// ~address  11011111
+    560, 1690, 560, 1690, 560, 560, 560, 1690, 560, 1690, 560, 1690, 560, 1690, 560, 1690,
+// data      00010000 ： 8
+    560, 560, 560, 560, 560, 560, 560, 1690, 560, 560, 560, 560, 560, 560, 560, 560,
+//~data      11101111
+    560, 1690, 560, 1690, 560, 1690, 560, 560, 560, 1690, 560, 1690, 560, 1690, 560, 1690,
+// stopping bit
+    560
 };
 
-int DataLen = sizeof(irRawSignal) / sizeof(irRawSignal[0]); // 284/ 4 = 71
+// 284/ 4 = 71
+int DataLen = sizeof(irRawSignal) / sizeof(irRawSignal[0]);
 
 void setup() {
     Serial.begin(115200);

@@ -49,7 +49,7 @@ class BLEDevice {
         void beginCentral(uint8_t connCount = BLE_CENTRAL_APP_MAX_LINKS);
         void beginPeripheral();
         void end();
-        void getLocalAddr(uint8_t (&addr)[GAP_BD_ADDR_LEN]);        // Local address is only avaliable after peripheral or central mode is started
+        void getLocalAddr(uint8_t (&addr)[GAP_BD_ADDR_LEN]);        // Local address is only available after peripheral or central mode is started
         void configServer(uint8_t maxServiceCount);
         void addService(BLEService& newService);
         void configClient();

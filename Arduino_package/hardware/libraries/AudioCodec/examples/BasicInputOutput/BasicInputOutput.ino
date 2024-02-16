@@ -17,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-    // if received data is avaliable and transmit data buffer is avaliable for write
+    // if received data is available and transmit data buffer is available for write
     if(Codec.writeAvaliable() && Codec.readAvaliable()) {
         Codec.readDataPage(buffer, SAMPLECOUNT);    // read latest received data from buffer
         Codec.writeDataPage(buffer, SAMPLECOUNT);   // write latest data into transmit data buffer

@@ -76,6 +76,8 @@ extern void noTone(uint32_t ulPin);
 
 extern void analogWritePeriod(int us);
 
+extern void analogSet(float gain, float offset);
+
 #ifdef __cplusplus
 }
 #endif

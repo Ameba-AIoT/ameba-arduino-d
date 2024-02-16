@@ -16,14 +16,13 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#ifndef _LOGUART_CLASS_
-#define _LOGUART_CLASS_
+#ifndef _LOGUARTCLASS_
+#define _LOGUARTCLASS_
 
 #include "HardwareSerial.h"
 #include "RingBuffer.h"
 
-class LOGUARTClass : public HardwareSerial
-{
+class LOGUARTClass : public HardwareSerial {
     public:
         LOGUARTClass(int dwIrq, RingBuffer* pRx_buffer);
         void begin(const uint32_t dwBaudRate) { begin(dwBaudRate, SERIAL_8N1); }

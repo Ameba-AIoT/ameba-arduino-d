@@ -7,22 +7,20 @@
 #include <mbedtls/debug.h>
 #include "ard_ssl.h"
 
-#define ARDUINO_MBEDTLS_DEBUG_LEVEL     0   // Set to 0 to disable debug messsages, 5 to enable all debug messages
+#define ARDUINO_MBEDTLS_DEBUG_LEVEL     0   // Set to 0 to disable debug messages, 5 to enable all debug messages
 
-static unsigned int ard_ssl_arc4random(void)
-{
+static unsigned int ard_ssl_arc4random(void) {
     unsigned int res = xTaskGetTickCount();
     static unsigned int seed = 0xDEADB00B;
 
     seed = ((seed & 0x007F00FF) << 7) ^ 
-        ((seed & 0x0F80FF00) >> 8) ^ // be sure to stir those low bits
-        (res << 13) ^ (res >> 9);    // using the clock too!
+           ((seed & 0x0F80FF00) >> 8) ^ // be sure to stir those low bits
+            (res << 13) ^ (res >> 9);    // using the clock too!
 
     return seed;
 }
 
-static void get_random_bytes(void *buf, size_t len)
-{
+static void get_random_bytes(void *buf, size_t len) {
     unsigned int ranbuf;
     unsigned int *lp;
     int i, count;
@@ -40,66 +38,65 @@ static void get_random_bytes(void *buf, size_t len)
     }
 }
 
-static int my_random(void *p_rng, unsigned char *output, size_t output_len)
-{
+static int my_random(void *p_rng, unsigned char *output, size_t output_len) {
     p_rng = p_rng;
     get_random_bytes(output, output_len);
     return 0;
 }
 
-static int my_verify(void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags) 
-{
+static int my_verify(void *data, mbedtls_x509_crt *crt, int depth, uint32_t *flags) {
     char buf[1024];
     ((void)data);
 
     mbedtls_x509_crt_info(buf, (sizeof(buf) - 1), "", crt);
 
-    if(ARDUINO_MBEDTLS_DEBUG_LEVEL < 3)
-        return(0);
+    if (ARDUINO_MBEDTLS_DEBUG_LEVEL < 3) {
+        return 0;
+    }
 
     printf( "\nVerify requested for (Depth %d):\n", depth );
     printf( "%s", buf );
 
-    if ((*flags) == 0)
+    if ((*flags) == 0) {
         printf(" This certificate has no flags\n");
-    else
-    {
+    } else {
         mbedtls_x509_crt_verify_info(buf, sizeof( buf ), " ! ", *flags);
         printf("%s\n", buf);
     }
 
-    return(0);
+    return 0;
 }
 
-static void* my_calloc(size_t nelements, size_t elementSize)
-{
-	size_t size;
-	void *ptr = NULL;
+static void* my_calloc(size_t nelements, size_t elementSize) {
+    size_t size;
+    void *ptr = NULL;
 
-	size = nelements * elementSize;
-	ptr = pvPortMalloc(size);
+    size = nelements * elementSize;
+    ptr = pvPortMalloc(size);
+//  ptr = malloc(size);
 
-	if(ptr)
-		memset(ptr, 0, size);
+    if (ptr) {
+        memset(ptr, 0, size);
+    }
 
-	return ptr;
+    return ptr;
 }
 
-static void my_debug(void *ctx, int level, const char *file, int line, const char *str )
-{
+static void my_debug(void *ctx, int level, const char *file, int line, const char *str ) {
     const char *p, *basename;
 
     ctx = ctx;     // Remove unused parameter warning
     // Extract basename from file
-    for( p = basename = file; *p != '\0'; p++ )
-        if( *p == '/' || *p == '\\' )
+    for (p = basename = file; *p != '\0'; p++) {
+        if(*p == '/' || *p == '\\') {
             basename = p + 1;
+        }
+    }
 
-    printf("%s:%04d: |%d| %s", basename, line, level, str );
+    printf("%s:%04d: |%d| %s", basename, line, level, str);
 }
 
-int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey, char* SNI_hostname)
-{
+int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t port, unsigned char* rootCABuff, unsigned char* cli_cert, unsigned char* cli_key, unsigned char* pskIdent, unsigned char* psKey, char* SNI_hostname) {
     int ret = 0;
     //int timeout;
     int enable = 1;
@@ -131,7 +128,7 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
             ret = -1;
             break;
         } else {
-        /*/
+        /*
         if (lwip_connect(ssl_client->socket, ((struct sockaddr *)&serv_addr), sizeof(serv_addr)) == 0) {
             timeout = ssl_client->recvTimeout;
             lwip_setsockopt(ssl_client->socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
@@ -143,7 +140,8 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
             printf("ERROR: Connect to Server failed!\r\n");
             ret = -1;
             break;
-        }//*/
+        }
+        */
 
             mbedtls_platform_set_calloc_free(my_calloc,vPortFree);
 
@@ -154,7 +152,6 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
                 ret = -1;
                 break;
             }
-
             mbedtls_ssl_init(ssl_client->ssl);
             mbedtls_ssl_config_init(ssl_client->conf);
 
@@ -164,12 +161,11 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
                 mbedtls_debug_set_threshold(ARDUINO_MBEDTLS_DEBUG_LEVEL);
             }
 
-            if((mbedtls_ssl_config_defaults(ssl_client->conf, MBEDTLS_SSL_IS_CLIENT, MBEDTLS_SSL_TRANSPORT_STREAM, MBEDTLS_SSL_PRESET_DEFAULT)) != 0) {
+            if ((mbedtls_ssl_config_defaults(ssl_client->conf, MBEDTLS_SSL_IS_CLIENT, MBEDTLS_SSL_TRANSPORT_STREAM, MBEDTLS_SSL_PRESET_DEFAULT)) != 0) {
                 printf("ERROR: mbedtls ssl config defaults failed! \r\n");
                 ret = -1;
                 break;
             }
-            
             mbedtls_ssl_conf_rng(ssl_client->conf, my_random, NULL);
 
             if (rootCABuff != NULL) {
@@ -187,7 +183,7 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
                 // Configure mbedTLS to use PSK authentication method
                 // Check for max length and even number of chars
                 uint16_t pskey_char_len = strlen((char*)psKey);
-                if ( ((pskey_char_len % 2) != 0) || (pskey_char_len > 2*MBEDTLS_PSK_MAX_LEN) ) {
+                if (((pskey_char_len % 2) != 0) || (pskey_char_len > 2*MBEDTLS_PSK_MAX_LEN)) {
                     printf("ERROR: TLS PSK not in valid hex format or too long \n");
                     return -1;
                 }
@@ -246,7 +242,7 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
                 }
                 mbedtls_pk_init(_clikey_rsa);
 
-                if (mbedtls_x509_crt_parse(_cli_crt, cli_cert, strlen((char*)cli_cert)+1) != 0) {
+                if (mbedtls_x509_crt_parse(_cli_crt, cli_cert, strlen((char*)cli_cert) + 1) != 0) {
                     printf("ERROR: mbedtls x509 parse client_crt failed! \r\n");
                     ret = -1;
                     break;
@@ -260,7 +256,7 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
                 mbedtls_ssl_conf_own_cert(ssl_client->conf, _cli_crt, _clikey_rsa);
             }
 
-            if((mbedtls_ssl_setup(ssl_client->ssl, ssl_client->conf)) != 0) {
+            if ((mbedtls_ssl_setup(ssl_client->ssl, ssl_client->conf)) != 0) {
                 printf("ERROR: mbedtls ssl setup failed!\r\n");
                 ret = -1;
                 break;
@@ -317,12 +313,10 @@ int start_ssl_client(sslclient_context *ssl_client, uint32_t ipAddress, uint32_t
             ssl_client->conf = NULL;
         }
     }
-
     return ssl_client->socket;
 }
 
-void stop_ssl_socket(sslclient_context *ssl_client)
-{
+void stop_ssl_socket(sslclient_context *ssl_client) {
     lwip_shutdown(ssl_client->socket, SHUT_RDWR);
     lwip_close(ssl_client->socket);
     //mbedtls_net_free((mbedtls_net_context *)&ssl_client->socket);
@@ -340,8 +334,7 @@ void stop_ssl_socket(sslclient_context *ssl_client)
     }
 }
 
-int send_ssl_data(sslclient_context *ssl_client, const uint8_t *data, uint16_t len)
-{
+int send_ssl_data(sslclient_context *ssl_client, const uint8_t *data, uint16_t len) {
     int ret = -1;
 
     if (ssl_client->ssl != NULL) {
@@ -351,8 +344,7 @@ int send_ssl_data(sslclient_context *ssl_client, const uint8_t *data, uint16_t l
     return ret;
 }
 
-int get_ssl_receive(sslclient_context *ssl_client, uint8_t* data, int length, int flag)
-{
+int get_ssl_receive(sslclient_context *ssl_client, uint8_t* data, int length, int flag) {
     int ret = 0;
     uint8_t has_backup_recvtimeout = 0;
     int backup_recv_timeout, recv_timeout;

@@ -267,7 +267,6 @@ boolean PubSubClient::connect(const char *id, const char *user, const char *pass
     if (!connected()) {
         int result = 0;
 
-
         if(_client->connected()) {
             result = 1;
         } else {

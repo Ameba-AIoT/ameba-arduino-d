@@ -15,7 +15,7 @@
  * where 1 is font color, and 0 is background color
  *
  * So it's 'A' if we look it in counter-clockwise for 90 degree.
- * In general case, we also add a background line to seperate from other character:
+ * In general case, we also add a background line to separate from other character:
  *     0x7C: 01111100
  *     0x12: 00010010
  *     0x11: 00010001

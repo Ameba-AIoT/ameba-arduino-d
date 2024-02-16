@@ -150,6 +150,7 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
     // cases below relate to bonding requests from devices
     // defaults are set up to accept all bonding requests from all methods
         case GAP_MSG_LE_BOND_PASSKEY_DISPLAY: {
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_DISPLAY\r\n");
             uint32_t display_value = 0;
             conn_id = gap_msg.msg_data.gap_bond_passkey_display.conn_id;
             le_bond_get_display_key(conn_id, &display_value);
@@ -157,28 +158,28 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
                 (_pBLESecurity->_pKeyDisplayCB)(conn_id, display_value);        // Call function to display bonding key
             }
             le_bond_passkey_display_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);     // If no callback function is set, default to accept connection
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_DISPLAY\r\n");
             break;
         }
         case GAP_MSG_LE_BOND_PASSKEY_INPUT: {
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_INPUT\r\n");
             uint32_t passkey = 0;
             conn_id = gap_msg.msg_data.gap_bond_passkey_input.conn_id;
             if ((_pBLESecurity->_pKeyInputCB) != nullptr) {                     // Check if a passkey input callback function is set
                 passkey = (_pBLESecurity->_pKeyInputCB)(conn_id);               // Call function to get bonding passkey
             }
             le_bond_passkey_input_confirm(conn_id, passkey, GAP_CFM_CAUSE_ACCEPT);
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_PASSKEY_INPUT\r\n");
             break;
         }
         case GAP_MSG_LE_BOND_OOB_INPUT: {
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_OOB_INPUT\r\n");
             uint8_t oob_data[GAP_OOB_LEN] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
             conn_id = gap_msg.msg_data.gap_bond_oob_input.conn_id;
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_OOB_INPUT\r\n");
             le_bond_set_param(GAP_PARAM_BOND_OOB_DATA, GAP_OOB_LEN, oob_data);
             le_bond_oob_input_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
             break;
         }
         case GAP_MSG_LE_BOND_USER_CONFIRMATION: {
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_USER_CONFIRMATION\r\n");
             uint32_t display_value = 0;
             conn_id = gap_msg.msg_data.gap_bond_user_conf.conn_id;
             le_bond_get_display_key(conn_id, &display_value);
@@ -191,13 +192,12 @@ void BLEDevice::gapMsgHandlerDefault(T_IO_MSG *p_gap_msg) {
             } else { // If no callback function is set, default to accept connection
                 le_bond_user_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
             }
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_USER_CONFIRMATION\r\n");
             break;
         }
         case GAP_MSG_LE_BOND_JUST_WORK: {
+            if (BTDEBUG) printf("GAP_MSG_LE_BOND_JUST_WORK\r\n");
             conn_id = gap_msg.msg_data.gap_bond_just_work_conf.conn_id;
             le_bond_just_work_confirm(conn_id, GAP_CFM_CAUSE_ACCEPT);
-            if (BTDEBUG) printf("GAP_MSG_LE_BOND_JUST_WORK\r\n");
             break;
         }
         default:
@@ -214,7 +214,7 @@ void BLEDevice::devStateEvtHandlerPeriphDefault(T_GAP_DEV_STATE new_state, uint1
             // BLE stack is ready
             uint8_t bt_addr[6];
             gap_get_param(GAP_PARAM_BD_ADDR, bt_addr);
-            printf("[BLE Device] Local BT addr: %2x:%2x:%2x:%2x:%2x:%2x\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
+            printf("[BLE Device] Local BT addr: %02X:%02X:%02X:%02X:%02X:%02X\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
             le_adv_start();
         }
     }
@@ -241,7 +241,7 @@ void BLEDevice::devStateEvtHandlerCentralDefault(T_GAP_DEV_STATE new_state, uint
             // BLE stack is ready
             uint8_t bt_addr[6];
             gap_get_param(GAP_PARAM_BD_ADDR, bt_addr);
-            printf("[BLE Device] Local BT addr: %2x:%2x:%2x:%2x:%2x:%2x\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
+            printf("[BLE Device] Local BT addr: %02X:%02X:%02X:%02X:%02X:%02X\r\n", bt_addr[5], bt_addr[4], bt_addr[3], bt_addr[2], bt_addr[1], bt_addr[0]);
         }
     }
 
@@ -278,7 +278,7 @@ void BLEDevice::connStateEvtHandlerPeriphDefault(uint8_t conn_id, T_GAP_CONN_STA
                 le_get_conn_param(GAP_PARAM_CONN_LATENCY, &conn_latency, conn_id);
                 le_get_conn_param(GAP_PARAM_CONN_TIMEOUT, &conn_supervision_timeout, conn_id);
                 le_get_conn_addr(conn_id, remote_bd, (uint8_t *)&remote_bd_type);
-                printf("GAP_CONN_STATE_CONNECTED:remote_bd %x:%x:%x:%x:%x:%x, remote_addr_type %d, conn_interval %d ms, conn_latency %d, conn_supervision_timeout %d ms\r\n", remote_bd[0], remote_bd[1], remote_bd[2], remote_bd[3], remote_bd[4], remote_bd[5], remote_bd_type, (uint16_t)(conn_interval * 1.25), conn_latency, (uint16_t)(conn_supervision_timeout * 10));
+                printf("GAP_CONN_STATE_CONNECTED:remote_bd %02X:%02X:%02X:%02X:%02X:%02X, remote_addr_type %d, conn_interval %d ms, conn_latency %d, conn_supervision_timeout %d ms\r\n", remote_bd[0], remote_bd[1], remote_bd[2], remote_bd[3], remote_bd[4], remote_bd[5], remote_bd_type, (uint16_t)(conn_interval * 1.25), conn_latency, (uint16_t)(conn_supervision_timeout * 10));
 
                 uint8_t tx_phy;
                 uint8_t rx_phy;
@@ -324,7 +324,7 @@ void BLEDevice::connStateEvtHandlerCentralDefault(uint8_t conn_id, T_GAP_CONN_ST
                 le_get_conn_param(GAP_PARAM_CONN_LATENCY, &conn_latency, conn_id);
                 le_get_conn_param(GAP_PARAM_CONN_TIMEOUT, &conn_supervision_timeout, conn_id);
                 le_get_conn_addr(conn_id, remote_bd, (uint8_t *)&remote_bd_type);
-                printf("GAP_CONN_STATE_CONNECTED:remote_bd %x:%x:%x:%x:%x:%x, remote_addr_type %d, conn_interval %d ms, conn_latency %d, conn_supervision_timeout %d ms\r\n", remote_bd[0], remote_bd[1], remote_bd[2], remote_bd[3], remote_bd[4], remote_bd[5], remote_bd_type, (uint16_t)(conn_interval * 1.25), conn_latency, (uint16_t)(conn_supervision_timeout * 10));
+                printf("GAP_CONN_STATE_CONNECTED:remote_bd %02X:%02X:%02X:%02X:%02X:%02X, remote_addr_type %d, conn_interval %d ms, conn_latency %d, conn_supervision_timeout %d ms\r\n", remote_bd[0], remote_bd[1], remote_bd[2], remote_bd[3], remote_bd[4], remote_bd[5], remote_bd_type, (uint16_t)(conn_interval * 1.25), conn_latency, (uint16_t)(conn_supervision_timeout * 10));
 
                 uint8_t tx_phy;
                 uint8_t rx_phy;

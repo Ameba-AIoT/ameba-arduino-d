@@ -59,13 +59,13 @@ void WS2812B::show(void) {
     if (_input_pin == SPI_MOSI) {
     //Initialise SPI
         spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI_MISO].pinname, (PinName)g_APinDescription[SPI_SCLK].pinname, (PinName)g_APinDescription[SPI_SS].pinname);
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
     } else if (_input_pin == SPI1_MOSI) {
         spi_init((spi_t *)pSpiMaster, (PinName)g_APinDescription[_input_pin].pinname, (PinName)g_APinDescription[SPI1_MISO].pinname, (PinName)g_APinDescription[SPI1_SCLK].pinname, (PinName)g_APinDescription[SPI1_SS].pinname);
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SS].pinname, PINMUX_FUNCTION_GPIO);
@@ -79,17 +79,17 @@ void WS2812B::show(void) {
     if (_input_pin == SPI_MOSI) {
         //Initialise SPI
         SPI.begin();
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI_MISO].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SS].pinname, PINMUX_FUNCTION_GPIO);
         SPI.setDefaultFrequency(2500000);
         SPI.setDataMode(12, 0);
-#if !defined(BOARD_RTL8722DM_MINI) && !defined(BOARD_RTL8720DN_BW16)
+#if !defined(BOARD_AMB23) && !defined(BOARD_AITHINKER_BW16)
     } else if (_input_pin == SPI1_MOSI) {
         //Initialise SPI
         SPI1.begin();
-        //Revert the unneccesary SPI pins to GPIO functions
+        //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI1_MISO].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SS].pinname, PINMUX_FUNCTION_GPIO);
@@ -126,7 +126,7 @@ void WS2812B::setLEDCount (uint16_t num_leds) {
     _led_array = (pixel*)realloc(_led_array, num_leds*sizeof(pixel));
     //Check if memory allocation is successful
     if (_led_array == NULL) {
-        printf("Insufficient memory avaliable");
+        printf("Insufficient memory available \r\n");
         _num_leds = 0;
     } else {
         memset(_led_array, 0, num_leds*sizeof(pixel));
@@ -137,7 +137,7 @@ void WS2812B::setLEDCount (uint16_t num_leds) {
 void WS2812B::setPixelColor(uint16_t led_Number, uint8_t rColor, uint8_t gColor, uint8_t bColor) {
     //Verify that memory was successfully allocated
     if (_led_array == NULL) {
-        printf("set LED count first");
+        printf("set LED count first \r\n");
         return;
     }
     if (led_Number < _num_leds) {
@@ -145,7 +145,7 @@ void WS2812B::setPixelColor(uint16_t led_Number, uint8_t rColor, uint8_t gColor,
         _led_array[led_Number].green = gColor;
         _led_array[led_Number].blue = bColor;
     } else {
-        printf("This LED does not exist");
+        printf("This LED does not exist \r\n");
     }
 }
 
@@ -168,7 +168,7 @@ void WS2812B::fill(uint8_t rColor, uint8_t gColor, uint8_t bColor, uint16_t firs
     }
     for (i = first; i < end ; i++) {
         setPixelColor(i, rColor,gColor,bColor);
-        }
+    }
 }
 
 uint32_t WS2812B::colorHSV(uint16_t hue, uint8_t sat, uint8_t val) {
@@ -177,35 +177,35 @@ uint32_t WS2812B::colorHSV(uint16_t hue, uint8_t sat, uint8_t val) {
     hue = (hue * 1530L + 32768) /  65536;
 
     if (hue < 510) { // Red to Green-1
-      b = 0;
-      if (hue < 255) { //   Red to Yellow-1
-        r = 255;
-        g = hue;       //     g = 0 to 254
-      } else {         //   Yellow to Green-1
-        r = 510 - hue; //     r = 255 to 1
-        g = 255;
-      }
+        b = 0;
+        if (hue < 255) { //   Red to Yellow-1
+            r = 255;
+            g = hue;       //     g = 0 to 254
+        } else {         //   Yellow to Green-1
+            r = 510 - hue; //     r = 255 to 1
+            g = 255;
+        }
     } else if (hue < 1020) { // Green to Blue-1
-      r = 0;
-      if (hue < 765) { //   Green to Cyan-1
-        g = 255;
-        b = hue - 510;  //     b = 0 to 254
-      } else {          //   Cyan to Blue-1
-        g = 1020 - hue; //     g = 255 to 1
-        b = 255;
-      }
+        r = 0;
+        if (hue < 765) { //   Green to Cyan-1
+            g = 255;
+            b = hue - 510;  //     b = 0 to 254
+        } else {          //   Cyan to Blue-1
+            g = 1020 - hue; //     g = 255 to 1
+            b = 255;
+        }
     } else if (hue < 1530) { // Blue to Red-1
-      g = 0;
-      if (hue < 1275) { //   Blue to Magenta-1
-        r = hue - 1020; //     r = 0 to 254
-        b = 255;
-      } else { //   Magenta to Red-1
-        r = 255;
-        b = 1530 - hue; //     b = 255 to 1
-      }
+        g = 0;
+        if (hue < 1275) { //   Blue to Magenta-1
+            r = hue - 1020; //     r = 0 to 254
+            b = 255;
+        } else { //   Magenta to Red-1
+            r = 255;
+            b = 1530 - hue; //     b = 255 to 1
+        }
     } else { // Last 0.5 Red (quicker than % operator)
-      r = 255;
-      g = b = 0;
+        r = 255;
+        g = b = 0;
     }
 
     uint32_t v1 = 1 + val;

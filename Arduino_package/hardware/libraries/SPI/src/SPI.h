@@ -9,8 +9,8 @@
  * published by the Free Software Foundation.
  */
 
-#ifndef _SPI_H_INCLUDED
-#define _SPI_H_INCLUDED
+#ifndef _SPI_H_
+#define _SPI_H_
 
 #include "variant.h"
 #include <stdio.h>
@@ -34,94 +34,99 @@
 //   - beginTransaction(pin, SPISettings settings) (if transactions are available)
 #define SPI_HAS_EXTENDED_CS_PIN_HANDLING 1
 
-#define SPI_MODE0 0x00
-#define SPI_MODE1 0x01
-#define SPI_MODE2 0x02
-#define SPI_MODE3 0x03
+#define SPI_DATA_MODE0      0x00
+#define SPI_DATA_MODE1      0x01
+#define SPI_DATA_MODE2      0x02
+#define SPI_DATA_MODE3      0x03
+
+#define SPI_MODE_MASTER     'M'
+#define SPI_MODE_SLAVE      'S'
 
 enum SPITransferMode {
     SPI_CONTINUE,
     SPI_LAST
 };
-    
+
 class SPISettings {
-public:
-    SPISettings(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
-        _clock = clock;
-        _bitOrder = bitOrder;
-        _dataMode = dataMode;
-    }
-    SPISettings() {
-        SPISettings(4000000, MSBFIRST, SPI_MODE0);
-    }
+    public:
+        SPISettings(uint32_t clock, BitOrder bitOrder, uint8_t dataMode) {
+            _clock = clock;
+            _bitOrder = bitOrder;
+            _dataMode = dataMode;
+        }
+        SPISettings() {
+            SPISettings(4000000, MSBFIRST, SPI_DATA_MODE0);
+        }
 
-private:
-    uint32_t _clock;
-    BitOrder _bitOrder;
-    uint8_t _dataMode;
+    private:
+        uint32_t _clock;
+        BitOrder _bitOrder;
+        uint8_t _dataMode;
 
-    friend class SPIClass;
+        friend class SPIClass;
 };
 
 class SPIClass {
-public:
-    SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss);
+    public:
+        SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss);
 
-    byte transfer(byte _pin, uint8_t _data, SPITransferMode _mode = SPI_LAST);
-    byte transfer(uint8_t _data, SPITransferMode _mode = SPI_LAST);
+        byte transfer(byte _pin, uint8_t _data, SPITransferMode _mode = SPI_LAST);
+        byte transfer(uint8_t _data, SPITransferMode _mode = SPI_LAST);
 
-    void transfer(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
-    void transfer(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+        void transfer(byte _pin, void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
+        void transfer(void *_buf, size_t _count, SPITransferMode _mode = SPI_LAST);
 
-    uint16_t transfer16(byte _pin, uint16_t _data, SPITransferMode _mode = SPI_LAST);
-    uint16_t transfer16(uint16_t _data, SPITransferMode _mode = SPI_LAST);
+        uint16_t transfer16(byte _pin, uint16_t _data, SPITransferMode _mode = SPI_LAST);
+        uint16_t transfer16(uint16_t _data, SPITransferMode _mode = SPI_LAST);
 
-    void beginTransaction(uint8_t pin, SPISettings settings);
-    void beginTransaction(SPISettings settings);
-    void endTransaction(void);
+        void beginTransaction(uint8_t pin, SPISettings settings);
+        void beginTransaction(SPISettings settings);
+        void endTransaction(void);
 
-    void begin(void);
-    void begin(int ss);
-    void end(void);
+        void begin(void);
+        void begin(int ss);
+        void begin(char mode);
+        void begin(int ss, char mode);
+        void end(void);
 
-    void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
-    void setBitOrder(BitOrder _order);  
+        void setBitOrder(uint8_t _pin, BitOrder _bitOrder);
+        void setBitOrder(BitOrder _order);
 
-    void setDataMode(uint8_t _bits, uint8_t _mode);
-    void setDataMode(uint8_t _mode);
-    
-    void setClockDivider(uint8_t _pin, uint8_t _divider);
-    void setClockDivider(uint8_t _div);
+        void setDataMode(uint8_t _bits, uint8_t _mode);
+        void setDataMode(uint8_t _mode);
 
-    /* extend api added by RTK */
-    void setDefaultFrequency(int _frequency);
-    
+        void setClockDivider(uint8_t _pin, uint8_t _divider);
+        void setClockDivider(uint8_t _div);
 
-private:
-    void *pSpiMaster;
-    int pinMOSI;
-    int pinMISO;
-    int pinCLK;
-    int pinSS;
-    int pinUserSS;
-    BitOrder bitOrder;
-    bool initStatus;   // flag to mark SPI init status
-    u8 dataBits;
-    u8 dataMode;
-    int defaultFrequency; 
+        /* extend api added by RTK */
+        void setDefaultFrequency(int _frequency);
+
+    private:
+        void *pSpiMaster;
+        int pinMOSI;
+        int pinMISO;
+        int pinCLK;
+        int pinSS;
+        int pinUserSS;
+        BitOrder bitOrder;
+        bool initStatus;   // flag to mark SPI init status
+        u8 dataBits;
+        u8 dataMode;
+        int defaultFrequency;
+        char SPI_Mode;
 };
 
-#if defined(BOARD_RTL8722DM)
+#if defined(BOARD_AMB21_AMB22)
 extern SPIClass SPI;
 extern SPIClass SPI1;
-#elif defined(BOARD_RTL8722DM_MINI)
+#elif defined(BOARD_AMB23)
 extern SPIClass SPI;
-#elif defined(BOARD_RTL8720DN_BW16)
+#elif defined(BOARD_AITHINKER_BW16)
 extern SPIClass SPI;
-#elif defined(BOARD_RTL8721DM)
+#elif defined(BOARD_SPARKFUN_AWCU488)
 extern SPIClass SPI;
 extern SPIClass SPI1;
-#elif defined(BOARD_RTL8720DF)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
 extern SPIClass SPI;
 extern SPIClass SPI1;
 #else

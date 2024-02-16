@@ -14,9 +14,8 @@
 
 #include "SPI.h"
 #include "AmebaILI9341.h"
+#include "AmebaLogo.h"
 
-
-// For all supported boards (AMB21/AMB22, AMB23, BW16/BW16-TypeC, AW-CU488_ThingPlus), 
 // Select 2 GPIO pins connect to TFT_RESET and TFT_DC. And default SPI_SS/SPI1_SS connect to TFT_CS.
 #define TFT_RESET       4
 #define TFT_DC          5
@@ -48,6 +47,10 @@ void setup() {
 
     Serial.println("test Circles");
     testRectangle(ILI9341_LIGHTGREY);
+    delay(500);
+
+    Serial.println("test Bitmap");
+    testBitmap(0,0,logoWidth,logoHeight,logo);
     delay(500);
 
     Serial.println("test Text");
@@ -176,4 +179,10 @@ void testCircles(uint8_t radius, uint16_t color) {
             tft.drawCircle(x, y, radius, color);
         }
     }
+}
+
+void testBitmap(int16_t x, int16_t y, int16_t w, int16_t h, const unsigned short *color) {
+    tft.clr();
+    tft.drawBitmap(x, y, w, h, color);
+    delay(500);
 }

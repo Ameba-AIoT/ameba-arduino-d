@@ -17,23 +17,17 @@ String str_ssid, str_pass, str_channel;
 // Emoji characters can be converted into UTF-8 at https://mothereff.in/utf-8
 // char ssid[] = "\xe2\x9c\x8c\xef\xb8\x8f Ameba \xe2\x9c\x8c\xef\xb8\x8f";
 
-char ssid[] = "yourNetwork";  //Set the AP's SSID
-char pass[] = "Password";     //Set the AP's password
-char channel[] = "1";         //Set the AP's channel
-int status = WL_IDLE_STATUS;  //Set the Wifi radio's status
-int ssid_status = 0;          //Set SSID status, 1 hidden, 0 not hidden
+char ssid[] = "AP_Network_SSID";    // Set the AP SSID
+char pass[] = "AP_Password";        // Set the AP password
+char channel[] = "1";               // Set the AP channel
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
+int ssid_status = 0;                // Set SSID status, 1 hidden, 0 not hidden
 
 void setup() {
     //Initialize serial and wait for port to open:
     Serial.begin(115200);
     while (!Serial) {
         ; // wait for serial port to connect. Needed for native USB port only
-    }
-
-    // check for the presence of the shield:
-    if (WiFi.status() == WL_NO_SHIELD) {
-        Serial.println("WiFi shield not present");
-        while (true);
     }
 
     // attempt to start AP:
@@ -45,7 +39,7 @@ void setup() {
             str_ssid.trim();
             Serial.print("SSID entered: ");
             Serial.println(str_ssid);
-        
+
         Serial.println("Enter your password");
         while (Serial.available() == 0) {}
         str_pass = Serial.readString();
@@ -64,6 +58,7 @@ void setup() {
         Serial.println("Enter your channel number");
         while (Serial.available() == 0) {}
             str_channel = Serial.readString();
+            str_channel.trim();
             int checker = str_channel.toInt();
             while(str_channel != (String(checker))){
                 Serial.println("channel should be a number!");
@@ -71,7 +66,6 @@ void setup() {
                 str_channel = Serial.readString();
                 checker = str_channel.toInt();
             }
-            str_channel.trim();
             Serial.print("channel entered: ");
             Serial.println(str_channel);
 #endif
@@ -87,7 +81,7 @@ void setup() {
         strcpy(pass_cust, str_pass.c_str());
         strcpy(channel_cust, str_channel.c_str());
         Serial.println(str_ssid.c_str());
-        status = WiFi.apbegin(ssid_cust, pass_cust, channel, ssid_status);
+        status = WiFi.apbegin(ssid_cust, pass_cust, channel_cust, ssid_status);
         str_ssid = str_pass = str_channel = "";
 #endif
         delay(10000);
@@ -107,7 +101,7 @@ void loop() {
 }
 
 void printWifiData() {
-    // print your WiFi shield's IP address:
+    // print your WiFi IP address:
     IPAddress ip = WiFi.localIP();
     Serial.print("IP Address: ");
     Serial.println(ip);
