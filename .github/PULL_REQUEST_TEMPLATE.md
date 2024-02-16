@@ -15,7 +15,7 @@ Please describe your proposed Pull Request and it's impact.
 
 ## Tests and Environments 
 Please describe on what Hardware, SDK, IDE, OS that tested this Pull Request and how if necessary.
-(*eg. Tested this Pull Request on AMB82-mini, ambpro2_arduino V4.0.0, under arduino IDE 2.0, in windows 10*)
+(*eg. Tested on AMB21, ambpd_arduino V3.1.7, Arduino IDE 2.3.0, Windows 10*)
 
 ## Remark related links
 Please provide links to related issue, PRs etc.
