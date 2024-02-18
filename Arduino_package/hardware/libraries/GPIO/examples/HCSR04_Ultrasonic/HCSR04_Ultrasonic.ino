@@ -8,7 +8,7 @@
  *
  * HC-SR04 works at 5V domain.
  * It means the echo pin needs level shift from 5V to 3.3V.
- * We can either use a level converter or use resister to devide the level.
+ * We can either use a level converter or use resister to divide the level.
  *
 
  Example guide:

@@ -2,7 +2,7 @@
 
 /** 
  * @defgroup wiring_os wiring_os
- * OS realted function for thread, signal, software timer, semaphore
+ * OS related function for thread, signal, software timer, semaphore
  * @{
  */
 
@@ -142,7 +142,7 @@ extern uint32_t os_thread_terminate_arduino(uint32_t thread_id);
  * @brief Pass control to next thread that is in state \b READY.
  *
  * By default the minimal execution unit is 1 millisecond. In a scenario that if a thread with smaller want to handout execution right to a thread with 
- * higher priority immediately without waiting for the ending of current 1 millisecond, then invoke os_thread_yield_arduino can transfer exection right to 
+ * higher priority immediately without waiting for the ending of current 1 millisecond, then invoke os_thread_yield_arduino can transfer execution right to 
  * OS's idle task and check which is the next execution thread.
  *
  * @return os_status code

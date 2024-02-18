@@ -593,7 +593,7 @@ uint8_t USBHIDDevice::usbdHIDHandleEPDataIn(usb_dev_t* dev, uint8_t ep_num) {
     (void)ep_num;
 
     struct usb_hid_device_t *hid = &hid_device;
-    // Previous TX done, mark as avaliable
+    // Previous TX done, mark as available
     hid->intr_in_state = 0U;
     return HAL_OK;
 }

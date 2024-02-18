@@ -92,7 +92,7 @@ int PMS3003::get_pm10_air() {
 }
 
 /*
-One package has 32 bytes. Illustrate the formate by using below raw data:
+One package has 32 bytes. Illustrate the format by using below raw data:
     42 4d 00 1c 00 1b 00 21 00 29 00 1a 00 21 00 29 2b fb 04 be 00 6b 00 10 00 04 00 04 67 00 04 46 
 
     42 4d : header signature
@@ -103,12 +103,12 @@ One package has 32 bytes. Illustrate the formate by using below raw data:
     00 1a : PM1.0 under air
     00 21 : PM2.5 under air
     00 29 : PM10 under air
-    2b fb : number of pariticle, diameter size 0.3 um in 0.1 liter air
-    04 be : number of pariticle, diameter size 0.5 um in 0.1 liter air
-    00 6b : number of pariticle, diameter size 1.0 um in 0.1 liter air
-    00 10 : number of pariticle, diameter size 2.5 um in 0.1 liter air
-    00 04 : number of pariticle, diameter size 5.0 um in 0.1 liter air
-    00 04 : number of pariticle, diameter size 10 um in 0.1 liter air
+    2b fb : number of particle, diameter size 0.3 um in 0.1 liter air
+    04 be : number of particle, diameter size 0.5 um in 0.1 liter air
+    00 6b : number of particle, diameter size 1.0 um in 0.1 liter air
+    00 10 : number of particle, diameter size 2.5 um in 0.1 liter air
+    00 04 : number of particle, diameter size 5.0 um in 0.1 liter air
+    00 04 : number of particle, diameter size 10 um in 0.1 liter air
     67 : serial number
     00 : error code
     04 46 : checksum,

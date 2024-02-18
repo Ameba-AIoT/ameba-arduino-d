@@ -82,7 +82,7 @@
  @abstract   waits for a given time in microseconds (compilation dependent).
  @discussion Waits for a given time defined in microseconds depending on
  the FAST_MODE define. If the FAST_MODE is defined the call will return
- inmediatelly.
+ immediately.
  @param      uSec[in] time in microseconds.
  @result     None
  */
@@ -163,7 +163,7 @@ inline static void waitUsec ( uint16_t uSec )
 /*!
     @defined 
     @abstract   Backlight off constant declaration
-    @discussion Used in combination with the setBacklight to swith off the
+    @discussion Used in combination with the setBacklight to switch off the
  LCD backlight. @set setBacklight
 */
 #define BACKLIGHT_OFF           0
@@ -171,7 +171,7 @@ inline static void waitUsec ( uint16_t uSec )
 /*!
  @defined 
  @abstract   Backlight on constant declaration
- @discussion Used in combination with the setBacklight to swith on the
+ @discussion Used in combination with the setBacklight to switch on the
  LCD backlight. @set setBacklight
  */
 #define BACKLIGHT_ON          255
@@ -205,7 +205,7 @@ public:
     
     This method is abstract, a base implementation is available common to all LCD
     drivers. Should it not be compatible with some other LCD driver, a derived
-    implementation should be done on the driver specif class.
+    implementation should be done on the driver specified class.
     
     @param      cols[in] the number of columns that the display has
     @param      rows[in] the number of rows that the display has
@@ -498,7 +498,7 @@ public:
     or the adequate backlight control constructor.
     @see setBacklightPin.
     
-    NOTE: The prefered methods to control the backlight are "backlight" and
+    NOTE: The preferred methods to control the backlight are "backlight" and
     "noBacklight".
     
     @param      0..255 - the value is very dependent on the LCD. However, 

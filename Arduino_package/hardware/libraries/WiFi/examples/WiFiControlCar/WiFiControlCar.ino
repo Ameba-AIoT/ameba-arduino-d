@@ -19,7 +19,7 @@
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password (use for WPA, or use as key for WEP)
 int keyIndex = 0;                   // your network key Index number (needed only for WEP)
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 WiFiServer server(80);
 
@@ -115,7 +115,7 @@ void loop() {
         }
         // close the connection:
         client.stop();
-        Serial.println("client disonnected");
+        Serial.println("client disconnected");
     }
   
 }

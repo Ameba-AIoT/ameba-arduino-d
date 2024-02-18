@@ -20,7 +20,7 @@
 
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char mqttServer[]     = "test.mosquitto.org";
 char clientId[]       = "amebaClient";

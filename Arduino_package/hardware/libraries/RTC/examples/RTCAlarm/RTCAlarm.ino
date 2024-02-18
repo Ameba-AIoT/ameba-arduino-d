@@ -49,7 +49,7 @@ void loop() {
 }
 
 static void EnableAlarm(int hour, int min, int sec) {
-    alarm.yday = 0;  //  deafault alarmDay to be zero
+    alarm.yday = 0;  //  default alarmDay to be zero
     alarm.hour = hour;
     alarm.min = min;
     alarm.sec = sec;

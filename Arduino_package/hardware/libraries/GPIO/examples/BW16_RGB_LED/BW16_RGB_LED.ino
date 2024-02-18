@@ -9,6 +9,10 @@
   This example code is in the public domain.
 */
 
+#ifndef BOARD_AITHINKER_BW16
+#error "Please use this example on the BW16 Board"
+#endif
+
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin's from all 3 colors as an output.

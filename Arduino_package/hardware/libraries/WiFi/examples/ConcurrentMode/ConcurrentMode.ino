@@ -34,7 +34,7 @@ char pass[] = "Password";           // your network password
 char apssid[] = "AP_Network_SSID";  // Set the AP SSID
 char appass[] = "AP_Password";      // Set the AP password
 char channel[] = "1";               // Set the AP channel
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 int ssid_status = 0;                // Set SSID status, 1 hidden, 0 not hidden
 
 void setup() {

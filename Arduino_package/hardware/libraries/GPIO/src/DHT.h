@@ -82,7 +82,7 @@ class DHT {
 };
 
 /*!
- *  @brief  Class that defines Interrupt Lock Avaiability
+ *  @brief  Class that defines Interrupt Lock Availability
  */
 class InterruptLock {
     public:

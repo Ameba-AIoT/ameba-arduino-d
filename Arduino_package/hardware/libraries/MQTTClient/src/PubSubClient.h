@@ -36,7 +36,7 @@
 /* MQTT try to read even server disconnected. */
 #define MQTT_PCN004_BREAK_READ_IF_NO_CONNECTION
 
-/* If there is no imcoming data, then the loop function would become a busy loop*/
+/* If there is no incoming data, then the loop function would become a busy loop*/
 #define MQTT_PCN005_NON_BUSY_LOOP_If_NO_DATA
 
 /* By default it won't wait for ack. It cause un-expected behavior if subscribe and publish have sequence dependency */

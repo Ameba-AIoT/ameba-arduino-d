@@ -125,26 +125,26 @@ void TwoWire::setClock(uint32_t frequency) {
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity, uint8_t sendStop) {
-    int readed = 0;
+    int read = 0;
 
     if (quantity > BUFFER_LENGTH) {
         quantity = BUFFER_LENGTH;
     }
 
     // perform blocking read into buffer
-    readed = i2c_read(((i2c_t *)this->pI2C), ((int)address), ((char*)&this->rxBuffer[0]), ((int)quantity), ((int)sendStop));
+    read = i2c_read(((i2c_t *)this->pI2C), ((int)address), ((char*)&this->rxBuffer[0]), ((int)quantity), ((int)sendStop));
 
     // i2c_read error;
-    if (readed != quantity) {
-        printf("requestFrom: readed=%d, quantity=%d : ERROR\n", readed, quantity);
-        return readed;
+    if (read != quantity) {
+        printf("requestFrom: read=%d, quantity=%d : ERROR\n", read, quantity);
+        return read;
     }
 
     // set rx buffer iterator vars
     rxBufferIndex = 0;
-    rxBufferLength = readed;
+    rxBufferLength = read;
 
-    return readed;
+    return read;
 }
 
 uint8_t TwoWire::requestFrom(uint8_t address, uint8_t quantity) {

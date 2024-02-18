@@ -12,7 +12,7 @@
 
 char ssid[] = "Network_SSID";       // your network SSID (name)
 char pass[] = "Password";           // your network password
-int status = WL_IDLE_STATUS;        // Indicater of Wifi status
+int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char data_send[MAX_SEND_SIZE] = "Hi client!!";
 char data_recv[MAX_RECV_SIZE];
@@ -47,14 +47,14 @@ void setup() {
     }
     printWifiStatus();
 
-    // conenct to server and listen for incoming sockets
+    // connect to server and listen for incoming sockets
     server.begin();
     client_fd = server.available(server_fd);
     delay(100);
 }
 
 void loop() {
-    // continously read from to client:
+    // continuously read from to client:
     if (server.recv((uint8_t*)data_recv, MAX_RECV_SIZE) > 0) {
         Serial.print("\n[SERVER] Receive data: ");
         Serial.println(data_recv);

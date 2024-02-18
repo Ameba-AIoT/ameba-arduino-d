@@ -18,7 +18,7 @@
 
 #include <WiFi.h>
 
-int status = WL_IDLE_STATUS;    // Indicater of Wifi status
+int status = WL_IDLE_STATUS;    // Indicator of Wifi status
 
 void setup() {
     //Initialize serial and wait for port to open:

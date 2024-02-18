@@ -56,7 +56,7 @@ public:
     /**
      * @brief Check if cursor is at EOF
      *
-     * @return Return 1 if is not at EOF. And 0 vise versa.
+     * @return Return 1 if is not at EOF. And 0 vice versa.
      */
     virtual int available();
 
@@ -79,7 +79,7 @@ public:
      *
      * @param[in] buf The buffer to store the content
      * @param[in] nbyte The buffer size. (Or can be regarded as desired length to read)
-     * @return The succeessful written byte count
+     * @return The successful written byte count
      */
     int read(void *buf, uint16_t nbyte);
 

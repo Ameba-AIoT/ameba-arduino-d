@@ -51,7 +51,7 @@ extern uint32_t millis(void);
 extern uint32_t micros(void);
 
 /**
- * \brief Pauses the program for the amount of time (in miliseconds) specified as parameter.
+ * \brief Pauses the program for the amount of time (in milliseconds) specified as parameter.
  * (There are 1000 milliseconds in a second.)
  *
  * \param dwMs the number of milliseconds to pause (uint32_t)
