@@ -23,11 +23,67 @@ on:
 jobs:
   compile-examples:
     # same name as the fqbn (without the platform-name):
-    name: Compile
+    name: ${{ matrix.board.fqbn }}
     runs-on: ubuntu-latest
+
+    # list of all examples, WiFiControlCar and BW16_RGB_LED are left out
+    env:
+      examples-to-use: |
+          - Arduino_package/hardware/libraries/Analog
+          - Arduino_package/hardware/libraries/AudioCodec
+          - Arduino_package/hardware/libraries/BLE
+          - Arduino_package/hardware/libraries/Debugging
+          - Arduino_package/hardware/libraries/FatfsSDIO
+          - Arduino_package/hardware/libraries/FlashMemory
+          - Arduino_package/hardware/libraries/GPIO/examples/DHT_Tester
+          - Arduino_package/hardware/libraries/GPIO/examples/HCSR04_Ultrasonic
+          - Arduino_package/hardware/libraries/GPIO/examples/LED_InterruptCtrl
+          - Arduino_package/hardware/libraries/GTimer
+          - Arduino_package/hardware/libraries/Http
+          - Arduino_package/hardware/libraries/IRDevice
+          - Arduino_package/hardware/libraries/MDNS
+          - Arduino_package/hardware/libraries/MQTTClient
+          - Arduino_package/hardware/libraries/NTPClient
+          - Arduino_package/hardware/libraries/OTA
+          - Arduino_package/hardware/libraries/PowerSave
+          - Arduino_package/hardware/libraries/RTC
+          - Arduino_package/hardware/libraries/SoftwareSerial
+          - Arduino_package/hardware/libraries/SPI
+          - Arduino_package/hardware/libraries/Sys
+          - Arduino_package/hardware/libraries/USB
+          - Arduino_package/hardware/libraries/Watchdog
+          - Arduino_package/hardware/libraries/WiFi/examples/ConcurrentMode
+          - Arduino_package/hardware/libraries/WiFi/examples/ConnectWithWiFi
+          - Arduino_package/hardware/libraries/WiFi/examples/HTTP_IFTTT_Post
+          - Arduino_package/hardware/libraries/WiFi/examples/IPv6TCPClient
+          - Arduino_package/hardware/libraries/WiFi/examples/IPv6TCPServer
+          - Arduino_package/hardware/libraries/WiFi/examples/IPv6UDPClient
+          - Arduino_package/hardware/libraries/WiFi/examples/IPv6UDPServer
+          - Arduino_package/hardware/libraries/WiFi/examples/ScanNetworks
+          - Arduino_package/hardware/libraries/WiFi/examples/SimpleServerWiFi
+          - Arduino_package/hardware/libraries/WiFi/examples/SimpleWebServerWiFi
+          - Arduino_package/hardware/libraries/WiFi/examples/UDP_Calculation
+          - Arduino_package/hardware/libraries/WiFi/examples/WiFiAPMode
+          - Arduino_package/hardware/libraries/WiFi/examples/WiFiSSLClient
+          - Arduino_package/hardware/libraries/WiFi/examples/WiFiUdpNtpClient
+          - Arduino_package/hardware/libraries/WiFi/examples/WiFiUdpSendReceiveString
+          - Arduino_package/hardware/libraries/WiFi/examples/WiFiWebClient
+          - Arduino_package/hardware/libraries/WiFi/examples/WiFiWebServer
+          - Arduino_package/hardware/libraries/Wire
+          - Arduino_package/hardware/libraries/WS2812B
 
     strategy:
       fail-fast: false
+
+      matrix:
+        board:
+          - fqbn: Ameba_AMB21_AMB22
+          - fqbn: Ameba_AMB23
+          - fqbn: Ai-Thinker_BW16
+          - fqbn: SparkFun_ThingPlus-AWCU488
+          - fqbn: Ameba_AMB25
+          - fqbn: Ameba_AMB26
+          - fqbn: u-blox_NORA-W30
 
     steps:
       - name: Checkout repository
@@ -40,9 +96,9 @@ jobs:
       - name: Compile examples 
         uses: arduino/compile-sketches@main
         with:
-          fqbn: realtek:AmebaD:Ai-Thinker_BW16
+          fqbn: realtek:AmebaD:${{ matrix.board.fqbn }}
           sketch-paths: |
-            - Arduino_package/hardware/libraries/
+            ${{ env['examples-to-use'] }}
           platforms: |
             # Install ambd_arduino via Boards Manager for the toolchain
             - source-url: https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json

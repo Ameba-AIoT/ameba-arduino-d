@@ -7,10 +7,12 @@
 #include "AudioCodec.h"
 
 //State the analog pin that you want to read
-#ifndef BOARD_AITHINKER_BW16
-int analogChannel = A0;
-#else
+#ifdef BOARD_AITHINKER_BW16
 int analogChannel = A2;  // on the BW16 only A2 is available
+#elif BOARD_AMB25 || BOARD_AMB26
+int analogChannel = A4;  // on the AMB25/AMB26 only A4 A5 A6 are available
+#else
+int analogChannel = A0;  // Default using A0
 #endif
 
 #define SAMPLECOUNT 512
