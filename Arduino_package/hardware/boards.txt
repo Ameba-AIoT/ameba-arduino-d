@@ -288,7 +288,7 @@ u-blox_NORA-W30.build.board=AMEBA
 u-blox_NORA-W30.build.core=ambd
 u-blox_NORA-W30.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_UBLOX_NORAW30 {build.usb_flags} -DArduino_STD_PRINTF
 u-blox_NORA-W30.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
-u-blox_NORA-W30.build.variant=u-blox_NORA-W30
+u-blox_NORA-W30.build.variant=u-blox_nora-w30
 
 u-blox_NORA-W30.upload.tool=ameba_d_tools
 u-blox_NORA-W30.upload.protocol=usb_serial

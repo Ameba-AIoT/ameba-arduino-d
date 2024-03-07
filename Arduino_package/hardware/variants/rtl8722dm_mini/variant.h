@@ -113,6 +113,10 @@ extern void wait_for_debug(void);
 #define I2C1_SDA                                AMB_D21 // AMB_D21
 #define I2C1_SCL                                AMB_D20 // AMB_D20
 
+/* IR Device pin mapping */
+#define IR_TX                                   NC
+#define IR_RX                                   NC
+
 /* UART pin mapping */
 #define LOG_UART_MODIFIABLE_BAUD_RATE           1
 #define SERIAL_ONE_UART_MODIFIABLE_BAUD_RATE    1
