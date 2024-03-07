@@ -81,6 +81,8 @@ extern void wait_for_debug(void);
 /* Analog pin mapping */
 //#define A0                                    AMB_D4 // PB_1 3.3V    CH4 //Not available connect with USB chip
 //#define A1                                    AMB_D5 // PB_2 3.3V    CH5 //Not available connect with USB chip
+#define A0                                      NC
+#define A1                                      NC
 #define A2                                      AMB_D6 // PB_3 3.3V    CH6
 
 /* LED pin mapping */

@@ -91,6 +91,10 @@ extern void wait_for_debug(void);
 #define PB30                                    AMB_D4
 
 /* Analog pin mapping */
+#define A0                                      NC
+#define A1                                      NC
+#define A2                                      NC
+#define A3                                      NC
 #define A4                                      AMB_D11 // PB_1 3.3V    CH4
 #define A5                                      AMB_D10 // PB_2 3.3V    CH5
 #define A6                                      AMB_D9  // PB_3 3.3V    CH6

@@ -3,13 +3,13 @@ name: Compile Examples
 on:
   pull_request:
     paths:
-      - ".github/workflows/compile-examples.yml"
+      - ".github/workflows/CI_compile_examples.yml"
       - "Arduino_package/hardware/libraries/**"
       - "Arduino_package/hardware/cores/**"
       - "Arduino_package/hardware/variants/**"
   push:
     paths:
-      - ".github/workflows/compile-examples.yml"
+      - ".github/workflows/CI_compile_examples.yml"
       - "Arduino_package/hardware/libraries/**"
       - "Arduino_package/hardware/cores/**"
       - "Arduino_package/hardware/variants/**"
@@ -19,9 +19,12 @@ on:
   # repository_dispatch event allows the workflow to be triggered via the GitHub API
   # See: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
   repository_dispatch:
+  # weekly, Monday, 12 00 AM
+  schedule:
+    - cron: '0 12 * * 1'
 
 jobs:
-  compile-examples:
+  compile-examples_ubuntu:
     # same name as the fqbn (without the platform-name):
     name: ${{ matrix.board.fqbn }}
     runs-on: ubuntu-latest
@@ -35,9 +38,7 @@ jobs:
           - Arduino_package/hardware/libraries/Debugging
           - Arduino_package/hardware/libraries/FatfsSDIO
           - Arduino_package/hardware/libraries/FlashMemory
-          - Arduino_package/hardware/libraries/GPIO/examples/DHT_Tester
-          - Arduino_package/hardware/libraries/GPIO/examples/HCSR04_Ultrasonic
-          - Arduino_package/hardware/libraries/GPIO/examples/LED_InterruptCtrl
+          - Arduino_package/hardware/libraries/GPIO
           - Arduino_package/hardware/libraries/GTimer
           - Arduino_package/hardware/libraries/Http
           - Arduino_package/hardware/libraries/IRDevice
@@ -46,6 +47,7 @@ jobs:
           - Arduino_package/hardware/libraries/NTPClient
           - Arduino_package/hardware/libraries/OTA
           - Arduino_package/hardware/libraries/PowerSave
+          #- Arduino_package/hardware/libraries/Preferences
           - Arduino_package/hardware/libraries/RTC
           - Arduino_package/hardware/libraries/SoftwareSerial
           - Arduino_package/hardware/libraries/SPI
@@ -64,6 +66,7 @@ jobs:
           - Arduino_package/hardware/libraries/WiFi/examples/SimpleWebServerWiFi
           - Arduino_package/hardware/libraries/WiFi/examples/UDP_Calculation
           - Arduino_package/hardware/libraries/WiFi/examples/WiFiAPMode
+          #- Arduino_package/hardware/libraries/WiFi/examples/WiFiControlCar
           - Arduino_package/hardware/libraries/WiFi/examples/WiFiSSLClient
           - Arduino_package/hardware/libraries/WiFi/examples/WiFiUdpNtpClient
           - Arduino_package/hardware/libraries/WiFi/examples/WiFiUdpSendReceiveString
@@ -86,6 +89,10 @@ jobs:
           - fqbn: u-blox_NORA-W30
 
     steps:
+      - name: Exit workflow (other branches)
+        run: exit 1
+        if: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/dev' }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -93,7 +100,29 @@ jobs:
             Arduino_package
             Arduino_zip_libraries
 
-      - name: Compile examples 
+      - name: Compile examples dev
+        uses: arduino/compile-sketches@main
+        with:
+          fqbn: realtek:AmebaD:${{ matrix.board.fqbn }}
+          sketch-paths: |
+            ${{ env['examples-to-use'] }}
+          platforms: |
+            # Install ambd_arduino via Boards Manager for the toolchain
+            - source-url: https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek_amebad_early_index.json
+              name: realtek:AmebaD
+            # Overwrite the ambd_arduino release version with the platform from the local path
+            - source-path: Arduino_package/hardware/
+              name: realtek:AmebaD
+          libraries: |
+            # The sketches typically don't have any external library dependencies, just some:
+            - source-url: https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_zip_libraries/AmebaMotors.zip
+            - source-url: https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_zip_libraries/AmebaEink.zip
+            - name: "SparkFun ADXL313 Arduino Library"
+          verbose: false
+          enable-deltas-report: false
+        if: github.ref == 'refs/heads/dev'
+
+      - name: Compile examples master
         uses: arduino/compile-sketches@main
         with:
           fqbn: realtek:AmebaD:${{ matrix.board.fqbn }}
@@ -113,3 +142,4 @@ jobs:
             - name: "SparkFun ADXL313 Arduino Library"
           verbose: false
           enable-deltas-report: false
+        if: github.ref == 'refs/heads/master'

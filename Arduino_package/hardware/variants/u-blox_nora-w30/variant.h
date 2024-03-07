@@ -114,12 +114,20 @@ extern void wait_for_debug(void);
 #define SPI_MISO                                2  // PA_13   NORA_J8   SPI_MISO
 #define SPI_SCLK                                1  // PA_14   NORA_H9   SPI_SCLK
 #define SPI_SS                                  0  // PA_15   NORA_H8   SPI_CS
+#define SPI1_MOSI                               17 // PB_18
+#define SPI1_MISO                               16 // PB_19
+#define SPI1_SCLK                               19 // PB_20
+#define SPI1_SS                                 18 // PB_21
 
 /* TwoWire/I2C pin mapping */
 #define I2C_SDA                                 18 // PB_21   NORA_F8   HS_I2C_SDA / HS_UART_RTS
 #define I2C_SCL                                 19 // PB_20   NORA_F9   HS_I2C_SCL / HS_UART_CTS
 #define I2C1_SDA                                6  // PA_26   NORA_C1   LP_I2C_SDA
 #define I2C1_SCL                                7  // PA_25   NORA_C2   LP_I2C_SCL
+
+/* IR Device pin mapping */
+#define IR_TX                                   7 // PA_25 / PB_23
+#define IR_RX                                   6 // PA_26 / PB_22
 
 /* UART pin mapping */
 #define LOG_UART_MODIFIABLE_BAUD_RATE           1

@@ -12,13 +12,7 @@ int keyIndex = 0;                   // your network key Index number (needed onl
 int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 //State the analog pin that you want to read
-#ifdef BOARD_AITHINKER_BW16
-int analogChannel = A2;  // on the BW16 only A2 is available
-#elif BOARD_AMB25 || BOARD_AMB26
-int analogChannel = A4;  // on the AMB25/AMB26 only A4 A5 A6 are available
-#else
-int analogChannel = A0;  // Default using A0
-#endif
+int analogChannel = A0;
 
 WiFiServer server(80);
 void setup() {
