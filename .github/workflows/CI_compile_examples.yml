@@ -1,4 +1,4 @@
-name: Compile Examples
+name: CI Compile Examples
 
 on:
   pull_request:
@@ -25,11 +25,10 @@ on:
 
 jobs:
   compile-examples_ubuntu:
-    # same name as the fqbn (without the platform-name):
-    name: ${{ matrix.board.fqbn }}
+    name: ubuntu-latest - ${{ matrix.board.fqbn }}
     runs-on: ubuntu-latest
 
-    # list of all examples, WiFiControlCar and BW16_RGB_LED are left out
+    # list of all examples
     env:
       examples-to-use: |
           - Arduino_package/hardware/libraries/Analog
@@ -91,7 +90,7 @@ jobs:
     steps:
       - name: Exit workflow (other branches)
         run: exit 1
-        if: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/dev' }}
+        if: ${{ github.ref != 'refs/heads/master' && github.ref != 'refs/heads/dev' && github.event.pull_request.base.ref != 'dev' && github.event.pull_request.base.ref != 'master'}}
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -120,7 +119,7 @@ jobs:
             - name: "SparkFun ADXL313 Arduino Library"
           verbose: false
           enable-deltas-report: false
-        if: github.ref == 'refs/heads/dev'
+        if: ${{ github.ref == 'refs/heads/dev' || github.event.pull_request.base.ref == 'dev'}}
 
       - name: Compile examples master
         uses: arduino/compile-sketches@main
@@ -142,4 +141,4 @@ jobs:
             - name: "SparkFun ADXL313 Arduino Library"
           verbose: false
           enable-deltas-report: false
-        if: github.ref == 'refs/heads/master'
+        if: ${{ github.ref == 'refs/heads/master' || github.event.pull_request.base.ref == 'master' }}
