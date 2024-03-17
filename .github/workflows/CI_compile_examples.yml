@@ -61,6 +61,7 @@ jobs:
           - Arduino_package/hardware/libraries/WiFi/examples/IPv6UDPClient
           - Arduino_package/hardware/libraries/WiFi/examples/IPv6UDPServer
           - Arduino_package/hardware/libraries/WiFi/examples/ScanNetworks
+          - Arduino_package/hardware/libraries/WiFi/examples/ScanNetworksAdvanced
           - Arduino_package/hardware/libraries/WiFi/examples/SimpleServerWiFi
           - Arduino_package/hardware/libraries/WiFi/examples/SimpleWebServerWiFi
           - Arduino_package/hardware/libraries/WiFi/examples/UDP_Calculation
