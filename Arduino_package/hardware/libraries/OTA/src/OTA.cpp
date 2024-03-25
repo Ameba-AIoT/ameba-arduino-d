@@ -1,5 +1,3 @@
-// Bug fix link for OTA: https://blog.csdn.net/scream151/article/details/133453185
-
 #include "OTA.h"
 
 #ifdef __cplusplus
