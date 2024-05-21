@@ -45,21 +45,17 @@ uint8_t WiFiClient::connected() {
 }
 
 int WiFiClient::available() {
-    int ret = 0;
-    int err;
-
-    if (!_is_connected) {
+    if (!_is_connected || _sock < 0) {
         return 0;
     }
-    if (_sock >= 0) {
-    try_again:
-        ret = clientdrv.availData(_sock);
-        if (ret > 0) {
+    
+    while(true){
+        if (clientdrv.availData(_sock) > 0) {
             return 1;
         } else {
-            err = clientdrv.getLastErrno(_sock);
+            int err = clientdrv.getLastErrno(_sock);
             if (err == EAGAIN) {
-                goto try_again;
+                continue;
             }
             if (err != 0) {
                 _is_connected = false;
@@ -67,8 +63,6 @@ int WiFiClient::available() {
             return 0;
         }
     }
-
-    return 0;
 }
 
 int WiFiClient::read() {
