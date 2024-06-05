@@ -22,9 +22,11 @@ void WS2812B::begin(void) {
     if ((PinName)g_APinDescription[_input_pin].pinname == PA_16 || (PinName)g_APinDescription[_input_pin].pinname == PB_18) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI0;
         spi_addr = SPI0_REG_BASE;
+        SPI.begin();
     } else if ((PinName)g_APinDescription[_input_pin].pinname == PA_12 || (PinName)g_APinDescription[_input_pin].pinname == PB_4) {
         ((spi_t *)pSpiMaster)->spi_idx = MBED_SPI1;
         spi_addr = SPI1_REG_BASE;
+        SPI1.begin();
     } else {
         printf("spi_init: error. wrong spi_idx \r\n");
         return;
@@ -77,8 +79,6 @@ void WS2812B::show(void) {
     spi_frequency((spi_t *)pSpiMaster, 2500000);
 #else
     if (_input_pin == SPI_MOSI) {
-        //Initialise SPI
-        SPI.begin();
         //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI_MISO].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI_SCLK].pinname, PINMUX_FUNCTION_GPIO);
@@ -87,8 +87,6 @@ void WS2812B::show(void) {
         SPI.setDataMode(12, 0);
 #if !defined(BOARD_AMB23) && !defined(BOARD_AITHINKER_BW16)
     } else if (_input_pin == SPI1_MOSI) {
-        //Initialise SPI
-        SPI1.begin();
         //Revert the unnecessary SPI pins to GPIO functions
         Pinmux_Config((PinName)g_APinDescription[SPI1_MISO].pinname, PINMUX_FUNCTION_GPIO);
         Pinmux_Config((PinName)g_APinDescription[SPI1_SCLK].pinname, PINMUX_FUNCTION_GPIO);
