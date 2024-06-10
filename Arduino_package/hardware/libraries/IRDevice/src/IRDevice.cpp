@@ -527,4 +527,8 @@ void IRDevice::InvertPulse(IR_DataType *pBuf, uint16_t len) {
     }
 }
 
+#if defined(BOARD_SPARKFUN_NORAW306)
+#error check the board supported SPI
+#else
 IRDevice IR;
+#endif

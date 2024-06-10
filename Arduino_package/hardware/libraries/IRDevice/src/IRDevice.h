@@ -58,6 +58,10 @@ class IRDevice {
         void setRxPin(uint8_t receivePin);
 };
 
+#if defined(BOARD_SPARKFUN_NORAW306)
+#error check the board supported SPI
+#else
 extern IRDevice IR;
+#endif
 
 #endif
