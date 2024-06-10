@@ -22,6 +22,6 @@ jobs:
       uses: codespell-project/actions-codespell@v2
       with:
         skip: Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.h,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.h
-        ignore_words_list: ameba, shiftIn
+        ignore_words_list: ameba,shiftIn
 #        ignore_words_file: Ameba_misc/Spell_Check_Ignore/.codespellignore
         path: ${{ matrix.path }}

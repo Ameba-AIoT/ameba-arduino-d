@@ -87,6 +87,7 @@ jobs:
           - fqbn: Ameba_AMB25
           - fqbn: Ameba_AMB26
           - fqbn: u-blox_NORA-W30
+          - fqbn: Sparkfun_ThingPlus-NORA-W306
 
     steps:
       - name: Exit workflow (other branches)

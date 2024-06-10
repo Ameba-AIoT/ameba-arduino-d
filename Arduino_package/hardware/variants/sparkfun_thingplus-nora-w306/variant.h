@@ -109,6 +109,10 @@ extern void wait_for_debug(void);
 #define I2C_SDA                                 11  // PA_26
 #define I2C_SCL                                 12  // PA_25
 
+/* IR Device pin mapping */
+#define IR_TX                                   NC
+#define IR_RX                                   NC
+
 /* UART pin mapping */
 #define LOG_UART_MODIFIABLE_BAUD_RATE           1
 #define SERIAL_ONE_UART_MODIFIABLE_BAUD_RATE    1

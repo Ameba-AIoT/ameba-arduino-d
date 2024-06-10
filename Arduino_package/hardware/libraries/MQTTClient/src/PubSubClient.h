@@ -21,7 +21,7 @@
 #define MQTT_VERSION MQTT_VERSION_3_1_1
 #endif
 
-#ifdef ARDUINO_AMEBA
+#ifdef RTL8722DM
 // PCNs (Patch Change Numbers)
 
 /* For projects (Ex. LASS) that needs larger packets size then default. */
