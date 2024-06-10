@@ -322,3 +322,48 @@ u-blox_NORA-W30.menu.UploadBaudrate.921600.upload.speed=921600
 u-blox_NORA-W30.menu.UploadBaudrate.1500000=1500000
 u-blox_NORA-W30.menu.UploadBaudrate.1500000.upload.speed=1500000
 ##############################################################
+
+Sparkfun_ThingPlus-NORA-W306.name=SparkFun Thing Plus NORA-W306 (RTL8720DF)
+
+Sparkfun_ThingPlus-NORA-W306.build.tarch=cortex-m33
+Sparkfun_ThingPlus-NORA-W306.build.mcu=RTL8720DF
+Sparkfun_ThingPlus-NORA-W306.build.f_cpu=200000000L
+Sparkfun_ThingPlus-NORA-W306.build.usb_product="Sparkfun_ThingPlus-NORA-W306"
+Sparkfun_ThingPlus-NORA-W306.build.board=SPARKFUN_THINGPLUS_NORAW306
+Sparkfun_ThingPlus-NORA-W306.build.core=ambd
+Sparkfun_ThingPlus-NORA-W306.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_NORAW306 {build.usb_flags} -DArduino_STD_PRINTF
+Sparkfun_ThingPlus-NORA-W306.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
+Sparkfun_ThingPlus-NORA-W306.build.variant=sparkfun_thingplus-nora-w306
+
+Sparkfun_ThingPlus-NORA-W306.upload.tool=ameba_d_tools
+Sparkfun_ThingPlus-NORA-W306.upload.protocol=usb_serial
+Sparkfun_ThingPlus-NORA-W306.upload.maximum_size=2097152
+Sparkfun_ThingPlus-NORA-W306.upload.use_1200bps_touch=false
+Sparkfun_ThingPlus-NORA-W306.upload.wait_for_upload_port=false
+Sparkfun_ThingPlus-NORA-W306.upload.native_usb=false
+Sparkfun_ThingPlus-NORA-W306.upload.auto_mode=Disable
+Sparkfun_ThingPlus-NORA-W306.upload.erase_flash=Disable
+Sparkfun_ThingPlus-NORA-W306.upload.speed=921600
+
+Sparkfun_ThingPlus-NORA-W306.menu.EraseFlash.Disable=Disable
+Sparkfun_ThingPlus-NORA-W306.menu.EraseFlash.Disable.upload.erase_flash=Disable
+Sparkfun_ThingPlus-NORA-W306.menu.EraseFlash.Enable=Erase only
+Sparkfun_ThingPlus-NORA-W306.menu.EraseFlash.Enable.upload.erase_flash=Enable
+
+Sparkfun_ThingPlus-NORA-W306.menu.AutoUploadMode.Enable=Enable
+Sparkfun_ThingPlus-NORA-W306.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
+Sparkfun_ThingPlus-NORA-W306.menu.AutoUploadMode.Disable=Disable
+Sparkfun_ThingPlus-NORA-W306.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
+
+Sparkfun_ThingPlus-NORA-W306.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+Sparkfun_ThingPlus-NORA-W306.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_NORAW306 {build.usb_flags} -DArduino_STD_PRINTF
+Sparkfun_ThingPlus-NORA-W306.menu.StdLibInit.Disable=Disable
+Sparkfun_ThingPlus-NORA-W306.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_NORAW306 {build.usb_flags}
+Sparkfun_ThingPlus-NORA-W306.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+Sparkfun_ThingPlus-NORA-W306.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_SPARKFUN_NORAW306 {build.usb_flags} -DArduino_STD_PRINTF
+
+Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.921600=921600
+Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.921600.upload.speed=921600
+Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.1500000=1500000
+Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.1500000.upload.speed=1500000
+##############################################################

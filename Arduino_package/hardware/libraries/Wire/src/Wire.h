@@ -108,7 +108,7 @@ extern TwoWire Wire1;
 extern TwoWire Wire;
 #elif defined(BOARD_SPARKFUN_AWCU488)
 extern TwoWire Wire;
-#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306)
 extern TwoWire Wire;
 #endif
 
