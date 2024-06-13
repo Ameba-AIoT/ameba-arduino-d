@@ -367,3 +367,48 @@ Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.921600.upload.speed=921600
 Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.1500000=1500000
 Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.1500000.upload.speed=1500000
 ##############################################################
+
+DataloggerIot.name=Datalogger series (RTL8720DF)
+
+DataloggerIot.build.tarch=cortex-m33
+DataloggerIot.build.mcu=RTL8720DF
+DataloggerIot.build.f_cpu=200000000L
+DataloggerIot.build.usb_product="Datalogger Iot"
+DataloggerIot.build.board=AMEBA
+DataloggerIot.build.core=ambd
+DataloggerIot.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_DATALOGGER_AMB26 {build.usb_flags} -DArduino_STD_PRINTF
+DataloggerIot.build.ldscript=linker_scripts/gcc/amebad_img2_is_arduino.ld
+DataloggerIot.build.variant=Datalogger_AMB26
+
+DataloggerIot.upload.tool=ameba_d_tools
+DataloggerIot.upload.protocol=usb_serial
+DataloggerIot.upload.maximum_size=2097152
+DataloggerIot.upload.use_1200bps_touch=false
+DataloggerIot.upload.wait_for_upload_port=false
+DataloggerIot.upload.native_usb=false
+DataloggerIot.upload.auto_mode=Disable
+DataloggerIot.upload.erase_flash=Disable
+DataloggerIot.upload.speed=921600
+
+DataloggerIot.menu.EraseFlash.Disable=Disable
+DataloggerIot.menu.EraseFlash.Disable.upload.erase_flash=Disable
+DataloggerIot.menu.EraseFlash.Enable=Erase only
+DataloggerIot.menu.EraseFlash.Enable.upload.erase_flash=Enable
+
+DataloggerIot.menu.AutoUploadMode.Disable=Disable
+DataloggerIot.menu.AutoUploadMode.Disable.upload.auto_mode=Disable
+DataloggerIot.menu.AutoUploadMode.Enable=Enable
+DataloggerIot.menu.AutoUploadMode.Enable.upload.auto_mode=Enable
+
+DataloggerIot.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+DataloggerIot.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_DATALOGGER_AMB26 {build.usb_flags} -DArduino_STD_PRINTF
+DataloggerIot.menu.StdLibInit.Disable=Disable
+DataloggerIot.menu.StdLibInit.Disable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_DATALOGGER_AMB26 {build.usb_flags}
+DataloggerIot.menu.StdLibInit.Enable=Arduino_STD_PRINTF
+DataloggerIot.menu.StdLibInit.Enable.build.extra_flags=-mthumb -DRTL8722DM -DBOARD_DATALOGGER_AMB26 {build.usb_flags} -DArduino_STD_PRINTF
+
+DataloggerIot.menu.UploadBaudrate.921600=921600
+DataloggerIot.menu.UploadBaudrate.921600.upload.speed=921600
+DataloggerIot.menu.UploadBaudrate.1500000=1500000
+DataloggerIot.menu.UploadBaudrate.1500000.upload.speed=1500000
+##############################################################
