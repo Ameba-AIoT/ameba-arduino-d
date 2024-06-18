@@ -36,11 +36,7 @@ PinDescription g_APinDescription[TOTAL_GPIO_PIN_NUM]=
     {PA_14, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ                                                  | PIO_SPI, MODE_NOT_INITIAL}, // AMB_D1
     {PA_13, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM                   | PIO_UART           | PIO_SPI, MODE_NOT_INITIAL}, // AMB_D2
     {PA_12, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM                   | PIO_UART           | PIO_SPI, MODE_NOT_INITIAL}, // AMB_D3
-#ifdef BOARD_AMB26
     {NC,    NOT_INITIAL,                NOT_INITIAL                                                                       , MODE_NOT_INITIAL}, // AMB_D4
-#else
-    {PA_30, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM                                                 , MODE_NOT_INITIAL}, // AMB_D4
-#endif
     {PA_28, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM                                                 , MODE_NOT_INITIAL}, // AMB_D5
     {PA_26, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          | PIO_IR            | PIO_I2C          , MODE_NOT_INITIAL}, // AMB_D6
     {PA_25, TYPE_DIGITAL,               PIO_GPIO | PIO_GPIO_IRQ | PIO_PWM          | PIO_IR            | PIO_I2C          , MODE_NOT_INITIAL}, // AMB_D7

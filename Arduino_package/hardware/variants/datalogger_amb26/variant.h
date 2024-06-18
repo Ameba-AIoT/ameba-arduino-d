@@ -96,10 +96,7 @@ extern void wait_for_debug(void);
 #define A6                                      AMB_D9  // PB_3 3.3V    CH6
 
 /* LED pin mapping */
-#define LED_G                                   AMB_D3  // Green
-#define LED_R                                   AMB_D2  // Red
-#define LED_B                                   AMB_D1  // Blue
-#define LED_BUILTIN                             LED_G   // Green
+#define LED_BUILTIN                             NC
 
 /* ADC/DAC pin mapping */
 #define FEATURE_ADC
