@@ -53,6 +53,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss) {
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings) {
     (void)pin;
     bitOrder = settings._bitOrder;
+    dataMode = settings._dataMode;
     spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 0);
     spi_frequency((spi_t *)pSpiMaster, settings._clock);
 
