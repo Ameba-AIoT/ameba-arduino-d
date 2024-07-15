@@ -87,9 +87,6 @@ void WS2812B::show(void) {
     }
     //Add a dummy bytes to ensure that the last bit of the data is sent out
     spi_slave_write((spi_t *)pSpiMaster, 0);
-    //Ensure that Tx FIFO is empty before disable SPI
-    while (!(HAL_READ32(spi_addr,0x28) & 0x04));
-    spi_free((spi_t *)pSpiMaster);
 }
 
 void WS2812B::clear(void) {
