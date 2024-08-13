@@ -209,8 +209,10 @@ int SoftwareSerial::peek() {
 /* Extend API provide by RTK */
 void SoftwareSerial::setBufferSize(uint32_t buffer_size) {
     if (_receive_buffer != NULL) {
-        if (realloc(_receive_buffer, buffer_size) != NULL) {
+        char * rebuffer = (char *)realloc(_receive_buffer, buffer_size);
+        if (rebuffer != NULL) {
             _receive_buffer_size = buffer_size;
+            _receive_buffer = rebuffer;
         }
     }
 }
