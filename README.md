@@ -9,7 +9,7 @@
 |`dev`| merge `Pull Request` & early release| https://github.com/Ameba-AIoT/ameba-arduino-d/raw/dev/Arduino_package/package_realtek_amebad_early_index.json|
 
 
-For all `release` information, please visit this [link](https://github.com/ambiot/ambd_arduino/releases).
+For all `release` information, please visit this [link](https://github.com/Ameba-AIoT/ameba-arduino-d/releases).
 
 </br>
 
