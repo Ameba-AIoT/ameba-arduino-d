@@ -7,40 +7,31 @@ extern "C" {
 }
 #endif
 
-int ServerDrv::startClient(uint32_t ipAddress, uint16_t port, uint8_t portMode) {
-    printf("\n\r[INFO]server_drv.cpp:  start_client");
+int ServerDrv::startClient(uint32_t ipAddress, uint16_t port, uint8_t portMode, tBlockingMode blockMode)
+{
+    // printf("\n\r[INFO]server_drv.cpp:  start_client");
     int sock;
-
-    sock = start_client(ipAddress, port, portMode);
-
+    if (blockMode == BLOCKING_MODE) {
+        // printf("\r\n[INFO] %s WiFi client is set to blocking mode \n", __FUNCTION__);
+        sock = start_client(ipAddress, port, portMode);
+    } else {
+        // printf("\r\n[INFO] %s WiFi client is set to non-blocking mode \n", __FUNCTION__);
+        sock = start_client(ipAddress, port, portMode);
+        set_nonblocking(sock);
+    }
     return sock;
 }
 
-int ServerDrv::startClientV6(const char *ipv6Address, uint16_t port, uint8_t portMode) {
-    printf("\n\r[INFO]server_drv.cpp startClientV6() ipv6 addr: %s\n\r", ipv6Address);
+int ServerDrv::startServer(uint16_t port, uint8_t portMode, tBlockingMode blockMode)
+{
     int sock;
-
-    sock = start_client_v6((char *)ipv6Address, port, portMode);
-
-    return sock;
-}
-
-int ServerDrv::startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode) {
-    int sock;
-    sock = start_clientv6(ipv6Address, port, portMode);
-    printf("\n\r [INFO]server_drv.cpp:  startClientv6() sock value: %x\n\r", sock);
-    return sock;
-}
-
-int ServerDrv::startServer(uint16_t port, uint8_t portMode, bool blockMode) {
-    int sock;
-    if (blockMode) {
+    if (blockMode == BLOCKING_MODE) {
         printf("\r\n [INFO] server_drv.cpp: WiFi server is set to blocking mode\r\n");
         if (getIPv6Status() == 0) {
             sock = start_server(port, portMode);
             if (sock >= 0) {
                 if (portMode == TCP_MODE) {
-                    //Make it listen to socket with max 20 connections
+                    // Make it listen to socket with max 20 connections
                     sock_listen(sock, 1);
                 }
             }
@@ -48,7 +39,7 @@ int ServerDrv::startServer(uint16_t port, uint8_t portMode, bool blockMode) {
             sock = start_server_v6(port, portMode);
             if (sock >= 0) {
                 if (portMode == TCP_MODE) {
-                    //Make it listen to socket with max 20 connections
+                    // Make it listen to socket with max 20 connections
                     sock_listen(sock, 20);
                 }
             }
@@ -60,7 +51,7 @@ int ServerDrv::startServer(uint16_t port, uint8_t portMode, bool blockMode) {
             set_nonblocking(sock);
             if (sock >= 0) {
                 if (portMode == TCP_MODE) {
-                    //Make it listen to socket with max 20 connections
+                    // Make it listen to socket with max 20 connections
                     sock_listen(sock, 1);
                 }
             }
@@ -69,7 +60,7 @@ int ServerDrv::startServer(uint16_t port, uint8_t portMode, bool blockMode) {
             set_nonblocking(sock);
             if (sock >= 0) {
                 if (portMode == TCP_MODE) {
-                    //Make it listen to socket with max 20 connections
+                    // Make it listen to socket with max 20 connections
                     sock_listen(sock, 20);
                 }
             }
@@ -78,7 +69,26 @@ int ServerDrv::startServer(uint16_t port, uint8_t portMode, bool blockMode) {
     return sock;
 }
 
-int ServerDrv::getAvailable(int sock) {
+int ServerDrv::startClientV6(const char *ipv6Address, uint16_t port, uint8_t portMode)
+{
+    printf("\n\r[INFO]server_drv.cpp startClientV6() ipv6 addr: %s\n\r", ipv6Address);
+    int sock;
+
+    sock = start_client_v6((char *)ipv6Address, port, portMode);
+
+    return sock;
+}
+
+int ServerDrv::startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode)
+{
+    int sock;
+    sock = start_clientv6(ipv6Address, port, portMode);
+    printf("\n\r [INFO]server_drv.cpp:  startClientv6() sock value: %x\n\r", sock);
+    return sock;
+}
+
+int ServerDrv::getAvailable(int sock)
+{
     if (getIPv6Status() == 0) {
         return get_available(sock);
     } else {
@@ -86,7 +96,8 @@ int ServerDrv::getAvailable(int sock) {
     }
 }
 
-int ServerDrv::availData(int sock) {
+int ServerDrv::availData(int sock)
+{
     int ret;
     uint8_t c;
     if (sock < 0) {
@@ -106,7 +117,8 @@ int ServerDrv::availData(int sock) {
     }
 }
 
-bool ServerDrv::recvData(int sock, uint8_t *_data, uint16_t _dataLen) {
+bool ServerDrv::recvData(int sock, uint8_t *_data, uint16_t _dataLen)
+{
     int ret;
     _available = false;
 
@@ -115,7 +127,8 @@ bool ServerDrv::recvData(int sock, uint8_t *_data, uint16_t _dataLen) {
     return ret;
 }
 
-bool ServerDrv::getData(int sock, uint8_t *data, uint8_t peek) {
+bool ServerDrv::getData(int sock, uint8_t *data, uint8_t peek)
+{
     int ret = 0;
     int flag = 0;
 
@@ -134,7 +147,8 @@ bool ServerDrv::getData(int sock, uint8_t *data, uint8_t peek) {
     return false;
 }
 
-int ServerDrv::getDataBuf(int sock, uint8_t *_data, uint16_t _dataLen) {
+int ServerDrv::getDataBuf(int sock, uint8_t *_data, uint16_t _dataLen)
+{
     int ret;
     _available = false;
 
@@ -147,17 +161,20 @@ int ServerDrv::getDataBuf(int sock, uint8_t *_data, uint16_t _dataLen) {
     return ret;
 }
 
-int ServerDrv::getLastErrno(int sock) {
+int ServerDrv::getLastErrno(int sock)
+{
     return get_sock_errno(sock);
 }
 
-void ServerDrv::stopSocket(int sock) {
+void ServerDrv::stopSocket(int sock)
+{
     close_socket(sock);
     _available = false;
 }
 
-bool ServerDrv::sendData(int sock, const uint8_t *data, uint16_t len) {
-    //printf("[info] server_drv.cpp sendData()");
+bool ServerDrv::sendData(int sock, const uint8_t *data, uint16_t len)
+{
+    // printf("[info] server_drv.cpp sendData()");
 
     int ret;
     int flag = 0;
@@ -173,7 +190,8 @@ bool ServerDrv::sendData(int sock, const uint8_t *data, uint16_t len) {
     return true;
 }
 
-bool ServerDrv::sendtoData(int sock, const uint8_t *data, uint16_t len, uint32_t peer_ip, uint16_t peer_port) {
+bool ServerDrv::sendtoData(int sock, const uint8_t *data, uint16_t len, uint32_t peer_ip, uint16_t peer_port)
+{
     int ret;
 
     if (sock < 0) {
@@ -191,24 +209,29 @@ bool ServerDrv::sendtoData(int sock, const uint8_t *data, uint16_t len, uint32_t
     return true;
 }
 
-void ServerDrv::getRemoteData(int sock, uint32_t *ip, uint16_t *port) {
+void ServerDrv::getRemoteData(int sock, uint32_t *ip, uint16_t *port)
+{
     sock = sock;
     *ip = _peer_addr;
     *port = _peer_port;
 }
 
-int ServerDrv::setSockRecvTimeout(int sock, int timeout) {
+int ServerDrv::setSockRecvTimeout(int sock, int timeout)
+{
     return set_sock_recv_timeout(sock, timeout);
 }
 
-int ServerDrv::enableIPv6() {
+int ServerDrv::enableIPv6()
+{
     return enable_ipv6();
 }
 
-int ServerDrv::getIPv6Status() {
+int ServerDrv::getIPv6Status()
+{
     return get_ipv6_status();
 }
 
-void ServerDrv::setIPv6UDPServer(void) {
+void ServerDrv::setIPv6UDPServer(void)
+{
     ipv6_udp_server();
 }
