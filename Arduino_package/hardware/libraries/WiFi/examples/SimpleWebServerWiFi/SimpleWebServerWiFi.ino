@@ -30,6 +30,7 @@ void setup() {
         // wait 10 seconds for connection:
         delay(10000);
     }
+    server.setBlockingMode();                 // set server to blocking mode
     server.begin();                           // start the web server on port 80
     printWifiStatus();                        // you're connected now, so print out the status
 }
