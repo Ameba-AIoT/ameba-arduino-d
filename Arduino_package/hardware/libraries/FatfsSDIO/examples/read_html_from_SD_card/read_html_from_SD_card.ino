@@ -15,7 +15,7 @@ int keyIndex = 0;                   // your network key Index number (needed onl
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
-char filename_Web_test[] = "Web_UI.html"; //name of the HTML file saved in SD card
+char filename_Web_test[] = "Web_test.html"; //name of the HTML file saved in SD card
 FatFsSD fs;
 
 void setup() {
@@ -30,6 +30,7 @@ void setup() {
         // wait 10 seconds for connection:
         delay(10000);
     }
+    server.setBlockingMode();
     server.begin();                           // start the web server on port 80
     printWifiStatus();                        // you're connected now, so print out the status
 }
