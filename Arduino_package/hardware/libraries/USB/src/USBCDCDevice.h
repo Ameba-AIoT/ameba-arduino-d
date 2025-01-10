@@ -1,7 +1,7 @@
 #ifndef _USB_CDCDEVICE_H_
 #define _USB_CDCDEVICE_H_
 
-#ifdef BOARD_RTL8720DN_BW16
+#ifdef BOARD_AITHINKER_BW16
     #error "USB functionality is not supported on BW16 development board"
 #endif
 

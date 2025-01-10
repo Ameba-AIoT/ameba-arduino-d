@@ -11,7 +11,7 @@ extern "C" {
 }
 #endif
 
-#if defined(BOARD_RTL8720DN_BW16)
+#if defined(BOARD_AITHINKER_BW16)
 #error RTL8720DN/BW16 do not support SDIO. Please use SPI interface for SD card.
 #endif
 

@@ -78,5 +78,6 @@ void loop() {
         Serial.print("    Timeout: ");
         Serial.println(timeout);
         Udp.setRecvTimeout(timeout);
+        delay(10); // user may change the delay duration to match the computer sending speed
     }
 }

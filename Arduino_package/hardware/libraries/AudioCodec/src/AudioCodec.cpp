@@ -1,6 +1,6 @@
 #include "AudioCodec.h"
 
-#if defined(BOARD_RTL8720DN_BW16) || defined(BOARD_RTL8720DF)
+#if defined(BOARD_AITHINKER_BW16) || defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
 #error Sorry, AudioCodec is not supported on RTL8720DN and RTL8720DF.
 #endif
 
