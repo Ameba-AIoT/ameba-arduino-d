@@ -35,4 +35,10 @@ void loop() {
     delay(1);
 }
 
+#else
+
+void setup() {}
+
+void loop() {}
+
 #endif

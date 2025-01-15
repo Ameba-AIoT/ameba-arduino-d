@@ -30,4 +30,10 @@ void loop() {
     Codec.setOutputVolume(vol, vol);
 }
 
+#else
+
+void setup() {}
+
+void loop() {}
+
 #endif

@@ -52,4 +52,10 @@ void loop() {
 
 }
 
+#else
+
+void setup() {}
+
+void loop() {}
+
 #endif

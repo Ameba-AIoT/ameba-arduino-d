@@ -57,4 +57,10 @@ void loop() {
     delay(100);
 }
 
+#else
+
+void setup() {}
+
+void loop() {}
+
 #endif
