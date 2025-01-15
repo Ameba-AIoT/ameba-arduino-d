@@ -6,7 +6,7 @@
  */
 
 // Core RTL8720DN do not support SDIO. Please use SPI interface for SD card
-#ifndf CORE_RTL8720DN
+#ifndef CORE_RTL8720DN
 
 #include <FatFs_SD.h>
 
