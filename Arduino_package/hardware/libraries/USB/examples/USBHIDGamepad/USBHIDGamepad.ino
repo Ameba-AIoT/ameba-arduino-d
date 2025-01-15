@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-usb-gamepad/
  */
 
+// USB functionality is not supported on core RTL8720DN
+#ifndef CORE_RTL8720DN
+
 #include "USBHIDDevice.h"
 #include "USBHIDGamepad.h"
 
@@ -45,3 +48,5 @@ void loop() {
         delay(500);
     }
 }
+
+#endif

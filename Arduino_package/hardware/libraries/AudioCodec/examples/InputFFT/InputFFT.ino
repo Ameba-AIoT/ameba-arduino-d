@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-audio-inputfft/
  */
 
+// AudioCodec is not supported on core RTL8720DN nor RTL8720DF.
+#if !defined(CORE_RTL8720DF) && !defined(CORE_RTL8720DN)
+
 #include "AudioCodec.h"
 #include "FFT.h"
 
@@ -48,3 +51,5 @@ void loop() {
     }
     delay(1);
 }
+
+#endif

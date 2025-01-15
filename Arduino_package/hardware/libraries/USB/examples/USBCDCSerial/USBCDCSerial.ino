@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-usb-cdc/
  */
 
+// USB functionality is not supported on core RTL8720DN
+#ifndef CORE_RTL8720DN
+
 #include "USBCDCDevice.h"
 
 void setup() {
@@ -22,3 +25,5 @@ void loop() {
     }
     delay(1);
 }
+
+#endif
