@@ -47,7 +47,7 @@ void loop() {
     delay(1);
 }
 
-##else
+#else
 
 void setup() {}
 

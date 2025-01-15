@@ -22,8 +22,7 @@ WiFiClient::WiFiClient():
 WiFiClient::WiFiClient(uint8_t sock)
 {
     _sock = sock;
-    // if ((sock >= 0) && (sock != 0xFF)) {
-    if (sock != 0xFF) {
+    if ((sock >= 0) && (sock != 0xFF)) {
         _is_connected = true;
     }
     recvTimeout = 3000;

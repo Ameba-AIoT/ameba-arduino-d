@@ -5,6 +5,9 @@
  https://www.amebaiot.com/en/amebad-arduino-audio-fatfssdio/
  */
 
+// Core RTL8720DN do not support SDIO. Please use SPI interface for SD card
+#ifndf CORE_RTL8720DN
+
 #include "FatFs_SD.h"
 
 FatFsSD fs;
@@ -41,3 +44,11 @@ void loop() {
     // put your main code here, to run repeatedly:
     delay(1000);
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
+
+#endif
