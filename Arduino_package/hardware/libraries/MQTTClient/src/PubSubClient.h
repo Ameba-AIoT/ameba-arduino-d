@@ -21,7 +21,7 @@
 #define MQTT_VERSION MQTT_VERSION_3_1_1
 #endif
 
-#if defined (CORE_RTL8722DM) || (CORE_RTL8722DM_MINI) || (CORE_RTL8720DN_BW16) || (CORE_RTL8721DM) || (CORE_RTL8720DF)
+#if defined (CORE_RTL8722DM) || (CORE_RTL8720DN) || (CORE_RTL8721DM) || (CORE_RTL8720DF)
 // PCNs (Patch Change Numbers)
 
 /* For projects (Ex. LASS) that needs larger packets size then default. */

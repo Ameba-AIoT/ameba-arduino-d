@@ -1,4 +1,3 @@
-
 #ifdef __cplusplus
 extern "C" {
 #include "ameba_soc.h"

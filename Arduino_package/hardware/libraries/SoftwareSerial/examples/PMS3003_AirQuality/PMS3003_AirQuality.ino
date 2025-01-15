@@ -13,21 +13,21 @@
 
  In this example, we only use Serial to get PM 2.5 value.
 
- The circuit: (BOARD RTL8722CSM / DM)
- * RX is digital pin 0 (connect to PMS 3003 TX)
- * TX is digital pin 1 (connect to PMS 3003 RX)
-              (BOARD RTL8722DM_MINI)
- * RX is digital pin 2 (connect to PMS 3003 TX)
- * TX is digital pin 1 (connect to PMS 3003 RX)
-              (BOARD RTL8720DN / BW16)
- * RX is digital pin PB2 (connect to PMS 3003 TX)
- * TX is digital pin PB1 (connect to PMS 3003 RX)
-              (BOARD RTL8721DM)
- * RX is digital pin 3 (connect to PMS 3003 TX)
- * TX is digital pin 4 (connect to PMS 3003 RX)
-              (BOARD RTL8720DF)
- * RX is digital pin 17 (Connect to PMS 3003 TX)
- * TX is digital pin 16 (Connect to PMS 3003 RX)
+ The circuit: (BOARD_AMB21_AMB22)
+ * RX is digital pin 0 (connect to the other device TX)
+ * TX is digital pin 1 (connect to the other device RX)
+              (BOARD_AMB23)
+ * RX is digital pin 2 (connect to the other device TX)
+ * TX is digital pin 1 (connect to the other device RX)
+              (BOARD_AITHINKER_BW16)
+ * RX is digital pin PB2 (connect to the other device TX)
+ * TX is digital pin PB1 (connect to the other device RX)
+               (BOARD_SPARKFUN_AWCU488)
+ * RX is digital pin 3 (connect to the other device TX)
+ * TX is digital pin 4 (connect to the other device RX)
+              (BOARD_AMB25, BOARD_AMB26)
+ * RX is digital pin 17 (connect to the other device TX)
+ * TX is digital pin 16 (connect to the other device RX)
 
  Example guide:
  https://www.amebaiot.com/en/amebad-arduino-pm25/

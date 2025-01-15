@@ -2,8 +2,8 @@
 #define _USB_CDCDEVICE_H_
 
 #ifdef BOARD_AITHINKER_BW16
-    #error "USB functionality is not supported on BW16 development board"
-#endif
+// error "USB functionality is not supported on BW16 development board"
+#else
 
 #include <Arduino.h>
 
@@ -86,6 +86,8 @@ class USBCDCDevice : public HardwareSerial{
 };
 
 extern USBCDCDevice SerialUSB;
+
+#endif
 
 #endif
 

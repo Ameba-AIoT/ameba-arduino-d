@@ -2,8 +2,8 @@
 #define _USB_HIDDEVICE_H_
 
 #ifdef BOARD_AITHINKER_BW16
-    #error "USB functionality is not supported on BW16 development board"
-#endif
+// #error "USB functionality is not supported on BW16 development board"
+#else
 
 #include <Arduino.h>
 #include "HID.h"
@@ -20,7 +20,7 @@ extern "C" {
 #endif
 
 // Endpoint address
-#define HID_INTERRUPT_IN_EP_ADDRESS		0x81
+#define HID_INTERRUPT_IN_EP_ADDRESS     0x81
 
 // Report ID should start with 1
 #define REPORT_ID_KEYBOARD          1
@@ -86,3 +86,4 @@ extern USBHIDDevice USBHIDDev;
 
 #endif
 
+#endif

@@ -3,19 +3,19 @@
 
  Receives from serial RX, and then sends to serial TX
 
- The circuit: (BOARD RTL8722CSM / DM)
+ The circuit: (BOARD_AMB21_AMB22)
  * RX is digital pin 0 (connect to the other device TX)
  * TX is digital pin 1 (connect to the other device RX)
-              (BOARD RTL8722DM_MINI)
+              (BOARD_AMB23)
  * RX is digital pin 2 (connect to the other device TX)
  * TX is digital pin 1 (connect to the other device RX)
-              (BOARD RTL8720DN / BW16)
+              (BOARD_AITHINKER_BW16)
  * RX is digital pin PB2 (connect to the other device TX)
  * TX is digital pin PB1 (connect to the other device RX)
-               (BOARD RTL8721DM)
+               (BOARD_SPARKFUN_AWCU488)
  * RX is digital pin 3 (connect to the other device TX)
  * TX is digital pin 4 (connect to the other device RX)
-               (BOARD RTL8720DF)
+              (BOARD_AMB25, BOARD_AMB26)
  * RX is digital pin 17 (connect to the other device TX)
  * TX is digital pin 16 (connect to the other device RX)
 
