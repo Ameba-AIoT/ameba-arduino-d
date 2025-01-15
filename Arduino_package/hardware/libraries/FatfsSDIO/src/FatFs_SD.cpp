@@ -11,9 +11,9 @@ extern "C" {
 }
 #endif
 
-#if defined(BOARD_RTL8720DN_BW16)
-#error RTL8720DN/BW16 do not support SDIO. Please use SPI interface for SD card.
-#endif
+#if defined(BOARD_AITHINKER_BW16)
+// #error RTL8720DN/BW16 do not support SDIO. Please use SPI interface for SD card.
+#else
 
 #define TEST_SIZE   (512)
 
@@ -349,3 +349,5 @@ int FatFsSD::getAttribute(char *absolute_path, unsigned char *attr) {
 
     return -ret;
 }
+
+#endif
