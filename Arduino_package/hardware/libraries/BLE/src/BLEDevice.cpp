@@ -265,7 +265,7 @@ void BLEDevice::beginPeripheral() {
     if (BTDEBUG) printf("GAP cb reg\r\n");
 
     // start BLE main task to handle IO and GAP msg
-    os_task_create(&_appTaskHandle, "BLE_Peripheral_Task", BLEMainTask, 0, 256*4, 1);
+    os_task_create(&_appTaskHandle, "BLE_Peripheral_Task", BLEMainTask, 0, 512*4, 1);
     if (BTDEBUG) printf("Task create\r\n");
 
     bt_coex_init();
