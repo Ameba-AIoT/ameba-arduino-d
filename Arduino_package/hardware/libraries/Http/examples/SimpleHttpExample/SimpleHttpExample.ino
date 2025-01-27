@@ -40,6 +40,7 @@ void loop() {
     int err = 0;
 
     WiFiClient c;
+    c.setBlockingMode();
     HttpClient http(c);
 
     err = http.get(kHostname, kPath);
