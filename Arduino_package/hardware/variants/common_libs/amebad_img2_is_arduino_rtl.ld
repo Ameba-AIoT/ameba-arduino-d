@@ -1,6 +1,6 @@
 ENTRY(Reset_Handler)
 
-INCLUDE "rom_symbol_ns.txt"
+INCLUDE "rom_symbol_ns_rtl.txt"
 
 MEMORY
 {
