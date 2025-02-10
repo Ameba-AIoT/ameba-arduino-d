@@ -317,7 +317,7 @@ TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25
 // HW: I2C0
 TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25 / PB_6, PB_5
 
-#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
 // SDA SCL
 // HW: I2C0
 TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25
