@@ -82,6 +82,7 @@ class AudioCodec {
         bool readAvaliable();
         uint32_t readDataPage(int8_t* buffer, uint32_t len);
         uint32_t readDataPage(int16_t* buffer, uint32_t len);
+        void amplifyReadData(int16_t* buffer, uint32_t len, uint8_t m);
 
         void setWriteCallback(void (*writeCB)(void));
         void setReadCallback(void (*readCB)(void));

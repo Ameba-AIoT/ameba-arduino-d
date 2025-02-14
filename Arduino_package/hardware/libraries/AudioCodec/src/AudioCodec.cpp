@@ -301,6 +301,13 @@ uint32_t AudioCodec::readDataPage(int16_t* dst, uint32_t len) {
     return (readDataPage((int8_t*)dst, (len * 2)) / 2);
 }
 
+void AudioCodec::amplifyReadData(int16_t* dst, uint32_t len, uint8_t m) {
+    uint32_t i;
+    for (i=0; i<len; i++) {
+        dst[i]*=m;
+    }
+}
+
 void AudioCodec::setWriteCallback(void (*writeCB)(void)) {
     _pWriteCB = writeCB;
 }

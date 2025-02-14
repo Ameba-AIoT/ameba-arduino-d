@@ -14,6 +14,7 @@
 
 #define RECORDBTN 9
 #define SAMPLERATE 48000
+#define MICTYPE PDMMIC  // Analog mic: ANALOGMIC, Digital mic: PDMMIC
 
 #define BUFFERSIZE 512
 int16_t buffer[BUFFERSIZE] = {0};
@@ -28,11 +29,12 @@ PlaybackWav playWav;
 void readCBFunc() {
     if (Codec.readAvaliable() && recWav.fileOpened()) {
         Codec.readDataPage(buffer, BUFFERSIZE);
+        Codec.amplifyReadData(buffer, BUFFERSIZE, 100); // to amplify the input audio (max: 100)
         recWav.writeAudioData(buffer, BUFFERSIZE);
     }
 }
 
-void writeCBFunc() {
+void writeCBFunc() { 
     if (Codec.writeAvaliable() && playWav.fileOpened()) {
         playWav.readAudioData(buffer, BUFFERSIZE);
         Codec.writeDataPage(buffer, BUFFERSIZE);
@@ -51,6 +53,16 @@ void setup() {
     recWav.setSampleRate(SAMPLERATE);
     Codec.setReadCallback(readCBFunc);
     Codec.setWriteCallback(writeCBFunc);
+
+    if (MICTYPE) {
+      Codec.setInputMicType(PDMMIC);
+      Codec.setDMicBoost(3, 3);
+    }
+    else {
+      Codec.setInputMicType(ANALOGMIC);
+      Codec.setAMicBoost(3, 3);
+    }
+    Codec.setADCGain(127, 127);
     Codec.begin(TRUE, TRUE);
 }
 
