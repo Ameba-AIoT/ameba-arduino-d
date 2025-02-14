@@ -303,8 +303,11 @@ uint32_t AudioCodec::readDataPage(int16_t* dst, uint32_t len) {
 
 void AudioCodec::amplifyReadData(int16_t* dst, uint32_t len, uint8_t m) {
     uint32_t i;
-    for (i=0; i<len; i++) {
-        dst[i]*=m;
+    if (m > 100) {
+        m = 100;
+    }    
+    for (i = 0; i < len; i ++) {
+        dst[i] *= m;
     }
 }
 
