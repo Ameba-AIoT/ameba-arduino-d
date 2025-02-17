@@ -34,7 +34,7 @@ void readCBFunc() {
     }
 }
 
-void writeCBFunc() { 
+void writeCBFunc() {
     if (Codec.writeAvaliable() && playWav.fileOpened()) {
         playWav.readAudioData(buffer, BUFFERSIZE);
         Codec.writeDataPage(buffer, BUFFERSIZE);
