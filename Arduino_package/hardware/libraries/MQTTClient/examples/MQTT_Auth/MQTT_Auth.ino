@@ -16,7 +16,7 @@ char pass[] = "Password";           // your network password
 int status = WL_IDLE_STATUS;        // Indicator of Wifi status
 
 char mqttServer[]     = "cloud.amebaiot.com";
-char clientId[]       = "amebaD";
+char clientId[]       = "amebaClient";
 char clientUser[]     = "testuser";
 char clientPass[]     = "testpass";
 char publishTopic[]   = "outTopic";
