@@ -13,6 +13,44 @@
 		{
           "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
           "architecture": "AmebaD",
+          "version": "3.1.8-build20250321",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.amebaiot.com/"
+          },
+          "url": "https://github.com/Ameba-AIoT/ameba-arduino-d/raw/dev/Arduino_package/release/ameba_d-3.1.8-build20250321.tar.gz",
+          "archiveFileName": "ameba_d-3.1.8-build20250321.tar.gz",
+          "checksum": "SHA-256:2f632e658a46db0c2a75f5dec2d4ab33325854069365263b14b427aa4d897eab",
+          "size": "15555954",
+          "boards": [
+            {"name": "AMB21 (RTL8722DM)"},
+            {"name": "AMB22 (RTL8722CSM)"},
+            {"name": "AMB23 (RTL8722DM)"},
+            {"name": "BW16 (RTL8720DN)"},
+            {"name": "BW16-TypeC (RTL8720DN)"},
+            {"name": "AW-CU488 SparkFun Thing Plus (RTL8721DM)"},
+            {"name": "AMB25 (RTL8720DF)"},
+            {"name": "AMB26 (RTL8720DF)"},
+            {"name": "NORA-W30 (RTL8720DF)"},
+            {"name": "NORA-W306 SparkFun Thing Plus (RTL8720DF)"},
+            {"name": "Datalogger Kevin’s Lab (RTL8720DF)"}
+          ],
+          "toolsDependencies": [
+            {
+              "packager": "realtek",
+              "name": "ameba_d_asdk_toolchain",
+              "version": "1.0.1"
+            },
+            {
+              "packager": "realtek",
+              "name": "ameba_d_tools",
+              "version": "1.1.3"
+            }
+          ]
+        },
+		{
+          "name": "Realtek Ameba Boards (32-bits ARM Cortex-M33 @200MHz)",
+          "architecture": "AmebaD",
           "version": "3.1.8-build20250225",
           "category": "Contributed",
           "help": {
