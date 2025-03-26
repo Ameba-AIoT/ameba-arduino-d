@@ -7,6 +7,8 @@
   This example code is in the public domain.
  */
 
+#ifdef BOARD_AITHINKER_BW16
+
 #include "SdFat.h"
 #include "sdios.h"
 
@@ -217,3 +219,5 @@ void loop() {
   }
   dmpVol();
 }
+
+#endif
