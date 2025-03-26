@@ -119,6 +119,7 @@ jobs:
             - source-url: https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_zip_libraries/AmebaMotors.zip
             - source-url: https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_zip_libraries/AmebaEink.zip
             - name: "SparkFun ADXL313 Arduino Library"
+            - name: "SdFat - Adafruit Fork"
           verbose: false
           enable-deltas-report: false
         if: ${{ github.ref == 'refs/heads/dev' || github.event.pull_request.base.ref == 'dev'}}
@@ -141,6 +142,7 @@ jobs:
             - source-url: https://github.com/ambiot/ambd_arduino/raw/master/Arduino_zip_libraries/AmebaMotors.zip
             - source-url: https://github.com/ambiot/ambd_arduino/raw/master/Arduino_zip_libraries/AmebaEink.zip
             - name: "SparkFun ADXL313 Arduino Library"
+            - name: "SdFat - Adafruit Fork"
           verbose: false
           enable-deltas-report: false
         if: ${{ github.ref == 'refs/heads/master' || github.event.pull_request.base.ref == 'master' }}
