@@ -101,6 +101,12 @@ extern void wait_for_debug(void);
 #define SPI_SCLK                                AMB_D10 // AMB_D10
 #define SPI_SS                                  AMB_D9  // AMB_D9
 
+/* Arduino style SPI pin mapping */
+static const uint8_t SS = SPI_SS;
+static const uint8_t MOSI = SPI_MOSI;
+static const uint8_t MISO = SPI_MISO;
+static const uint8_t SCK = SPI_SCLK;
+
 /* TwoWire/I2C pin mapping */
 #define I2C_SDA                                 AMB_D8 // AMB_D8
 #define I2C_SCL                                 AMB_D7 // AMB_D7
