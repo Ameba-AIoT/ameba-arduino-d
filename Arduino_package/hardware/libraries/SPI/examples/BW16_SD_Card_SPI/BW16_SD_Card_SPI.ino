@@ -5,6 +5,8 @@
   It needs the Adafruit fork of the SdFat Library: https://github.com/adafruit/SdFat/  
 
   This example code is in the public domain.
+ 
+  This modified example credits to https://github.com/designer2k2 
  */
 
 #ifdef BOARD_AITHINKER_BW16
@@ -219,5 +221,11 @@ void loop() {
   }
   dmpVol();
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
 
 #endif
