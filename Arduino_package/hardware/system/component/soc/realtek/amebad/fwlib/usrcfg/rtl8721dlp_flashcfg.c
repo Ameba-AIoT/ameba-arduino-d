@@ -66,8 +66,8 @@ const FlashInfo_TypeDef Flash_AVL[] = {
 		{0x20,			0x000000FF,		FlashClass5,		0x000000FC,		NULL},	/* Microm: MANUFACTURER_ID_MICRON */
 
 		/* case2: new flash, ID is not included in case1 list, but specification is compatible with FlashClass1~FlashClass6 */
-                {0x85,			0x000000FF,		FlashClass1, 		0x000043FC,		NULL},  /* Puya */
-
+		{0x85,			0x000000FF,		FlashClass1, 		0x000043FC,		NULL},  /* Puya */
+		
 		/* case3: new flash, ID is not included in case1 list, and specification is not compatible with FlashClass1~FlashClass6 */
 		{0x00,			0x000000FF,		FlashClassUser,		0xFFFFFFFF,		&flash_init_userdef},
 

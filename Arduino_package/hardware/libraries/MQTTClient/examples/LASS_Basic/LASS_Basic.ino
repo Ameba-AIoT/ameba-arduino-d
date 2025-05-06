@@ -50,7 +50,7 @@ uint32_t epochSystem = 0; // timestamp of system boot up
 
 // SoftwareSerial RX/TX pins
 // check the board pin mapping for available UART/Serial pins
-PMS3003 pms(0, 1);
+PMS3003 pms(2, 1);
 
 void reconnectWiFi() {
     // attempt to connect to Wifi network:
@@ -174,6 +174,7 @@ void setup() {
 
     pms.begin();
     reconnectWiFi();
+    wifiClient.setBlockingMode();
     retrieveNtpTime();
     initializeMQTT();
 }

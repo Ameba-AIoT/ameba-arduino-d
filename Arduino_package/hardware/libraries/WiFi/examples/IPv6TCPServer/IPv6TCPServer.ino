@@ -47,6 +47,7 @@ void setup() {
     }
     printWifiStatus();
 
+    server.setBlockingMode();
     // connect to server and listen for incoming sockets
     server.begin();
     client_fd = server.available(server_fd);

@@ -17,8 +17,9 @@ OTA	            KEYWORD1    ota
 # Methods and Functions (KEYWORD2)
 #######################################
 
-beginOTA	    KEYWORD2
-syncOTAAddr	    KEYWORD2
+beginOTA	            KEYWORD2
+start_OTA_threads       KEYWORD2
+syncOTAAddr	            KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

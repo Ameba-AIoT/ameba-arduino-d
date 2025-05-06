@@ -27,25 +27,25 @@
 #define WL_DEFINITIONS_H
 
 // Maximum size of a SSID
-#define WL_SSID_MAX_LENGTH          32
+#define WL_SSID_MAX_LENGTH 32
 // Length of passphrase. Valid lengths are 8-63.
-#define WL_WPA_KEY_MAX_LENGTH       63
+#define WL_WPA_KEY_MAX_LENGTH 63
 // Length of key in bytes. Valid values are 5 and 13.
-#define WL_WEP_KEY_MAX_LENGTH       13
+#define WL_WEP_KEY_MAX_LENGTH 13
 // Size of a MAC-address or BSSID
-#define WL_MAC_ADDR_LENGTH          6
+#define WL_MAC_ADDR_LENGTH 6
 // Size of a MAC-address or BSSID
-#define WL_IPV4_LENGTH              4
+#define WL_IPV4_LENGTH 4
 // Maximum size of a SSID list
-#define WL_NETWORKS_LIST_MAXNUM     50
+#define WL_NETWORKS_LIST_MAXNUM 50
 // Maximum number of socket
-#define	MAX_SOCK_NUM                4
+#define MAX_SOCK_NUM 4
 // Socket not available constant
-#define SOCK_NOT_AVAIL              255
+#define SOCK_NOT_AVAIL 255
 // Default state value for Wifi state field
-#define NA_STATE                    -1
+#define NA_STATE -1
 // Maximum number of attempts to establish wifi connection
-#define WL_MAX_ATTEMPT_CONNECTION   10
+#define WL_MAX_ATTEMPT_CONNECTION 10
 
 typedef enum {
     WL_NO_SHIELD = 255,
@@ -59,9 +59,9 @@ typedef enum {
 } wl_status_t;
 
 /* Encryption modes */
-enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
-    ENC_TYPE_WEP  = 5,
-    ENC_TYPE_WPA  = 2,
+enum wl_enc_type { /* Values map to 802.11 encryption suites... */
+    ENC_TYPE_WEP = 5,
+    ENC_TYPE_WPA = 2,
     ENC_TYPE_WPA3 = 3,
     ENC_TYPE_WPA2 = 4,
     /* ... except these two, 7 and 8 are reserved in 802.11-2007 */
@@ -72,30 +72,40 @@ enum wl_enc_type {  /* Values map to 802.11 encryption suites... */
 /* RTK added type */
 #ifndef WEP_ENABLED
 
-#define WEP_ENABLED         0x0001
-#define TKIP_ENABLED        0x0002
-#define AES_ENABLED         0x0004
-#define WSEC_SWFLAG         0x0008
+#define WEP_ENABLED  0x0001
+#define TKIP_ENABLED 0x0002
+#define AES_ENABLED  0x0004
+#define WSEC_SWFLAG  0x0008
 
-#define SHARED_ENABLED      0x00008000
-#define WPA_SECURITY        0x00200000
-#define WPA2_SECURITY       0x00400000
-#define WPA3_SECURITY       0x00800000
-#define WPS_ENABLED         0x10000000
+#define SHARED_ENABLED 0x00008000
+#define WPA_SECURITY   0x00200000
+#define WPA2_SECURITY  0x00400000
+#define WPA3_SECURITY  0x00800000
+#define WPS_ENABLED    0x10000000
 
-#endif // #ifndef WEP_ENABLED
+#endif    // #ifndef WEP_ENABLED
 
 /* redefined from enum rtw_security_t */
 #define SECURITY_OPEN            (0)
 #define SECURITY_WEP_PSK         (WEP_ENABLED)
 #define SECURITY_WEP_SHARED      (WEP_ENABLED | SHARED_ENABLED)
-#define SECURITY_WPA_TKIP_PSK    (WPA_SECURITY  | TKIP_ENABLED)
-#define SECURITY_WPA_AES_PSK     (WPA_SECURITY  | AES_ENABLED)
+#define SECURITY_WPA_TKIP_PSK    (WPA_SECURITY | TKIP_ENABLED)
+#define SECURITY_WPA_AES_PSK     (WPA_SECURITY | AES_ENABLED)
 #define SECURITY_WPA2_AES_PSK    (WPA2_SECURITY | AES_ENABLED)
 #define SECURITY_WPA2_TKIP_PSK   (WPA2_SECURITY | TKIP_ENABLED)
 #define SECURITY_WPA2_MIXED_PSK  (WPA2_SECURITY | AES_ENABLED | TKIP_ENABLED)
-#define SECURITY_WPA_WPA2_MIXED  (WPA_SECURITY  | WPA2_SECURITY)
+#define SECURITY_WPA_WPA2_MIXED  (WPA_SECURITY | WPA2_SECURITY)
 #define SECURITY_WPA3_AES_PSK    (WPA3_SECURITY | AES_ENABLED)
 #define SECURITY_WPA2_WPA3_MIXED (WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED)
+
+typedef enum eProtMode {
+    TCP_MODE,
+    UDP_MODE
+} tPortMode;
+
+typedef enum eBlockingMode {
+    BLOCKING_MODE,
+    NON_BLOCKING_MODE
+} tBlockingMode;
 
 #endif /* WL_DEFINITIONS_H_ */

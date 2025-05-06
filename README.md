@@ -5,11 +5,11 @@
 
 |Branch|Usage|json links|
 |:-----|:-----|:-----|
-|`master` | stable release| https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json|
-|`dev`| merge `Pull Request` & early release| https://github.com/ambiot/ambd_arduino/raw/dev/Arduino_package/package_realtek_amebad_early_index.json|
+|`master` | stable release| https://github.com/Ameba-AIoT/ameba-arduino-d/raw/master/Arduino_package/package_realtek_amebad_index.json|
+|`dev`| merge `Pull Request` & early release| https://github.com/Ameba-AIoT/ameba-arduino-d/raw/dev/Arduino_package/package_realtek_amebad_early_index.json|
 
 
-For all `release` information, please visit this [link](https://github.com/ambiot/ambd_arduino/releases).
+For all `release` information, please visit this [link](https://github.com/Ameba-AIoT/ameba-arduino-d/releases).
 
 </br>
 
@@ -28,7 +28,7 @@ For all `release` information, please visit this [link](https://github.com/ambio
 
     Copy and paste the following link into the field and click "OK",
 
-    https://github.com/ambiot/ambd_arduino/raw/master/Arduino_package/package_realtek_amebad_index.json
+    https://github.com/Ameba-AIoT/ameba-arduino-d/raw/master/Arduino_package/package_realtek_amebad_index.json
 
     > We also suggest to enable "Show verbose output" options on "compilation" and "upload" in Preference for easier debugging.
     
@@ -54,4 +54,4 @@ For all `release` information, please visit this [link](https://github.com/ambio
 
 ## 3. Contributing to Ameba
 
-Please spend 5 mins to read the **Coding Style** and **Contribution Guideline** at [here](https://github.com/ambiot/ambd_arduino/wiki/Contributing-to-Ameba) before you contribute.
+Please spend 5 mins to read the **Coding Style** and **Contribution Guideline** at [here](https://github.com/Ameba-AIoT/ameba-arduino-d/wiki/Contributing-to-Ameba) before you contribute.

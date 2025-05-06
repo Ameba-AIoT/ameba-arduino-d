@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-audio-sinewave/
  */
 
+// AudioCodec is not supported on core RTL8720DN nor RTL8720DF.
+#if !defined(CORE_RTL8720DF) && !defined(CORE_RTL8720DN)
+
 #include "AudioCodec.h"
 
 #define SAMPLERATE 16000
@@ -31,3 +34,11 @@ void loop() {
     }
     delay(1);
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
+
+#endif

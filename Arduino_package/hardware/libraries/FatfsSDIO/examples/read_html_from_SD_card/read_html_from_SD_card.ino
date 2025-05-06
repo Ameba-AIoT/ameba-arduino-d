@@ -5,6 +5,9 @@
  https://www.amebaiot.com/en/amebad-arduino-fatfs-sdio/
  */
 
+// Core RTL8720DN do not support SDIO. Please use SPI interface for SD card
+#ifndef CORE_RTL8720DN
+
 #include <WiFi.h>
 #include "FatFs_SD.h"
 
@@ -15,7 +18,7 @@ int keyIndex = 0;                   // your network key Index number (needed onl
 int status = WL_IDLE_STATUS;
 WiFiServer server(80);
 
-char filename_Web_test[] = "Web_UI.html"; //name of the HTML file saved in SD card
+char filename_Web_test[] = "Web_test.html"; //name of the HTML file saved in SD card
 FatFsSD fs;
 
 void setup() {
@@ -30,6 +33,7 @@ void setup() {
         // wait 10 seconds for connection:
         delay(10000);
     }
+    server.setBlockingMode();
     server.begin();                           // start the web server on port 80
     printWifiStatus();                        // you're connected now, so print out the status
 }
@@ -106,3 +110,11 @@ void printWifiStatus() {
     Serial.print("To see this page in action, open a browser to http://");
     Serial.println(ip);
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
+
+#endif

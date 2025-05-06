@@ -21,37 +21,33 @@
 #define SERVER_DRV_H
 
 #include <inttypes.h>
-
-typedef enum eProtMode {
-    TCP_MODE,
-    UDP_MODE
-} tProtMode;
+#include "wl_definitions.h"
 
 #define DATA_LENTH 128
 class ServerDrv {
-    public:
-        int startClient(uint32_t ipAddress, uint16_t port, uint8_t portMode = TCP_MODE);
-        int startServer(uint16_t port, uint8_t portMode = TCP_MODE, bool blockMode = false);
-        int startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode = TCP_MODE);
-        int startClientV6(const char *ipv6Address, uint16_t port, uint8_t portMode);
-        int getAvailable(int sock);
-        int availData(int sock);
-        bool recvData(int sock, uint8_t *_data, uint16_t _dataLen);
-        bool getData(int sock, uint8_t *data, uint8_t peek = 0);
-        int getDataBuf(int sock, uint8_t *_data, uint16_t _dataLen);
-        int getLastErrno(int sock);
-        void stopSocket(int sock);
-        bool sendData(int sock, const uint8_t *data, uint16_t len);
-        bool sendtoData(int sock, const uint8_t *data, uint16_t len, uint32_t peer_ip, uint16_t peer_port);
-        void getRemoteData(int sock, uint32_t *ip, uint16_t *port);
-        int setSockRecvTimeout(int sock, int timeout);
-        static int enableIPv6();
-        static int getIPv6Status();
-        void setIPv6UDPServer(void);
+public:
+    int startClient(uint32_t ipAddress, uint16_t port, uint8_t portMode = TCP_MODE, tBlockingMode blockMode = NON_BLOCKING_MODE);
+    int startServer(uint16_t port, uint8_t portMode = TCP_MODE, tBlockingMode blockMode = NON_BLOCKING_MODE);
+    int startClientv6(uint32_t *ipv6Address, uint16_t port, uint8_t portMode = TCP_MODE);
+    int startClientV6(const char *ipv6Address, uint16_t port, uint8_t portMode);
+    int getAvailable(int sock);
+    int availData(int sock);
+    bool recvData(int sock, uint8_t *_data, uint16_t _dataLen);
+    bool getData(int sock, uint8_t *data, uint8_t peek = 0);
+    int getDataBuf(int sock, uint8_t *_data, uint16_t _dataLen);
+    int getLastErrno(int sock);
+    void stopSocket(int sock);
+    bool sendData(int sock, const uint8_t *data, uint16_t len);
+    bool sendtoData(int sock, const uint8_t *data, uint16_t len, uint32_t peer_ip, uint16_t peer_port);
+    void getRemoteData(int sock, uint32_t *ip, uint16_t *port);
+    int setSockRecvTimeout(int sock, int timeout);
+    static int enableIPv6();
+    static int getIPv6Status();
+    void setIPv6UDPServer(void);
 
-    private:
-        bool _available;
-        uint32_t _peer_addr;
-        uint16_t _peer_port;
+private:
+    bool _available;
+    uint32_t _peer_addr;
+    uint16_t _peer_port;
 };
 #endif

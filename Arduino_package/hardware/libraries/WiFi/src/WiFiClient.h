@@ -1,49 +1,58 @@
 #ifndef WiFiClient_h
 #define WiFiClient_h
 
-#include "Print.h"
 #include "Client.h"
 #include "IPAddress.h"
 #include "IPv6Address.h"
+#include "Print.h"
 #include "server_drv.h"
 
-class WiFiClient : public Client {
-    public:
-        WiFiClient();
-        WiFiClient(uint8_t sock);
-        ~WiFiClient();
 
-        uint8_t status();
-        virtual uint8_t connected();
-        virtual int available();
-        virtual int read();
-        virtual int read(uint8_t *buf, size_t size);
-        virtual int recv(uint8_t *buf, size_t size);
-        virtual void stop();
-        virtual size_t write(uint8_t);
-        virtual size_t write(const uint8_t *buf, size_t size);
-        virtual operator bool();
-        virtual int connect(const char *host, uint16_t port);
-        virtual int connect(IPAddress ip, uint16_t port);
-        virtual int connectv6(IPv6Address ipv6, uint16_t port);
-        virtual int peek();
-        virtual void flush();
-        // extend API from RTK
-        int setRecvTimeout(int timeout);
-        int read(char *buf, size_t size);
-        // IPv6 related
-        int enableIPv6();
-        int getIPv6Status();
+class WiFiClient: public Client {
+public:
+    WiFiClient();
+    WiFiClient(uint8_t sock);
+    WiFiClient(tPortMode portMode);
+    WiFiClient(tBlockingMode blockMode);
+    WiFiClient(uint8_t sock, tPortMode portMode);
+    WiFiClient(uint8_t sock, tPortMode portMode, tBlockingMode blockMode);
+    ~WiFiClient();
 
-        friend class WiFiServer;
-        using Print::write;
+    uint8_t status();
+    virtual uint8_t connected();
+    virtual int available();
+    virtual int read();
+    virtual int read(uint8_t *buf, size_t size);
+    virtual int recv(uint8_t *buf, size_t size);
+    virtual void stop();
+    virtual void setBlockingMode();
+    virtual void setNonBlockingMode();
+    virtual size_t write(uint8_t);
+    virtual size_t write(const uint8_t *buf, size_t size);
+    virtual operator bool();
+    virtual int connect(const char *host, uint16_t port);
+    virtual int connect(IPAddress ip, uint16_t port);
+    virtual int connectv6(IPv6Address ipv6, uint16_t port);
+    virtual int peek();
+    virtual void flush();
+    // extend API from RTK
+    int setRecvTimeout(int timeout);
+    int read(char *buf, size_t size);
+    // IPv6 related
+    int enableIPv6();
+    int getIPv6Status();
 
-    private:
-        uint8_t _sock;
-        ServerDrv clientdrv;
-        bool _is_connected;
-        uint8_t data[DATA_LENTH];
-        int recvTimeout;
+    friend class WiFiServer;
+    using Print::write;
+
+private:
+    int8_t _sock;
+    ServerDrv clientdrv;
+    bool _is_connected;
+    uint8_t data[DATA_LENTH];
+    int recvTimeout;
+    tPortMode _portMode = TCP_MODE;
+    tBlockingMode _is_blocked = NON_BLOCKING_MODE;
 };
 
 #ifdef __cplusplus

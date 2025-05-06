@@ -1,8 +1,9 @@
 #include "AudioCodec.h"
 
-#if defined(BOARD_RTL8720DN_BW16) || defined(BOARD_RTL8720DF)
-#error Sorry, AudioCodec is not supported on RTL8720DN and RTL8720DF.
-#endif
+#if defined(BOARD_AITHINKER_BW16) || defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
+// error Sorry, AudioCodec is not supported on RTL8720DN and RTL8720DF.
+
+#else
 
 #ifdef __cplusplus
 extern "C" {
@@ -298,6 +299,16 @@ uint32_t AudioCodec::readDataPage(int8_t* dst, uint32_t len) {
 
 uint32_t AudioCodec::readDataPage(int16_t* dst, uint32_t len) {
     return (readDataPage((int8_t*)dst, (len * 2)) / 2);
+}
+
+void AudioCodec::amplifyReadData(int16_t* dst, uint32_t len, uint8_t m) {
+    uint32_t i;
+    if (m > 100) {
+        m = 100;
+    }    
+    for (i = 0; i < len; i ++) {
+        dst[i] *= m;
+    }
 }
 
 void AudioCodec::setWriteCallback(void (*writeCB)(void)) {
@@ -619,3 +630,5 @@ void AudioCodec::rxCompleteHandler(void* DMAinfo) {
     rx_length = getFreeRxLength();
     AUDIO_SP_RXGDMA_Restart(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, rx_addr, rx_length);
 }
+
+#endif

@@ -194,6 +194,7 @@ uint8_t IRDevice::getFreq() {
 }
 
 void IRDevice::begin(uint8_t irPin, uint32_t irMode, uint32_t freq) {
+    amb_ard_pin_check_fun(irPin, PIO_IR);
     if (irMode == IR_MODE_TX) {
         setTxPin(irPin);
     } else if (irMode == IR_MODE_RX) {
@@ -212,6 +213,8 @@ void IRDevice::begin(uint8_t irPin, uint32_t irMode, uint32_t freq) {
 }
 
 void IRDevice::begin(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode, uint32_t freq) {
+    amb_ard_pin_check_fun(receivePin, PIO_IR);
+    amb_ard_pin_check_fun(transmitPin, PIO_IR);
     setPins(receivePin, transmitPin);
     if ((irMode != IR_MODE_TX) && (irMode != IR_MODE_RX)) {
         printf("Invalid IR mode!\r\n");
@@ -316,6 +319,8 @@ void IRDevice::recv() {
 }
 
 void IRDevice::beginNEC(uint8_t receivePin, uint8_t transmitPin, uint32_t irMode) {
+    amb_ard_pin_check_fun(receivePin, PIO_IR);
+    amb_ard_pin_check_fun(transmitPin, PIO_IR);
     setPins(receivePin, transmitPin);
     IR_Cmd(IR_DEV, IR_InitStruct.IR_Mode, DISABLE);
     IR_StructInit(&IR_InitStruct);

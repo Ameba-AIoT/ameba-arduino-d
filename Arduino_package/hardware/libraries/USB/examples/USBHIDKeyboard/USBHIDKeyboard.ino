@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-usb-keyboard/
  */
 
+// USB functionality is not supported on core RTL8720DN
+#ifndef CORE_RTL8720DN
+
 #include "USBHIDDevice.h"
 #include "USBHIDKeyboard.h"
 
@@ -37,3 +40,11 @@ void loop() {
         delay(500);
     }
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
+
+#endif

@@ -9,9 +9,7 @@
   This example code is in the public domain.
 */
 
-#ifndef BOARD_AITHINKER_BW16
-#error "Please use this example on the BW16 Board"
-#endif
+#ifdef BOARD_AITHINKER_BW16
 
 // the setup function runs once when you press reset or power the board
 void setup() {
@@ -78,3 +76,17 @@ void loop() {
   fade();       // fade RED, BLUE
   delay(1000);  // wait for a second
 }
+
+#else
+
+void setup() {
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  printf("Error. This example is only for board BW16 \n\r");
+}
+
+#endif

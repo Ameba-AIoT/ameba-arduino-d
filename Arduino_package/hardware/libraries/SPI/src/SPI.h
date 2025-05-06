@@ -39,6 +39,11 @@
 #define SPI_DATA_MODE2      0x02
 #define SPI_DATA_MODE3      0x03
 
+#define SPI_MODE0 SPI_DATA_MODE0
+#define SPI_MODE1 SPI_DATA_MODE1
+#define SPI_MODE2 SPI_DATA_MODE2
+#define SPI_MODE3 SPI_DATA_MODE3
+
 #define SPI_MODE_MASTER     'M'
 #define SPI_MODE_SLAVE      'S'
 
@@ -126,7 +131,7 @@ extern SPIClass SPI;
 #elif defined(BOARD_SPARKFUN_AWCU488)
 extern SPIClass SPI;
 extern SPIClass SPI1;
-#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
 extern SPIClass SPI;
 extern SPIClass SPI1;
 #else

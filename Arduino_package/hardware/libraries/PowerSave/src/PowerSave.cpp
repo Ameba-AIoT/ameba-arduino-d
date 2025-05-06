@@ -1,4 +1,3 @@
-
 #ifdef __cplusplus
 extern "C" {
 #include "ameba_soc.h"
@@ -251,7 +250,7 @@ void PMUClass::TL_RTC_WAKEUP(void) {
     //SET_AON_GPIO_WAKEUP_PA26   // pin 6
 
 
-#if defined(BOARD_RTL8722DM)
+#if defined(BOARD_AMB21_AMB22)
 void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
     printf("Set Deepsleep wakeup AON pin PA12.    \r\n");
 }
@@ -289,7 +288,7 @@ void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
     printf("Set Deepsleep wakeup AON pin PA26 / pin 17.    \r\n");
 }
 
-#elif defined(BOARD_RTL8722DM_MINI)
+#elif defined(BOARD_AMB23)
 void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
     printf("Set Deepsleep wakeup AON pin PA12 / pin 9.    \r\n");
 }
@@ -327,7 +326,7 @@ void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
     printf("RTL8722DM_MINI does not support Deepsleep wakeup AON pin PA26.    \r\n");
 }
 
-#elif defined(BOARD_RTL8720DN_BW16)
+#elif defined(BOARD_AITHINKER_BW16)
 void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
     printf("Set Deepsleep wakeup AON pin PA12 / pin 12.    \r\n");
 }
@@ -365,7 +364,7 @@ void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
     printf("Set Deepsleep wakeup AON pin PA26 / pin 8.    \r\n");
 }
 
-#elif defined(BOARD_RTL8721DM)
+#elif defined(BOARD_SPARKFUN_AWCU488)
 void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
     printf("Set Deepsleep wakeup AON pin PA12 / pin 4.    \r\n");
 }
@@ -391,10 +390,10 @@ void PMUClass::AON_WAKEPIN_WAKEUP_PA19(void) {
     printf("Set Deepsleep wakeup AON pin PA19 / pin 8.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA20(void) {
-    printf("BOARD_RTL8721DM does not support Deepsleep wakeup AON pin PA20.    \r\n");
+    printf("BOARD_SPARKFUN_AWCU488 does not support Deepsleep wakeup AON pin PA20.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA21(void) {
-    printf("BOARD_RTL8721DM does not support Deepsleep wakeup AON pin PA21.    \r\n");
+    printf("BOARD_SPARKFUN_AWCU488 does not support Deepsleep wakeup AON pin PA21.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA25(void) {
     printf("Set Deepsleep wakeup AON pin PA25 / pin 6.    \r\n");
@@ -403,7 +402,7 @@ void PMUClass::AON_WAKEPIN_WAKEUP_PA26(void) {
     printf("Set Deepsleep wakeup AON pin PA26 / pin 5.    \r\n");
 }
 
-#elif defined(BOARD_RTL8720DF)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
 void PMUClass::AON_WAKEPIN_WAKEUP_PA12(void) {
     printf("Set Deepsleep wakeup AON pin PA12 / pin 3.    \r\n");
 }
@@ -417,22 +416,22 @@ void PMUClass::AON_WAKEPIN_WAKEUP_PA15(void) {
     printf("Set Deepsleep wakeup AON pin PA15 / pin 0.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA16(void) {
-    printf("BOARD_RTL8720DF does not support Deepsleep wakeup AON pin PA16.    \r\n");
+    printf("RTL8720DF does not support Deepsleep wakeup AON pin PA16.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA17(void) {
-    printf("BOARD_RTL8720DF does not support Deepsleep wakeup AON pin PA17.    \r\n");
+    printf("RTL8720DF does not support Deepsleep wakeup AON pin PA17.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA18(void) {
-    printf("BOARD_RTL8720DF does not support Deepsleep wakeup AON pin PA18.    \r\n");
+    printf("RTL8720DF does not support Deepsleep wakeup AON pin PA18.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA19(void) {
-    printf("BOARD_RTL8720DF does not support Deepsleep wakeup AON pin PA19.    \r\n");
+    printf("RTL8720DF does not support Deepsleep wakeup AON pin PA19.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA20(void) {
-    printf("BOARD_RTL8720DF does not support Deepsleep wakeup AON pin PA20.    \r\n");
+    printf("RTL8720DF does not support Deepsleep wakeup AON pin PA20.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA21(void) {
-    printf("BOARD_RTL8720DF does not support Deepsleep wakeup AON pin PA21.    \r\n");
+    printf("RTL8720DF does not support Deepsleep wakeup AON pin PA21.    \r\n");
 }
 void PMUClass::AON_WAKEPIN_WAKEUP_PA25(void) {
     printf("Set Deepsleep wakeup AON pin PA25 / pin 7.    \r\n");

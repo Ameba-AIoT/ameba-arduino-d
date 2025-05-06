@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-audio-wav/
  */
 
+// AudioCodec is not supported on core RTL8720DN nor RTL8720DF.
+#if !defined(CORE_RTL8720DF) && !defined(CORE_RTL8720DN)
+
 #include "FatFs_SD.h"
 #include "PlaybackWav.h"
 #include "RecordWav.h"
@@ -11,6 +14,7 @@
 
 #define RECORDBTN 9
 #define SAMPLERATE 48000
+#define MICTYPE PDMMIC  // Analog mic: ANALOGMIC, Digital mic: PDMMIC
 
 #define BUFFERSIZE 512
 int16_t buffer[BUFFERSIZE] = {0};
@@ -25,6 +29,7 @@ PlaybackWav playWav;
 void readCBFunc() {
     if (Codec.readAvaliable() && recWav.fileOpened()) {
         Codec.readDataPage(buffer, BUFFERSIZE);
+        Codec.amplifyReadData(buffer, BUFFERSIZE, 100); // to amplify the input audio (max: 100)
         recWav.writeAudioData(buffer, BUFFERSIZE);
     }
 }
@@ -48,6 +53,16 @@ void setup() {
     recWav.setSampleRate(SAMPLERATE);
     Codec.setReadCallback(readCBFunc);
     Codec.setWriteCallback(writeCBFunc);
+
+    if (MICTYPE) {
+      Codec.setInputMicType(PDMMIC);
+      Codec.setDMicBoost(3, 3);
+    }
+    else {
+      Codec.setInputMicType(ANALOGMIC);
+      Codec.setAMicBoost(3, 3);
+    }
+    Codec.setADCGain(127, 127);
     Codec.begin(TRUE, TRUE);
 }
 
@@ -68,3 +83,11 @@ void loop() {
     }
     delay(100);
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
+
+#endif

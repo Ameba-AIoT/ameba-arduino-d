@@ -17,26 +17,51 @@
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-#include <string.h>
-#include "server_drv.h"
+#include "WiFiServer.h"
 #include "WiFi.h"
 #include "WiFiClient.h"
-#include "WiFiServer.h"
+#include "server_drv.h"
+#include <string.h>
 
-WiFiServer::WiFiServer(uint16_t port) {
+
+WiFiServer::WiFiServer(uint16_t port)
+{
     _port = port;
 }
 
-WiFiServer::WiFiServer(uint16_t port, tProtMode portMode) {
+WiFiServer::WiFiServer(tPortMode portMode):
+    _port(1883)
+{
+    _portMode = portMode;
+}
+
+WiFiServer::WiFiServer(tBlockingMode blockMode):
+    _port(1883)
+{
+    _is_blocked = blockMode;
+}
+
+WiFiServer::WiFiServer(uint16_t port, tPortMode portMode)
+{
     _port = port;
     _portMode = portMode;
 }
 
-WiFiServer::~WiFiServer() {
+WiFiServer::WiFiServer(uint16_t port, tPortMode portMode,
+                       tBlockingMode blockMode)
+{
+    _port = port;
+    _portMode = portMode;
+    _is_blocked = blockMode;
+}
+
+WiFiServer::~WiFiServer()
+{
     close();
 }
 
-void WiFiServer::begin() {
+void WiFiServer::begin()
+{
     _is_connected = false;
     _sock_ser = serverdrv.startServer(_port, _portMode, _is_blocked);
     if (_sock_ser < 0) {
@@ -48,7 +73,8 @@ void WiFiServer::begin() {
     }
 }
 
-WiFiClient WiFiServer::available(uint8_t* status) {
+WiFiClient WiFiServer::available(uint8_t *status)
+{
     int client_fd = (int)(status);
 
     client_fd = serverdrv.getAvailable(_sock_ser);
@@ -56,7 +82,8 @@ WiFiClient WiFiServer::available(uint8_t* status) {
     return WiFiClient(client_fd);
 }
 
-int WiFiServer::available(int server_fd) {
+int WiFiServer::available(int server_fd)
+{
     int client_fd;
 
     client_fd = serverdrv.getAvailable(server_fd);
@@ -65,7 +92,8 @@ int WiFiServer::available(int server_fd) {
     return client_fd;
 }
 
-uint8_t WiFiServer::connected() {
+uint8_t WiFiServer::connected()
+{
     if ((_sock_ser < 0) || (_sock_ser == 0xFF)) {
         _is_connected = false;
         return 0;
@@ -79,7 +107,8 @@ uint8_t WiFiServer::connected() {
     }
 }
 
-int WiFiServer::recv(uint8_t* buf, size_t size) {
+int WiFiServer::recv(uint8_t *buf, size_t size)
+{
     uint16_t _size = size;
     int ret;
     int err;
@@ -94,11 +123,13 @@ int WiFiServer::recv(uint8_t* buf, size_t size) {
     return ret;
 }
 
-size_t WiFiServer::write(uint8_t b) {
+size_t WiFiServer::write(uint8_t b)
+{
     return write(&b, 1);
 }
 
-size_t WiFiServer::write(const uint8_t *buf, size_t size) {
+size_t WiFiServer::write(const uint8_t *buf, size_t size)
+{
     if (_sock_ser < 0) {
         setWriteError();
         return 0;
@@ -115,7 +146,8 @@ size_t WiFiServer::write(const uint8_t *buf, size_t size) {
     return size;
 }
 
-void WiFiServer::stop() {
+void WiFiServer::stop()
+{
     if (_sock_ser < 0) {
         return;
     }
@@ -124,22 +156,36 @@ void WiFiServer::stop() {
     _sock_ser = -1;
 }
 
-void WiFiServer::end() {
+// set WiFi server to blocking/non-blocking mode
+void WiFiServer::setBlockingMode()
+{
+    _is_blocked = BLOCKING_MODE;
+}
+
+void WiFiServer::setNonBlockingMode()
+{
+    _is_blocked = NON_BLOCKING_MODE;
+}
+
+void WiFiServer::end()
+{
     stop();
 }
 
-void WiFiServer::close() {
+void WiFiServer::close()
+{
     stop();
 }
 
-// set WiFi server to blocking mode
-void WiFiServer::setBlocking() {
-    // printf("WiFi server is set to blocking mode\r\n");
-    _is_blocked = !_is_blocked;
-}
+// // set WiFi server to blocking mode
+// void WiFiServer::setBlocking() {
+//     // printf("WiFi server is set to blocking mode\r\n");
+//     _is_blocked = !_is_blocked;
+// }
 
 // extend API from RTK
-int WiFiServer::setTimeout(int timeout) {
+int WiFiServer::setTimeout(int timeout)
+{
     if (connected()) {
         recvTimeout = timeout;
         serverdrv.setSockRecvTimeout(_sock_ser, recvTimeout);
@@ -148,10 +194,12 @@ int WiFiServer::setTimeout(int timeout) {
 }
 
 // IPv6 related
-int WiFiServer::enableIPv6() {
+int WiFiServer::enableIPv6()
+{
     return serverdrv.enableIPv6();
 }
 
-int WiFiServer::getIPv6Status() {
+int WiFiServer::getIPv6Status()
+{
     return serverdrv.getIPv6Status();
 }

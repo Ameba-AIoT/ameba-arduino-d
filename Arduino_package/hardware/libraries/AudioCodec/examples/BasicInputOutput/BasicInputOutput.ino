@@ -4,6 +4,9 @@
  https://www.amebaiot.com/en/amebad-arduino-audio-basic/
  */
 
+// AudioCodec is not supported on core RTL8720DN nor RTL8720DF.
+#if !defined(CORE_RTL8720DF) && !defined(CORE_RTL8720DN)
+
 #include "AudioCodec.h"
 
 #define SAMPLECOUNT 512
@@ -26,3 +29,11 @@ void loop() {
     vol = map(vol, 0, 1024, 0, 100);
     Codec.setOutputVolume(vol, vol);
 }
+
+#else
+
+void setup() {}
+
+void loop() {}
+
+#endif

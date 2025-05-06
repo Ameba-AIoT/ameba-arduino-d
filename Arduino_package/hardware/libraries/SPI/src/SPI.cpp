@@ -53,6 +53,7 @@ SPIClass::SPIClass(void *pSpiObj, int mosi, int miso, int clk, int ss) {
 void SPIClass::beginTransaction(uint8_t pin, SPISettings settings) {
     (void)pin;
     bitOrder = settings._bitOrder;
+    dataMode = settings._dataMode;
     spi_format((spi_t *)pSpiMaster, dataBits, dataMode, 0);
     spi_frequency((spi_t *)pSpiMaster, settings._clock);
 
@@ -396,7 +397,7 @@ SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 1, 2, 0, 8
 SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 14, 15, 16, 17 or 4, 3, 29, 28 
 
-#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30)
+#elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
 SPIClass SPI((void *)(&spi_obj0), SPI_MOSI, SPI_MISO, SPI_SCLK, SPI_SS);        // 17, 16, 19, 18
 SPIClass SPI1((void *)(&spi_obj1), SPI1_MOSI, SPI1_MISO, SPI1_SCLK, SPI1_SS);   // 3, 2, 1, 0
 
