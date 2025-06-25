@@ -57,6 +57,18 @@ void sys_clear_ota_signature(void);
 void sys_recover_ota_signature(void);
 
 /**
+  * @brief  switch OTA image if the othe OTA image is valid under rsip
+  * @retval none
+  */
+void sys_clear_ota_signature_rsip(void);
+
+/**
+  * @brief  switch OTA image if the othe OTA image is valid under rsip
+  * @retval none
+  */
+void sys_recover_ota_signature_rsip(void);
+
+/**
   * @brief  open log uart
   * @retval none
   */

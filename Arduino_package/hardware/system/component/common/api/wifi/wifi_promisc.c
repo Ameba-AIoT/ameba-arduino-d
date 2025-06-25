@@ -115,6 +115,7 @@ struct eth_frame {
 	unsigned int len;
 	unsigned char type;
 	signed char rssi;
+	unsigned char data_rate;
 };
 
 #ifndef CONFIG_INIC_CMD_RSP
@@ -273,6 +274,7 @@ static void promisc_callback(unsigned char *buf, unsigned int len, void* userdat
 		memcpy(frame->sa, buf+6, 6);
 		frame->len = len;
 		frame->rssi = ((ieee80211_frame_info_t *)userdata)->rssi;
+		frame->data_rate = ((ieee80211_frame_info_t *)userdata)->data_rate;
 
 		rtw_enter_critical(&lock, &irqL);
 
@@ -349,6 +351,7 @@ static void promisc_test(int duration, unsigned char len_used)
 						printf(" %02x", frame->sa[i]);
 					printf(", len=%d", frame->len);
 					printf(", RSSI=%d", frame->rssi);
+					printf(", rate=%d", frame->data_rate);
 #if CONFIG_INIC_CMD_RSP
 					if(inic_frame_tail){
 						if(inic_frame_cnt < MAX_INIC_FRAME_NUM){
@@ -418,6 +421,7 @@ static void promisc_callback_all(unsigned char *buf, unsigned int len, void* use
 		*/		
 		
 		frame->rssi = ((ieee80211_frame_info_t *)userdata)->rssi;
+		frame->data_rate = ((ieee80211_frame_info_t *)userdata)->data_rate;
 
 		rtw_enter_critical(&lock, &irqL);
 
@@ -468,6 +472,7 @@ static void promisc_test_all(int duration, unsigned char len_used)
 						printf(" %02x", frame->sa[i]);
 					printf(", len=%d", frame->len);
 					printf(", RSSI=%d", frame->rssi);
+					printf(", rate=%d", frame->data_rate);
 #if CONFIG_INIC_CMD_RSP
 					if(inic_frame_tail){
 						if(inic_frame_cnt < MAX_INIC_FRAME_NUM){

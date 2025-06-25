@@ -48,7 +48,11 @@ extern "C" {
 #if !defined(MBEDTLS_PLATFORM_NO_STD_FUNCTIONS)
 #include <stdio.h>
 #include <stdlib.h>
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 #if !defined(MBEDTLS_PLATFORM_STD_SNPRINTF)
 #if defined(_WIN32)
 #define MBEDTLS_PLATFORM_STD_SNPRINTF   mbedtls_platform_win32_snprintf /**< Default snprintf to use  */

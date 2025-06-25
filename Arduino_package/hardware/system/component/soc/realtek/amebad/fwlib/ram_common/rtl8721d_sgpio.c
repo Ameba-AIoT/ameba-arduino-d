@@ -597,8 +597,8 @@ void SGPIO_SetTXData(SGPIO_TypeDef *SGPIOx, u32 SGPIO_MulDataVal, u32 SGPIO_MulD
 {
 	/* Check the parameters */
 	assert_param(IS_SGPIO_ALL_PERIPH(SGPIOx));
-	assert_param(SGPIO_MulDataVal <= 0xffffffff);
-	assert_param(SGPIO_MulDataDPVal <= 0xffffffff);
+	assert_param(SGPIO_MulDataVal == 0xffffffff);
+	assert_param(SGPIO_MulDataDPVal == 0xffffffff);
 
 	SGPIOx->SGPIO_MULDATA = SGPIO_MulDataVal;
 	SGPIOx->SGPIO_MULDATA_DP = SGPIO_MulDataDPVal;

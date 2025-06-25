@@ -270,6 +270,23 @@ int wext_get_enc_ext(const char *ifname, __u16 *alg, __u8 *key_idx, __u8 *passph
 	return ret;
 }
 
+int wext_get_auth_type(const char *ifname, __u32 *auth_type)
+{
+	struct rtwreq iwr;
+	int ret = 0;
+
+	memset(&iwr, 0, sizeof(iwr));
+
+	if (iw_ioctl(ifname, RTKIOCGIWAUTH, &iwr) < 0) {
+		RTW_API_INFO("\n\rioctl[RTKIOCGIWAUTH] error");
+		ret = -1;
+	} else {
+		*auth_type = (__u32) iwr.u.param.value;
+	}
+
+	return ret;
+}
+
 int wext_set_passphrase(const char *ifname, const __u8 *passphrase, __u16 passphrase_len)
 {
 	struct rtwreq iwr;
@@ -759,19 +776,21 @@ int wext_get_tx_power(const char *ifname, __u8 *poweridx)
 	return ret;
 }
 
-#if 0
+
+#ifdef CONFIG_MP_INCLUDED
 int wext_set_txpower(const char *ifname, int poweridx)
 {
 	int ret = 0;
-	char buf[24];
+	char buf[30];
 	
 	rtw_memset(buf, 0, sizeof(buf));
-	snprintf(buf, 24, "txpower patha=%d", poweridx);
+	snprintf(buf, 30, "mp_txpower patha=%d", poweridx);
 	ret = wext_private_command(ifname, buf, 0);
 
 	return ret;
 }
-
+#endif
+#if 0
 int wext_get_associated_client_list(const char *ifname, void * client_list_buffer, uint16_t buffer_length)
 {
 	int ret = 0;
@@ -904,9 +923,9 @@ int wext_get_bcn_rssi(const char *ifname, int *rssi)
 	return ret;
 }
 
-int wext_set_bcn_period(__u8 period){
+int wext_set_bcn_period(__u16 period){
 	int ret = 0;
-	extern u8 custom_beacon_period;
+	extern u16 custom_beacon_period;
 	custom_beacon_period = period;
 	return ret;
 }
@@ -1679,11 +1698,29 @@ int wext_del_mac_filter(unsigned char* hwaddr)
 	return -1;
 }
 
+extern void rtw_connect_monitor_mgnt(int enable);
+void wext_wifi_connect_monitor_mgnt(int enable)
+{
+	rtw_wifi_connect_monitor_mgnt(enable);
+	return;
+}
+
 extern void rtw_set_indicate_mgnt(int enable);
 void wext_set_indicate_mgnt(int enable)
 {
 	rtw_set_indicate_mgnt(enable);
 	return;
+}
+
+void wext_set_softap_gkey_rekey(__u8 mode)
+{
+	extern uint8_t gk_rekey;
+	extern uint32_t gk_rekey_time;
+	gk_rekey = mode;
+	if (gk_rekey == ENABLE){
+		RTW_API_INFO("\n\rSoftAP:Group key rotation enabled");
+		RTW_API_INFO("\n\rCurrent key update interval: %dms",gk_rekey_time);
+	}
 }
 
 #ifdef CONFIG_AP_MODE
@@ -1828,13 +1865,27 @@ int wext_wlan_redl_fw(const char *ifname){
 }
 #endif
 
+#if defined(CONFIG_RTW_WNM) && defined(CONFIG_LAYER2_ROAMING)
+extern u8 set_roam_on_btm;
+void wext_set_roam_on_btm(__u8 enable)
+{
+	set_roam_on_btm = enable;
+}
+#endif
+
 #ifdef CONFIG_IEEE80211K
-u8 rtw_enable_80211k = 1;
+extern u8 rtw_enable_80211k;
 void wext_set_enable_80211k(__u8 enable)
 {
 	rtw_enable_80211k = enable;
 }
 #endif
+
+extern u8 set_exclude_ext_cap;
+void wext_exclude_ext_cap(__u8 enable)
+{
+	set_exclude_ext_cap = enable;
+}
 
 #ifdef CONFIG_POWER_SAVING
 extern u8 rtw_power_mgnt;
@@ -1847,4 +1898,49 @@ void wext_set_powersave_mode(__u8 ps_mode){
 	rtw_power_mgnt = ps_mode;
 	return;
 }
+#endif
+
+#ifdef CONFIG_80211N_HT
+extern u8 g_tx_ampdu_enable;
+void wext_set_wifi_ampdu_tx(__u8 enable){
+	g_tx_ampdu_enable = enable;
+}
+#endif
+
+extern void rtw_get_bcn_country_code(unsigned char* country_code_get);
+void wext_get_country_code(unsigned char* country_code_get){
+	rtw_get_bcn_country_code(country_code_get);
+}
+
+void wext_auto_set_adaptivity(__u8 mode)
+{
+	extern u8 rtw_auto_adaptivity_en;
+	rtw_auto_adaptivity_en = mode;
+}
+
+void wext_change_mgnt_datarate(__u8 mode)
+{
+	extern u8 change_mgnt_datatrate;
+	change_mgnt_datatrate = mode;
+}
+
+#ifdef CONFIG_SOFTAP_KEEP_SILENT_TABLE
+void wext_enable_softap_slient_table(__u8 mode)
+{
+	extern u8 softap_keep_silent_table_enable;
+	softap_keep_silent_table_enable = mode;
+}
+
+void wext_set_softap_slient_table_interval(int interval)
+{
+	extern int softap_keep_silent_table_interval;
+	softap_keep_silent_table_interval = interval;
+}
+
+void wext_set_custom_country_code(__u8 mode)
+{
+	extern u8 rtw_set_custom_country_code_en;
+	rtw_set_custom_country_code_en = mode;
+}
+
 #endif

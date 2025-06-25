@@ -10,6 +10,10 @@
 #ifndef LWIP_HDR_LWIPOPTS_H
 #define LWIP_HDR_LWIPOPTS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <platform/platform_stdlib.h>
 #include "platform_opts.h"
 #define WIFI_LOGO_CERTIFICATION_CONFIG 0    //for ping 10k test buffer setting
@@ -94,7 +98,7 @@ a lot of data that needs to be copied, this should be set high. */
 #elif defined(CONFIG_HIGH_TP_TEST) && CONFIG_HIGH_TP_TEST
     #define PBUF_POOL_SIZE          60
 #else
-    #define PBUF_POOL_SIZE          20
+    #define PBUF_POOL_SIZE          30
 #endif
 
 /* IP_REASS_MAX_PBUFS: Total maximum amount of pbufs waiting to be reassembled.*/
@@ -184,7 +188,11 @@ extern unsigned int sys_now(void);
 
 /*LWIP_UART_ADAPTER==1: Enable LWIP_UART_ADAPTER when CONFIG_GAGENT is enabled, 
    because some GAGENT functions denpond on the following macro definitions.*/
+#if ((defined CONFIG_MQTT_EN) && (1 == CONFIG_MQTT_EN))
+#define LWIP_UART_ADAPTER                   1
+#else
 #define LWIP_UART_ADAPTER                   0
+#endif
 
 #if LWIP_UART_ADAPTER || CONFIG_ETHERNET
 #undef  LWIP_SO_SNDTIMEO        
@@ -398,8 +406,11 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #define LWIP_AUTOIP                     1
 #define TCPIP_THREAD_NAME              "TCP_IP" 
 
-// zzw arduino
+#ifdef ARDUINO_SDK
 #define LWIP_IPV6                       1
+#else
+#define LWIP_IPV6                       0
+#endif
 #if LWIP_IPV6
 #undef  MEMP_NUM_SYS_TIMEOUT
 #define MEMP_NUM_SYS_TIMEOUT            13
@@ -435,5 +446,13 @@ Certain platform allows computing and verifying the IP, UDP, TCP and ICMP checks
 #endif
       
 #include "lwip/init.h"                  //for version control
+
+#if defined(CONFIG_MATTER) && CONFIG_MATTER
+#include "lwipopts_matter.h"
+#endif /* CONFIG_MATTER */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* LWIP_HDR_LWIPOPTS_H */

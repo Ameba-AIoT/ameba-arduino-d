@@ -509,8 +509,13 @@ _LONG_CALL_ u8	 GDMA_GetIrqNum(u8 GDMA_Index, u8 GDMA_ChNum);
  * @{
  *****************************************************************************/
 /********************  Bits definition for CFG register  *******************/
-#define BIT_CFGX_LO_RELOAD_SRC			((u32)(0x00000001 << 30))		/*Lower word Bit[30].Automatic Source Reload bit*/
-#define BIT_CFGX_LO_RELOAD_DST			((u32)(0x00000001 << 31))		/*Lower word Bit[31].Automatic Destination Reload bit*/
+#define BIT_CFGX_LO_RELOAD_DST			    ((u32)(0x00000001 << 31))		      /*Lower word Bit[31].Automatic Destination Reload bit*/
+#define BIT_CFGX_LO_RELOAD_SRC			    ((u32)(0x00000001 << 30))		      /*Lower word Bit[30].Automatic Source Reload bit*/
+#define BIT_CFGx_L_FIFO_EMPTY           ((u32)(0x00000001 << 9))          /*!< R 0x1  Indicates if there is data left in the channel FIFO. 1 = Channel FIFO empty 0 = Channel FIFO not empty*/
+#define BIT_CFGx_L_CH_SUSP			        ((u32)(0x00000001 << 8))		      /*!< Lower word Bit[8].Channel Suspend bit*/
+#define BIT_CFGx_L_DST_PCTL_OVER        ((u32)0x00000001 << 2)            /*!< R 0x1  DMA destination bus protocol finish, indicating the current write command has finished.*/
+#define BIT_CFGx_L_SRC_PCTL_OVER        ((u32)0x00000001 << 1)            /*!< R 0x1  DMA Source bus protocol finish, indicating the current read command has finished.*/
+#define BIT_CFGx_L_INACTIVE             ((u32)0x00000001 << 0)            /*!< R 0x1  Indicates if the channel is inactive. Can be used in conjunction with CFGx_L.CH_SUSP to cleanly disable a channel when destination is peripheral. For more information, refer to "Disabling a Channel Prior to Transfer Completion" . 1 = Channel Inactive for axi interface 0 = Channel not Inactive for axi interface*/
 
 #define BIT_CFGX_UP_SEC_DISABLE			((u32)(0x00000001 << 3))		/*Upper word Bit[10:7]. write 0 to enable secure transfer, default is 0 */
 #define BIT_CFGX_UP_SRC_PER				((u32)(0x0000000F << 7))		/*Upper word Bit[10:7].hardware handshaking interface for source peripheral*/

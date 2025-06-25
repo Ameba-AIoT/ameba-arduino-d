@@ -71,7 +71,9 @@ extern "C"
 #if F_BT_LE_READ_REMOTE_FEATS
 #define GAP_MSG_LE_REMOTE_FEATS_INFO                0x19 //!<Information for remote device supported features
 #endif
-
+#if F_BT_LE_READ_REMOTE_VERSION_INFO_SUPPORT
+#define GAP_MSG_LE_READ_REMOTE_VERSION              0x1B //!<Response msg type for le_read_remote_version
+#endif
 //gap_bond_le.h
 #define GAP_MSG_LE_BOND_MODIFY_INFO                 0x20 //!<Notification msg type for bond modify
 #if F_BT_LE_ATT_SIGNED_WRITE_SUPPORT
@@ -208,6 +210,18 @@ typedef struct
 } T_LE_REMOTE_FEATS_INFO;
 #endif
 
+#if F_BT_LE_READ_REMOTE_VERSION_INFO_SUPPORT
+/** @brief  Response for reading remote version information.*/
+typedef struct
+{
+    uint8_t         conn_id;
+    uint16_t        cause;
+    uint8_t         version;
+    uint16_t        manufacturer_name;
+    uint16_t        subversion;
+} T_LE_READ_REMOTE_VERSION_RSP;
+#endif
+
 //gap_bond_le.h
 /** @brief  Bond information modify type*/
 typedef enum
@@ -309,6 +323,9 @@ typedef union
 #endif
 #if F_BT_LE_READ_REMOTE_FEATS
     T_LE_REMOTE_FEATS_INFO                   *p_le_remote_feats_info;
+#endif
+#if F_BT_LE_READ_REMOTE_VERSION_INFO_SUPPORT
+    T_LE_READ_REMOTE_VERSION_RSP             *p_le_read_remote_version_rsp;
 #endif
 //gap_bond_le.h
     T_LE_BOND_MODIFY_INFO                    *p_le_bond_modify_info;

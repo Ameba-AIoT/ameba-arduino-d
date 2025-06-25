@@ -53,7 +53,12 @@
 #include "lwip/pbuf.h"
 
 #include <string.h>
+
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 
 #if LWIP_UDP
 
@@ -150,6 +155,48 @@ static time_t sntp_update_usec = 0;
                                                 sntp_update_usec = usec; \
                                            } while(0)
 
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+void sntp_get_lasttime(long long *sec, long long *usec, unsigned int *tick)
+{
+	*sec = sntp_update_sec;
+	*usec = sntp_update_usec;
+	*tick = sntp_update_tick;
+}
+
+void sntp_set_lasttime(long long sec, long long usec, unsigned int tick)
+{
+	sntp_update_sec = sec;
+	sntp_update_usec = usec;
+	sntp_update_tick = tick;
+}
+struct tm sntp_gen_system_time(int timezone)
+{
+	struct tm current_tm;
+	unsigned int update_tick = 0;
+	long long update_sec = 0, update_usec = 0, current_sec = 0;
+	unsigned int current_tick = xTaskGetTickCount();
+
+	sntp_get_lasttime(&update_sec, &update_usec, &update_tick);
+
+	if(update_tick) {
+		long long tick_diff_sec, tick_diff_ms;
+ 		tick_diff_sec = (current_tick - update_tick) / configTICK_RATE_HZ;
+		tick_diff_ms = (current_tick - update_tick) % configTICK_RATE_HZ / portTICK_RATE_MS;
+		update_sec += tick_diff_sec;
+		update_usec += (tick_diff_ms * 1000);
+		current_sec = update_sec + update_usec / 1000000 + timezone * 3600;
+	}
+	else {
+		current_sec = current_tick / configTICK_RATE_HZ;
+	}
+
+	current_tm = *(localtime((time_t const*)&current_sec));
+	current_tm.tm_year += 1900;
+	current_tm.tm_mon += 1;
+
+	return current_tm;
+}
+#else
 void sntp_get_lasttime(long *sec, long *usec, unsigned int *tick)
 {
 	*sec = sntp_update_sec;
@@ -192,6 +239,7 @@ struct tm sntp_gen_system_time(int timezone)
 
 	return current_tm;
 }
+#endif
 
 /**
  * SNTP Change time server address, must be called before @ref sntp_init

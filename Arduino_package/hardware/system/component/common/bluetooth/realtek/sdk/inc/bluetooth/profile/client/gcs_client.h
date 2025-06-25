@@ -71,6 +71,7 @@ typedef enum
     GCS_BY_UUID_CHAR_DISCOV,    //!<Response type for gcs_by_uuid_char_discovery
     GCS_BY_UUID128_CHAR_DISCOV, //!<Response type for gcs_by_uuid128_char_discovery
     GCS_ALL_CHAR_DESC_DISCOV,   //!<Response type for gcs_all_char_descriptor_discovery
+    GCS_INCL_SRV_DISCOV,        //!<Response type for gcs_include_service_discovery
 } T_GCS_DISCOV_TYPE;
 
 /** @brief  Discovery result element.*/
@@ -83,6 +84,8 @@ typedef union
     T_GATT_CHARACT_ELEM128       char_uuid128_disc_data;
     T_GATT_CHARACT_DESC_ELEM16   char_desc_uuid16_disc_data;
     T_GATT_CHARACT_DESC_ELEM128  char_desc_uuid128_disc_data;
+    T_GATT_RELATION_ELEM16       relation_uuid16_disc_data;
+    T_GATT_RELATION_ELEM128      relation_uuid128_disc_data;
 } T_GCS_DISCOV_RESULT_DATA;
 
 /** @brief  GCS discovery table element.*/

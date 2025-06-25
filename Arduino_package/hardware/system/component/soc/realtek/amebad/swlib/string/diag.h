@@ -17,8 +17,8 @@
 u32 DiagPrintf(const char *fmt, ...);
 u32 DiagPrintfD(const char *fmt, ...);
 int DiagVSprintf(char *buf, const char *fmt, const int *dp);
+u32 DiagSPrintf(u8 *buf, const char *fmt, ...);
 
-//zzw arduino
 #if defined(ARDUINO_SDK)
 #define _DbgDump  DiagPrintf
 #endif

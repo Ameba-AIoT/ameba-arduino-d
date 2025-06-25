@@ -143,6 +143,7 @@ PSCFG_TypeDef ps_config = {
 	.km0_pg_enable = FALSE,
 	.km0_rtc_calibration = FALSE,
 	.km0_audio_pad_enable = TRUE,
+	.km0_disable_audio_ldo = TRUE,
 };
 
 #endif

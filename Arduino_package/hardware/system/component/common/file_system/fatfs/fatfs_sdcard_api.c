@@ -17,12 +17,12 @@ static uint32_t fatfs_sd_buf_size;
 static uint32_t fatfs_sd_buf_pos;
 
 
-int fatfs_sd_is_inited()
+int fatfs_sd_is_inited(void)
 {
 	return fatfs_sd_init_done;
 }
 
-int fatfs_sd_close()
+int fatfs_sd_close(void)
 {
 	if (fatfs_sd_init_done) {
 		if(f_mount(NULL,fatfs_sd_param.drv, 1) != FR_OK){
@@ -39,7 +39,7 @@ int fatfs_sd_close()
 	return 0;
 }
 
-int fatfs_sd_init()
+int fatfs_sd_init(void)
 {
 	int ret = 0;
 	
@@ -125,7 +125,7 @@ int fatfs_sd_open_file(char* filename)
 	}
 }
 
-int fatfs_sd_close_file()
+int fatfs_sd_close_file(void)
 {
 	int res;
 	res = f_close(&fatfs_sd_file);
@@ -168,7 +168,7 @@ void fatfs_sd_write(char* buf, uint32_t len)
 	}
 }
 
-void fatfs_sd_flush_buf()
+void fatfs_sd_flush_buf(void)
 {
 	int res = 0;
 	uint32_t bw;
@@ -184,7 +184,7 @@ void fatfs_sd_flush_buf()
 	}
 }
 
-void fatfs_sd_free_write_buf()
+void fatfs_sd_free_write_buf(void)
 {
 	if(fatfs_sd_buf)
 		free(fatfs_sd_buf);

@@ -34,6 +34,11 @@ extern "C" {
 	#define WLAN_UNDEF	-1
 #endif
 
+typedef struct customized_chl_cfg {
+	unsigned char chnl_index;//for 2.4G:{1,2,3,4,5,6,7,8,9,10,11,12,13,14}. for 5G:{36,40,44,48,52,56,60,64,100,104,108,112,116,120,124,128,132,136,140,144,149,153,157,161,165}
+	unsigned char scan_type; //0:SCAN_PASSIVE. 1:SCAN_ACTIVE. 2:SCAN_MIX
+}customized_chl_cfg_t;
+
 /***********************************************************/
 /* 
 struct sk_buff {
@@ -50,6 +55,15 @@ struct sk_buff {
 	unsigned int 		len;			// Length of actual data 
 };
 */
+
+struct long_period_tickless_param {
+	unsigned char enable;
+	unsigned char max_bcn_early;
+	unsigned char fix_bcn_to;
+	unsigned char bcn_to_lmt;
+	unsigned char bcn_to_lmt_compen;
+};
+
 /************************************************************/
 
 //----- ------------------------------------------------------------------
@@ -70,6 +84,7 @@ int rltk_wlan_rf_off(void);
 int rltk_wlan_check_bus(void);
 int rltk_wlan_wireless_mode(unsigned char mode);
 int rltk_wlan_get_wireless_mode(unsigned char *pmode);
+int rltk_wlan_get_cur_wireless_mode(void);
 int rltk_wlan_set_wpa_mode(const char *ifname, unsigned int wpa_mode);
 int rltk_wlan_set_wps_phase(unsigned char is_trigger_wps);
 void rltk_wlan_PRE_SLEEP_PROCESSING(void);
@@ -82,6 +97,7 @@ int rltk_wlan_map_read(unsigned char *data, unsigned short cnts);
 void rltk_set_mac(unsigned char * mac);
 void rltk_wlan_btcoex_set_bt_state(unsigned char state);
 int rltk_wlan_change_channel_plan(unsigned char channel_plan);
+int rltk_set_null1_param(unsigned char check_period, unsigned char pkt_num, unsigned char limit, unsigned char interval);
 int rltk_coex_ble_scan_duty_update( unsigned char duty);
 int rltk_coex_set_wlan_slot_random(unsigned char temp);
 int rltk_coex_set_wlan_slot_preempting(unsigned char bitmask);
@@ -92,7 +108,9 @@ void rltk_wlan_enable_check_bcn_info(unsigned char enable);
 void rltk_wlan_enable_issue_deauth(unsigned char enable);
 void rltk_wlan_enable_wep_auth_algo_switch(unsigned char enable);
 void rltk_wlan_enable_delayed_reordering(unsigned char enable);
+void rltk_wlan_enable_delay_before_power_save(unsigned char enable);
 void rltk_wlan_disable_dpk(void);
+unsigned char rltk_wlan_get_ghd_enable_flag(void);
 unsigned char rltk_wlan_scan_with_ssid_by_extended_security_is_enable(void);
 void rltk_wlan_enable_channel_switch_announcement(unsigned char enable);
 int rltk_set_tx_pause(unsigned char pause);
@@ -136,6 +154,8 @@ void rltk_wlan_disable_powersave_in_STA_AP_mode(void);
 #if CONFIG_AUTO_RECONNECT
 unsigned char* rltk_wlan_get_saved_bssid(void);
 #endif
+
+void rltk_wlan_set_partial_scan_retry_times(unsigned char times);
 
 #ifdef	__cplusplus
 }

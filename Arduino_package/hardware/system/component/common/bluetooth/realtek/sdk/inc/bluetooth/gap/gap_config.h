@@ -226,6 +226,27 @@ void gap_config_max_le_paired_device(uint8_t max_le_paired_device);
  */
 void gap_config_max_le_link_num(uint8_t le_link_num);
 
+#if F_BT_DEINIT
+/**
+ * @brief   Configure deinit flow mode.
+ *
+ *          NOTE: This function shall be called before @ref bte_init is invoked.
+ *                Default value is 0.
+ *                Upper stack will process the new deinit flow When @ref deinit_flow is set to 2.
+ *
+ * @param[in]      deinit_flow   Deinit flow mode. Range: 0 ~ 2.
+ *
+ * <b>Example usage</b>
+ * \code{.c}
+    void bt_stack_config_init(void)
+    {
+        gap_config_deinit_flow(2);
+    }
+ * \endcode
+ */
+void gap_config_deinit_flow(uint8_t deinit_flow);
+#endif
+
 /** End of GAP_LE_CONFIG_Exported_Functions
   * @}
   */

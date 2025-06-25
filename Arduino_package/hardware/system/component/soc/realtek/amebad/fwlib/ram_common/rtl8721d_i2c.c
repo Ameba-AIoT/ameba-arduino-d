@@ -722,15 +722,22 @@ void I2C_SlaveWrite(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
 	/* Check the parameters */
 	assert_param(IS_I2C_ALL_PERIPH(I2Cx));
 
+	if(I2Cx->IC_RAW_INTR_STAT & BIT_IC_RAW_INTR_STAT_RX_DONE) {
+		I2Cx->IC_CLR_RX_DONE;
+	}
+	
 	for(cnt = 0; cnt < len; cnt++) {
 		/* Check I2C RD Request flag */
 		while((I2Cx->IC_RAW_INTR_STAT & BIT_IC_RAW_INTR_STAT_RD_REQ) == 0);
 
-		if (I2C_SLAVEWRITE_PATCH) {
-			I2Cx->IC_CLR_RD_REQ;
-		}
+		I2Cx->IC_CLR_RD_REQ;
 		/* Check I2C TX FIFO status */
 		while(((I2C_CheckFlagState(I2Cx, BIT_IC_STATUS_TFNF)) == 0) && ((I2Cx->IC_RAW_INTR_STAT & BIT_IC_RAW_INTR_STAT_RX_DONE) == 0));
+
+		if(I2Cx->IC_RAW_INTR_STAT & BIT_IC_RAW_INTR_STAT_RX_DONE) {
+			I2Cx->IC_CLR_INTR;
+			return;
+		}
 		
 		I2Cx->IC_DATA_CMD = (*pBuf++);
 	}
@@ -1074,6 +1081,128 @@ void I2C_WakeUp(I2C_TypeDef *I2Cx)
 	I2C_ClearINT(I2Cx, BIT_IC_INTR_STAT_R_ADDR_1_MATCH);
 
 	I2C_Sleep_Cmd(I2Cx, DISABLE);
+}
+
+/**
+  * @brief  I2C TX/RX intrerrupt handler.
+  * @param  I2C_SemStruct: structure containing the function of acquiring and releasing semaphores.
+  * @retval None
+  * @note This function has been defined as weak in the SDK, and users can redefine it according to their needs.
+  */
+__weak void I2C_ISRHandle(I2C_IntModeCtrl *I2C_SemStruct)
+{
+	I2C_TypeDef *I2Cx = I2C_SemStruct->I2Cx;
+	u32 intr_status = I2C_GetINT(I2Cx);
+
+	assert_param(I2C_SemStruct->I2CWaitSem != NULL);
+	assert_param(I2C_SemStruct->I2CSendSem != NULL);
+
+	/* I2C TX Abort | Empty Intr */
+	if (intr_status & (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_TX_EMPTY)) {
+		I2C_ClearINT(I2Cx, intr_status & (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_TX_EMPTY));
+		I2C_INTConfig(I2Cx, (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_TX_EMPTY), DISABLE);
+
+		I2C_SemStruct->I2CSendSem(TRUE);
+	}
+
+	/* I2C RX Over | RX FULL Intr */
+	if (intr_status & (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_RX_OVER | BIT_IC_INTR_STAT_R_RX_FULL)) {
+		I2C_ClearINT(I2Cx, intr_status & (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_RX_OVER | BIT_IC_INTR_STAT_R_RX_FULL));
+		I2C_INTConfig(I2Cx, (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_RX_OVER | BIT_IC_INTR_STAT_R_RX_FULL), DISABLE);
+
+		I2C_SemStruct->I2CSendSem(FALSE);
+	}
+}
+
+/**
+  * @brief  Master sends data in interrupt mode.
+  * @param  I2Cx: where I2Cx can be I2C0_DEV, I2C1_DEV and I2C2_DEV.
+  * @param  I2C_SemStruct: structure containing the function of acquiring and releasing semaphores.
+  * @param  pBuf: point to the data to be transmitted.
+  * @param  len: the length of data that to be transmitted.
+  * @retval remaining to be transferred count.
+  */
+u32 I2C_MasterWriteInt(I2C_TypeDef *I2Cx, I2C_IntModeCtrl *I2C_SemStruct, u8 *pBuf, u32 len)
+{
+	u32 cnt = 0;
+
+	assert_param(I2C_SemStruct->I2CWaitSem != NULL);
+
+	/* Write in the DR register the data to be sent */
+	for (cnt = len; cnt > 0;) {
+		if (I2Cx->IC_TXFLR < I2C_TRX_BUFFER_DEPTH) {
+			if (cnt <= 1) {
+				/*generate stop signal*/
+				I2Cx->IC_DATA_CMD = (*pBuf++) | BIT_CTRL_IC_DATA_CMD_STOP;
+			} else {
+				I2Cx->IC_DATA_CMD = (*pBuf++);
+			}
+			cnt--;
+		} else {
+			I2C_INTConfig(I2Cx, (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_TX_EMPTY), ENABLE);
+			I2C_SemStruct->I2CWaitSem(TRUE);
+		}
+
+		if (I2C_GetRawINT(I2Cx) & BIT_IC_INTR_STAT_R_TX_ABRT) {
+			I2C_ClearAllINT(I2Cx);
+			return (len - cnt);
+		}
+	}
+	return (len - cnt);
+}
+
+/**
+  * @brief  Master receives data in interrupt mode.
+  * @param  I2Cx: where I2Cx can be I2C0_DEV, I2C1_DEV and I2C2_DEV.
+  * @param  I2C_SemStruct: structure containing the function of acquiring and releasing semaphores.
+  * @param  pBuf:  point to the buffer to hold the received data.
+  * @param  len: the length of data that to be received.
+  * @retval received count.
+  */
+u32 I2C_MasterReadInt(I2C_TypeDef *I2Cx, I2C_IntModeCtrl *I2C_SemStruct, u8 *pBuf, u32 len)
+{
+	u32 left_cnt = len;
+	u32 trigger_cnt;
+	u32 rcvd = 0;
+
+	assert_param(I2C_SemStruct->I2CWaitSem != NULL);
+
+	while (left_cnt > 0) {
+		/* First Tx I2C_TRX_BUFFER_DEPTH triggers, and I2C_TRX_BUFFER_DEPTH will be received */
+		for (trigger_cnt = 1; trigger_cnt <= I2C_TRX_BUFFER_DEPTH; trigger_cnt++) {
+			if (left_cnt == 1) {
+				I2Cx->IC_DATA_CMD = BIT_CTRL_IC_DATA_CMD_CMD | BIT_CTRL_IC_DATA_CMD_STOP;
+				left_cnt--;
+				break;
+			} else {
+				I2Cx->IC_DATA_CMD = BIT_CTRL_IC_DATA_CMD_CMD;
+				left_cnt--;
+			}
+		}
+
+		/* change rx full thresh based on trigger number */
+		if (trigger_cnt <= I2Cx->IC_RX_TL) {
+			I2Cx->IC_RX_TL = trigger_cnt - 1;
+		} else {
+			I2Cx->IC_RX_TL = I2C_TRX_BUFFER_DEPTH - 1;
+		}
+
+		/* wait Semaphore */
+		I2C_INTConfig(I2Cx, (BIT_IC_INTR_STAT_R_TX_ABRT | BIT_IC_INTR_STAT_R_RX_FULL | BIT_IC_INTR_STAT_R_RX_OVER), ENABLE);
+		I2C_SemStruct->I2CWaitSem(FALSE);
+
+		/* read IC_RXFLR to empty */
+		while (I2Cx->IC_RXFLR) {// Read rx fifo until it's empty
+			*pBuf++ = (u8)I2Cx->IC_DATA_CMD;
+			rcvd++;
+		};
+
+		if (I2C_GetRawINT(I2Cx) & BIT_IC_INTR_STAT_R_TX_ABRT) {
+			I2C_ClearAllINT(I2Cx);
+			return rcvd;
+		}
+	}
+	return rcvd;
 }
 
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

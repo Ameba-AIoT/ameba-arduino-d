@@ -1262,6 +1262,7 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
 #if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
                   if (ip_entry < DNS_MAX_IP_ENTRIES) {
                     ip_addr_copy_from_ip4(dns_table[i].ipaddr[ip_entry], ip4addr);
+                    ip_entry++;
                   }
 #else
                   ip_addr_copy_from_ip4(dns_table[i].ipaddr, ip4addr);
@@ -1287,6 +1288,7 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
 #if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
                   if (ip_entry < DNS_MAX_IP_ENTRIES) {
                     ip_addr_copy_from_ip6(dns_table[i].ipaddr[ip_entry], ip6addr);
+                    ip_entry++;
                   }
 #else
                   ip_addr_copy_from_ip6(dns_table[i].ipaddr, ip6addr);
@@ -1301,7 +1303,6 @@ dns_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, 
             }
 #if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
             --nanswers;
-            ip_entry++;
             if((nanswers == 0) || (ip_entry >= DNS_MAX_IP_ENTRIES)) {
               dns_table[i].dns_ip_entries = ip_entry;
               pbuf_free(p);

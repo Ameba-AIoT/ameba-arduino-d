@@ -340,13 +340,15 @@ CmdTsfTest(
 		} else if (_strcmp((const char*)argv[1], "568") == 0) {
 			DBG_8195A("0x40080568=%x\n",HAL_READ32(WIFI_REG_BASE,0x568));
 		} else if (_strcmp((const char*)argv[1], "all") == 0) {
-			DBG_8195A("0x40080560=%x 0x40080568=%x\n",HAL_READ32(WIFI_REG_BASE,0x560), HAL_READ32(WIFI_REG_BASE,0x568));
+			DBG_8195A("0x40080560=%x\n",HAL_READ32(WIFI_REG_BASE,0x560));
+			DBG_8195A("0x40080568=%x\n",HAL_READ32(WIFI_REG_BASE,0x568));
 		}
 	}
 	if (_strcmp((const char*)argv[0], "set") == 0){// release
 		temp = HAL_READ32(WIFI_REG_BASE,0x560);
 		HAL_WRITE32(WIFI_REG_BASE,0x568,temp);
-		DBG_8195A("0x40080560=%x 0x40080568=%x\n",HAL_READ32(WIFI_REG_BASE,0x560), HAL_READ32(WIFI_REG_BASE,0x568));
+		DBG_8195A("0x40080560=%x\n",HAL_READ32(WIFI_REG_BASE,0x560));
+		DBG_8195A("0x40080568=%x\n",HAL_READ32(WIFI_REG_BASE,0x568));
 	}
 
 	return 0;

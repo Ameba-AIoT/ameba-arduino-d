@@ -632,14 +632,21 @@ int tls_get_cipher(void *tls_ctx, struct tls_connection *conn,
 	return -1;
 }
 #elif CONFIG_USE_MBEDTLS /* CONFIG_USE_POLARSSL */
-
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+#include <mbedtls/net_sockets.h>
+#include "ssl_misc.h"
+#else
 #include <mbedtls/ssl.h>
 #include <mbedtls/net.h>
 #include <mbedtls/ssl_internal.h>
+#endif
 #include <mbedtls/debug.h>
 
 struct buf_BIO *conn_buf_out, *conn_buf_in;
 
+#define MBED_TLS_DEBUG_ENABLE 1
+
+#if defined(MBED_TLS_DEBUG_ENABLE) && (MBED_TLS_DEBUG_ENABLE == 1)
 static void mbedtls_debug(void *ctx, int level, const char *file, int line, const char *str)
 {
 	/* To avoid gcc warnings */
@@ -660,6 +667,8 @@ static void mbedtls_debug(void *ctx, int level, const char *file, int line, cons
 		printf("\n\r%s:%d: %s\n\r", file+filename_idx, line, str);
 	}
 }
+#endif
+
 int buf_init(struct tls_connection * conn){
 	conn->buf_in = (struct buf_BIO *)os_zalloc(sizeof(struct buf_BIO));
 	if(conn->buf_in == NULL){
@@ -848,6 +857,28 @@ int tls_get_errors(void *tls_ctx)
 	return ErrorCnt;
 }
 
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+	static void tls_connection_key_derivation( void *p_expkey,
+											mbedtls_ssl_key_export_type type,
+											const unsigned char *secret,
+											size_t secret_len,
+											const unsigned char client_random[32],
+											const unsigned char server_random[32],
+											mbedtls_tls_prf_types tls_prf_type ){
+
+		/* To avoid gcc warnings */
+		( void ) type;
+		( void ) secret_len;
+		( void ) tls_prf_type;
+
+		struct tls_connection *conn = (struct tls_connection *)p_expkey;
+
+		memcpy( conn->master_secret, secret, sizeof( conn->master_secret ) );
+		memcpy( conn->client_random, client_random, sizeof( conn->client_random ) );
+		memcpy( conn->server_random, server_random, sizeof( conn->server_random ) );
+
+	}
+#else
 #if defined(MBEDTLS_SSL_EXPORT_KEYS)
 static int tls_connection_key_derivation( void *p_expkey,
                                 const unsigned char *ms,
@@ -857,8 +888,6 @@ static int tls_connection_key_derivation( void *p_expkey,
                                 size_t ivlen ){
 
 	struct tls_connection *conn = (struct tls_connection *)p_expkey;
-
-	int i;
 
 	conn->keylen = keylen;
 	conn->ivlen = ivlen;
@@ -870,7 +899,7 @@ static int tls_connection_key_derivation( void *p_expkey,
 	/*
 	if(ms){
 		printf("ms: ");
-		for(i=0; i<sizeof( conn->master_secret ); i++){
+		for(int i=0; i<sizeof( conn->master_secret ); i++){
 			 printf("%02x ", conn->master_secret[i]);
 		}
 		printf("\r\n");
@@ -878,7 +907,7 @@ static int tls_connection_key_derivation( void *p_expkey,
 
 	if(kb){
 		printf("kb: ");
-		for(i=0; i<sizeof( conn->keyblk ); i++){
+		for(int i=0; i<sizeof( conn->keyblk ); i++){
 	    	 printf("%02x ", conn->keyblk[i]);
 		}
 		printf("\r\n");
@@ -892,6 +921,7 @@ static int tls_connection_key_derivation( void *p_expkey,
 	return( 0 );
 
 }
+#endif
 #endif
 
 struct tls_connection * tls_connection_init(void *tls_ctx)
@@ -927,8 +957,11 @@ struct tls_connection * tls_connection_init(void *tls_ctx)
 
 	mbedtls_ssl_conf_authmode(tls_context->conf, MBEDTLS_SSL_VERIFY_NONE);
 	mbedtls_ssl_conf_rng(tls_context->conf, my_random, NULL);
-	//mbedtls_ssl_conf_dbg(tls_context->conf, mbedtls_debug, NULL);
-	//mbedtls_ssl_conf_min_version(tls_context->conf, MBEDTLS_SSL_MINOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_3);
+
+#if defined(MBED_TLS_DEBUG_ENABLE) && (MBED_TLS_DEBUG_ENABLE == 1)
+	mbedtls_ssl_conf_dbg(tls_context->conf, mbedtls_debug, NULL);
+	// mbedtls_ssl_conf_min_version(tls_context->conf, MBEDTLS_SSL_MINOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_3);
+#endif
 
 	if((ret = mbedtls_ssl_setup(tls_context->ssl, tls_context->conf)) != 0) {
 		wpa_printf(MSG_INFO, "TLS: mbedtls_ssl_setup() failed");
@@ -939,11 +972,16 @@ struct tls_connection * tls_connection_init(void *tls_ctx)
 	mbedtls_debug_set_threshold(DEBUG_LEVEL);
 #endif
 
+
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+	mbedtls_ssl_set_export_keys_cb((mbedtls_ssl_context *)tls_context->ssl, tls_connection_key_derivation, (void *)conn);
+#else
 #if defined(MBEDTLS_SSL_EXPORT_KEYS)
 	mbedtls_ssl_conf_export_keys_cb((mbedtls_ssl_config *)tls_context->conf, tls_connection_key_derivation, (void *)conn);
-#elif
+#else
 	wpa_printf(MSG_ERROR, "TLS: MBEDTLS_SSL_EXPORT_KEYS should be defined");
 	return NULL;
+#endif
 #endif
 
 	ErrorCnt = 0;
@@ -1130,7 +1168,42 @@ int tls_connection_get_eap_fast_key(void *tls_ctx, struct tls_connection *conn,
 		return -1;
 
 	// session_key_seed offset of key_blk
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+	mbedtls_ssl_transform *transform = ssl->transform;
+	int ciphersuite = ssl->session->ciphersuite;
+	const mbedtls_ssl_ciphersuite_t *ciphersuite_info;
+	int mac_key_len, enc_key_len, iv_copy_len;
+	size_t keylen;
+	mac_key_len =transform->maclen;
+	ciphersuite_info = mbedtls_ssl_ciphersuite_from_id(ciphersuite);
+#if defined(MBEDTLS_USE_PSA_CRYPTO)
+	 psa_algorithm_t alg;
+	 psa_key_type_t key_type;
+	 size_t key_bits;
+    if ((status = mbedtls_ssl_cipher_to_psa(ciphersuite_info->cipher,
+                                            transform->taglen,
+                                            &alg,
+                                            &key_type,
+                                            &key_bits)) != PSA_SUCCESS) {
+    	return -1;
+    }
+    keylen = PSA_BITS_TO_BYTES(key_bits);
+#else
+    const mbedtls_cipher_info_t *cipher_info;
+    cipher_info = mbedtls_cipher_info_from_type((mbedtls_cipher_type_t)ciphersuite_info->cipher);
+    if (cipher_info == NULL) {
+    	return -1;
+    }
+    keylen = mbedtls_cipher_info_get_key_bitlen(cipher_info) / 8;
+#endif /* MBEDTLS_USE_PSA_CRYPTO */
+
+	enc_key_len=keylen;
+	iv_copy_len = (transform->fixed_ivlen) ?
+	                      transform->fixed_ivlen : transform->ivlen;
+	sks_offset = 2 * (enc_key_len + mac_key_len + iv_copy_len);
+#else
 	sks_offset = 2 * (conn->keylen + conn->maclen + conn->ivlen);
+#endif
 	if (sks_offset < 0)
 		return -1;
 	tmp_out = os_malloc(sks_offset + out_len);
@@ -1167,6 +1240,9 @@ int tls_connection_get_eap_fast_key(void *tls_ctx, struct tls_connection *conn,
 
 static struct wpabuf * tls_get_appl_data(mbedtls_ssl_context *ssl, struct tls_connection *conn, size_t max_len)
 {
+	/* To avoid gcc warnings */
+	( void ) conn;
+	
 	struct wpabuf *appl_data;
 	int res;
 
@@ -1218,7 +1294,9 @@ struct wpabuf * tls_connection_handshake(void *tls_ctx,
 	{
 		wpa_printf(MSG_INFO, "TLS: connection handshake, state: %d", ssl->state);
 		//printf("\nTLS: connection handshake, state: %d\n", ssl->state);
-		
+#if defined(MBEDTLS_PSA_CRYPTO_C) && defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03040000)
+		psa_crypto_init();
+#endif
 		ret = mbedtls_ssl_handshake_step( ssl );
 
 		// keep the client random & server random for eap further use
@@ -1399,6 +1477,9 @@ int tls_connection_set_session_ticket_cb(void *tls_ctx,
 					 tls_session_ticket_cb cb,
 					 void *ctx)
 {
+	/* To avoid gcc warnings */
+	( void ) tls_ctx;
+	
 	conn->session_ticket_cb = cb;
 	conn->session_ticket_cb_ctx = ctx;
 
@@ -1413,12 +1494,17 @@ static int tls_set_session_ticket_ext(mbedtls_ssl_context *ssl, void *ext_data, 
 {
 	wpa_printf(MSG_DEBUG, "TLS: tls_set_session_ticket_ext");
 
-	int ret;
-	if (ssl->conf->min_minor_ver >= MBEDTLS_SSL_MINOR_VERSION_1) {
-
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+#else
+	if (ssl->conf->min_minor_ver >= MBEDTLS_SSL_MINOR_VERSION_1)
+	{
+#endif
+#if defined(MBEDTLS_SSL_SESSION_TICKETS) && defined(MBEDTLS_SSL_CLI_C)
 		mbedtls_ssl_session session;
 		mbedtls_ssl_session_init( &session );
-
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+		session.tls_version=MBEDTLS_SSL_VERSION_TLS1_2;
+#endif
 		if (ext_data) {
 			session.ticket_len = ext_len;
 			session.ticket = mbedtls_calloc( 1, ext_len );
@@ -1437,8 +1523,10 @@ static int tls_set_session_ticket_ext(mbedtls_ssl_context *ssl, void *ext_data, 
 		mbedtls_ssl_session_free(&session);
 
 		return 1;
+#endif
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER<0x03010000)
 	}
-
+#endif
 	return 0;
 }
 
@@ -1469,7 +1557,7 @@ int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
 
 	static int ciphersuites[10];
 	u8 *c;
-	int i, count;
+	int count;
 	mbedtls_ssl_context *ssl = ((struct eap_tls *)tls_ctx)->ssl;
 
 	if (conn == NULL || ssl == NULL || ciphers == NULL)
@@ -1479,9 +1567,11 @@ int tls_connection_set_cipher_list(void *tls_ctx, struct tls_connection *conn,
 	count = 0;
 	while(*c != TLS_CIPHER_NONE){
 		switch(*c){
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER<0x03010000)
 			case TLS_CIPHER_RC4_SHA:
-				ciphersuites[count++] = MBEDTLS_TLS_RSA_WITH_RC4_128_SHA;
+				ciphersuites[count++] = MBEDTLS_TLS_RSA_WITH_RC4_128_SHA; /* mbedtls v3 drop support for RC4 TLS ciphersuites */
 				break;
+#endif
 			case TLS_CIPHER_AES128_SHA:
 				ciphersuites[count++] = MBEDTLS_TLS_RSA_WITH_AES_128_CBC_SHA;
 				break;

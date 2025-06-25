@@ -187,7 +187,7 @@ int ssl_client_ext_setup(ssl_context *ssl)
 
 #elif CONFIG_USE_MBEDTLS /* CONFIG_USE_POLARSSL */
 
-#if CONFIG_MBEDTLS_VERSION3 == 1
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
 #include "mbedtls/build_info.h"
 #else
 #include "mbedtls/config.h"
@@ -377,7 +377,7 @@ int ssl_client_ext_setup(mbedtls_ssl_config *conf)
 	if(_clikey_rsa == NULL)
 		return -1;
 #else
-#if CONFIG_MBEDTLS_VERSION3 == 1
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
 	if(mbedtls_pk_parse_key(_clikey_rsa, test_client_key, strlen((char const*)test_client_key) + 1, NULL, 0, rtw_get_random_bytes_f_rng, (void*)1 ) != 0)
 #else
 	if(mbedtls_pk_parse_key(_clikey_rsa, test_client_key, strlen((char const*)test_client_key) + 1, NULL, 0) != 0)

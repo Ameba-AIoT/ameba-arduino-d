@@ -42,6 +42,7 @@ int wext_set_pmk_cache_enable(const char *ifname, __u8 value);
 #endif
 int wext_set_key_ext(const char *ifname, __u16 alg, const __u8 *addr, int key_idx, int set_tx, const __u8 *seq, __u16 seq_len, __u8 *key, __u16 key_len);
 int wext_get_enc_ext(const char *ifname, __u16 *alg, __u8 *key_idx, __u8 *passphrase);
+int wext_get_auth_type(const char *ifname, __u32 *auth_type);
 int wext_set_passphrase(const char *ifname, const __u8 *passphrase, __u16 passphrase_len);
 int wext_get_passphrase(const char *ifname, __u8 *passphrase);
 int wext_set_mode(const char *ifname, int mode);
@@ -92,16 +93,22 @@ int wext_init_mac_filter(void);
 int wext_deinit_mac_filter(void);
 int wext_add_mac_filter(unsigned char* hwaddr);
 int wext_del_mac_filter(unsigned char* hwaddr);
+void wext_wifi_connect_monitor_mgnt(int enable);
 void wext_set_indicate_mgnt(int enable);
 int wext_get_bcn_rssi(const char *ifname, int *rssi);
-int wext_set_bcn_period(__u8 period);
+int wext_set_bcn_period(__u16 period);
+#if defined(CONFIG_RTW_WNM) && defined(CONFIG_LAYER2_ROAMING)
+void wext_set_roam_on_btm(__u8 enable);
+#endif
 #if defined(CONFIG_IEEE80211K)
 void wext_set_enable_80211k(__u8 enable);
 #endif
+void wext_exclude_ext_cap(__u8 enable);
 void wext_set_powersave_mode(__u8 ps_mode);
 int wext_set_ant_div_gpio(__u8 type);
 int wext_set_bw40_enable(__u8 enable);
 int wext_set_uapsd_enable(__u8 enable);
+void wext_set_softap_gkey_rekey(__u8 mode);
 #ifdef CONFIG_SW_MAILBOX_EN
 int wext_mailbox_to_wifi(const char *ifname, char *buf, __u16 buf_len);
 #endif
@@ -126,6 +133,20 @@ int wext_wowlan_ctrl(const char *ifname, int enable);
 int wext_wowlan_set_pattern(const char *ifname, wowlan_pattern_t pattern);
 int wext_wlan_redl_fw(const char *ifname);
 #endif
+
+#ifdef CONFIG_80211N_HT
+void wext_set_wifi_ampdu_tx(__u8 enable);
+#endif
+
+void wext_get_country_code(unsigned char* country_code_get);
+
+void wext_auto_set_adaptivity(__u8 mode);
+
+void wext_enable_softap_slient_table(__u8 mode);
+
+void wext_set_softap_slient_table_interval(int interval);
+
+void wext_set_custom_country_code(__u8 mode);
 
 extern int (*p_wlan_mgmt_filter)(__u8 *ie, __u16 ie_len, __u16 frame_type);
 extern int (*p_wlan_action_filter)(__u8 *ie, __u16 ie_len, __u16 frame_type);

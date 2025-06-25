@@ -897,9 +897,22 @@ int mbedtls_cipher_auth_decrypt( mbedtls_cipher_context_t *ctx,
         int ret;
 
         *olen = ilen;
-        ret = mbedtls_gcm_auth_decrypt( ctx->cipher_ctx, ilen,
-                                iv, iv_len, ad, ad_len,
-                                tag, tag_len, input, output );
+#ifdef RTL_HW_CRYPTO
+		if(rom_ssl_ram_map.use_hw_crypto_func)
+		{
+			device_mutex_lock(RT_DEV_LOCK_CRYPTO);
+			ret = mbedtls_gcm_auth_decrypt( ctx->cipher_ctx, ilen,
+			                        iv, iv_len, ad, ad_len,
+			                        tag, tag_len, input, output );
+			device_mutex_unlock(RT_DEV_LOCK_CRYPTO);
+		}
+		else
+#endif
+		{
+			ret = mbedtls_gcm_auth_decrypt( ctx->cipher_ctx, ilen,
+			                        iv, iv_len, ad, ad_len,
+			                        tag, tag_len, input, output );
+		}
 
         if( ret == MBEDTLS_ERR_GCM_AUTH_FAILED )
             ret = MBEDTLS_ERR_CIPHER_AUTH_FAILED;

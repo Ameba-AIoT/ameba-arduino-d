@@ -77,6 +77,106 @@ struct httpd_conn {
 	uint32_t last_req_time;          /*!< Last request time in system ticks */
 };
 
+/* Request Methods */
+#define HTTP_METHOD_MAP(XX)			\
+	XX(0,	DELETE,		DELETE)		\
+	XX(1,	GET,		GET)		\
+	XX(2,	HEAD,		HEAD)		\
+	XX(3,	POST,		POST)		\
+	XX(4,	PUT,		PUT)		\
+	/* pathological */				\
+	XX(5,	CONNECT,	CONNECT)	\
+	XX(6,	OPTIONS,	OPTIONS)	\
+	XX(7,	TRACE,		TRACE)		\
+	/* WebDAV */					\
+	XX(8,	COPY,		COPY)		\
+	XX(9,	LOCK,		LOCK)		\
+	XX(10,	MKCOL,		MKCOL)		\
+	XX(11,	MOVE,		MOVE)		\
+	XX(12,	PROPFIND,	PROPFIND)	\
+	XX(13,	PROPPATCH,	PROPPATCH)	\
+	XX(14,	SEARCH,		SEARCH)		\
+	XX(15,	UNLOCK,		UNLOCK)		\
+	XX(16,	BIND,		BIND)		\
+	XX(17,	REBIND,		REBIND)		\
+	XX(18,	UNBIND,		UNBIND)		\
+	XX(19,	ACL,		ACL)		\
+	/* subversion */				\
+	XX(20,	REPORT,		REPORT)		\
+	XX(21,	MKACTIVITY,	MKACTIVITY)	\
+	XX(22,	CHECKOUT,	CHECKOUT)	\
+	XX(23,	MERGE,		MERGE)		\
+	/* upnp */						\
+	XX(24,	MSEARCH,	M-SEARCH)	\
+	XX(25,	NOTIFY,		NOTIFY)		\
+	XX(26,	SUBSCRIBE,	SUBSCRIBE)	\
+	XX(27,	UNSUBSCRIBE,UNSUBSCRIBE)\
+	/* RFC-5789 */					\
+	XX(28,	PATCH,		PATCH)		\
+	XX(29,	PURGE,		PURGE)		\
+	/* CalDAV */					\
+	XX(30,	MKCALENDAR,	MKCALENDAR)	\
+	/* RFC-2068, section 19.6.1.2 */\
+	XX(31,	LINK,		LINK)		\
+	XX(32,	UNLINK,		UNLINK)		\
+
+enum http_method
+{
+#define XX(num, name, string) HTTP_##name = num,
+	HTTP_METHOD_MAP(XX)
+#undef XX
+};
+
+typedef enum http_method httpd_method_t;
+typedef void* httpd_handle_t;
+
+typedef struct httpd_config {
+	uint16_t	port;
+	uint8_t		max_conn;
+	uint16_t	max_uri_handlers;
+	uint32_t	stack_bytes;
+	uint8_t		thread_mode;
+	uint8_t		secure;
+} httpd_config_t;
+
+typedef struct httpd_uri {
+	httpd_method_t	method; /*!< Method supported by the URI */
+	int	(*handler)(struct httpd_conn *conn);
+} httpd_uri_t;
+
+struct httpd_data {
+	httpd_config_t config;
+	httpd_uri_t **hd_calls;
+};
+
+/**
+ * @brief     This function is used to register the URI handler.
+ * @param[in] uri_handler: pointer to handler
+ * @return    0 : if successful
+ * @return    -1 : if error occurred
+ */
+int httpd_register_uri_handler(const httpd_uri_t *uri_handler);
+
+/**
+ * @brief     This function is used to unregister the URI handler.
+ * @param[in] uri_handler: pointer to handler
+ * @return    0 : if successful
+ * @return    -1 : if error occurred
+ */
+int httpd_unregister_uri_handler(const httpd_uri_t *uri_handler);
+
+/**
+ * @brief     This function is used to start an HTTP or HTTPS server with callback.
+ * @param[in] port: service port
+ * @param[in] max_conn: max client connections allowed
+ * @param[in] stack_bytes: thread stack size in bytes
+ * @param[in] thread_mode: server running thread mode. Must be HTTPD_THREAD_SINGLE, HTTPD_THREAD_MULTIPLE.
+ * @param[in] secure: security mode for HTTP or HTTPS. Must be HTTPD_SECURE_NONE, HTTPD_SECURE_TLS, HTTPD_SECURE_TLS_VERIFY.
+ * @return    0 : if successful
+ * @return    -1 : if error occurred
+ */
+int httpd_start_with_callback(uint16_t port, uint8_t max_conn, uint32_t stack_bytes, uint8_t thread_mode, uint8_t secure);
+
 /**
  * @brief     This function is used to start an HTTP or HTTPS server.
  * @param[in] port: service port

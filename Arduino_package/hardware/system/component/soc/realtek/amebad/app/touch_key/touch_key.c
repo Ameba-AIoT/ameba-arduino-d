@@ -198,6 +198,8 @@ void app_captouch_init(void)
 		for (ch = 0; ch < 4; ch++) {
 			if (CTCChan[ch].CT_CHEnable == ENABLE) {
 				PAD_PullCtrl((_PB_4 + ch), GPIO_PuPd_NOPULL);
+				/* Shutdown captouch gpio pin to prevent leakage current */
+				PAD_CMD((_PB_4 + ch), DISABLE);
 			}
 		}
 		

@@ -26,7 +26,11 @@
 #define MBED_RTC_API_H
 
 #include "device.h"
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

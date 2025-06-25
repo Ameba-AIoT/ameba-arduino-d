@@ -78,6 +78,7 @@ struct flash_s {
 
 struct analogin_s {
 	uint8_t	adc_idx;
+	PinName pin;
 };
 
 struct gtimer_s {

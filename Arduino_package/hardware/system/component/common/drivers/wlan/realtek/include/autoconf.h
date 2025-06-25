@@ -14,9 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-
 #ifndef WLANCONFIG_H
 #define WLANCONFIG_H
+
 
 /*
  * Include user defined options first. Anything not defined in these files
@@ -274,6 +274,7 @@
   #else
     #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN) + 1)
   #endif
+  #define CONFIG_SOFTAP_KEEP_SILENT_TABLE
 #else
   #define NET_IF_NUM ((CONFIG_ETHERNET) + (CONFIG_WLAN))
 #endif
@@ -368,7 +369,7 @@ extern unsigned int g_ap_sta_num;
 		//#define CONFIG_INTERRUPT_BASED_TXBCN_EARLY_INT
 		#define CONFIG_INTERRUPT_BASED_TXBCN_BCN_OK_ERR
 	#endif
-//	#define CONFIG_GK_REKEY
+//	#define CONFIG_GK_REKEY //removed, use wext_set_softap_gkey_rekey() in wifi_set_mib() to configure gk rekey
 #if (CONFIG_PLATFORM_AMEBA_X == 0)
 	#define USE_DEDICATED_BCN_TX	1
 #endif
@@ -381,7 +382,7 @@ extern unsigned int g_ap_sta_num;
 #endif
 #endif
 
-#if defined(CONFIG_AP_MODE) && defined(CONFIG_GK_REKEY) && !defined(CONFIG_MULTIPLE_WPA_STA)
+#if defined(CONFIG_AP_MODE) && !defined(CONFIG_MULTIPLE_WPA_STA)
 #error "If CONFIG_GK_REKEY when CONFIG_AP_MODE, need to CONFIG_MULTIPLE_WPA_STA"
 #endif
 
@@ -410,6 +411,9 @@ extern unsigned int g_ap_sta_num;
 //	#define HAL_EFUSE_MEMORY
 	#if (CONFIG_PLATFORM_AMEBA_X == 1)
 		#define MP_REG_TEST
+	#endif
+	#if defined(CONFIG_PLATFORM_8721D)
+		#define CONFIG_BT_COEXIST_SOC
 	#endif
 #else
 	#define MP_DRIVER		0
@@ -748,6 +752,7 @@ extern unsigned int g_ap_sta_num;
 #define CONFIG_RTW_ADAPTIVITY_MODE			RTW_ADAPTIVITY_MODE_CARRIER_SENSE
 #define CONFIG_RTW_ADAPTIVITY_DML			0
 
+#define CONFIG_RTW_REGULATION_SRRC_EN		1
 
 #if (CONFIG_PLATFORM_AMEBA_X == 1)
 	#define CONFIG_POWER_TRAINING_WIL 0 // in RA
@@ -873,8 +878,8 @@ extern unsigned int g_ap_sta_num;
 
 #ifndef LONG_PERIOD_TICKLESS
 /* 80211 - K V R */
-#define CONFIG_IEEE80211K
-#define CONFIG_LAYER2_ROAMING
+//#define CONFIG_IEEE80211K
+//#define CONFIG_LAYER2_ROAMING
 #endif
 #ifdef CONFIG_LAYER2_ROAMING
     #define CONFIG_RTW_WNM

@@ -238,6 +238,7 @@ extern HAL_VECTOR_FUN  NewVectorTable[];
 #else
 #define MAX_VECTOR_TABLE_NUM			(16+32)
 #define MAX_PERIPHERAL_IRQ_NUM		32 
+#define MAX_NVIC_IPR_NUM				((MAX_PERIPHERAL_IRQ_NUM + 3) >> 2)
 #define MAX_IRQ_PRIORITY_VALUE			3
 #define IRQ_PRIORITY_SHIFT				2
 #endif

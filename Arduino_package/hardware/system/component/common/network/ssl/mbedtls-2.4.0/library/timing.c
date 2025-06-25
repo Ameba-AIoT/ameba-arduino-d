@@ -63,7 +63,12 @@ struct _hr_time
 #include <sys/types.h>
 #include <sys/time.h>
 #include <signal.h>
+
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 
 struct _hr_time
 {

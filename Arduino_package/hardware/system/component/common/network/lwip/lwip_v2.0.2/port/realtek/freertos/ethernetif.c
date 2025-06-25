@@ -53,6 +53,7 @@
 #include "netif/etharp.h"
 #include "err.h"
 #include "ethernetif.h"
+#include "freertos_service.h"
 #include "queue.h"
 #include "lwip_netconf.h"
 
@@ -84,11 +85,27 @@
 
 static void arp_timer(void *arg);
 
-extern void rltk_mii_recv(struct eth_drv_sg *sg_list, int sg_len);
 extern s8 rltk_mii_send(struct eth_drv_sg *sg_list, int sg_len, int total_len);
 
 #if CONFIG_BRIDGE
 extern u8_t get_bridge_portnum(void);
+#endif
+
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
+#define MAX_BUFFER_SIZE		(1536)
+#define ETH_P_IP			(0x0800)
+#define DST_MAC_LEN			(6)
+#define SRC_MAC_LEN			(6)
+#define PROTO_TYPE_LEN		(2)  // protocol type
+#define IP_LEN_OFFSET		(2)  // offset of total length field in IP packet
+static _mutex mii_tx_mutex;
+static u8 TX_BUFFER[MAX_BUFFER_SIZE];
+static u8 RX_BUFFER[MAX_BUFFER_SIZE];
+static u32 pkt_total_len = 0;
+static u32 rx_buffer_saved_data = 0;
+static u16 eth_type = 0;
+extern u8 usbh_cdc_ecm_send_data(u8 *buf, u32 len);
+extern u16 usbh_cdc_ecm_get_receive_mps(void);
 #endif
 
 /**
@@ -99,6 +116,7 @@ extern u8_t get_bridge_portnum(void);
  *        for this ethernetif
  */
 
+extern struct netif xnetif[NET_IF_NUM]; 
 static void low_level_init(struct netif *netif)
 {
 
@@ -177,26 +195,29 @@ static err_t low_level_output_mii(struct netif *netif, struct pbuf *p)
 {
 	(void) netif;
 	(void) p;
-
-#if CONFIG_ETHERNET
-	struct eth_drv_sg sg_list[MAX_ETH_DRV_SG];
-	int sg_len = 0;
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
 	struct pbuf *q;
-	for (q = p; q != NULL && sg_len < MAX_ETH_DRV_SG; q = q->next) {
-		sg_list[sg_len].buf = (unsigned int) q->payload;
-		sg_list[sg_len++].len = q->len;
+	u8 *pdata = TX_BUFFER;
+	u32 size = 0;
+	int ret = 0;
+
+	memset(TX_BUFFER, 0, MAX_BUFFER_SIZE);
+	for (q = p; q != NULL; q = q->next) {
+		rtw_memcpy((unsigned int *)pdata, (unsigned int *) q->payload, q->len);
+		pdata += q->len;
+		size += q->len;
 	}
 
-	if (sg_len) {
-		 if(rltk_mii_send(sg_list, sg_len, p->tot_len) == 0)
-			return ERR_OK;
-		else
-			return ERR_BUF;	// return a non-fatal error
+	rtw_mutex_get(&mii_tx_mutex);
+	ret = usbh_cdc_ecm_send_data(TX_BUFFER, size);
+	rtw_mutex_put(&mii_tx_mutex);
+
+	if (ret != 0) {
+		return ERR_BUF;    // return a non-fatal error
 	}
 #endif
 	return ERR_OK;
 }
-
 	
 /**
  * Should allocate a pbuf and transfer the bytes of the incoming
@@ -272,21 +293,124 @@ void ethernetif_recv(struct netif *netif, int total_len)
 
 }
 
-void ethernetif_mii_recv(struct netif *netif, int total_len)
+void rltk_mii_init(void)
 {
-	(void) netif;
-	(void) total_len;
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
+	rtw_mutex_init(&mii_tx_mutex);
+#endif
+}
 
-#if CONFIG_ETHERNET
+void rltk_mii_deinit(void)
+{
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
+    rtw_mutex_free(&mii_tx_mutex);
+#endif
+}
+
+void rltk_mii_recv(struct eth_drv_sg *sg_list, int sg_len)
+{
+	(void) sg_list;
+	(void) sg_len;
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
+	struct eth_drv_sg *last_sg;
+	u8 *pbuf = RX_BUFFER;
+
+	for (last_sg = &sg_list[sg_len]; sg_list < last_sg; ++sg_list) {
+		if (sg_list->buf != 0) {
+			rtw_memcpy((void *)(sg_list->buf), pbuf, sg_list->len);
+			pbuf += sg_list->len;
+		}
+	}
+#endif
+}
+
+u8 rltk_mii_recv_data(u8 *buf, u32 total_len, u32 *frame_length)
+{
+	(void) buf;
+	(void) total_len;
+	(void) frame_length;
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
+	u8 *pbuf;
+	u32 pkt_len_index = DST_MAC_LEN + SRC_MAC_LEN + PROTO_TYPE_LEN;
+	u16 usb_receive_mps = usbh_cdc_ecm_get_receive_mps();	//only 512 bytes is supported now.
+
+	if (0 == pkt_total_len) { //first packet
+		pbuf = RX_BUFFER;
+		rtw_memcpy((void *)pbuf, buf, total_len);
+		if (total_len != usb_receive_mps) { //should finish
+			*frame_length = total_len;
+			return 1;
+		} else { //get the total length
+			rx_buffer_saved_data = total_len;
+			//should check the vlan header
+			eth_type = buf[DST_MAC_LEN + SRC_MAC_LEN] * 256 + buf[DST_MAC_LEN + SRC_MAC_LEN + 1];
+
+			if (eth_type == ETH_P_IP) {
+				pkt_total_len =  buf[pkt_len_index + IP_LEN_OFFSET] * 256 + buf[pkt_len_index + IP_LEN_OFFSET + 1];
+			}
+		}
+	} else {
+		pbuf = RX_BUFFER + rx_buffer_saved_data;
+		if (total_len > 0) {
+			rtw_memcpy((void *)pbuf, buf, total_len);
+		}
+		rx_buffer_saved_data += total_len;
+		if (total_len != usb_receive_mps) {
+			//should finish
+			*frame_length = rx_buffer_saved_data;
+			pkt_total_len = 0;
+			return 1;
+		}
+	}
+#endif
+	return 0;
+}
+
+u8 rltk_mii_recv_data_check(u8 *mac, u32 frame_length)
+{
+	(void) mac;
+	(void) frame_length;
+	u8 checklen = 0;
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
+	u8 *pbuf = RX_BUFFER;
+	u8 multi[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+	
+	if (memcmp(mac, pbuf, 6) == 0 || memcmp(multi, pbuf, 6) == 0) {
+		checklen = 7;
+	} else {
+		checklen = 6;
+	}
+#endif
+	return (checklen == 6) ? (0) : (1);
+}
+
+void ethernetif_mii_recv(u8 *buf, u32 total_len)
+{
+	(void) buf;
+	(void) total_len;
+#if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
 	struct eth_drv_sg sg_list[MAX_ETH_DRV_SG];
 	struct pbuf *p, *q;
 	int sg_len = 0;
+	u32 frame_len = 0;
 
-	if ((total_len > MAX_ETH_MSG) || (total_len < 0))
+	struct netif *netif = &xnetif[NET_IF_NUM - 1];
+	u8 *macstr = LwIP_GetMAC(netif);
+
+	if (total_len > MAX_ETH_MSG) {
 		total_len = MAX_ETH_MSG;
+	}
+
+	if (0 == rltk_mii_recv_data(buf, total_len, &frame_len)) {
+		return;
+	}
+
+	if (0 == rltk_mii_recv_data_check(macstr, frame_len)) {
+		return;
+	}
 
 	// Allocate buffer to store received packet
-	p = pbuf_alloc(PBUF_RAW, total_len, PBUF_POOL);
+	p = pbuf_alloc(PBUF_RAW, frame_len, PBUF_POOL);
 	if (p == NULL) {
 		printf("\n\rCannot allocate pbuf to receive packet");
 		return;
@@ -294,18 +418,19 @@ void ethernetif_mii_recv(struct netif *netif, int total_len)
 
 	// Create scatter list
 	for (q = p; q != NULL && sg_len < MAX_ETH_DRV_SG; q = q->next) {
-   		sg_list[sg_len].buf = (unsigned int) q->payload;
+		sg_list[sg_len].buf = (unsigned int) q->payload;
 		sg_list[sg_len++].len = q->len;
 	}
-
 	rltk_mii_recv(sg_list, sg_len);
 
 	// Pass received packet to the interface
-	if (ERR_OK != netif->input(p, netif))
+	if (ERR_OK != netif->input(p, netif)) {
 		pbuf_free(p);
+	}
 #endif
-
 }
+
+
 /**
  * Should be called at the beginning of the program to set up the
  * network interface. It calls the function low_level_init() to do the

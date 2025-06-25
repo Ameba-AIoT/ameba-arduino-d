@@ -207,7 +207,14 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 	reg_value |= (2 << BIT_VREF_VREFSEL);
 	AUDIO_SI_WriteReg(MICBST_CTRL, reg_value);
 
-	if ((application & APP_LINE_OUT) == APP_LINE_OUT) {
+	if (((application & APP_LINE_OUT) == APP_LINE_OUT) || ((application & APP_HP_OUT) == APP_HP_OUT)) {
+
+		/*==== Disable PAD ====*/
+		PAD_CMD(_PB_28, DISABLE);
+		PAD_CMD(_PB_29, DISABLE);
+		PAD_CMD(_PB_30, DISABLE);
+		PAD_CMD(_PB_31, DISABLE);
+
 		reg_value = AUDIO_SI_ReadReg(DAC_ADC_MIC_CLK_CTRL); 	//dac modulation/filter/fifo on
 		reg_value |= (1 << BIT_DA_L_EN | 1 << BIT_DA_R_EN | 1 << BIT_MOD_L_EN | 1 << BIT_MOD_R_EN | 1 << BIT_DA_ANA_CLK_EN | 1 << BIT_DA_FIFO_EN);
 		AUDIO_SI_WriteReg(DAC_ADC_MIC_CLK_CTRL, reg_value);
@@ -256,6 +263,16 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 	}
 
 	if (((application & APP_AMIC_IN) == APP_AMIC_IN) || ((application & APP_LINE_IN) == APP_LINE_IN)) {
+
+		/*==== Disable PAD ====*/
+		PAD_CMD(_PA_0, DISABLE);
+		PAD_CMD(_PA_1, DISABLE);
+		PAD_CMD(_PA_2, DISABLE);
+		PAD_CMD(_PA_3, DISABLE);
+		PAD_CMD(_PA_4, DISABLE);
+		PAD_CMD(_PA_5, DISABLE);
+		PAD_CMD(_PA_6, DISABLE);
+
 		reg_value = AUDIO_SI_ReadReg(HPO_MIC_CTRL);		//vref power on
 		reg_value &= (0xffff & (~(1 << BIT_MICBST_ENDFL | 1 << BIT_MICBST_ENDFR)));
 		reg_value |= (1 << BIT_MBIAS_POW | 1 << BIT_VREF_POW);
@@ -285,11 +302,11 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 		}
 	}
 
-	if (((application & APP_AMIC_IN) == APP_AMIC_IN) || ((application & APP_LINE_IN) == APP_LINE_IN) || ((application & APP_LINE_OUT) == APP_LINE_OUT)) {
+	if ((application & APP_HP_OUT) == APP_HP_OUT) {
 		DelayMs(200);
 	}
 
-	if ((application & APP_LINE_OUT) == APP_LINE_OUT) {
+	if (((application & APP_LINE_OUT) == APP_LINE_OUT) || ((application & APP_HP_OUT) == APP_HP_OUT)) {
 		//step5
 		reg_value = AUDIO_SI_ReadReg(GEN_CTRL);
 		reg_value &= (1 << BIT_DTSDM_POW_L | 1 << BIT_DTSDM_POW_R);
@@ -371,7 +388,6 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 		AUDIO_SI_WriteReg(ADC_L_CTRL, reg_value);
 		AUDIO_SI_WriteReg(ADC_R_ADJ_D, reg_value2);
 
-		DelayMs(50);		//maybe need fine tune per board
 	}
 
 	reg_value3 = (1 << BIT_AUDIO_IP_TCON_EN | 1 << BIT_ASRC_FTK_LOOP_EN | 1 << BIT_ASRC_256FS_SYS_SEL | 1 << BIT_ASRC_EN);
@@ -399,7 +415,7 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 	AUDIO_SI_WriteReg(ALC_MIN_GAIN, reg_value);
 	reg_value = AUDIO_SI_ReadReg(DAC_L_CTRL);
 	reg_value &= (0xff << BIT_DAC_L_DA_GAIN | 1 << BIT_DAC_L_DAHPF_EN | 2 << BIT_DAC_L_DA_DITHER_SEL);
-	reg_value |= (2 << BIT_DAC_L_DA_ZDET_FUNC);
+	reg_value |= (1 << BIT_DAC_L_DA_ZDET_FUNC);
 
 	AUDIO_SI_WriteReg(DAC_L_CTRL, reg_value);
 	AUDIO_SI_WriteReg(DAC_R_CTRL, reg_value);
@@ -433,6 +449,8 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
 		reg_value = AUDIO_SI_ReadReg(DAC_ADC_MIC_CLK_CTRL);
 		reg_value |= (1 << BIT_DMIC_L_EN | 1 << BIT_DMIC_R_EN | 1 << BIT_DMIC_CLK_EN);
 		AUDIO_SI_WriteReg(DAC_ADC_MIC_CLK_CTRL, reg_value);
+
+		DelayMs(100);
 	}
 
 	if ((sample_rate == SR_96K) || (sample_rate == SR_88P2K)) {
@@ -455,7 +473,7 @@ void CODEC_Init(u32 sample_rate, u32 word_len, u32 mono_stereo, u32 application)
   * @param  None
   * @return  None
   */
-void CODEC_SetLineoutDifferential()
+void CODEC_SetLineoutDifferential(void)
 {
 	uint32_t reg_value = 0;
 	reg_value = AUDIO_SI_ReadReg(HPO_MIC_CTRL);
@@ -604,6 +622,9 @@ void CODEC_SetCh(u32 mono_stereo)
   */
 void CODEC_SetAdcGain(u32 ad_gain_left, u32 ad_gain_right)
 {
+	/* To avoid gcc warnings */
+	( void ) ad_gain_right;
+
 	u32 reg_value = 0;
 
 	reg_value = AUDIO_SI_ReadReg(ADC_L_GAIN);
@@ -616,6 +637,61 @@ void CODEC_SetAdcGain(u32 ad_gain_left, u32 ad_gain_right)
 	reg_value &= ~(0x7f << ADC_R_AD_GAIN);
 	reg_value |= (ad_gain_left << ADC_R_AD_GAIN);
 	AUDIO_SI_WriteReg(ADC_R_GAIN, reg_value);
+}
+
+/**
+  * @brief  Set micbst mute or unmute.
+  * @param  amic_sel: select amic channel
+  *		     This parameter can be one of the following values:
+  *            @arg AMIC1
+  *            @arg AMIC2
+  * @param  type: mute control
+  *			 This parameter can be one of the following values:
+  *			   @arg MICIN
+  *			   @arg LINEIN
+  * @param  newstate: mute or unmute option for ad channel
+  *			 This parameter can be one of the following values:
+  *			   @arg UNMUTE: unmute
+  *			   @arg MUTE: mute
+  * @return  None
+  */
+void CODEC_SetMicBstChMute(u32 amic_sel, u32 type, u32 newstate)
+{
+	u32 reg_value = 0;
+
+	reg_value = AUDIO_SI_ReadReg(MICBST_CTRL);
+
+	if (newstate == UNMUTE) {
+		if (amic_sel == AMIC1) {
+			if (type == MICIN) {
+				reg_value &= (0xffff & (~(3 << BIT_MICBST_MUTE_L)));
+				reg_value |= (2 << BIT_MICBST_MUTE_L | 2 << BIT_MICBST_POW);
+			} else {
+				reg_value &= (0xffff & (~(3 << BIT_MICBST_GSELL | 3 << BIT_MICBST_MUTE_L)));
+				reg_value |= (1 << BIT_MICBST_MUTE_L | 2 << BIT_MICBST_POW);
+			}
+		}  else {
+			if (type == MICIN) {
+				reg_value &= (0xffff & (~(3 << BIT_MICBST_MUTE_R)));
+				reg_value |= (2 << BIT_MICBST_MUTE_R | 1 << BIT_MICBST_POW);
+			} else {
+				reg_value &= (0xffff & (~(3 << BIT_MICBST_GSELR | 3 << BIT_MICBST_MUTE_R)));
+				reg_value |= (1 << BIT_MICBST_MUTE_R | 1 << BIT_MICBST_POW);
+			}
+		}
+
+	} else {
+		if (amic_sel == AMIC1) {
+			reg_value &= ~(3 << BIT_MICBST_POW);
+			reg_value |= (3 << BIT_MICBST_MUTE_L | 1 << BIT_MICBST_POW);
+		} else {
+			reg_value &= ~(3 << BIT_MICBST_POW);
+			reg_value |= (3 << BIT_MICBST_MUTE_R | 2 << BIT_MICBST_POW);
+		}
+	}
+
+	AUDIO_SI_WriteReg(MICBST_CTRL, reg_value);
+
 }
 
 /**
@@ -931,7 +1007,7 @@ void CODEC_SetALC(u32 limiter_val)
   * @param  None
   * @return  None
   */
-void CODEC_ALC_deinit()
+void CODEC_ALC_deinit(void)
 {
 	u32 reg_value = AUDIO_SI_ReadReg(ALC_DRC_CTRL);
 	reg_value &= (~(1 | 1 << 6));

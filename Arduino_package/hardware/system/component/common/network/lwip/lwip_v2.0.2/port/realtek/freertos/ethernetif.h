@@ -17,6 +17,7 @@ struct eth_drv_sg {
 #define MAX_ETH_MSG	1540
 
 void ethernetif_recv(struct netif *netif, int total_len);
+void ethernetif_mii_recv(u8 *buf, u32 total_len);
 err_t ethernetif_init(struct netif *netif);
 err_t ethernetif_mii_init(struct netif *netif);
 void lwip_PRE_SLEEP_PROCESSING(void);

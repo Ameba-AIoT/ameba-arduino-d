@@ -575,6 +575,29 @@ I2S_SetDMABuf(
 }
 
 /**
+  * @brief  Set the I2S slave mode.
+  * @param  I2Sx: pointer to the base addr of I2S peripheral.
+  * @param  I2SSlaveMode: the value of slave mode.
+  *          This parameter can be one of the following values:
+  *            @arg I2S_MASTER_MODE: mode is master mode
+  *            @arg I2S_SLAVE_MODE: mode is slave mode
+  * @retval None
+  */
+void
+I2S_SetSlaveMode(
+    I2S_TypeDef* I2Sx, u32 I2S_SlaveMode
+)
+{
+	u32 reg_value;
+	reg_value = I2Sx->IS_CTL;
+	reg_value &= ~(BIT_CTRL_CTLX_I2S_SLAVE_MODE_MASK);
+	reg_value |= (I2S_SlaveMode << 28);
+	I2Sx->IS_CTL = reg_value;
+
+	return;
+}
+
+/**
   * @brief  Check tx page is own by CPU or I2S.
   * @param  I2Sx: pointer to the base addr of I2S peripheral.
   * @param  page_index: specifies page index.

@@ -219,6 +219,19 @@ typedef struct {
   * @}
   */
 
+/**
+  * @brief  I2C Intrerrupt Mode Structure Definition
+  */
+typedef struct {
+	void (*I2CSendSem)(u32 IsWrite);    /*!< Interface for releasing semaphores */
+	void (*I2CWaitSem)(u32 IsWrite);    /*!< Interface for acquiring semaphores */
+	I2C_TypeDef *I2Cx;
+} I2C_IntModeCtrl;
+
+/**
+  * @}
+  */
+
 /* Exported constants --------------------------------------------------------*/
 /** @defgroup I2C_Exported_Constants I2C Exported Constants
   * @{
@@ -323,6 +336,9 @@ _LONG_CALL_ void I2C_MasterReadDW(I2C_TypeDef *I2Cx, u8* pBuf, u8 len);
 _LONG_CALL_ u32 I2C_MasterRead(I2C_TypeDef *I2Cx, u8* pBuf, u32 len);
 _LONG_CALL_ void I2C_MasterRepeatRead(I2C_TypeDef* I2Cx, u8* pWriteBuf, u32 Writelen, u8* pReadBuf, u32 Readlen);
 _LONG_CALL_ void I2C_SetSlaveAddress(I2C_TypeDef *I2Cx, u16 Address);
+_LONG_CALL_ u32 I2C_MasterWriteInt(I2C_TypeDef *I2Cx, I2C_IntModeCtrl *I2C_SemStruct, u8 *pBuf, u32 len);
+_LONG_CALL_ u32 I2C_MasterReadInt(I2C_TypeDef *I2Cx, I2C_IntModeCtrl *I2C_SemStruct, u8 *pBuf, u32 len);
+_LONG_CALL_ void I2C_ISRHandle(I2C_IntModeCtrl *I2C_SemStruct);
 /**
   * @}
   */
@@ -612,6 +628,9 @@ _LONG_CALL_ void I2C_WakeUp(I2C_TypeDef *I2Cx);
 
 #define I2C_HS_MIN_SCL_HTIME_400    160     //the unit is ns, with bus loading = 400pf
 #define I2C_HS_MIN_SCL_LTIME_400    320     //the unit is ns., with bus loading = 400pf
+
+
+#define I2C_TRX_BUFFER_DEPTH 16
 
 typedef struct
 {

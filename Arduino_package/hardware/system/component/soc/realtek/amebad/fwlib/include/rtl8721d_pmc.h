@@ -167,6 +167,7 @@ typedef struct
 	u32 km0_pg_enable;
 	u32 km0_rtc_calibration;
 	u32 km0_audio_pad_enable;
+	u32 km0_disable_audio_ldo;
 
 	/* debug */
 	u32 km0_fw_idle_time;

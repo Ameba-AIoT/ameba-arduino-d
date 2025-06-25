@@ -39,7 +39,7 @@
 #include "rtl8721dhp_sysreg.h"
 #include "rtl8721dlp_sysreg.h"
 #include "rtl8721d_pinmux.h"
-#if (defined(CONFIG_USB_NEW_STACK_EN))
+#if defined(CONFIG_USB_NEW_STACK_EN)
 #include "rtl8721d_usb.h"
 #endif
 #ifndef CONFIG_BUILD_ROM

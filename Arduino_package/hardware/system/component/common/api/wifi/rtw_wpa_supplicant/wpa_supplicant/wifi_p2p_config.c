@@ -1,7 +1,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "utils/os.h"
 #include <lwip/netif.h>
 #include <wifi/wifi_conf.h>
 #include "wps/wps_defs.h"

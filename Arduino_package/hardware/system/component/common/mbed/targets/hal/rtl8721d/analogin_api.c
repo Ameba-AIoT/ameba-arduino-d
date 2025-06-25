@@ -30,7 +30,7 @@ static const PinMap PinMap_ADC[] = {
 	{PB_2,			ADC_CH5,		0},
 	{PB_3,			ADC_CH6,		0},
 	{VBAT_MEAS,		ADC_CH7,		0},
-	{INTER_MEAS, 	ADC_CH10,		0},
+	{(PinName)INTER_MEAS, 	ADC_CH10,		0},
 	{NC,			NC,				0}
 };
 
@@ -62,8 +62,15 @@ void analogin_init(analogin_t *obj, PinName pin)
 	DBG_8195A("analogin_init [%x:%x ]\n", pin, adc_idx);
 	assert_param(adc_idx != NC);
 
+	obj->pin = pin;
+
 	/* Set ADC channel Number */
 	obj->adc_idx = adc_idx;
+
+	/* Shutdown ADC gpio pin to prevent leakage current */
+	if(pin <= PB_31) {
+		PAD_CMD(pin, DISABLE);
+	}
 
 	/* Initialize ADC */
 	ADC_StructInit(&ADC_InitStruct);
@@ -135,14 +142,19 @@ uint16_t analogin_read_u16(analogin_t *obj)
   */
 void  analogin_deinit(analogin_t *obj)
 {
-	/* To avoid gcc warnings */
-	( void ) obj;
+	PinName pin = obj->pin;
 	
 	/* Clear ADC Status */
 	ADC_INTClear();
 	
 	/* Disable ADC  */
 	ADC_Cmd(DISABLE);
+
+	/* Restore ADC gpio pin to no pull */
+	if(pin <= PB_31) {
+		PAD_CMD(pin, ENABLE);
+		PAD_PullCtrl(pin, GPIO_PuPd_NOPULL);
+	}
 }
 
 /**
@@ -151,8 +163,8 @@ void  analogin_deinit(analogin_t *obj)
             0: efuse not program
             others: resistor value
   */
-extern int rtw_resistor_read();
-int analogin_resistor_read()
+extern int rtw_resistor_read(void);
+int analogin_resistor_read(void)
 {
 	return rtw_resistor_read();
 }

@@ -56,11 +56,11 @@ err_t dhcp_release_unicast(struct netif *netif);
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void LwIP_Init(void);
-void LwIP_ReleaseIP(uint8_t idx);
 uint8_t LwIP_DHCP(uint8_t idx, uint8_t dhcp_state);
-unsigned char* LwIP_GetMAC(struct netif *pnetif);
-unsigned char* LwIP_GetIP(struct netif *pnetif);
-unsigned char* LwIP_GetGW(struct netif *pnetif);
+void LwIP_ReleaseIP(uint8_t idx);
+uint8_t* LwIP_GetMAC(struct netif *pnetif);
+uint8_t* LwIP_GetIP(struct netif *pnetif);
+uint8_t* LwIP_GetGW(struct netif *pnetif);
 uint8_t* LwIP_GetMASK(struct netif *pnetif);
 uint8_t* LwIP_GetBC(struct netif *pnetif);
 #if LWIP_DNS
@@ -72,9 +72,11 @@ void LwIP_UseStaticIP(struct netif *pnetif);
 void LwIP_AUTOIP(struct netif *pnetif);
 #endif
 #if LWIP_IPV6
-void LwIP_AUTOIP_IPv6(struct netif *pnetif);
+uint8_t* LwIP_GetIPv6_linklocal(struct netif *pnetif);
 #endif
 uint32_t LWIP_Get_Dynamic_Sleep_Interval(void);
+extern struct netif xnetif[];
+
 #ifdef __cplusplus
 }
 #endif

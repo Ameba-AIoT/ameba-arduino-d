@@ -1,8 +1,6 @@
 #ifndef PLATFORM_STDLIB_8721D_H
 #define PLATFORM_STDLIB_8721D_H
 
-//zzw arduino
-//#define STD_PRINTF
 #define CONFIG_PLATFORM_AMEBA_X 1
 
 #if defined (__IARSTDLIB__)
@@ -108,5 +106,9 @@ extern u8*	rtw_calloc(u32 nelements, u32 elmentSize);
 #define realloc			pvPortReAlloc
 #define calloc			rtw_calloc
 
+/* For Matter */
+#if defined(CHIP_PROJECT) && CHIP_PROJECT
+#include "platform_stdlib_matter.h"
+#endif /* CHIP_PROJECT */
 
 #endif // PLATFORM_STDLIB_8721D_H

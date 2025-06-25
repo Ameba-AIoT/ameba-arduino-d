@@ -108,6 +108,14 @@ void ws_poll(int timeout, wsclient_context **wsclient);
 void ws_dispatch(void (*callback)(wsclient_context **, int)) ;
 
 /*************************************************************************************************
+** Function Name  : ws_pong
+** Description    : callback function when getting pong message from server
+** Input          : function that resolve the pong message received
+** Return         : None
+**************************************************************************************************/
+void ws_pong(void (*callback)(wsclient_context **)) ;
+
+/*************************************************************************************************
 ** Function Name  : ws_getReadyState
 ** Description    : Getting the connection status
 ** Input          : wsclient: the websocket client context
@@ -122,6 +130,15 @@ readyStateValues ws_getReadyState(wsclient_context *wsclient);
 ** Return         : None
 **************************************************************************************************/
 void ws_close(wsclient_context **wsclient);
+
+/*************************************************************************************************
+** Function Name  : ws_close_with_status_code
+** Description    : Closing the connection with websocket server
+** Input          : wsclient: the websocket client context
+**					code: status code
+** Return         : None
+**************************************************************************************************/
+void ws_close_with_status_code(wsclient_context **wsclient, int code);
 
 /*************************************************************************************************
 ** Function Name  : ws_handshake_header_set_protocol

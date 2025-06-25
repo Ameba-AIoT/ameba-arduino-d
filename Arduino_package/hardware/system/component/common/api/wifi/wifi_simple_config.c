@@ -292,6 +292,8 @@ void SC_listen_ACK_scan()
 
 #endif
 
+static void sc_sta_asso_cb( char* buf, int buf_len, int flags, void* userdata);
+
 void SC_set_ack_content(void)
 {
 	memset(ack_content, 0, sizeof(struct ack_msg));
@@ -1119,8 +1121,10 @@ void simple_config_callback(unsigned char *buf, unsigned int len, void* userdata
     ret = rtl_pre_parse(mac_addr, buf, userdata, &da, &sa, &len);    
     if(ret == -1)
         return;
-    else if(ret == 1)
+    else if(ret == 1){
         simple_config_softAP_onAuth = 1;
+		wifi_reg_event_handler(WIFI_EVENT_STA_ASSOC, sc_sta_asso_cb, NULL);
+    }
     else
 #else
 	da = buf;
@@ -1623,7 +1627,8 @@ static void simple_config_channel_control(void *para)
         {
 			wifi_set_promisc(RTW_PROMISC_DISABLE, NULL, 0);
 			wifi_set_channel(simple_config_softAP_channel);
-		    wifi_reg_event_handler(WIFI_EVENT_STA_ASSOC, sc_sta_asso_cb, NULL);			
+		    //move to simple_config_callback() for assoc req recved before go to here if keep auth and assoc req after promisc_recv_func.
+		    //wifi_reg_event_handler(WIFI_EVENT_STA_ASSOC, sc_sta_asso_cb, NULL);			
 
 			if(rtw_down_timeout_sema(&sc_sta_assoc_sema, SC_SOFTAP_TIMEOUT) == RTW_FALSE) {
 			    //printf("no sta associated after 10s, start promisc\n");		    

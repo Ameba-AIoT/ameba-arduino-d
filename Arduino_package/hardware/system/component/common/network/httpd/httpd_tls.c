@@ -145,7 +145,7 @@ exit:
 		goto exit;
 	}
 
-#if CONFIG_MBEDTLS_VERSION3 == 1
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
 	if((ret = mbedtls_pk_parse_key(&httpd_key, (const unsigned char *) server_key, strlen(server_key) + 1, NULL, 0, rtw_get_random_bytes_f_rng, (void*)1 )) != 0) {
 #else
 	if((ret = mbedtls_pk_parse_key(&httpd_key, (const unsigned char *) server_key, strlen(server_key) + 1, NULL, 0)) != 0) {

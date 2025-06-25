@@ -35,6 +35,7 @@ typedef struct
     T_GAP_CONN_STATE        conn_state;          /**< Connection state. */
     T_GAP_REMOTE_ADDR_TYPE  bd_type;             /**< remote BD type*/
     uint8_t                 bd_addr[GAP_BD_ADDR_LEN]; /**< remote BD */
+    T_GAP_ROLE              role;                   //!< Device role
 } T_APP_LINK;
 /** @} */ /* End of group CENTRAL_CLIENT_GAP_MSG */
 /** @addtogroup  CENTRAL_CLIENT_SCAN_MGR

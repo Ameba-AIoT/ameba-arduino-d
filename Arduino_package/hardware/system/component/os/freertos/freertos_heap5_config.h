@@ -12,5 +12,6 @@ NS_ENTRY void secure_heap_init( void );
 #endif	
 
 void os_heap_init(void);
+void xPortResetHeapMinimumEverFreeHeapSize( void );
 
 #endif /* __FREERTOS_HEAP5_CONFIG_H_ */

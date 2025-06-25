@@ -78,14 +78,14 @@
 /** @defgroup BKUP_REG_Idx_definitions 
   * @{
   */ 
-#define BKUP_REG0				((u32)0x00000000)	/*!< byte1 is used by system */
+#define BKUP_REG0				((u32)0x00000000)	/*!< all used by system */
 #define BKUP_REG1				((u32)0x00000001)	/*!< all bits can be used by user */
 #define BKUP_REG2				((u32)0x00000002)	/*!< all bits can be used by user */
 #define BKUP_REG3				((u32)0x00000003)	/*!< all bits can be used by user */
 #define BKUP_REG4				((u32)0x00000004)	/*!< all bits can be used by user */
 #define BKUP_REG5				((u32)0x00000005)	/*!< all bits can be used by user */
-#define BKUP_REG6				((u32)0x00000006)	/*!< all bits can be used by user */
-#define BKUP_REG7				((u32)0x00000007)	/*!< all bits can be used by user */
+#define BKUP_REG6				((u32)0x00000006)	/*!< all used by system */
+#define BKUP_REG7				((u32)0x00000007)	/*!< all used by system */
 #define IS_BKUP_REG(IDX)	(((IDX) == BKUP_REG0) || \
 							((IDX) == BKUP_REG1) ||\
 							((IDX) == BKUP_REG2) ||\

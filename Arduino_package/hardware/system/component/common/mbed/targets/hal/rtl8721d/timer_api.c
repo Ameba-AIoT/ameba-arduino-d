@@ -135,11 +135,12 @@ uint64_t gtimer_read_us (gtimer_t *obj)  //need to be test in IAR(64bit computin
 void gtimer_reload (gtimer_t *obj, uint32_t duration_us)
 {
 	uint32_t tid = obj->timer_id;
-	uint32_t temp = (uint32_t)((float)duration_us  / 1000000 *32768);
+	uint32_t temp;
 
 	assert_param(tid < GTIMER_MAX);
-	
-    	RTIM_ChangePeriodImmediate(TIMx[tid], temp);
+
+	temp = (uint32_t)((float)duration_us / 1000000 * 32768) - 1;
+	RTIM_ChangePeriodImmediate(TIMx[tid], temp);
 }
 
 /**

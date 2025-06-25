@@ -57,6 +57,7 @@ typedef	long long __i64;
 #define RTKIOCSIWGENIE		0x8B30		/* set generic IE */
 
 #define RTKIOCSIWAUTH		0x8B32		/* WPA : set authentication mode params */
+#define RTKIOCGIWAUTH		0x8B33		/* get authentication mode params */
 
 #define RTKIOCSIWENCODEEXT 	0x8B34		/* WPA : set encoding token & mode */
 #define RTKIOCGIWENCODEEXT 	0x8B35		/* WPA : get encoding token & mode */
@@ -153,6 +154,7 @@ enum RTK_IW_AUTH_PARAM {
 /* RTW_AUTH_80211_AUTH_ALG values (bit field) */
 #define RTW_AUTH_ALG_OPEN_SYSTEM	0x00000001
 #define RTW_AUTH_ALG_SHARED_KEY		0x00000002
+#define RTW_AUTH_ALG_SAE	0x00000008
 
 /* RTKIOCSIWENCODEEXT definitions */
 #define RTW_ENCODE_SEQ_MAX_SIZE	8
@@ -164,7 +166,8 @@ enum RTW_IW_ENC_ALG {
 	RTW_ENCODE_ALG_TKIP,
 	RTW_ENCODE_ALG_CCMP,
 	RTW_ENCODE_ALG_PMK,
-	RTW_ENCODE_ALG_AES_CMAC //IGTK
+	RTW_ENCODE_ALG_AES_CMAC, //IGTK
+	RTW_ENCODE_ALG_GCMP_256
 };
 
 /* struct rtw_encode_ext ->ext_flags */

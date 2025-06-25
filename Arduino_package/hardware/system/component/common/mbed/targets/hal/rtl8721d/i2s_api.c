@@ -43,6 +43,7 @@ static I2S_USER_CB I2SUserCB; //Pointer to I2S User Callback
 static u32 next_tx_complete = 0;
 extern u32 i2s_cur_tx_page;
 extern u32 i2s_cur_rx_page;
+extern void I2S_SetSlaveMode(I2S_TypeDef* I2Sx, u32 I2S_SlaveMode);
 
 /** 
   * @}
@@ -149,6 +150,22 @@ void i2s_init(i2s_t *obj, PinName sck, PinName ws, PinName sd_tx, PinName sd_rx,
 	I2S_Cmd(I2S_DEV, ENABLE);
 	I2S_INTConfig(I2S_DEV, (I2S_TX_INT_PAGE0_OK|I2S_TX_INT_PAGE1_OK| I2S_TX_INT_PAGE2_OK|I2S_TX_INT_PAGE3_OK),
 		(I2S_RX_INT_PAGE0_OK|I2S_RX_INT_PAGE1_OK | I2S_RX_INT_PAGE2_OK|I2S_RX_INT_PAGE3_OK));
+}
+
+/**
+  * @brief  Sets i2s slave mode.
+  * @param  obj: i2s object define in application software.
+  * @param  slave_mode: this parameter can be one of the following values:
+  *            @arg I2S_MASTER_MODE: mode is master mode
+  *            @arg I2S_SLAVE_MODE: mode is slave mode
+  * @retval none
+  */
+void i2s_slavemode(i2s_t *obj, uint32_t slave_mode)
+{
+	( void ) obj;
+
+	I2SInitStruct.I2S_SlaveMode = slave_mode;
+	I2S_SetSlaveMode(I2S_DEV, I2SInitStruct.I2S_SlaveMode);
 }
 
 /**

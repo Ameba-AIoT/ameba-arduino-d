@@ -616,26 +616,26 @@ u8 USI_I2C_MasterRead(USI_TypeDef *USIx, u8* pBuf, u8 len)
   * @param	len: the length of data that to be transmitted.
   * @retval None
   */
-void USI_I2C_SlaveWrite(USI_TypeDef *USIx, u8* pBuf, u8 len)
+void USI_I2C_SlaveWrite(USI_TypeDef *USIx, u8 *pBuf, u8 len)
 {
 	u8 cnt = 0;
-	
+
 	/* Check the parameters */
 	assert_param(IS_USI_I2C_ALL_PERIPH(USIx));
 
-	for(cnt = 0; cnt < len; cnt++) {
+	for (cnt = 0; cnt < len; cnt++) {
 		/* Check I2C RD Request flag */
-		while((USI_I2C_GetRawINT(USIx) & USI_I2C_RD_REQ_RSTS) == 0);
+		while ((USI_I2C_GetRawINT(USIx) & USI_I2C_RD_REQ_RSTS) == 0);
 
 		if (USI_I2C_SLAVEWRITE_PATCH) {
 			USIx->INTERRUPT_STATUS_CLR =  USI_I2C_RD_REQ_CLR;
 		}
 		/* Check I2C TX FIFO status */
-		while((USI_I2C_CheckTXFIFOState(USIx, USI_TXFIFO_ALMOST_EMPTY_COPY)) == 0);
+		while ((USI_I2C_CheckTXFIFOState(USIx, USI_TXFIFO_ALMOST_EMPTY_COPY)) == 0);
 
 		USIx->TX_FIFO_WRITE = (*pBuf++);
 	}
-	while((USI_I2C_CheckTXFIFOState(USIx, USI_TXFIFO_EMPTY)) == 0);
+	while ((USI_I2C_CheckTXFIFOState(USIx, USI_TXFIFO_EMPTY)) == 0);
 }
 
 /**
@@ -645,19 +645,62 @@ void USI_I2C_SlaveWrite(USI_TypeDef *USIx, u8* pBuf, u8 len)
   * @param	len: the length of data that to be received.
   * @retval None
   */
-void USI_I2C_SlaveRead(USI_TypeDef *USIx, u8* pBuf, u8 len)
+u8 USI_I2C_SlaveRead(USI_TypeDef *USIx, u8 *pBuf, u8 len)
 {
 	u8 cnt = 0;
-	
+	u32 timeout;
 	/* Check the parameters */
 	assert_param(IS_USI_I2C_ALL_PERIPH(USIx));
-	
-	for(cnt = 0; cnt < len; cnt++) {
+
+	for (cnt = 0; cnt < len; cnt++) {
+		timeout = 2500000;
 		/* Check I2C RX FIFO status */
-		while((USI_I2C_CheckRXFIFOState(USIx, USI_RXFIFO_EMPTY)) == 1);
+		while ((USI_I2C_CheckRXFIFOState(USIx, USI_RXFIFO_EMPTY)) == 1){
+			DelayUs(2);
+			if (timeout == 0) {
+				printf("USI SlaveRead_TimeOut: cnt = %d\n", cnt);
+				return cnt;
+			}
+			timeout--;
+
+		}
 
 		*pBuf++ = (u8)USIx->RX_FIFO_READ;
 	}
+	return cnt;
+}
+
+/**
+  * @brief  Read data with special length in slave mode through the USIx peripheral.
+  * @param  USIx: where USIx can be USI0_DEV.
+  * @param  pBuf: point to the buffer to hold the received data.
+  * @param	len: the length of data that to be received.
+  * @param	ms: timeout
+  * @retval None
+  */
+u8 USI_I2C_SlaveReadTimeOut(USI_TypeDef *USIx, u8 *pBuf, u8 len, u32 ms)
+{
+	u8 cnt = 0;
+	u32 InTimeoutCount = 0;
+	/* Check the parameters */
+	assert_param(IS_USI_I2C_ALL_PERIPH(USIx));
+
+	for (cnt = 0; cnt < len; cnt++) {
+		InTimeoutCount = ms * 500;
+		/* Check I2C RX FIFO status */
+		while ((USI_I2C_CheckRXFIFOState(USIx, USI_RXFIFO_EMPTY)) == 1){
+			DelayUs(2);
+			if (InTimeoutCount == 0) {
+				printf("USI SlaveRead_TimeOut: cnt = %d\n", cnt);
+				return cnt;
+			}
+			InTimeoutCount--;
+
+		}
+
+		*pBuf++ = (u8)USIx->RX_FIFO_READ;
+	}
+	return cnt;
 }
 /**
   * @brief  Sends data and read data in master mode through the USIx peripheral.

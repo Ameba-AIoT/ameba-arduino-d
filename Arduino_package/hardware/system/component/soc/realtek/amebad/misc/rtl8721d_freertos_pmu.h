@@ -20,7 +20,8 @@ typedef enum {
 	PMU_KEYSCAN_DEVICE	=14,
 	PMU_PSRAM_DEVICE	=15,
 	PMU_DEV_USER_BASE	=16, /*number 16 ~ 31 is reserved for customer use*/
-
+	PMU_SDIO_DEVICE     =17,
+	
 	PMU_MAX				=31
 } PMU_DEVICE;
 

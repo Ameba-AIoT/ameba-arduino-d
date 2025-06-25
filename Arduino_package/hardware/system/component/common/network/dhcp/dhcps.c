@@ -1,7 +1,8 @@
 
 #include "dhcps.h"
 #include "tcpip.h"
-
+#include "wifi_constants.h"
+extern rtw_mode_t wifi_mode;
 //static struct dhcp_server_state dhcp_server_state_machine;
 static uint8_t dhcp_server_state_machine = DHCP_SERVER_STATE_IDLE;
 /* recorded the client MAC addr(default sudo mac) */
@@ -75,7 +76,7 @@ static void mark_ip_in_table(uint8_t d)
 		printf("\r\n ip_table.ip_range[3] = 0x%x\r\n",ip_table.ip_range[3]);
 #endif	
 	} else if(128 < d && d <= 160) {
-		ip_table.ip_range[4] = MARK_RANGE5_IP_BIT(ip_table, d);	
+		ip_table.ip_range[4] = MARK_RANGE5_IP_BIT(ip_table, (d - 128));	
 #if (debug_dhcps)		
 		printf("\r\n ip_table.ip_range[4] = 0x%x\r\n",ip_table.ip_range[4]);
 #endif	
@@ -860,6 +861,15 @@ struct pbuf *udp_packet_buffer, struct ip_addr *sender_addr, uint16_t sender_por
 		return;  
 	}
 	if (sender_port == DHCP_CLIENT_PORT) {
+#if LWIP_VERSION_MAJOR >= 2
+		if(netif_get_idx(ip_current_input_netif()) == 0 && wifi_mode == RTW_MODE_STA_AP)
+#else
+		if(netif_get_idx(ip_current_netif()) == 0 && wifi_mode == RTW_MODE_STA_AP)
+#endif
+		{
+			pbuf_free(udp_packet_buffer);
+			return;
+		}
 		total_length_of_packet_buffer = udp_packet_buffer->tot_len;
 		if (udp_packet_buffer->next != NULL) {
 			merged_packet_buffer = pbuf_coalesce(udp_packet_buffer,
@@ -961,11 +971,16 @@ static void dnss_receive_udp_packet_handler(
 	
 	struct dns_hdr *hdr = (struct dns_hdr*) udp_packet_buffer->payload;
 
+#if CONFIG_ENABLE_CAPTIVE_PORTAL
+	if(1) {
+		uint8_t len = strlen((uint8_t *) hdr + sizeof(struct dns_hdr)) + 1;
+		struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct dns_hdr) + len + 20, PBUF_RAM);
+#else
 	if(memcmp((uint8_t *) hdr + sizeof(struct dns_hdr), domain_name_buf, sizeof(domain_name_buf)) == 0) {
 		printf("\n\r query %s \n\r", domain_name);
 
 		struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct dns_hdr) + sizeof(domain_name_buf) + 20, PBUF_RAM);
-
+#endif
 		if(p) {
 			struct dns_hdr *rsp_hdr = (struct dns_hdr*) p->payload;
 			rsp_hdr->id = hdr->id;
@@ -975,6 +990,20 @@ static void dnss_receive_udp_packet_handler(
 			rsp_hdr->numanswers = PP_HTONS(1);
 			rsp_hdr->numauthrr = PP_HTONS(0);
 			rsp_hdr->numextrarr = PP_HTONS(0);
+
+#if CONFIG_ENABLE_CAPTIVE_PORTAL
+			memcpy((uint8_t *) rsp_hdr + sizeof(struct dns_hdr), (uint8_t *) hdr + sizeof(struct dns_hdr), len - 1);
+			*(uint8_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len - 1) = 0;
+			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len) = PP_HTONS(1);
+			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 2) = PP_HTONS(1);
+			*((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 4) = 0xc0;
+			*((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 5) = 0x0c;
+			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 6) = PP_HTONS(1);
+			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 8) = PP_HTONS(1);
+			*(uint32_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 10) = PP_HTONL(0);
+			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 14) = PP_HTONS(4);
+			memcpy((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + len + 16, (void *)&dhcps_local_address, 4);
+#else
 			memcpy((uint8_t *) rsp_hdr + sizeof(struct dns_hdr), domain_name_buf, sizeof(domain_name_buf));
 			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + sizeof(domain_name_buf)) = PP_HTONS(1);
 			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + sizeof(domain_name_buf) + 2) = PP_HTONS(1);
@@ -985,6 +1014,7 @@ static void dnss_receive_udp_packet_handler(
 			*(uint32_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + sizeof(domain_name_buf) + 10) = PP_HTONL(0);
 			*(uint16_t *)((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + sizeof(domain_name_buf) + 14) = PP_HTONS(4);
 			memcpy((uint8_t *) rsp_hdr + sizeof(struct dns_hdr) + sizeof(domain_name_buf) + 16, (void *)&dhcps_local_address, 4);
+#endif
 
 			udp_sendto(udp_pcb, p, sender_addr, sender_port);
 			pbuf_free(p);

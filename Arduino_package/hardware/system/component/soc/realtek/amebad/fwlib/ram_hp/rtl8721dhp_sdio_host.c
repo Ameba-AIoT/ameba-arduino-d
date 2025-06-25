@@ -46,10 +46,12 @@ u32 SDIOH_Busy(void)
 u32 SDIOH_CheckTxError(u16 *status)
 {
 	SDIOH_TypeDef *psdioh = SDIOH_BASE;
+	u8 temp = 0;
 
 	if(psdioh->SD_TRANSFER & SDIOH_ERR_OCCUR) {
+		temp = psdioh->SD_STATUS1;
 		if(status != NULL)
-			*status = psdioh->SD_STATUS1 | (psdioh->SD_STATUS2 << 8);
+			*status = temp | (psdioh->SD_STATUS2 << 8);
 
 		return HAL_ERR_UNKNOWN;
 	} else

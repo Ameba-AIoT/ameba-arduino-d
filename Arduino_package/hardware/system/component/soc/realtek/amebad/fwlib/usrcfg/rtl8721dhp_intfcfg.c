@@ -22,7 +22,8 @@
 
 
 PSRAMCFG_TypeDef psram_dev_config = {
-#if defined(CONFIG_REPEATER) && CONFIG_REPEATER 
+#if (defined(CONFIG_REPEATER) && CONFIG_REPEATER) || \
+	((defined(CONFIG_MATTER_SECURE) && CONFIG_MATTER_SECURE))
 	.psram_dev_enable = TRUE,			//enable psram
 	.psram_dev_cal_enable = TRUE,			//enable psram calibration function
 	.psram_dev_retention = TRUE,			//enable psram retention
@@ -45,7 +46,6 @@ SDIOHCFG_TypeDef sdioh_config = {
 };
 
 #if defined(CONFIG_FTL_ENABLED)
-// zzw arduino BLE
 #define FTL_MEM_CUSTEM		1
 #if FTL_MEM_CUSTEM == 0
 #error "You should allocate flash sectors to for FTL physical map as following, then set FTL_MEM_CUSTEM to 1. For more information, Please refer to Application Note, FTL chapter. "

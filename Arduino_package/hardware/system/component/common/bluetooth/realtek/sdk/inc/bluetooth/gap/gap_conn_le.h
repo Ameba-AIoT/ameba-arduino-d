@@ -208,6 +208,25 @@ bool        le_get_conn_addr(uint8_t conn_id, uint8_t *bd_addr, uint8_t *bd_type
 bool        le_get_conn_id(uint8_t *bd_addr, uint8_t bd_type, uint8_t *p_conn_id);
 
 /**
+  * @brief  Get connection handle.
+  * @param[in]  conn_id Connection ID
+  * @return connection handle
+  * @retval 0xFFFF Get failed
+  * @retval Other Success
+  */
+uint16_t    le_get_conn_handle(uint8_t conn_id);
+
+/**
+  * @brief  Get connection ID from connection handle.
+  * @param[in]  conn_handle Connection handle
+  * @param[in, out] p_conn_id Connection ID
+  * @return Get result
+  * @retval true Success
+  * @retval false Get failed
+  */
+bool        le_get_conn_id_by_handle(uint16_t conn_handle, uint8_t *p_conn_id);
+
+/**
 * @brief   Get the active link number.
 *
 * @return  Active link number
@@ -228,6 +247,7 @@ uint8_t     le_get_idle_link_num(void);
 /**
  * @brief   Terminates the existing connection. When link is disconnected, app_handle_conn_state_evt will be
  *          called with new_state as @ref GAP_CONN_STATE_DISCONNECTED.
+ *          The disconnection reason is HCI_ERR_REMOTE_USER_TERMINATE.
  *
  * @param[in] conn_id connection ID to be disconnected.
  * @return  Operation result.
@@ -287,6 +307,77 @@ uint8_t     le_get_idle_link_num(void);
  * \endcode
  */
 T_GAP_CAUSE le_disconnect(uint8_t conn_id);
+
+/**
+ * @brief   Terminates the existing connection with reason. When link is disconnected, app_handle_conn_state_evt will be
+ *          called with new_state as @ref GAP_CONN_STATE_DISCONNECTED.
+ *
+ * @param[in] conn_id connection ID to be disconnected.
+ * @param[in] reason disconnection reason.
+ *           @arg  HCI_ERR_REMOTE_USER_TERMINATE: 0x13
+ *           @arg  HCI_ERR_REMOTE_LOW_RESOURCE: 0x14
+ *           @arg  HCI_ERR_REMOTE_POWER_OFF: 0x15
+ *           @arg  HCI_ERR_UNSUPPORTED_REMOTE_FEAT: 0x1A
+ *           @arg  HCI_ERR_UNACCEPTABLE_CONN_INTERVAL: 0x3B
+ * @return  Operation result.
+ * @retval GAP_CAUSE_SUCCESS Send request success
+ * @retval GAP_CAUSE_NON_CONN Failed. No connection
+ * @retval GAP_CAUSE_INVALID_PARAM Failed. Invalid parameter
+ *
+ * <b>Example usage</b>
+ * \code{.c}
+    void test()
+    {
+        uint8_t conn_id = 0x01;
+        le_disconnect_with_reason(conn_id, HCI_ERR_REMOTE_USER_TERMINATE);
+    }
+ * \endcode
+ */
+T_GAP_CAUSE le_disconnect_with_reason(uint8_t conn_id, uint8_t reason);
+
+#if F_BT_LE_READ_REMOTE_VERSION_INFO_SUPPORT
+/**
+ * @brief   Obtain the values for the version information for the remote device identified by the conn_id parameter.
+ *          Remote version information will be returned by @ref app_gap_callback with cb_type @ref GAP_MSG_LE_READ_REMOTE_VERSION.
+ *
+ * @param[in] conn_id Connection ID
+ * @return  Read request result.
+ * @retval  GAP_CAUSE_SUCCESS: Send request success.
+ * @retval  GAP_CAUSE_SEND_REQ_FAILED: Send request sent fail.
+ * @retval  GAP_CAUSE_NON_CONN: Failed. No connection
+ *
+ * <b>Example usage</b>
+ * \code{.c}
+   void test()
+   {
+       uint8_t conn_id = 0;
+       le_read_remote_version(conn_id);
+   }
+
+   T_APP_RESULT app_gap_callback(uint8_t cb_type, void *p_cb_data)
+   {
+       T_APP_RESULT result = APP_RESULT_SUCCESS;
+       T_LE_CB_DATA cb_data;
+       memcpy(&cb_data, p_cb_data, sizeof(T_LE_CB_DATA));
+       APP_PRINT_TRACE1("app_gap_callback: cb_type is %d", cb_type);
+       switch (cb_type)
+       {
+       ...
+       case GAP_MSG_LE_READ_REMOTE_VERSION:
+           APP_PRINT_INFO5("GAP_MSG_LE_READ_REMOTE_VERSION: conn_id %d, cause 0x%x, version 0x%x, manufacturer_name 0x%x, subversion 0x%x",
+                           p_data->p_le_read_remote_version_rsp->conn_id,
+                           p_data->p_le_read_remote_version_rsp->cause,
+                           p_data->p_le_read_remote_version_rsp->version,
+                           p_data->p_le_read_remote_version_rsp->manufacturer_name,
+                           p_data->p_le_read_remote_version_rsp->subversion);
+        break;
+       }
+        ...
+   }
+ * \endcode
+ */
+T_GAP_CAUSE le_read_remote_version(uint8_t conn_id);
+#endif
 
 /**
  * @brief   Read rssi value of the connection. RSSI value will be returned by
@@ -607,8 +698,8 @@ T_GAP_CAUSE le_connect(uint8_t init_phys, uint8_t *remote_bd,
   * @param[in] conn_interval_max  Value range: 0x0006 - 0x0C80 (7.5ms - 4000ms, 1.25ms/step).
   * @param[in] conn_latency  Value range: 0x0000 - 0x01F3.
   * @param[in] supervision_timeout  Value range: 0x000A - 0x0C80 (100ms - 32000ms, 10ms/step).
-  * @param[in] ce_length_min  Value range: 0x0006 - 0x0C80 (7.5ms - 4000ms, 1.25ms/step).
-  * @param[in] ce_length_max  Value range: 0x0006 - 0x0C80 (7.5ms - 4000ms, 1.25ms/step).
+  * @param[in] ce_length_min  Value range: 0x0000 - 0xFFFF (0 - 65535ms, 0.625ms/step).
+  * @param[in] ce_length_max  Value range: 0x0000 - 0xFFFF (0 - 65535ms, 0.625ms/step).
   * @return  result.
   * @retval GAP_CAUSE_SUCCESS Send request success.
   * @retval GAP_CAUSE_NON_CONN Failed. No connection.

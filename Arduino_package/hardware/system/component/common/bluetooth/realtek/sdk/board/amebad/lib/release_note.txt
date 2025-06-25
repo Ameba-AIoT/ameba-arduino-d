@@ -2,6 +2,36 @@
 /*
  * Release Note
  */
+	v1.0.1.251
+	2025/03/20
+	1. Add API to read remote version.
+
+	v1.0.1.250
+	2024/09/26
+	1. Add APIs le_get_conn_id_by_handle and le_get_conn_handle.
+
+	v1.0.1.248
+	2024/01/09
+	1. Fix rx issue.
+
+	v1.0.1.246
+	2023/11/28
+	1. Modify bt deinit flow to send hci_tp_del.
+ 
+	v1.0.1.244
+	2023/06/08
+	1. Modify bt deinit flow.
+
+	v1.0.1.243
+	2023/03/31
+	1. Modify max mtu size for gap_config API.
+	2. Adjust APIs in F_BT_GAP_KEY_MANAGER_SUPPORT.
+	3. Modify annotation of le_update_conn_param.
+	
+	v1.0.1.238
+	2023/03/15
+	1. Disable bt support check.
+
 	v1.0.1.186
 	2022/09/28
 	1. Add API le_bond_get_pair_procedure_type.
@@ -13,7 +43,7 @@
 	v1.0.1.184
 	2022/08/31
 	1. Add API client_send_exchange_mtu_req.
-    2. Add GAP_PARAM_MASTER_INIT_GATT_MTU_REQ .
+	2. Add GAP_PARAM_MASTER_INIT_GATT_MTU_REQ .
 
 	v1.0.1.183
 	2022/08/26
@@ -38,7 +68,7 @@
 	v1.0.1.162
 	2021/09/18
 	1. Fix a bug for H4 when receive error data.
-
+	
 	v1.0.1.158
 	2021/07/23
 	1. Fix a bug for bte_deinit.

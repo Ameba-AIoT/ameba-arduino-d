@@ -73,7 +73,7 @@
 /******************************************************
  *                    Constants
  ******************************************************/
-#define SCAN_LONGEST_WAIT_TIME  (12000)
+#define SCAN_LONGEST_WAIT_TIME  (17000)
 
 
 #define MAC_FMT "%02x:%02x:%02x:%02x:%02x:%02x"
@@ -234,6 +234,13 @@ int wifi_disconnect(void);
 int wifi_is_connected_to_ap(void);
 
 /**
+* @brief  Set partial scan retry times when PSCAN_FAST_SURVEY is set. Default is 7.
+* @param[in]  partial scan retry times
+* @return  None.
+*/
+void wifi_set_partial_scan_retry_times(unsigned char times);
+
+/**
   * @brief  Check if the specified interface is up.
   * @param[in]  interface: The interface can be set as RTW_STA_INTERFACE or RTW_AP_INTERFACE. (@ref rtw_interface_t)
   * @return  If the function succeeds, the return value is 1. Otherwise, return 0.
@@ -361,6 +368,15 @@ int wifi_set_txpower(int poweridx);
  * @return  RTW_ERROR: The result is not successfully got.
  */
 int wifi_get_associated_client_list(void * client_list_buffer, unsigned short buffer_length);
+
+/**
+ * @brief  Get the SoftAP client information.
+ * @param[out]  client_list_buffer: The location where the client information will be stored.
+ * @param[in]  buffer_length: The buffer length.
+ * @return  RTW_SUCCESS: The result is successfully got.
+ * @return  RTW_ERROR: The result is not successfully got.
+ */
+int wifi_get_ap_client_info(void * client_list_buffer, uint16_t buffer_length);
 
 /**
  * @brief Get connected AP's BSSID
@@ -831,6 +847,20 @@ int wifi_set_network_mode(rtw_network_mode_t mode);
 int wifi_get_network_mode(rtw_network_mode_t *pmode);
 
 /**
+ * @brief	Get the current network mode the network interface is using against the wireless AP.
+ *			Driver will match its supported network mode with AP's supported network mode when connecting
+ *			and choose the best network mode. This function will get the network mode used to connect to AP.
+ * @param[in]  pmode: Current network mode to get.
+ * @return  the current network mode used.
+ * 	1) WIRELESS_11B: using 802.11b.
+ * 	2) WIRELESS_11G: using 802.11g.
+ * 	8) WIRELESS_11_24N: using 802.11n.
+ * 	40) WIRELESS_11AC: using 802.11ac.
+ * 	-1) RTW_ERROR: get fails.
+ */
+int wifi_get_cur_network_mode(void);
+
+/**
  * @brief  Set the chip to start or stop the promiscuous mode.
  * @param[in]  enabled: enabled can be set 0, 1, 2, 3 and 4. if enabled is zero, disable the promisc, else enable the promisc.
  *                    - 0 means disable the promisc.
@@ -927,16 +957,20 @@ int wifi_set_autoreconnect(__u8 mode);
 int wifi_get_autoreconnect(__u8 *mode);
 
 /**
-  * @brief  Present the device disconnect reason while connecting.
-  * @param  None
-  * @return  @ref rtw_connect_error_flag_t
-  *			- 0: RTW_NO_ERROR
-  *			- 1: RTW_NONE_NETWORK
-  *			- 2: RTW_CONNECT_FAIL
-  *			- 3: RTW_WRONG_PASSWORD
-  *			- 4: RTW_DHCP_FAIL
-  *			- 5: RTW_UNKNOWN (initial status)
-  */
+ * @brief      Present the device disconnect reason while connecting.
+ * @param      None
+ * @return     The error code while connecting. (@ref rtw_connect_error_flag_t)
+ *               - RTW_NO_ERROR
+ *               - RTW_NONE_NETWORK
+ *               - RTW_CONNECT_FAIL
+ *               - RTW_WRONG_PASSWORD
+ *               - RTW_4WAY_HANDSHAKE_TIMEOUT
+ *               - RTW_DHCP_FAIL
+ *               - RTW_AUTH_FAIL
+ *               - RTW_ASSOC_FAIL
+ *               - RTW_DEAUTH_DEASSOC
+ *               - RTW_UNKNOWN (initial status)
+ */
 int wifi_get_last_error(void);
 
 
@@ -1069,6 +1103,16 @@ void wifi_filter_by_ap_and_phone_mac(u8 enable, void *ap_mac, void *phone_mac);
 #ifdef CONFIG_ANTENNA_DIVERSITY
 int wifi_get_antenna_info(unsigned char *antenna);
 #endif // #ifdef CONFIG_ANTENNA_DIVERSITY
+
+/**
+ * @brief      SW reporting mgnt packets to wifi_indication() during wifi_connect().
+ * @param[in]  enable:
+ *                - 0: disable mode(default), SW doesn't report
+ *                - 1: enable mode, SW reports mgnt packets
+ * @return     None
+ * @note       Please make sure the Wi-Fi is enabled before invoking this function. (@ref wifi_on())
+ */
+void wifi_connect_monitor_mgnt(int enable);
 
 /**
   * @brief:	config mode of HW indicating packets(mgnt and data) and SW reporting packets to wifi_indication().
@@ -1227,17 +1271,112 @@ int wifi_set_igi(uint8_t igi, uint8_t enable);
 int wifi_set_ap_uapsd(uint8_t enable);
 
 /**
- * @brief  Set softap bcn period.
+ * @brief  Set softap bcn period, need do wifi off and on again to write the new value into register.
  * @param[in]  period: default 100ms.
  * @return 0: success.
  */
-int wifi_set_bcn_period(uint8_t period);
+int wifi_set_bcn_period(uint16_t period);
+
+/**
+* @brief  Set tx power percentage.
+* @param[in] power percentage idx 0 to 4.
+* 0, 100%, default target output power.
+* 1, 75% 
+* 2, 50%
+* 3, 25%
+* 4, 12.5%
+* @return 0: success.
+*/
+int wifi_set_tx_power_percentage(unsigned long power_percentage_idx);
+
+/**
+* @brief  Set interval for SoftAP group key rotation.
+*         Can be used to adjust interval while SoftAP is running and connected to STA.
+* @param[in] interval: time interval in minutes, 1 min to 1440 min(1 day)
+* @return RTW_SUCCESS or RTW_ERROR
+*/
+int wifi_set_softap_gkey_interval(uint32_t interval);
+
+/**
+* @brief  Set slient softap. No beacon will be sent untill client assoc success
+*         Support AP mode and CONCURRENT mode
+*         When no client connect need to restart softap to resume no beacon
+ * @param[in]  enable: 1, enable slient; 0, disable slient.
+ * @return 0: success.
+*/
+int wifi_set_slient_softap(rtw_bool_t enable);
+
+/**
+* @brief  Between each scan channel, switch back to softap channel and stay on it for custom_beacon_period.
+*		  The "custom_beacon_period" is set through "wifi_set_bcn_period", default 100ms.
+*         Support only if client is associated with softap in CONCURRENT mode
+ * @param[in]  enable: 1, enable tune window time to custom_beacon_period; 0, default window time 30ms.
+ * @return 0: success.
+*/
+int wifi_tune_ap_chn_en(int enable);
+
+typedef struct {
+    char country_code[2];
+    int count;
+} CountryCodeCount;
+
+/**
+* @brief  Call "wifi_scan_networks_with_extended_countryinfo" to scan the country code of surronding APs
+*         then call "wifi_set_channel_plan_by_country_code" to set the channel plan based on scanned country code
+*         Enable "wext_auto_set_adaptivity"
+* @param[in] 
+* @return 
+*/
+void wifi_scan_country_code_and_set_channel_plan(void);
+
+/**
+* @brief  Call "wifi_set_country" and set channel plan accordingly
+* @param[in] country_code_get: char that saved the country code.
+* @return 
+*/
+void wifi_set_channel_plan_by_country_code(unsigned char* country_code);
+
+/**
+* @brief  Call "wifi_scan_networks_with_extended_countryinfo" and memcpy the country code. Set channel plan accordingly
+* @param[in] country_code_get: char that saved the country code which follows the logic of WiFi NIC.
+* @return 
+*/
+void wifi_get_country_code(unsigned char* country_code_get);
+
+/**
+* @brief  Full scan on the APs in the environment to read the country code from the beacon and saved.
+*         This API will cause a 4 seconds waiting time to finish the full scan.
+* @param
+* @return 
+*/
+void wifi_scan_networks_with_extended_countryinfo(void);
+
+/**
+* @brief  Save the frequency of different country code from the environment.
+* @param[in] CountryCodeCount *country_code_counts: struct that saves the country code and its corresponding frequency
+* @param[in] int *num_codes: number of different country codes from the environment.
+* @param[in] char *code: current country code from the AP.
+* @return 
+*/
+void wifi_add_country_code(CountryCodeCount *country_code_counts, int *num_codes, char *code);
+
+/**
+* @brief  Copy the country code that been processed based on the logic of WiFi NIC.
+* @param[in] CountryCodeCount *country_code_counts: struct that saves the country code and its corresponding frequency
+* @param[in] int *num_codes: number of different country codes from the environment.
+* @return 
+*/
+void wifi_return_country_code(CountryCodeCount *country_code_counts, int *num_codes);
+
+/**
+ * @brief  Get station security type
+ * @return  Station security type
+ */
+int wifi_get_sta_security_type(void);
 
 #ifdef __cplusplus
-  }
+}
 #endif
-
-/*\@}*/
 
 #endif // __WIFI_API_H
 

@@ -23,330 +23,147 @@
 
 /* Private macros ------------------------------------------------------------*/
 
+#define USB_PIN_DM									_PA_25
+#define USB_PIN_DP									_PA_26
+#define USB_PIN_RREF								_PA_28
+
+/* USB OTG addon control register */
+#define USB_ADDON_REG_CTRL							(SYSTEM_CTRL_BASE + 0x30004UL)
+
+#define USB_ADDON_REG_CTRL_BIT_UPLL_CKRDY			BIT(5)  /* 1: USB PHY clock ready */
+#define USB_ADDON_REG_CTRL_BIT_USBOTG_EN			BIT(8)  /* 1: Enable USB OTG */
+#define USB_ADDON_REG_CTRL_BIT_USBPHY_EN			BIT(9)  /* 1: Enable USB APHY & DPHY */
+
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
 
+static u32 usb_dm_pinmux_cfg;
+static u32 usb_dp_pinmux_cfg;
+static u32 usb_rref_pinmux_cfg;
+static u32 usb_pinmux_initialized = 0;
+
+/*
+ * Calibration data
+ * RL6886:  IC version >= IC_VERSION_4
+ * RL6548C: IC version < IC_VERSION_4
+ */
+
+/* Calibration data for RL6886 host */
+static const usb_cal_data_t usb_host_rl6886_cal_data[] = {
+	{0x00, 0xE0, 0x33},
+	{0x00, 0xE1, 0x2E},
+	{0x00, 0xE2, 0x9D},
+	{0x00, 0xE3, 0x81},
+	{0x00, 0xE5, 0x92},
+	{0x00, 0xE6, 0x96},
+	{0x00, 0xF7, 0x12},
+
+	{0xFF, 0x00, 0x00}
+};
+
+/* Calibration data for RL6548C host */
+static const usb_cal_data_t usb_host_rl6548c_cal_data[] = {
+	{0x00, 0xE0, 0x33},
+	{0x00, 0xE1, 0x2E},
+	{0x00, 0xE2, 0x9A},
+	{0x00, 0xE5, 0x92},
+	{0x00, 0xE6, 0x9A},
+	{0x00, 0xF7, 0x12},
+
+	{0xFF, 0x00, 0x00}
+};
+
+/* Calibration data for RL6886 device */
+static const usb_cal_data_t usb_device_rl6886_cal_data[] = {
+	{0x00, 0xE0, 0x33},
+	{0x00, 0xE1, 0xAE},
+	{0x00, 0xE2, 0x7D},
+	{0x00, 0xE3, 0x81},
+	{0x00, 0xE5, 0x96},
+	{0x00, 0xE6, 0x96},
+	{0x00, 0xE1, 0x2E},
+	{0x00, 0xE1, 0xAE},
+
+	{0xFF, 0x00, 0x00}
+};
+
+/* Calibration data for RL6548C device */
+static const usb_cal_data_t usb_device_rl6548c_cal_data[] = {
+	{0x00, 0xE0, 0x33},
+	{0x00, 0xE1, 0xAE},
+	{0x00, 0xE2, 0x7A},
+	{0x00, 0xE3, 0x81},
+	{0x00, 0xE5, 0x96},
+	{0x00, 0xE6, 0x9A},
+	{0x00, 0xE1, 0x2E},
+	{0x00, 0xE1, 0xAE},
+
+	{0xFF, 0x00, 0x00}
+};
+
 /* Private functions ---------------------------------------------------------*/
 
-/**
-  * @brief  Load PHY vendor control registers
-  * @param  addr: PHY register address
-  * @retval HAL status
-  */
-static u8 USB_LoadPhyVendorControlRegister(u8 addr)
+static u32 usb_get_pinmux_config(u8 pin)
 {
-	u8 ret = HAL_OK;
-	u32 count = 0U;
-	u32 reg = 0x0A300000U;
-
-	reg |= (((u32)(USB_OTG_PHY_LOW_ADDR(addr))) << USB_OTG_GPVNDCTL_VCTRL_Pos);
-	USB_GLOBAL->GPVNDCTL = reg;
-
-	do {
-		/* 1us timeout expected, 1ms for safe */
-		DelayUs(1);
-		if (++count > 1000U) {
-			DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "USB_LoadPhyVendorControlRegister timeout\n");
-			ret = HAL_TIMEOUT;
-			break;
-		}
-	} while ((USB_GLOBAL->GPVNDCTL & USB_OTG_GPVNDCTL_VSTSDONE) == 0U);
-
-	return ret;
+	return PINMUX->PADCTR[pin];
 }
 
-/**
-  * @brief  Write USB PHY register
-  * @param  addr: USB PHY register address
-  * @param  data: USB PHY register value
-  * @retval HAL status
-  */
-static u8 USB_WritePhyRegister(u8 addr, u8 value)
+static void usb_set_pinmux_config(u8 pin, u32 config)
 {
-	u8 ret;
-	u32 reg;
-
-	reg = HAL_READ32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_VND_STS_OUT);
-	reg &= (~USB_OTG_PHY_DATA_MASK);
-	reg |= value;
-	HAL_WRITE32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_VND_STS_OUT, reg);
-
-	/* Load low addr */
-	ret = USB_LoadPhyVendorControlRegister(USB_OTG_PHY_LOW_ADDR(addr));
-	if (ret == HAL_OK) {
-		/* Load high addr */
-		ret = USB_LoadPhyVendorControlRegister(USB_OTG_PHY_HIGH_ADDR(addr));
-	}
-
-	return ret;
+	PINMUX->PADCTR[pin] = config;
 }
-
-/**
-  * @brief  Read USB PHY register
-  * @param  addr: USB PHY register address
-  * @retval HAL status
-  */
-static u8 USB_ReadPhyRegister(u8 addr, u8 *value)
-{
-	u8 ret;
-	u32 reg;
-	u8 addr_read;
-
-	if (addr >= 0xE0) {
-		addr_read = addr - 0x20;
-	} else {
-		addr_read = addr;
-	}
-
-	/* Load low addr */
-	ret = USB_LoadPhyVendorControlRegister(USB_OTG_PHY_LOW_ADDR(addr_read));
-	if (ret == HAL_OK) {
-		/* Load high addr */
-		ret = USB_LoadPhyVendorControlRegister(USB_OTG_PHY_HIGH_ADDR(addr_read));
-		if (ret == HAL_OK) {
-			reg = USB_GLOBAL->GPVNDCTL;
-			*value = ((reg & USB_OTG_GPVNDCTL_REGDATA_Msk) >> USB_OTG_GPVNDCTL_REGDATA_Pos) & 0xFF;
-		}
-	}
-
-	return ret;
-}
-
-/**
-  * @brief  Select USB PHY page
-  * @param  None
-  * @retval HAL status
-  */
-static u8 USB_PhySelectPage(u8 page)
-{
-	u8 ret;
-	u8 reg;
-
-	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_F4, &reg);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_F4: %d\n", ret);
-		return ret;
-	}
-
-	reg &= (~USB_OTG_PHY_REG_F4_BIT_PAGE_SEL_MASK);
-	reg |= (page << USB_OTG_PHY_REG_F4_BIT_PAGE_SEL_POS) & USB_OTG_PHY_REG_F4_BIT_PAGE_SEL_MASK;
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_F4, reg);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_F4: %d\n", ret);
-	}
-
-	return ret;
-}
-
-
-/**
-  * @brief  USB Device PHY calibration
-  * @param  None
-  * @retval HAL status
-  */
-static u8 USB_DeviceCalibrate(void)
-{
-	u8 ret = HAL_OK;
-	u8 tmp;
-
-	/* Calibrate page 0 registers */
-	ret = USB_PhySelectPage(USB_OTG_PHY_REG_F4_BIT_PAGE0);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to select page 0: %d\n", ret);
-		return ret;
-	}
-
-	/* E0 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E0, 0x33U);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E0: %d\n", ret);
-		return ret;
-	}
-
-	/* E1 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, 0xAEU);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	/* E2 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E2, 0x7dU);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E2: %d\n", ret);
-		return ret;
-	}
-
-	/* E5 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E5, 0x96U);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E5: %d\n", ret);
-		return ret;
-	}
-
-	/* E6 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E6, 0x96U);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E6: %d\n", ret);
-		return ret;
-	}
-
-	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_E1, &tmp);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	tmp = tmp & (~BIT(7));
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, tmp);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_E1, &tmp);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	tmp = tmp & BIT(7);
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, tmp);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	return HAL_OK;
-}
-
-/**
-  * @brief  USB Host PHY calibration
-  * @param  None
-  * @retval HAL status
-  */
-static u8 USB_HostCalibrate(void)
-{
-	u8 ret = HAL_OK;
-	u8 tmp;
-
-	/* Calibrate page 0 registers */
-	ret = USB_PhySelectPage(USB_OTG_PHY_REG_F4_BIT_PAGE0);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to select page 0: %d\n", ret);
-		return ret;
-	}
-
-	/* E0 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E0, 0x33U);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E0: %d\n", ret);
-		return ret;
-	}
-
-	/* E1 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, 0x2eU);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	/* E2 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E2, 0x9dU);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E2: %d\n", ret);
-		return ret;
-	}
-
-	/* E5 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E5, 0x92U);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E5: %d\n", ret);
-		return ret;
-	}
-
-	/* E6 / Page 0 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E6, 0x96U);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E6: %d\n", ret);
-		return ret;
-	}
-
-	ret = USB_ReadPhyRegister(USB_OTG_PHY_REG_E1, &tmp);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to read USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	tmp = tmp & (~BIT(7));
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_E1, tmp);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_P0_E1: %d\n", ret);
-		return ret;
-	}
-
-	/* Calibrate page 1 registers */
-	ret = USB_PhySelectPage(USB_OTG_PHY_REG_F4_BIT_PAGE1);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to select page 1: %d\n", ret);
-		return ret;
-	}
-
-	/* f7 / Page 1 */
-	ret = USB_WritePhyRegister(USB_OTG_PHY_REG_F7, 0x9aU);
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to write USB_OTG_PHY_REG_F7: %d\n", ret);
-		return ret;
-	}
-
-	return HAL_OK;
-}
-
 
 /* Exported functions --------------------------------------------------------*/
 
 /**
-  * @brief  USB PHY calibration
-  *			Shall be called after soft disconnect
-  * @param  None
-  * @retval HAL status
+  * @brief  Get USB chip specific calibration data
+  * @param  mode: 0 - device; 1 - host
+  * @retval Pointer to calibration data buffer
   */
-u8 USB_Calibrate(void)
+usb_cal_data_t *usb_chip_get_cal_data(u8 mode)
 {
-	u8 ret = HAL_OK;
+	u32 ic_version;
+	usb_cal_data_t *data = NULL;
 
-	/* 3ms + 2.5us from DD, 3ms already delayed after soft disconnect */
-	DelayUs(3);
+	ic_version = SYSCFG_ICVersion();
 
-	/*Device/Host mode calibration*/
-	if ((USB_GLOBAL->GINTSTS) & 0x1U) {
-		ret = USB_HostCalibrate();
+	if (mode == 0U) {
+		if (ic_version >= IC_VERSION_4) {
+			data = (usb_cal_data_t *)usb_device_rl6886_cal_data;
+		} else {
+			data = (usb_cal_data_t *)usb_device_rl6548c_cal_data;
+		}
 	} else {
-		ret = USB_DeviceCalibrate();
+		if (ic_version >= IC_VERSION_4) {
+			data = (usb_cal_data_t *)usb_host_rl6886_cal_data;
+		} else {
+			data = (usb_cal_data_t *)usb_host_rl6548c_cal_data;
+		}
 	}
 
-	if (ret != HAL_OK) {
-		DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "Fail to Calibration\n");
-		return ret;
-	}
-
-	return HAL_OK;
+	return data;
 }
 
 /**
   * @brief  USB HAL initialization
   * @param  void
-  * @retval HAL status
+  * @retval Status
   */
-u8 USB_Init(void)
+u8 usb_chip_init(void)
 {
 	u32 reg = 0;
 	u32 count = 0;
 
-	PAD_PullCtrl(_PA_25, GPIO_PuPd_NOPULL);
-	PAD_PullCtrl(_PA_26, GPIO_PuPd_NOPULL);
-	PAD_PullCtrl(_PA_28, GPIO_PuPd_NOPULL);
+	usb_dm_pinmux_cfg = usb_get_pinmux_config(USB_PIN_DM);
+	usb_dp_pinmux_cfg = usb_get_pinmux_config(USB_PIN_DP);
+	usb_rref_pinmux_cfg = usb_get_pinmux_config(USB_PIN_RREF);
+
+	PAD_PullCtrl(USB_PIN_DM, GPIO_PuPd_NOPULL);
+	PAD_PullCtrl(USB_PIN_DP, GPIO_PuPd_NOPULL);
+	PAD_PullCtrl(USB_PIN_RREF, GPIO_PuPd_NOPULL);
+
+	usb_pinmux_initialized = 1;
 
 	RCC_PeriphClockCmd(APBPeriph_OTG, APBPeriph_OTG_CLOCK, ENABLE);
 
@@ -398,46 +215,46 @@ u8 USB_Init(void)
 	HAL_WRITE32(SYSTEM_CTRL_BASE, REG_HS_OTG_CTRL, reg);
 
 	/* USBPHY_EN = 1 */
-	reg = HAL_READ32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL);
-	reg |= USB_OTG_ADDON_REG_CTRL_BIT_USBPHY_EN;
-	HAL_WRITE32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL, reg);
+	reg = HAL_READ32(USB_ADDON_REG_CTRL, 0U);
+	reg |= USB_ADDON_REG_CTRL_BIT_USBPHY_EN;
+	HAL_WRITE32(USB_ADDON_REG_CTRL, 0U, reg);
 
 	/* Wait UPLL_CKRDY */
 	do {
 		/* 1ms timeout expected, 10ms for safe */
 		DelayUs(10);
 		if (++count > 1000) {
-			DBG_PRINTF(MODULE_USB_OTG, LEVEL_ERROR, "USB_Init timeout\n");
+			DiagPrintf("ERROR: USB init timeout\n");
 			return HAL_TIMEOUT;
 		}
-	} while (!(HAL_READ32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL) & USB_OTG_ADDON_REG_CTRL_BIT_UPLL_CKRDY));
+	} while (!(HAL_READ32(USB_ADDON_REG_CTRL, 0U) & USB_ADDON_REG_CTRL_BIT_UPLL_CKRDY));
 
 	/* USBOTG_EN = 1 => enable USBOTG */
-	reg = HAL_READ32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL);
-	reg |= USB_OTG_ADDON_REG_CTRL_BIT_USBOTG_EN;
-	HAL_WRITE32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL, reg);
+	reg = HAL_READ32(USB_ADDON_REG_CTRL, 0U);
+	reg |= USB_ADDON_REG_CTRL_BIT_USBOTG_EN;
+	HAL_WRITE32(USB_ADDON_REG_CTRL, 0U, reg);
 
 	return HAL_OK;
 }
 
 /**
-  * @brief  USB HAL deinitialization
+  * @brief  USB chip specific deinitialization
   * @param  void
-  * @retval HAL status
+  * @retval Status
   */
-u8 USB_DeInit(void)
+u8 usb_chip_deinit(void)
 {
 	u32 reg = 0;
 
 	/* USBOTG_EN = 0 => disable USBOTG */
-	reg = HAL_READ32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL);
-	reg &= (~USB_OTG_ADDON_REG_CTRL_BIT_USBOTG_EN);
-	HAL_WRITE32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL, reg);
+	reg = HAL_READ32(USB_ADDON_REG_CTRL, 0U);
+	reg &= (~USB_ADDON_REG_CTRL_BIT_USBOTG_EN);
+	HAL_WRITE32(USB_ADDON_REG_CTRL, 0U, reg);
 
 	/* USBPHY_EN = 0 */
-	reg = HAL_READ32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL);
-	reg &= (~USB_OTG_ADDON_REG_CTRL_BIT_USBPHY_EN);
-	HAL_WRITE32(SYSTEM_CTRL_BASE, USB_OTG_ADDON_REG_CTRL, reg);
+	reg = HAL_READ32(USB_ADDON_REG_CTRL, 0U);
+	reg &= (~USB_ADDON_REG_CTRL_BIT_USBPHY_EN);
+	HAL_WRITE32(USB_ADDON_REG_CTRL, 0U, reg);
 
 	/* disable USB otg mode */
 	reg = HAL_READ32(SYSTEM_CTRL_BASE, REG_HS_OTG_CTRL);
@@ -483,48 +300,13 @@ u8 USB_DeInit(void)
 	HAL_WRITE32(SYSTEM_CTRL_BASE, REG_HS_OTG_CTRL, reg);
 	RCC_PeriphClockCmd(APBPeriph_OTG, APBPeriph_OTG_CLOCK, DISABLE);
 
-	return HAL_OK;
-}
-
-/**
-  * @brief  USB HAL enable interrupt
-  * @param  void
-  * @retval void
-  */
-void USB_EnableInterrupt(void)
-{
-	InterruptEn(USB_OTG_IRQ, 10);
-}
-
-/**
-  * @brief  USB HAL disable interrupt
-  * @param  void
-  * @retval void
-  */
-void USB_DisableInterrupt(void)
-{
-	InterruptDis(USB_OTG_IRQ);
-}
-
-/**
-  * @brief  USB HAL register IRQ handler
-  * @param  handler: IRQ handler
-  * @retval void
-  */
-void USB_RegisterIrqHandler(IRQ_FUN handler)
-{
-	if (handler != NULL) {
-		InterruptRegister(handler, USB_OTG_IRQ, NULL, 10);
+	if (usb_pinmux_initialized) {
+		usb_pinmux_initialized = 0;
+		usb_set_pinmux_config(USB_PIN_DM, usb_dm_pinmux_cfg);
+		usb_set_pinmux_config(USB_PIN_DP, usb_dp_pinmux_cfg);
+		usb_set_pinmux_config(USB_PIN_RREF, usb_rref_pinmux_cfg);
 	}
-}
 
-/**
-  * @brief  USB HAL unregister IRQ handler
-  * @param  void
-  * @retval void
-  */
-void USB_UnregisterIrqHandler(void)
-{
-	InterruptUnRegister(USB_OTG_IRQ);
+	return HAL_OK;
 }
 

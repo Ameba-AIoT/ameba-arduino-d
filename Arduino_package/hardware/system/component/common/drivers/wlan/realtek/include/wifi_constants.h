@@ -61,6 +61,18 @@ extern "C" {
 #define MCSSET_LEN			16
 
 /**
+  * @}defgroup WLAN_Reason_Defs
+  */
+#define REASON_4WAY_HNDSHK_TIMEOUT               15     /**< Fourway handshake timeout */
+#define REASON_AP_UNABLE_TO_HANDLE_NEW_STA       17     /**< AP denied due to max sta */
+#define REASON_SAE_HASH_TO_ELEMENT               126    /**< Special status code to indicate H2E extension*/
+#define REASON_SAE_CONFIRM_MISMATCH              65529  /**< SAE confirm mismatch */
+#define REASON_SA_QUERY_TIMEOUT                  65530  /**< SA Query Timeout */
+#define REASON_STA_IN_BLACKLIST                  65531  /**< STA gets blacklisted by AP */
+#define REASON_AP_BEACON_CHANGED                 65534  /**< AP configuration changed causing beacon info changed */
+#define REASON_EXPIRATION_CHK                    65535  /**< STA disconnected due to no beacon for a long time */
+
+/**
   * @brief  The enumeration lists the results of the function.
   */
 enum
@@ -159,6 +171,7 @@ enum {
 
     RTW_SECURITY_WPA3_AES_PSK 	           = ( WPA3_SECURITY | AES_ENABLED ),                                                    /**< WPA3-SAE with AES security                                  */
     RTW_SECURITY_WPA2_WPA3_MIXED           = ( WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED ),                                    /**< WPA3-SAE/WPA2 with AES security                             */
+    RTW_SECURITY_WPA3_ENTERPRISE           = ( WPA3_SECURITY | ENTERPRISE_ENABLED ),                                             /**< WPA3 Security via 802.1X authentication                     */
 
     RTW_SECURITY_UNKNOWN        = -1,                                               /**< May be returned by scan function if security is unknown. Do not pass this to the join function! */
 
@@ -223,191 +236,531 @@ enum {
 
 	/* SPECIAL */
 	RTW_COUNTRY_WORLD,	// WORLD1
-	RTW_COUNTRY_EU,		// ETSI1
+	/*Country list*/
+	RTW_COUNTRY_DZ,	// 0x00h
 
-	/* JAPANESE */
-	RTW_COUNTRY_JP,		// MKK1
+	RTW_COUNTRY_AU,	// 0x03h
+	RTW_COUNTRY_NZ,	// 0x03h
+	RTW_COUNTRY_CX,	// 0x03h
+	RTW_COUNTRY_CC,	// 0x03h
+	RTW_COUNTRY_HM,	// 0x03h
+	RTW_COUNTRY_NU,	// 0x03h
+	RTW_COUNTRY_NF,	// 0x03h
+	RTW_COUNTRY_TK,	// 0x03h
 
-	/* FCC , 19 countries*/
-	RTW_COUNTRY_AS,		// FCC2
-	RTW_COUNTRY_BM,
-	RTW_COUNTRY_CA,
-	RTW_COUNTRY_DM,
-	RTW_COUNTRY_DO,
-	RTW_COUNTRY_FM,
-	RTW_COUNTRY_GD,
-	RTW_COUNTRY_GT,
-	RTW_COUNTRY_GU,
-	RTW_COUNTRY_HT,
-	RTW_COUNTRY_MH,
-	RTW_COUNTRY_MP,
-	RTW_COUNTRY_NI,
-	RTW_COUNTRY_PA,
-	RTW_COUNTRY_PR,
-	RTW_COUNTRY_PW,
-	RTW_COUNTRY_TW,
-	RTW_COUNTRY_US,
-	RTW_COUNTRY_VI,
+	RTW_COUNTRY_TN,	// 0x04h
 
-	/* others,  ETSI */
-	RTW_COUNTRY_AD,		// ETSI1
-	RTW_COUNTRY_AE,
-	RTW_COUNTRY_AF,
-	RTW_COUNTRY_AI,
-	RTW_COUNTRY_AL,
-	RTW_COUNTRY_AM,
-	RTW_COUNTRY_AN,
-	RTW_COUNTRY_AR,
-	RTW_COUNTRY_AT,
-	RTW_COUNTRY_AU,
-	RTW_COUNTRY_AW,
-	RTW_COUNTRY_AZ,
-	RTW_COUNTRY_BA,
-	RTW_COUNTRY_BB,
-	RTW_COUNTRY_BD,
-	RTW_COUNTRY_BE,
-	RTW_COUNTRY_BF,
-	RTW_COUNTRY_BG,
-	RTW_COUNTRY_BH,
-	RTW_COUNTRY_BL,
-	RTW_COUNTRY_BN,
-	RTW_COUNTRY_BO,
-	RTW_COUNTRY_BR,
-	RTW_COUNTRY_BS,
-	RTW_COUNTRY_BT,
-	RTW_COUNTRY_BY,
-	RTW_COUNTRY_BZ,
-	RTW_COUNTRY_CF,
-	RTW_COUNTRY_CH,
-	RTW_COUNTRY_CI,
-	RTW_COUNTRY_CL,
-	RTW_COUNTRY_CN,
-	RTW_COUNTRY_CO,
-	RTW_COUNTRY_CR,
-	RTW_COUNTRY_CX,
-	RTW_COUNTRY_CY,
-	RTW_COUNTRY_CZ,
-	RTW_COUNTRY_DE,
-	RTW_COUNTRY_DK,
-	RTW_COUNTRY_DZ,
-	RTW_COUNTRY_EC,
-	RTW_COUNTRY_EE,
-	RTW_COUNTRY_EG,
-	RTW_COUNTRY_ES,
-	RTW_COUNTRY_ET,
-	RTW_COUNTRY_FI,
-	RTW_COUNTRY_FR,
-	RTW_COUNTRY_GB,
-	RTW_COUNTRY_GE,
-	RTW_COUNTRY_GF,
-	RTW_COUNTRY_GH,
-	RTW_COUNTRY_GL,
-	RTW_COUNTRY_GP,
-	RTW_COUNTRY_GR,
-	RTW_COUNTRY_GY,
-	RTW_COUNTRY_HK,
-	RTW_COUNTRY_HN,
-	RTW_COUNTRY_HR,
-	RTW_COUNTRY_HU,
-	RTW_COUNTRY_ID,
-	RTW_COUNTRY_IE,
-	RTW_COUNTRY_IL,
-	RTW_COUNTRY_IN,
-	RTW_COUNTRY_IQ,
-	RTW_COUNTRY_IR,
-	RTW_COUNTRY_IS,
-	RTW_COUNTRY_IT,
-	RTW_COUNTRY_JM,
-	RTW_COUNTRY_JO,
-	RTW_COUNTRY_KE,
-	RTW_COUNTRY_KH,
-	RTW_COUNTRY_KN,
-	RTW_COUNTRY_KP,
-	RTW_COUNTRY_KR,
-	RTW_COUNTRY_KW,
-	RTW_COUNTRY_KY,
-	RTW_COUNTRY_KZ,
-	RTW_COUNTRY_LA,
-	RTW_COUNTRY_LB,
-	RTW_COUNTRY_LC,
-	RTW_COUNTRY_LI,
-	RTW_COUNTRY_LK,
-	RTW_COUNTRY_LR,
-	RTW_COUNTRY_LS,
-	RTW_COUNTRY_LT,
-	RTW_COUNTRY_LU,
-	RTW_COUNTRY_LV,
-	RTW_COUNTRY_MA,
-	RTW_COUNTRY_MC,
-	RTW_COUNTRY_MD,
-	RTW_COUNTRY_ME,
-	RTW_COUNTRY_MF,
-	RTW_COUNTRY_MK,
-	RTW_COUNTRY_MN,
-	RTW_COUNTRY_MO,
-	RTW_COUNTRY_MQ,
-	RTW_COUNTRY_MR,
-	RTW_COUNTRY_MT,
-	RTW_COUNTRY_MU,
-	RTW_COUNTRY_MV,
-	RTW_COUNTRY_MW,
-	RTW_COUNTRY_MX,
-	RTW_COUNTRY_MY,
-	RTW_COUNTRY_NG,
-	RTW_COUNTRY_NL,
-	RTW_COUNTRY_NO,
-	RTW_COUNTRY_NP,
-	RTW_COUNTRY_NZ,
-	RTW_COUNTRY_OM,
-	RTW_COUNTRY_PE,
-	RTW_COUNTRY_PF,
-	RTW_COUNTRY_PG,
-	RTW_COUNTRY_PH,
-	RTW_COUNTRY_PK,
-	RTW_COUNTRY_PL,
-	RTW_COUNTRY_PM,
-	RTW_COUNTRY_PT,
-	RTW_COUNTRY_PY,
-	RTW_COUNTRY_QA,
-	RTW_COUNTRY_RS,
-	RTW_COUNTRY_RU,
-	RTW_COUNTRY_RW,
-	RTW_COUNTRY_SA,
-	RTW_COUNTRY_SE,
-	RTW_COUNTRY_SG,
-	RTW_COUNTRY_SI,
-	RTW_COUNTRY_SK,
-	RTW_COUNTRY_SN,
-	RTW_COUNTRY_SR,
-	RTW_COUNTRY_SV,
-	RTW_COUNTRY_SY,
-	RTW_COUNTRY_TC,
-	RTW_COUNTRY_TD,
-	RTW_COUNTRY_TG,
-	RTW_COUNTRY_TH,
-	RTW_COUNTRY_TN,
-	RTW_COUNTRY_TR,
-	RTW_COUNTRY_TT,
-	RTW_COUNTRY_TZ,
-	RTW_COUNTRY_UA,
-	RTW_COUNTRY_UG,
-	RTW_COUNTRY_UY,
-	RTW_COUNTRY_UZ,
-	RTW_COUNTRY_VC,
-	RTW_COUNTRY_VE,
-	RTW_COUNTRY_VN,
-	RTW_COUNTRY_VU,
-	RTW_COUNTRY_WF,
-	RTW_COUNTRY_WS,
-	RTW_COUNTRY_YE,
-	RTW_COUNTRY_YT,
-	RTW_COUNTRY_ZA,
-	RTW_COUNTRY_ZW,
-	
+	RTW_COUNTRY_IQ,	// 0x05h
+
+	RTW_COUNTRY_BH,	// 0x06h
+	RTW_COUNTRY_CN,	// 0x06h
+	RTW_COUNTRY_BN,	// 0x06h
+	RTW_COUNTRY_NP,	// 0x06h
+
+	RTW_COUNTRY_MY,	// 0x07h
+
+	RTW_COUNTRY_BY,	// 0x08h
+
+	RTW_COUNTRY_RU,	// 0x09h
+
+	RTW_COUNTRY_GB,	// 0x0Bh
+
+	RTW_COUNTRY_CA,	// 0x10h
+
+	RTW_COUNTRY_BO,	// 0x11h
+
+	RTW_COUNTRY_US,	// 0x1Bh
+
+	RTW_COUNTRY_TV,	// 0x21h
+
+	RTW_COUNTRY_AQ,	// 0x26h
+	RTW_COUNTRY_VU,	// 0x26h
+
+	RTW_COUNTRY_UY,	// 0x30h
+	RTW_COUNTRY_VE,	// 0x30h
+
+	RTW_COUNTRY_SN,	// 0x3Ah
+	RTW_COUNTRY_ME,	// 0x3Ah
+	RTW_COUNTRY_YE,	// 0x3Ah
+	RTW_COUNTRY_AD,	// 0x3Ah
+	RTW_COUNTRY_BJ,	// 0x3Ah
+	RTW_COUNTRY_IO,	// 0x3Ah
+	RTW_COUNTRY_MM,	// 0x3Ah
+	RTW_COUNTRY_BI,	// 0x3Ah
+	RTW_COUNTRY_CF,	// 0x3Ah
+	RTW_COUNTRY_TD,	// 0x3Ah
+	RTW_COUNTRY_ER,	// 0x3Ah
+	RTW_COUNTRY_ET,	// 0x3Ah
+	RTW_COUNTRY_GF,	// 0x3Ah
+	RTW_COUNTRY_PF,	// 0x3Ah
+	RTW_COUNTRY_TF,	// 0x3Ah
+	RTW_COUNTRY_MQ,	// 0x3Ah
+	RTW_COUNTRY_MS,	// 0x3Ah
+	RTW_COUNTRY_NC,	// 0x3Ah
+	RTW_COUNTRY_SM,	// 0x3Ah
+	RTW_COUNTRY_SB,	// 0x3Ah
+	RTW_COUNTRY_SO,	// 0x3Ah
+	RTW_COUNTRY_GS,	// 0x3Ah
+	RTW_COUNTRY_TO,	// 0x3Ah
+	RTW_COUNTRY_TM,	// 0x3Ah
+	RTW_COUNTRY_TC,	// 0x3Ah
+	RTW_COUNTRY_UG,	// 0x3Ah
+	RTW_COUNTRY_UZ,	// 0x3Ah
+	RTW_COUNTRY_WF,	// 0x3Ah
+	RTW_COUNTRY_IR,	// 0x3Ah
+
+	RTW_COUNTRY_EG,	// 0x3Ch
+	RTW_COUNTRY_MA,	// 0x3Ch
+	RTW_COUNTRY_MV,	// 0x3Ch
+	RTW_COUNTRY_EH,	// 0x3Ch
+
+	RTW_COUNTRY_AF,	// 0x42h
+	RTW_COUNTRY_CI,	// 0x42h
+
+	RTW_COUNTRY_KR,	// 0x4Bh
+
+	RTW_COUNTRY_AR,	// 0x4Dh
+	RTW_COUNTRY_MX,	// 0x4Dh
+
+	RTW_COUNTRY_ID,	// 0x5Dh
+
+	RTW_COUNTRY_AT,	// 0x5Eh
+	RTW_COUNTRY_BE,	// 0x5Eh
+	RTW_COUNTRY_CY,	// 0x5Eh
+	RTW_COUNTRY_EE,	// 0x5Eh
+	RTW_COUNTRY_IE,	// 0x5Eh
+	RTW_COUNTRY_LV,	// 0x5Eh
+	RTW_COUNTRY_LI,	// 0x5Eh
+	RTW_COUNTRY_LT,	// 0x5Eh
+	RTW_COUNTRY_LU,	// 0x5Eh
+	RTW_COUNTRY_MT,	// 0x5Eh
+	RTW_COUNTRY_MC,	// 0x5Eh
+	RTW_COUNTRY_PT,	// 0x5Eh
+	RTW_COUNTRY_SK,	// 0x5Eh
+	RTW_COUNTRY_SI,	// 0x5Eh
+	RTW_COUNTRY_AL,	// 0x5Eh
+	RTW_COUNTRY_AZ,	// 0x5Eh
+	RTW_COUNTRY_BA,	// 0x5Eh
+	RTW_COUNTRY_HR,	// 0x5Eh
+	RTW_COUNTRY_GH,	// 0x5Eh
+	RTW_COUNTRY_JO,	// 0x5Eh
+	RTW_COUNTRY_KZ,	// 0x5Eh
+	RTW_COUNTRY_KE,	// 0x5Eh
+	RTW_COUNTRY_KW,	// 0x5Eh
+	RTW_COUNTRY_KG,	// 0x5Eh
+	RTW_COUNTRY_LB,	// 0x5Eh
+	RTW_COUNTRY_LS,	// 0x5Eh
+	RTW_COUNTRY_MK,	// 0x5Eh
+	RTW_COUNTRY_MZ,	// 0x5Eh
+	RTW_COUNTRY_NA,	// 0x5Eh
+	RTW_COUNTRY_OM,	// 0x5Eh
+	RTW_COUNTRY_QA,	// 0x5Eh
+	RTW_COUNTRY_RO,	// 0x5Eh
+	RTW_COUNTRY_AE,	// 0x5Eh
+	RTW_COUNTRY_ZW,	// 0x5Eh
+	RTW_COUNTRY_BD,	// 0x5Eh
+	RTW_COUNTRY_KH,	// 0x5Eh
+	RTW_COUNTRY_PK,	// 0x5Eh
+	RTW_COUNTRY_PH,	// 0x5Eh
+	RTW_COUNTRY_LK,	// 0x5Eh
+	RTW_COUNTRY_VN,	// 0x5Eh
+	RTW_COUNTRY_PG,	// 0x5Eh
+	RTW_COUNTRY_AO,	// 0x5Eh
+	RTW_COUNTRY_AI,	// 0x5Eh
+	RTW_COUNTRY_AM,	// 0x5Eh
+	RTW_COUNTRY_BT,	// 0x5Eh
+	RTW_COUNTRY_BW,	// 0x5Eh
+	RTW_COUNTRY_BV,	// 0x5Eh
+	RTW_COUNTRY_BF,	// 0x5Eh
+	RTW_COUNTRY_CM,	// 0x5Eh
+	RTW_COUNTRY_CV,	// 0x5Eh
+	RTW_COUNTRY_KM,	// 0x5Eh
+	RTW_COUNTRY_CG,	// 0x5Eh
+	RTW_COUNTRY_CD,	// 0x5Eh
+	RTW_COUNTRY_CK,	// 0x5Eh
+	RTW_COUNTRY_DJ,	// 0x5Eh
+	RTW_COUNTRY_GQ,	// 0x5Eh
+	RTW_COUNTRY_FK,	// 0x5Eh
+	RTW_COUNTRY_FO,	// 0x5Eh
+	RTW_COUNTRY_GA,	// 0x5Eh
+	RTW_COUNTRY_GM,	// 0x5Eh
+	RTW_COUNTRY_GE,	// 0x5Eh
+	RTW_COUNTRY_GI,	// 0x5Eh
+	RTW_COUNTRY_GL,	// 0x5Eh
+	RTW_COUNTRY_GP,	// 0x5Eh
+	RTW_COUNTRY_GG,	// 0x5Eh
+	RTW_COUNTRY_GN,	// 0x5Eh
+	RTW_COUNTRY_GW,	// 0x5Eh
+	RTW_COUNTRY_VA,	// 0x5Eh
+	RTW_COUNTRY_IM,	// 0x5Eh
+	RTW_COUNTRY_JE,	// 0x5Eh
+	RTW_COUNTRY_KI,	// 0x5Eh
+	RTW_COUNTRY_XK,	// 0x5Eh
+	RTW_COUNTRY_LA,	// 0x5Eh
+	RTW_COUNTRY_LR,	// 0x5Eh
+	RTW_COUNTRY_LY,	// 0x5Eh
+	RTW_COUNTRY_MO,	// 0x5Eh
+	RTW_COUNTRY_MG,	// 0x5Eh
+	RTW_COUNTRY_MW,	// 0x5Eh
+	RTW_COUNTRY_ML,	// 0x5Eh
+	RTW_COUNTRY_MR,	// 0x5Eh
+	RTW_COUNTRY_MU,	// 0x5Eh
+	RTW_COUNTRY_YT,	// 0x5Eh
+	RTW_COUNTRY_MD,	// 0x5Eh
+	RTW_COUNTRY_MN,	// 0x5Eh
+	RTW_COUNTRY_NR,	// 0x5Eh
+	RTW_COUNTRY_NE,	// 0x5Eh
+	RTW_COUNTRY_RE,	// 0x5Eh
+	RTW_COUNTRY_RW,	// 0x5Eh
+	RTW_COUNTRY_SH,	// 0x5Eh
+	RTW_COUNTRY_PM,	// 0x5Eh
+	RTW_COUNTRY_ST,	// 0x5Eh
+	RTW_COUNTRY_SL,	// 0x5Eh
+	RTW_COUNTRY_SJ,	// 0x5Eh
+	RTW_COUNTRY_SZ,	// 0x5Eh
+	RTW_COUNTRY_TJ,	// 0x5Eh
+	RTW_COUNTRY_TZ,	// 0x5Eh
+	RTW_COUNTRY_TG,	// 0x5Eh
+	RTW_COUNTRY_ZM,	// 0x5Eh
+// Belongs to CE (BG to ZA) which enables adaptivity	
+	RTW_COUNTRY_BG,	// 0x5Eh
+	RTW_COUNTRY_CH,	// 0x5Eh
+	RTW_COUNTRY_CZ,	// 0x5Eh
+	RTW_COUNTRY_DE,	// 0x5Eh
+	RTW_COUNTRY_DK,	// 0x5Eh
+	RTW_COUNTRY_ES,	// 0x5Eh
+	RTW_COUNTRY_FI,	// 0x5Eh
+	RTW_COUNTRY_FR,	// 0x5Eh
+	RTW_COUNTRY_GR,	// 0x5Eh
+	RTW_COUNTRY_HK,	// 0x5Eh
+	RTW_COUNTRY_HU,	// 0x5Eh
+	RTW_COUNTRY_IL,	// 0x5Eh
+	RTW_COUNTRY_IN,	// 0x5Eh
+	RTW_COUNTRY_IS,	// 0x5Eh
+	RTW_COUNTRY_IT,	// 0x5Eh
+	RTW_COUNTRY_NL,	// 0x5Eh
+	RTW_COUNTRY_NO,	// 0x5Eh
+	RTW_COUNTRY_PL,	// 0x5Eh
+	RTW_COUNTRY_RS,	// 0x5Eh
+	RTW_COUNTRY_SA,	// 0x5Eh
+	RTW_COUNTRY_SE,	// 0x5Eh
+	RTW_COUNTRY_SG,	// 0x5Eh
+	RTW_COUNTRY_TH,	// 0x5Eh
+	RTW_COUNTRY_TR,	// 0x5Eh
+	RTW_COUNTRY_UA,	// 0x5Eh
+	RTW_COUNTRY_ZA,	// 0x5Eh
+	RTW_COUNTRY_PS,	// 0x5Eh
+
+	RTW_COUNTRY_BR,	// 0x62h
+
+	RTW_COUNTRY_SR,	// 0x74h
+
+	RTW_COUNTRY_NG,	// 0x75h
+
+	RTW_COUNTRY_CL,	// 0x76h
+	RTW_COUNTRY_CO,	// 0x76h
+	RTW_COUNTRY_CR,	// 0x76h
+	RTW_COUNTRY_EC,	// 0x76h
+	RTW_COUNTRY_SV,	// 0x76h
+	RTW_COUNTRY_GT,	// 0x76h
+	RTW_COUNTRY_HN,	// 0x76h
+	RTW_COUNTRY_NI,	// 0x76h
+	RTW_COUNTRY_PA,	// 0x76h
+	RTW_COUNTRY_PY,	// 0x76h
+	RTW_COUNTRY_PE,	// 0x76h
+	RTW_COUNTRY_PR,	// 0x76h
+	RTW_COUNTRY_DO,	// 0x76h
+	RTW_COUNTRY_TW,	// 0x76h
+	RTW_COUNTRY_JM,	// 0x76h
+	RTW_COUNTRY_AN,	// 0x76h
+	RTW_COUNTRY_TT,	// 0x76h
+	RTW_COUNTRY_AS,	// 0x76h
+	RTW_COUNTRY_AG,	// 0x76h
+	RTW_COUNTRY_AW,	// 0x76h
+	RTW_COUNTRY_BS,	// 0x76h
+	RTW_COUNTRY_BB,	// 0x76h
+	RTW_COUNTRY_BZ,	// 0x76h
+	RTW_COUNTRY_BM,	// 0x76h
+	RTW_COUNTRY_VG,	// 0x76h
+	RTW_COUNTRY_KY,	// 0x76h
+	RTW_COUNTRY_DM,	// 0x76h
+	RTW_COUNTRY_FJ,	// 0x76h
+	RTW_COUNTRY_GD,	// 0x76h
+	RTW_COUNTRY_GU,	// 0x76h
+	RTW_COUNTRY_GY,	// 0x76h
+	RTW_COUNTRY_HT,	// 0x76h
+	RTW_COUNTRY_MH,	// 0x76h
+	RTW_COUNTRY_FM,	// 0x76h
+	RTW_COUNTRY_MP,	// 0x76h
+	RTW_COUNTRY_PW,	// 0x76h
+	RTW_COUNTRY_KN,	// 0x76h
+	RTW_COUNTRY_LC,	// 0x76h
+	RTW_COUNTRY_MF,	// 0x76h
+	RTW_COUNTRY_SX,	// 0x76h
+	RTW_COUNTRY_VC,	// 0x76h
+	RTW_COUNTRY_WS,	// 0x76h
+	RTW_COUNTRY_SC,	// 0x76h
+	RTW_COUNTRY_VI,	// 0x76h
+
+	RTW_COUNTRY_JP,	// 0x7Dh
+	RTW_COUNTRY_RTK_DEFAULT,	// 0x7Fh
+
+	RTW_COUNTRY_EU,	// EU Operating Class
+
 	RTW_COUNTRY_MAX
 
 };
 typedef unsigned long rtw_country_code_t;
+
+/**
+  * @brief  The country_map maps the 2 characters country code from beacon to RTW_COUNTRY_xx
+  */
+typedef struct {
+    const char *country_code;
+    rtw_country_code_t rtw_country_code;
+} CountryMap;
+
+static CountryMap country_map[] = {
+    {"DZ", RTW_COUNTRY_DZ},
+    {"AU", RTW_COUNTRY_AU},
+    {"NZ", RTW_COUNTRY_NZ},
+    {"CX", RTW_COUNTRY_CX},
+    {"CC", RTW_COUNTRY_CC},
+    {"HM", RTW_COUNTRY_HM},
+    {"NU", RTW_COUNTRY_NU},
+    {"NF", RTW_COUNTRY_NF},
+    {"TK", RTW_COUNTRY_TK},
+    {"TN", RTW_COUNTRY_TN},
+    {"IQ", RTW_COUNTRY_IQ},
+    {"BH", RTW_COUNTRY_BH},
+    {"CN", RTW_COUNTRY_CN},
+    {"BN", RTW_COUNTRY_BN},
+    {"NP", RTW_COUNTRY_NP},
+    {"MY", RTW_COUNTRY_MY},
+    {"BY", RTW_COUNTRY_BY},
+    {"RU", RTW_COUNTRY_RU},
+    {"GB", RTW_COUNTRY_GB},
+    {"CA", RTW_COUNTRY_CA},
+    {"BO", RTW_COUNTRY_BO},
+    {"US", RTW_COUNTRY_US},
+    {"TV", RTW_COUNTRY_TV},
+    {"AQ", RTW_COUNTRY_AQ},
+    {"VU", RTW_COUNTRY_VU},
+    {"UY", RTW_COUNTRY_UY},
+    {"VE", RTW_COUNTRY_VE},
+    {"SN", RTW_COUNTRY_SN},
+    {"ME", RTW_COUNTRY_ME},
+    {"YE", RTW_COUNTRY_YE},
+    {"AD", RTW_COUNTRY_AD},
+    {"BJ", RTW_COUNTRY_BJ},
+    {"IO", RTW_COUNTRY_IO},
+    {"MM", RTW_COUNTRY_MM},
+    {"BI", RTW_COUNTRY_BI},
+    {"CF", RTW_COUNTRY_CF},
+    {"TD", RTW_COUNTRY_TD},
+    {"ER", RTW_COUNTRY_ER},
+    {"ET", RTW_COUNTRY_ET},
+    {"GF", RTW_COUNTRY_GF},
+    {"PF", RTW_COUNTRY_PF},
+    {"TF", RTW_COUNTRY_TF},
+    {"MQ", RTW_COUNTRY_MQ},
+    {"MS", RTW_COUNTRY_MS},
+    {"NC", RTW_COUNTRY_NC},
+    {"SM", RTW_COUNTRY_SM},
+    {"SB", RTW_COUNTRY_SB},
+    {"SO", RTW_COUNTRY_SO},
+    {"GS", RTW_COUNTRY_GS},
+    {"TO", RTW_COUNTRY_TO},
+    {"TM", RTW_COUNTRY_TM},
+    {"TC", RTW_COUNTRY_TC},
+    {"UG", RTW_COUNTRY_UG},
+    {"UZ", RTW_COUNTRY_UZ},
+    {"WF", RTW_COUNTRY_WF},
+    {"IR", RTW_COUNTRY_IR},
+    {"EG", RTW_COUNTRY_EG},
+    {"MA", RTW_COUNTRY_MA},
+    {"MV", RTW_COUNTRY_MV},
+    {"EH", RTW_COUNTRY_EH},
+    {"AF", RTW_COUNTRY_AF},
+    {"CI", RTW_COUNTRY_CI},
+    {"KR", RTW_COUNTRY_KR},
+    {"AR", RTW_COUNTRY_AR},
+    {"MX", RTW_COUNTRY_MX},
+    {"ID", RTW_COUNTRY_ID},
+    {"AT", RTW_COUNTRY_AT},
+    {"BE", RTW_COUNTRY_BE},
+    {"CY", RTW_COUNTRY_CY},
+    {"CZ", RTW_COUNTRY_CZ},
+    {"DK", RTW_COUNTRY_DK},
+    {"EE", RTW_COUNTRY_EE},
+    {"FI", RTW_COUNTRY_FI},
+    {"FR", RTW_COUNTRY_FR},
+    {"DE", RTW_COUNTRY_DE},
+    {"GR", RTW_COUNTRY_GR},
+    {"HU", RTW_COUNTRY_HU},
+    {"IS", RTW_COUNTRY_IS},
+    {"IE", RTW_COUNTRY_IE},
+    {"IT", RTW_COUNTRY_IT},
+    {"LV", RTW_COUNTRY_LV},
+    {"LI", RTW_COUNTRY_LI},
+    {"LT", RTW_COUNTRY_LT},
+    {"LU", RTW_COUNTRY_LU},
+    {"MT", RTW_COUNTRY_MT},
+    {"MC", RTW_COUNTRY_MC},
+    {"NL", RTW_COUNTRY_NL},
+    {"NO", RTW_COUNTRY_NO},
+    {"PL", RTW_COUNTRY_PL},
+    {"PT", RTW_COUNTRY_PT},
+    {"SK", RTW_COUNTRY_SK},
+    {"SI", RTW_COUNTRY_SI},
+    {"ES", RTW_COUNTRY_ES},
+    {"SE", RTW_COUNTRY_SE},
+    {"CH", RTW_COUNTRY_CH},
+    {"AL", RTW_COUNTRY_AL},
+    {"AZ", RTW_COUNTRY_AZ},
+    {"BA", RTW_COUNTRY_BA},
+    {"BG", RTW_COUNTRY_BG},
+    {"HR", RTW_COUNTRY_HR},
+    {"GH", RTW_COUNTRY_GH},
+    {"IL", RTW_COUNTRY_IL},
+    {"JO", RTW_COUNTRY_JO},
+    {"KZ", RTW_COUNTRY_KZ},
+    {"KE", RTW_COUNTRY_KE},
+    {"KW", RTW_COUNTRY_KW},
+    {"KG", RTW_COUNTRY_KG},
+    {"LB", RTW_COUNTRY_LB},
+    {"LS", RTW_COUNTRY_LS},
+    {"MK", RTW_COUNTRY_MK},
+    {"MZ", RTW_COUNTRY_MZ},
+    {"NA", RTW_COUNTRY_NA},
+    {"OM", RTW_COUNTRY_OM},
+    {"QA", RTW_COUNTRY_QA},
+    {"RO", RTW_COUNTRY_RO},
+    {"SA", RTW_COUNTRY_SA},
+    {"RS", RTW_COUNTRY_RS},
+    {"ZA", RTW_COUNTRY_ZA},
+    {"TR", RTW_COUNTRY_TR},
+    {"UA", RTW_COUNTRY_UA},
+    {"AE", RTW_COUNTRY_AE},
+    {"ZW", RTW_COUNTRY_ZW},
+    {"BD", RTW_COUNTRY_BD},
+    {"KH", RTW_COUNTRY_KH},
+    {"HK", RTW_COUNTRY_HK},
+    {"IN", RTW_COUNTRY_IN},
+    {"PK", RTW_COUNTRY_PK},
+    {"PH", RTW_COUNTRY_PH},
+    {"SG", RTW_COUNTRY_SG},
+    {"LK", RTW_COUNTRY_LK},
+    {"TH", RTW_COUNTRY_TH},
+    {"VN", RTW_COUNTRY_VN},
+    {"PG", RTW_COUNTRY_PG},
+    {"AO", RTW_COUNTRY_AO},
+    {"AI", RTW_COUNTRY_AI},
+    {"AM", RTW_COUNTRY_AM},
+    {"BT", RTW_COUNTRY_BT},
+    {"BW", RTW_COUNTRY_BW},
+    {"BV", RTW_COUNTRY_BV},
+    {"BF", RTW_COUNTRY_BF},
+    {"CM", RTW_COUNTRY_CM},
+    {"CV", RTW_COUNTRY_CV},
+    {"KM", RTW_COUNTRY_KM},
+    {"CG", RTW_COUNTRY_CG},
+    {"CD", RTW_COUNTRY_CD},
+    {"CK", RTW_COUNTRY_CK},
+    {"DJ", RTW_COUNTRY_DJ},
+    {"GQ", RTW_COUNTRY_GQ},
+    {"FK", RTW_COUNTRY_FK},
+    {"FO", RTW_COUNTRY_FO},
+    {"GA", RTW_COUNTRY_GA},
+    {"GM", RTW_COUNTRY_GM},
+    {"GE", RTW_COUNTRY_GE},
+    {"GI", RTW_COUNTRY_GI},
+    {"GL", RTW_COUNTRY_GL},
+    {"GP", RTW_COUNTRY_GP},
+    {"GG", RTW_COUNTRY_GG},
+    {"GN", RTW_COUNTRY_GN},
+    {"GW", RTW_COUNTRY_GW},
+    {"VA", RTW_COUNTRY_VA},
+    {"IM", RTW_COUNTRY_IM},
+    {"JE", RTW_COUNTRY_JE},
+    {"KI", RTW_COUNTRY_KI},
+    {"XK", RTW_COUNTRY_XK},
+    {"LA", RTW_COUNTRY_LA},
+    {"LR", RTW_COUNTRY_LR},
+    {"LY", RTW_COUNTRY_LY},
+    {"MO", RTW_COUNTRY_MO},
+    {"MG", RTW_COUNTRY_MG},
+    {"MW", RTW_COUNTRY_MW},
+    {"ML", RTW_COUNTRY_ML},
+    {"MR", RTW_COUNTRY_MR},
+    {"MU", RTW_COUNTRY_MU},
+    {"YT", RTW_COUNTRY_YT},
+    {"MD", RTW_COUNTRY_MD},
+    {"MN", RTW_COUNTRY_MN},
+    {"NR", RTW_COUNTRY_NR},
+    {"NE", RTW_COUNTRY_NE},
+    {"RE", RTW_COUNTRY_RE},
+    {"RW", RTW_COUNTRY_RW},
+    {"SH", RTW_COUNTRY_SH},
+    {"PM", RTW_COUNTRY_PM},
+    {"ST", RTW_COUNTRY_ST},
+    {"SL", RTW_COUNTRY_SL},
+    {"SJ", RTW_COUNTRY_SJ},
+    {"SZ", RTW_COUNTRY_SZ},
+    {"TJ", RTW_COUNTRY_TJ},
+    {"TZ", RTW_COUNTRY_TZ},
+    {"TG", RTW_COUNTRY_TG},
+    {"ZM", RTW_COUNTRY_ZM},
+    {"PS", RTW_COUNTRY_PS},
+    {"BR", RTW_COUNTRY_BR},
+    {"SR", RTW_COUNTRY_SR},
+    {"NG", RTW_COUNTRY_NG},
+    {"CL", RTW_COUNTRY_CL},
+    {"CO", RTW_COUNTRY_CO},
+    {"CR", RTW_COUNTRY_CR},
+    {"EC", RTW_COUNTRY_EC},
+    {"SV", RTW_COUNTRY_SV},
+    {"GT", RTW_COUNTRY_GT},
+    {"HN", RTW_COUNTRY_HN},
+    {"NI", RTW_COUNTRY_NI},
+    {"PA", RTW_COUNTRY_PA},
+    {"PY", RTW_COUNTRY_PY},
+    {"PE", RTW_COUNTRY_PE},
+    {"PR", RTW_COUNTRY_PR},
+    {"DO", RTW_COUNTRY_DO},
+    {"TW", RTW_COUNTRY_TW},
+    {"JM", RTW_COUNTRY_JM},
+    {"AN", RTW_COUNTRY_AN},
+    {"TT", RTW_COUNTRY_TT},
+    {"AS", RTW_COUNTRY_AS},
+    {"AG", RTW_COUNTRY_AG},
+    {"AW", RTW_COUNTRY_AW},
+    {"BS", RTW_COUNTRY_BS},
+    {"BB", RTW_COUNTRY_BB},
+    {"BZ", RTW_COUNTRY_BZ},
+    {"BM", RTW_COUNTRY_BM},
+    {"VG", RTW_COUNTRY_VG},
+    {"KY", RTW_COUNTRY_KY},
+    {"DM", RTW_COUNTRY_DM},
+    {"FJ", RTW_COUNTRY_FJ},
+    {"GD", RTW_COUNTRY_GD},
+    {"GU", RTW_COUNTRY_GU},
+    {"GY", RTW_COUNTRY_GY},
+    {"HT", RTW_COUNTRY_HT},
+    {"MH", RTW_COUNTRY_MH},
+    {"FM", RTW_COUNTRY_FM},
+    {"MP", RTW_COUNTRY_MP},
+    {"PW", RTW_COUNTRY_PW},
+    {"KN", RTW_COUNTRY_KN},
+    {"LC", RTW_COUNTRY_LC},
+    {"MF", RTW_COUNTRY_MF},
+    {"SX", RTW_COUNTRY_SX},
+    {"VC", RTW_COUNTRY_VC},
+    {"WS", RTW_COUNTRY_WS},
+    {"SC", RTW_COUNTRY_SC},
+    {"VI", RTW_COUNTRY_VI},
+    {"JP", RTW_COUNTRY_JP}
+};
 
 /**
   * @brief  The enumeration lists the adaptivity types.
@@ -570,12 +923,15 @@ typedef unsigned long rtw_rx_type_t;
   * @brief  The enumeration lists the disconnect reasons.
   */
 enum{
-	RTW_NO_ERROR = 0,
-	RTW_NONE_NETWORK = 1,
-	RTW_CONNECT_FAIL = 2,
-	RTW_WRONG_PASSWORD = 3 ,
-	RTW_4WAY_HANDSHAKE_TIMEOUT = 4,
-	RTW_DHCP_FAIL = 5,
+	RTW_NO_ERROR = 0,               /**< no error */
+	RTW_NONE_NETWORK = 1,           /**< none network */
+	RTW_CONNECT_FAIL = 2,           /**< connect fail */
+	RTW_WRONG_PASSWORD = 3,         /**< wrong password */
+	RTW_4WAY_HANDSHAKE_TIMEOUT = 4, /**< 4 way handshake timeout*/
+	RTW_DHCP_FAIL = 5,              /**< dhcp fail*/
+	RTW_AUTH_FAIL = 6,              /**< auth fail */
+	RTW_ASSOC_FAIL = 7,             /**< association fail */
+	RTW_DEAUTH_DEASSOC = 8,         /**< deauth or deassoc */
 	RTW_UNKNOWN,
 };
 typedef unsigned long rtw_connect_error_flag_t;
@@ -614,6 +970,7 @@ enum _WIFI_EVENT_INDICATE{
 	WIFI_EVENT_CHALLENGE_FAIL = 18,
 	WIFI_EVENT_SOFTAP_START = 19,
 	WIFI_EVENT_SOFTAP_STOP = 20,
+	WIFI_EVENT_DHCP6_DONE = 21,
 	WIFI_EVENT_MAX,
 };
 typedef unsigned long rtw_event_indicate_t;

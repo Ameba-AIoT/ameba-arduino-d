@@ -625,5 +625,11 @@ typedef struct
 
 extern PSRAMCFG_TypeDef psram_dev_config;
 
+#define LDO_PSRAM_CALIB_TWICE_VAL(x)		((u8)(((x) & 0xF0) >> 4))
+#define LDO_PSRAM_CALIB_ONE_VAL(x)		((u8)(((x) & 0x0F) >> 0))
+#define LDO_PSRAM_DEFAULT_1P8V			0x7
+
+#define LDO_PSRAM_WO_CAL 0x0F
+
 #endif  //_RTL8710B_PSRAM_H
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

@@ -150,8 +150,8 @@ void ota_update_free(void *buf);
 #if (SERVER_TYPE == SERVER_LOCAL)
 void ota_platform_reset(void);
 int ota_write_ota2_addr(uint32_t ota_addr);
-u32 ota_get_cur_index(void);
-int  ota_readstream_user(u32 address, u32 len, u8 * data);
+int ota_readstream_user(u32 address, u32 len, u8 * data);
+int ota_writestream_user(u32 address, u32 len, const u8 * data);
 
 u32 recv_file_info_from_server(u8 * Recvbuf, u32 len, int socket);
 u32 recv_ota_file_hdr(u8 * Recvbuf, u32 * len, update_ota_target_hdr * pOtaTgtHdr, int socket);
@@ -173,10 +173,15 @@ u32 download_new_fw_from_server_http(u8* first_buf, unsigned int firstbuf_len, i
 int http_update_ota(char *host, int port, char *resource);
 #endif
 #ifdef HTTPS_OTA_UPDATE
+#include "mbedtls/version.h"
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+#else
 #include <mbedtls/config.h>
+#endif
 #include <mbedtls/platform.h>
 #include <mbedtls/net_sockets.h>
 #include <mbedtls/ssl.h>
+
 u32 recv_ota_file_hdr_https(u8 * Recvbuf, u32 writelen, u32 * len, update_ota_target_hdr * pOtaTgtHdr, mbedtls_ssl_context * ssl);
 int https_read_socket(mbedtls_ssl_context * ssl, u8 * recevie_buf, int buf_len);
 u32 download_new_fw_from_server_https(u8 * first_buf, unsigned int firstbuf_len, mbedtls_ssl_context * ssl, update_ota_target_hdr * pOtaTgtHdr, u8 targetIdx);

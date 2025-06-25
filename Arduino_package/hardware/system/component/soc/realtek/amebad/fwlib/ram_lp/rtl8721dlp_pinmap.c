@@ -184,4 +184,27 @@ next:
 	}
 }
 
+void PAD_CMD(u8 PinName, u8 NewStatus)
+{
+	u32 Temp = 0;
+
+	/* get PADCTR */
+	Temp = PINMUX->PADCTR[PinName];
+
+	if (NewStatus == ENABLE){
+		Temp &= ~PAD_BIT_SHUT_DWON;
+	} else {
+		/* clear PU & PD */
+		Temp &= ~(PAD_BIT_PULL_UP_RESISTOR_EN | PAD_BIT_PULL_DOWN_RESISTOR_EN);
+		/* set PADCTR register of no pull first*/
+		PINMUX->PADCTR[PinName] = Temp;
+
+		/* then shut down*/
+		Temp |= PAD_BIT_SHUT_DWON;
+	}
+
+	/* set PADCTR register */
+	PINMUX->PADCTR[PinName] = Temp;
+}
+
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

@@ -80,6 +80,7 @@ u32 LOG_PRINTF_BUFFER_INIT(u32 thread_init)
 #else
 /* reserve one to avoid memory overflow */
 SRAM_NOCACHE_DATA_SECTION log_buffer_t log_buffer[LOG_BUFFER_NUM + 1];
+#if 0
 static VOID LOG_BUFF_TASK(VOID *Data)
 {
 	/* To avoid gcc warnings */
@@ -112,6 +113,7 @@ static VOID LOG_BUFF_TASK(VOID *Data)
 		IPC0->IPCx_USR[IPC_USER_BUF_LOG_RP] = read_pointer;
 	} while(1);
 }
+#endif
 
 u32 LOG_PRINTF_BUFFER_INIT(u32 thread_init)
 {

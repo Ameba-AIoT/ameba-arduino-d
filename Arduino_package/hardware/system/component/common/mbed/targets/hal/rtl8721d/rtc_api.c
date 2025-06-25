@@ -17,7 +17,12 @@
 
 #include "rtc_api.h"
 
+#if defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64
+#include "time64.h"
+#else
 #include <time.h>
+#endif
+
 #include "timer_api.h"
 
 static struct tm rtc_timeinfo;

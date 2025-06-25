@@ -470,7 +470,7 @@ void WiFiDrv::getIpAddress(IPAddress& ip, uint8_t interface) {
 }
 
 void WiFiDrv::getIpv6Address() {
-    LwIP_AUTOIP_IPv6(&xnetif[0]);
+    LwIP_GetIPv6_linklocal(&xnetif[0]);
     while (!ip6_addr_isvalid(netif_ip6_addr_state(&xnetif[0],0))) {
         vTaskDelay(10);
     }

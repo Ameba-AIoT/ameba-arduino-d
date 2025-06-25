@@ -2,8 +2,22 @@
 #include "task.h"
 #include "platform_stdlib.h"
 #include "osdep_service.h"
-
+#include "lwip/sockets.h"
 #include "httpc.h"
+
+int httpc_setsockopt_rcvtimeo(struct httpc_conn *conn, int recv_timeout)
+{
+	int ret = 0;
+#if defined(LWIP_SO_SNDRCVTIMEO_NONSTANDARD) && (LWIP_SO_SNDRCVTIMEO_NONSTANDARD == 0)	//lwip 2.0.2
+	struct timeval timeout;
+	timeout.tv_sec  = recv_timeout / 1000;
+	timeout.tv_usec = (recv_timeout % 1000) * 1000;
+	ret = setsockopt(conn->sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+#else	//lwip 1.4.1
+	ret = setsockopt(conn->sock, SOL_SOCKET, SO_RCVTIMEO, &recv_timeout, sizeof(recv_timeout));
+#endif
+	return ret;
+}
 
 #if (HTTPC_USE_TLS == HTTPC_TLS_POLARSSL)
 #include "polarssl/ssl.h"
@@ -178,7 +192,9 @@ exit:
 		mbedtls_pk_init(&tls->key);
 		mbedtls_ssl_init(ssl);
 		mbedtls_ssl_config_init(conf);
-
+#if defined(MBEDTLS_PSA_CRYPTO_C) && defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03040000)
+		psa_crypto_init();
+#endif
 		if((ret = mbedtls_ssl_config_defaults(conf,
 				MBEDTLS_SSL_IS_CLIENT,
 				MBEDTLS_SSL_TRANSPORT_STREAM,
@@ -199,7 +215,7 @@ exit:
 				goto exit;
 			}
 
-#if CONFIG_MBEDTLS_VERSION3 == 1
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
 			if((ret = mbedtls_pk_parse_key(&tls->key, (const unsigned char *) client_key, strlen(client_key) + 1, NULL, 0, rtw_get_random_bytes_f_rng, (void*)1 )) != 0) {
 #else
 			if((ret = mbedtls_pk_parse_key(&tls->key, (const unsigned char *) client_key, strlen(client_key) + 1, NULL, 0)) != 0) {

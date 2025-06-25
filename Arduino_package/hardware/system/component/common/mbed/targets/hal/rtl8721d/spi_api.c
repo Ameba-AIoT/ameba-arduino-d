@@ -606,7 +606,7 @@ void spi_format (spi_t *obj, int bits, int mode, int slave)
 	SSI_SetSclkPhase(ssi_adapter->spi_dev, SclkPhase);
 	SSI_SetSclkPolarity(ssi_adapter->spi_dev, SclkPolarity);
 	SSI_SetDataFrameSize(ssi_adapter->spi_dev, DataFrameSize);
-
+	
 	if (slave == 1) {
 		if (SclkPolarity == SCPOL_INACTIVE_IS_LOW) {
 			PAD_PullCtrl((u32)obj->sclk, GPIO_PuPd_DOWN);
@@ -615,6 +615,8 @@ void spi_format (spi_t *obj, int bits, int mode, int slave)
 			PAD_PullCtrl((u32)obj->sclk, GPIO_PuPd_UP);
 		}
 	}
+	
+	
 }
 
 /**
@@ -638,17 +640,18 @@ void spi_frequency (spi_t *obj, int hz)
 	else
 		IpClk=50000000;
 
-	/*Adjust SCKDV-Parameter to an even number */
-	ClockDivider = IpClk/hz + 1;
-	if ((IpClk%hz) > (u32)(hz/2)) {
-		ClockDivider++;
+	/* Adjust SCK Divider to an even number */
+	ClockDivider = (u32)(IpClk / hz / 2) * 2;
+
+	if ((IpClk / ClockDivider) > (u32)hz) {
+		ClockDivider += 2;
 	}
+
 	if (ClockDivider >= 0xFFFF) {
 		/*  devider is 16 bits */
 		ClockDivider = 0xFFFE;
 	}
-	ClockDivider &= 0xFFFE;     // bit 0 always is 0
-	
+
 	SSI_SetBaudDiv(ssi_adapter->spi_dev, ClockDivider);
 }
 
@@ -1248,7 +1251,8 @@ int32_t spi_slave_read_stream_timeout(spi_t *obj, char *rx_buffer, uint32_t leng
 	}
 
 	obj->state |= SPI_STATE_RX_BUSY;
-	if ((ret = ssi_int_read(ssi_adapter, rx_buffer, length)) != _TRUE) {
+	ret = ssi_int_read(ssi_adapter, rx_buffer, length);
+	if (ret != _TRUE) {
 		obj->state &= ~SPI_STATE_RX_BUSY;
 		return -HAL_BUSY;
 	}
@@ -1302,7 +1306,8 @@ int32_t spi_slave_read_stream_terminate(spi_t *obj, char *rx_buffer, uint32_t le
 	}
 
 	obj->state |= SPI_STATE_RX_BUSY;
-	if ((ret = ssi_int_read(ssi_adapter, rx_buffer, length)) != _TRUE) {
+	ret = ssi_int_read(ssi_adapter, rx_buffer, length);
+	if (ret != _TRUE) {
 		obj->state &= ~SPI_STATE_RX_BUSY;
 		return -HAL_BUSY;
 	}

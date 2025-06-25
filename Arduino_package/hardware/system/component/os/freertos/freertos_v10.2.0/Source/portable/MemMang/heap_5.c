@@ -68,6 +68,7 @@
  *
  */
 #include <stdlib.h>
+#include <string.h>
 
 /* Defining MPU_WRAPPERS_INCLUDED_FROM_API_FILE prevents task.h from redefining
 all the API functions to use the MPU wrappers.  That should only be done when
@@ -338,6 +339,16 @@ size_t xPortGetMinimumEverFreeHeapSize( void )
 }
 /*-----------------------------------------------------------*/
 
+void xPortResetHeapMinimumEverFreeHeapSize( void )
+{
+	taskENTER_CRITICAL();
+	{
+		xMinimumEverFreeBytesRemaining = xFreeBytesRemaining;
+	}
+	taskEXIT_CRITICAL();
+}
+/*-----------------------------------------------------------*/
+
 static void prvInsertBlockIntoFreeList( BlockLink_t *pxBlockToInsert )
 {
 BlockLink_t *pxIterator;
@@ -515,8 +526,8 @@ void* pvPortReAlloc( void *pv,  size_t xWantedSize )
 			/* This casting is to keep the compiler from issuing warnings. */
 			pxLink = ( void * ) puc;
 
-			int oldSize =  (pxLink->xBlockSize & ~xBlockAllocatedBit) - xHeapStructSize;
-			int copySize = ( oldSize < xWantedSize ) ? oldSize : xWantedSize;
+			size_t oldSize =  (pxLink->xBlockSize & ~xBlockAllocatedBit) - xHeapStructSize;
+			size_t copySize = ( oldSize < xWantedSize ) ? oldSize : xWantedSize;
 			memcpy( newArea, pv, copySize );
 
 			vTaskSuspendAll();

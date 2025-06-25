@@ -16,7 +16,7 @@ SECTION(".data") u8* __bss_start__ = 0;
 SECTION(".data") u8* __bss_end__ = 0;
 #endif
 
-static u32 Cutversion;
+//static u32 Cutversion;
 static u32 ICversion;
 
 extern int main(void);
@@ -287,7 +287,7 @@ VOID app_vdd1833_detect(VOID)
 
 void app_dslp_wake_check(void)
 {
-	DBG_8195A("BOOT_Reason:%x %x\n", BOOT_Reason(), BIT_BOOT_DSLP_RESET_HAPPEN);
+	DBG_8195A("BOOT_Reason:%x\n", BOOT_Reason());
 
 	/* set deep sleep wakeup status, you can use SOCPS_DsleepWakeStatusGet */
 	/* to get this status after this point, some function like: */
@@ -381,7 +381,29 @@ app_taskidle_handler(
 #endif
 }
 
+void app_init_debug(void)
+{
+	u32 debug[4];
+
+	debug[LEVEL_ERROR] = BIT(MODULE_BOOT) | BIT(MODULE_EFUSE);
+	debug[LEVEL_WARN]  = 0x0;
+	debug[LEVEL_INFO]  = BIT(MODULE_BOOT);// | BIT(MODULE_EFUSE);
+	debug[LEVEL_TRACE] = 0x0;
+
+	debug[LEVEL_ERROR] = 0xFFFFFFFF;
+
+	LOG_MASK(LEVEL_ERROR, debug[LEVEL_ERROR]);
+	LOG_MASK(LEVEL_WARN, debug[LEVEL_WARN]);
+	LOG_MASK(LEVEL_INFO, debug[LEVEL_INFO]);
+	LOG_MASK(LEVEL_TRACE, debug[LEVEL_TRACE]);
+
+	//DBG_PRINTF(MODULE_EFUSE, LEVEL_INFO, "app_init_debug: %x:%x:%x:%x\n",debug[0], debug[1], debug[2], debug[3]);
+	//DBG_PRINTF(MODULE_EFUSE, LEVEL_ERROR, "app_init_debug: %x:%x:%x:%x\n",debug[0], debug[1], debug[2], debug[3]);
+
+}
+
 // The Main App entry point
+extern u32 SDM32K_Read(u32 Address);
 void app_start(void)
 {
 
@@ -455,6 +477,8 @@ void app_start(void)
 
 	mpu_init();
 	app_mpu_nocache_init();
+
+	app_init_debug();
 
 	main();
 }

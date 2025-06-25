@@ -548,8 +548,11 @@ BOOL SPDIO_Device_Init(struct spdio_t * obj)
 		DBG_PRINTF(MODULE_SDIO, LEVEL_ERROR, "SDIO_Device_Init Create IRQ Semaphore Err!!\n");	
 		goto SDIO_INIT_ERR;
 	}
-	
+#if defined(CONFIG_IPCAM_SDIO) && (CONFIG_IPCAM_SDIO == 1)
+	ret = xTaskCreate( SPDIO_IRQ_Handler_BH, "SPDIO_IRQ_TASK", ((1024*4)/sizeof(portBASE_TYPE)), (void *)pgSPDIODev, 1 + PRIORITIE_OFFSET, &pgSPDIODev->xSDIOIrqTaskHandle);
+#else
 	ret = xTaskCreate( SPDIO_IRQ_Handler_BH, "SPDIO_IRQ_TASK", ((1024*1)/sizeof(portBASE_TYPE)), (void *)pgSPDIODev, 1 + PRIORITIE_OFFSET, &pgSPDIODev->xSDIOIrqTaskHandle);
+#endif
 	if (pdTRUE != ret )
 	{
 		DBG_PRINTF(MODULE_SDIO, LEVEL_ERROR, "SDIO_Device_Init: Create IRQ Task Err(%d)!!\n", ret);

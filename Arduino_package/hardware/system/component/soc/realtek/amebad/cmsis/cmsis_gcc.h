@@ -197,7 +197,11 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_xPSR(void)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PSP(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
   return(result);
@@ -212,7 +216,11 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PSP(void)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_PSP_NS(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
   return(result);
@@ -251,7 +259,11 @@ __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_PSP_NS(uint32_t top
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_MSP(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, msp" : "=r" (result) );
   return(result);
@@ -266,7 +278,11 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_MSP(void)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_MSP_NS(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
   return(result);
@@ -511,7 +527,11 @@ __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_FAULTMASK_NS(uint32
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PSPLIM(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, psplim"  : "=r" (result) );
   return(result);
@@ -527,7 +547,11 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_PSPLIM(void)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_PSPLIM_NS(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, psplim_ns"  : "=r" (result) );
   return(result);
@@ -567,7 +591,11 @@ __attribute__((always_inline)) __STATIC_INLINE void __TZ_set_PSPLIM_NS(uint32_t 
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_MSPLIM(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, msplim" : "=r" (result) );
 
@@ -584,7 +612,11 @@ __attribute__((always_inline)) __STATIC_INLINE uint32_t __get_MSPLIM(void)
  */
 __attribute__((always_inline)) __STATIC_INLINE uint32_t __TZ_get_MSPLIM_NS(void)
 {
+  #if defined(__cplusplus) && (__cplusplus >= 201703L)
+  uint32_t result;
+  #else
   register uint32_t result;
+  #endif
 
   __ASM volatile ("MRS %0, msplim_ns" : "=r" (result) );
   return(result);

@@ -312,7 +312,7 @@ void vPortSVCHandler_C( uint32_t *pulCallerStackAddress ) PRIVILEGED_FUNCTION;
  * @brief Each task maintains its own interrupt status in the critical nesting
  * variable.
  */
-static volatile uint32_t ulCriticalNesting = 0xaaaaaaaaUL;
+static volatile uint32_t ulCriticalNesting = 0UL;
 
 #if( configENABLE_TRUSTZONE == 1 )
 	/**

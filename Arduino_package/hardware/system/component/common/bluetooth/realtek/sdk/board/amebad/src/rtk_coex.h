@@ -3,6 +3,10 @@
  *
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <string.h>
 
@@ -24,4 +28,6 @@ void bt_coex_init(void);
 
 unsigned int send_coex_mailbox_to_wifi_from_BtAPP(uint8_t state);
 
-
+#ifdef __cplusplus
+}
+#endif

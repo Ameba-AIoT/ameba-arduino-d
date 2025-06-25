@@ -106,6 +106,9 @@ void captouch_init (captouch_t *obj)
 			Touch_InitStruct.CT_Channel[ch].CT_ETCPNoiseThr = obj->CT_Channel[ch].CT_ETCPNoiseThr;
 
 			PAD_PullCtrl((_PB_4 + ch), GPIO_PuPd_NOPULL);
+
+			/* Shutdown captouch gpio pin to prevent leakage current */
+			PAD_CMD((_PB_4 + ch), DISABLE);
 		}
 	}
 
@@ -128,11 +131,20 @@ void captouch_deinit (captouch_t *obj)
 {
 	/* To avoid gcc warnings */
 	( void ) obj;
+	u32 ch = 0;
 
 	InterruptDis(CTOUCH_IRQ);
 	InterruptUnRegister(CTOUCH_IRQ);
 	CapTouch_INTConfig(CAPTOUCH_DEV, BIT_CT_ALL_INT_EN, DISABLE);
 	CapTouch_Cmd(CAPTOUCH_DEV, DISABLE);
+	
+	for(ch = 0; ch < CT_CHANNEL_NUM; ch++) {
+		if (obj->CT_Channel[ch].CT_CHEnable == ENABLE) {
+			/* Restore ADC gpio pin to no pull */
+			PAD_CMD((_PB_4 + ch), ENABLE);
+			PAD_PullCtrl((_PB_4 + ch), GPIO_PuPd_NOPULL);
+		}
+	}
 }
 
 /**

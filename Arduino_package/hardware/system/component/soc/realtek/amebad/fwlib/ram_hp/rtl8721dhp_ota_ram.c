@@ -36,9 +36,12 @@ u32 OTA_Change(u32 OTAIdx)
 {
 	u32 BitIdx = 0;
 	u32 ota2_sig[2];
+	u8 EmpSig[8] = {0};
 
+	FLASH_Write_Lock();
 	ota2_sig[0] = HAL_READ32(SPI_FLASH_BASE, OTA2_ADDR);
 	ota2_sig[1] = HAL_READ32(SPI_FLASH_BASE, OTA2_ADDR+4);
+	FLASH_Write_Unlock();
 
 	for(int i = 0; i < 2; i++)
 		DBG_8195A("%x",ota2_sig[i]);
@@ -57,7 +60,7 @@ u32 OTA_Change(u32 OTAIdx)
 			DBG_8195A("currrent is OTA1, select OTA1 \n");
 		} else {
 			DBG_8195A("currrent is OTA1, select OTA2 \n");
-			FLASH_EreaseDwordsXIP(OTA1_ADDR, 2);
+			FLASH_WriteStream(OTA1_ADDR, 8, EmpSig);
 			FLASH_EreaseDwordsXIP(OTA2_ADDR, 2);
 			FLASH_TxData12BXIP(OTA2_ADDR, 8,(u8*)ota2_sig);
 		}
@@ -65,7 +68,7 @@ u32 OTA_Change(u32 OTAIdx)
 		if (OTAIdx == OTA_INDEX_1) {
 			DBG_8195A("currrent is OTA2, select OTA1 \n");
 			FLASH_EreaseDwordsXIP(OTA1_ADDR, 2);
-			FLASH_EreaseDwordsXIP(OTA2_ADDR, 2);
+			FLASH_WriteStream(OTA2_ADDR, 8, EmpSig);
 			FLASH_TxData12BXIP(OTA1_ADDR, 8, (u8*)ota2_sig);
 		} else {
 			DBG_8195A("currrent is OTA2, select OTA2 \n");

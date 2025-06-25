@@ -80,7 +80,23 @@ RTIM_TypeDef* PWM_TIM[2] = {TIMM05, TIM5};
   */
 
 /**
-  * @brief  Return PWM channel number according to pin name.
+  * @brief  Return KM0 PWM channel number according to pin name.
+  * @param  pin: The pin to be told.
+  * @retval value: PWM channel number corresponding to the pin.  
+  */
+u32 pwmout_lp_pin2chan(PinName pin)
+{
+	int i = 0;
+	for(;i < 19;i++){
+		if(pin2chan[i][0] == pin){
+			return (pin2chan[i][1]);
+		}
+	}
+	return NC;
+}
+
+/**
+  * @brief  Return KM4 PWM channel number according to pin name.
   * @param  pin: The pin to be told.
   * @retval value: PWM channel number corresponding to the pin.  
   */
@@ -117,7 +133,58 @@ void pwmout_timer5_init(pwmout_t* obj)
 }
 
 /**
-  * @brief  Initializes the PWM function/registers of the specified pin with default parameters.
+  * @brief  Initializes the KM0 PWM function/registers of the specified pin with default parameters.
+  * @param  obj: PWM object define in application software.
+  * @param  pin: the pinname of specified channel to be set.
+  * @retval none
+  * @note  
+  *             - default period: 1638us
+  *             - default pulse width: 102us
+  *             - default duty cycle: 6.227%
+  */
+void pwmout_lp_init(pwmout_t* obj, PinName pin) 
+{
+	u32 pwm_chan;
+	TIM_CCInitTypeDef TIM_CCInitStruct;
+	uint8_t pwm_tim_idx;
+	
+	pwm_chan = pwmout_lp_pin2chan(pin);
+	if(pwm_chan == NC)
+		DBG_8195A("PinName error: pwm channel of PinName doesn't exist!\n");
+
+	obj->pwm_idx = pwm_chan;
+	obj->period = 0x10000 * (prescaler + 1) / 40;
+	obj->pulse = 0x1000 * (prescaler + 1) / 40;
+
+	pwm_tim_idx = obj->pwm_idx >> BIT_PWM_TIM_IDX_SHIFT;
+	pwm_chan = pwm_chan & (~BIT_PWM_TIM_IDX_FLAG);
+
+	if(pwm_tim_idx && (!timer5_start)) {
+		pwmout_timer5_init(obj);
+	}else if ((!pwm_tim_idx) && (!timer05_start)) {
+		pwmout_timer5_init(obj);
+	}
+
+	RTIM_CCStructInit(&TIM_CCInitStruct);
+	RTIM_CCxInit(PWM_TIM[pwm_tim_idx], &TIM_CCInitStruct, pwm_chan);
+	RTIM_CCxCmd(PWM_TIM[pwm_tim_idx], pwm_chan, TIM_CCx_Enable);
+
+	if ((obj->pwm_idx & BIT_PWM_TIM_IDX_FLAG)) {
+		Pinmux_Config(pin, PINMUX_FUNCTION_PWM_HS);
+	} else {
+		Pinmux_Config(pin, PINMUX_FUNCTION_PWM_LP);
+	}
+	
+	if (obj->pwm_idx & BIT_PWM_TIM_IDX_FLAG) {	
+		km4_ch_start[pwm_chan] = 1;
+	} else {
+		km0_ch_start[pwm_chan] = 1;
+	}
+
+}
+
+/**
+  * @brief  Initializes the KM4 PWM function/registers of the specified pin with default parameters.
   * @param  obj: PWM object define in application software.
   * @param  pin: the pinname of specified channel to be set.
   * @retval none

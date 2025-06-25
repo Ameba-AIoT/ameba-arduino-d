@@ -76,7 +76,11 @@ extern void __attribute__((cmse_nonsecure_call)) (*ns_device_mutex_unlock)(uint3
 #if defined(_WIN32) && !defined(EFIX64) && !defined(EFI32)
 #include <windows.h>
 #else
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 #endif
 
 #if defined(MBEDTLS_FS_IO)

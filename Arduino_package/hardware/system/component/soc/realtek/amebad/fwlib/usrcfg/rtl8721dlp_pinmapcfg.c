@@ -51,7 +51,7 @@ const PMAP_TypeDef pmap_func[]=
 	{_PA_19,		GPIO_PuPd_DOWN,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		TRUE}, //keyscan
 	{_PA_20,		GPIO_PuPd_DOWN,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		TRUE}, //keyscan
 	{_PA_21,		GPIO_PuPd_DOWN,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		TRUE}, //keyscan
-	{_PA_22,		GPIO_PuPd_UP,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		FALSE}, //
+	{_PA_22,		GPIO_PuPd_NOPULL,	GPIO_PuPd_NOPULL,	GPIO_PuPd_KEEP,		FALSE}, //
 	{_PA_23,		GPIO_PuPd_UP,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		FALSE}, //
 	{_PA_24,		GPIO_PuPd_UP,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		FALSE}, //
 	{_PA_25,		GPIO_PuPd_DOWN,		GPIO_PuPd_KEEP,		GPIO_PuPd_KEEP,		TRUE}, //keyscan

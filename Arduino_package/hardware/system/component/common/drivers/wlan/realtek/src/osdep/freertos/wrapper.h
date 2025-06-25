@@ -202,7 +202,7 @@ extern void restore_flags(void);
 			#define MAX_SKB_BUF_SIZE			(HAL_INTERFACE_OVERHEAD_SKB_DATA+RX_DRIVER_INFO+\
 												((TXDESC_SIZE>RXDESC_SIZE)? TXDESC_SIZE:RXDESC_SIZE) +\
 												MAX_RX_PKT_SIZE +\
-												SKB_RESERVED_FOR_SAFETY)	// 0+32+40+1578+0 = 1650
+												SKB_RESERVED_FOR_SAFETY)	// 0+32+40+1578+8 = 1658
 		#endif
 	#endif
 #else
@@ -403,9 +403,16 @@ struct net_device_stats {
 	unsigned long	tx_unicast_packets;
 	unsigned long	tx_broadcast_packets;
 	unsigned long	tx_multicast_packets;
+	unsigned long	tx_unicast_rejected_packets;
+	unsigned long	tx_broadcast_rejected_packets;
+	unsigned long	tx_multicast_rejected_packets;
 	unsigned long	rx_unicast_packets;
 	unsigned long	rx_broadcast_packets;
 	unsigned long	rx_multicast_packets;
+	unsigned long	rx_unicast_rejected_packets;
+	unsigned long	rx_broadcast_rejected_packets;
+	unsigned long	rx_multicast_rejected_packets;
+	unsigned int dynamic_chk_beacon_count;
 };
 
 struct net_device {

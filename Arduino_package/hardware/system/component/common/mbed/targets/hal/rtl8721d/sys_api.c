@@ -52,6 +52,142 @@ void sys_jtag_off(void)
 }
 
 /**
+  * @brief  save default mmu config
+  * @retval none  
+  */
+static inline void mmu_save(u32 MMUIdx, u32 *vAddrSt, u32 *vAddrEnd, u32 *ctrl, u32 *offset)
+{
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+
+    /* save 4 registers */
+	*vAddrSt = RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_STRADDR;
+	*vAddrEnd = RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_ENDADDR;
+	*offset = RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_OFFSET;
+	*ctrl =  RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_CTRL;
+}
+
+/**
+  * @brief  restore default mmu config
+  * @retval none  
+  */
+static inline void mmu_restore(u32 MMUIdx, u32 *vAddrSt, u32 *vAddrEnd, u32 *ctrl, u32 *offset)
+{
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+
+    /* save 4 registers */
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_STRADDR = *vAddrSt;
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_ENDADDR = *vAddrEnd;
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_OFFSET = *offset;
+	RSIP->FLASH_MMU[MMUIdx].MMU_ENTRYx_CTRL = *ctrl;
+}
+
+/**
+  * @brief  clear the signature of current firmware
+  * @retval none
+  */
+void sys_clear_ota_signature_rsip(void)
+{
+	u32 AddrStart, Offset, IsMinus, PhyAddr;
+	u32 FwAddr, DstAddr;
+	u32 ota2_sig[2];
+	u32 mmuRecord[2][4] = {{0, }, };
+	u8 FwSig[8] = {0};
+	u8 EmpSig = 0;
+
+	SYSTEM_DATA* pSysData = (SYSTEM_DATA*)(FLASH_SYSTEM_DATA_ADDR);
+	u32 ImageHeaderAddr = (u32)pSysData->Rsvd01;
+
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+	u32 CtrlTemp = RSIP->FLASH_MMU[0].MMU_ENTRYx_CTRL;
+
+	if (CtrlTemp & MMU_BIT_ENTRY_VALID) {
+		AddrStart = RSIP->FLASH_MMU[0].MMU_ENTRYx_STRADDR;
+		Offset = RSIP->FLASH_MMU[0].MMU_ENTRYx_OFFSET;
+		IsMinus = CtrlTemp & MMU_BIT_ENTRY_OFFSET_MINUS;
+
+		if(IsMinus)
+			PhyAddr = AddrStart - Offset;
+		else
+			PhyAddr = AddrStart + Offset;
+
+		if(PhyAddr == LS_IMG2_OTA1_ADDR){
+			FwAddr = LS_IMG2_OTA1_ADDR;
+			DstAddr = LS_IMG2_OTA2_ADDR;
+		}else{
+			FwAddr = LS_IMG2_OTA2_ADDR;
+			DstAddr = LS_IMG2_OTA1_ADDR;
+		}
+	}
+
+
+	mmu_save(0, &mmuRecord[0][0], &mmuRecord[0][1], &mmuRecord[0][2], &mmuRecord[0][3]);
+	FLASH_Write_Lock();
+	RSIP_MMU_Config(0, 0x0C000000, 0x0C000000 + 4096 - 1, 1, 0x0C000000 - (DstAddr - SPI_FLASH_BASE));
+	ota2_sig[0] = HAL_READ32(0x0C000000, 0);
+	ota2_sig[1] = HAL_READ32(0x0C000000, 4);
+	mmu_restore(0, &mmuRecord[0][0], &mmuRecord[0][1], &mmuRecord[0][2], &mmuRecord[0][3]);
+	FLASH_Write_Unlock();
+
+	if (ota2_sig[0] == 0x35393138 && ota2_sig[1] == 0x31313738) {
+		ota_readstream_user(FwAddr - SPI_FLASH_BASE, 8, FwSig);
+		FLASH_EreaseDwordsXIP(ImageHeaderAddr, 2);
+		FLASH_EreaseDwordsXIP(ImageHeaderAddr, 2);
+		FLASH_WriteStream(ImageHeaderAddr, 8, FwSig);
+		FLASH_WriteStream(FwAddr - SPI_FLASH_BASE, 8, &EmpSig);
+	} else {
+		printf("ERROR: ANOTHER IMAGE2 SIGNATURE IS NOT VALIDED, THIS CMD WILL NOT BE EXCUTED!!!\n");
+	}
+}
+
+/**
+  * @brief  recover the signature of the other firmware
+  * @retval none
+  */
+void sys_recover_ota_signature_rsip(void)
+{
+	u32 AddrStart, Offset, IsMinus, PhyAddr;
+	u8 Ota2Use = _FALSE;
+	u32 DstAddr;
+	u32 sig[2]={0x35393138,0x31313738};
+	u8 FwSig[8] = {0};
+
+	SYSTEM_DATA* pSysData = (SYSTEM_DATA*)(FLASH_SYSTEM_DATA_ADDR);
+	u32 ImageHeaderAddr = (u32)pSysData->Rsvd01;
+
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+	u32 CtrlTemp = RSIP->FLASH_MMU[0].MMU_ENTRYx_CTRL;
+
+	/* Get which firmware used */
+	if (CtrlTemp & MMU_BIT_ENTRY_VALID) {
+		AddrStart = RSIP->FLASH_MMU[0].MMU_ENTRYx_STRADDR;
+		Offset = RSIP->FLASH_MMU[0].MMU_ENTRYx_OFFSET;
+		IsMinus = CtrlTemp & MMU_BIT_ENTRY_OFFSET_MINUS;
+
+		if(IsMinus)
+			PhyAddr = AddrStart - Offset;
+		else
+			PhyAddr = AddrStart + Offset;
+
+		if(PhyAddr == LS_IMG2_OTA1_ADDR)
+			Ota2Use = _FALSE;
+		else
+			Ota2Use = _TRUE;
+	}
+
+	if(Ota2Use) {
+//		CurAddr = LS_IMG2_OTA2_ADDR;
+		DstAddr = LS_IMG2_OTA1_ADDR;
+	} else {
+//		CurAddr = LS_IMG2_OTA1_ADDR;
+		DstAddr = LS_IMG2_OTA2_ADDR;
+	}
+	FLASH_EreaseDwordsXIP(DstAddr-SPI_FLASH_BASE, 2);
+	FLASH_EreaseDwordsXIP(DstAddr-SPI_FLASH_BASE, 2);
+	ota_readstream_user(ImageHeaderAddr, 8, FwSig);
+	FLASH_TxData12BXIP(DstAddr-SPI_FLASH_BASE, 8, FwSig);
+}
+
+/**
   * @brief  clear the signature of current firmware
   * @retval none
   */

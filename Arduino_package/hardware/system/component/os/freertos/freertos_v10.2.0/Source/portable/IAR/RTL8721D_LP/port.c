@@ -60,7 +60,7 @@ FreeRTOS.org versions prior to V4.3.0 did not include this definition. */
 
 /* Each task maintains its own interrupt status in the critical nesting
 variable. */
-static UBaseType_t uxCriticalNesting = 0xaaaaaaaa;
+static UBaseType_t uxCriticalNesting = 0UL;
 
 /*
  * Setup the timer to generate the tick interrupts.

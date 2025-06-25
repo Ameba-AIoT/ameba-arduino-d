@@ -177,33 +177,28 @@ int mbedtls_gcm_setkey( mbedtls_gcm_context *ctx,
 			default : return(MBEDTLS_ERR_GCM_BAD_INPUT);
 		}
 		memcpy(ctx->key, key, ctx->keybytes);
-
-		return 0;
 	}
 #endif
-#ifdef SUPPORT_HW_SW_CRYPTO
-	else{
-		cipher_info = mbedtls_cipher_info_from_values( cipher, keybits, MBEDTLS_MODE_ECB );
-		if( cipher_info == NULL )
-			return( MBEDTLS_ERR_GCM_BAD_INPUT );
 
-		if( cipher_info->block_size != 16 )
-			return( MBEDTLS_ERR_GCM_BAD_INPUT );
+	cipher_info = mbedtls_cipher_info_from_values( cipher, keybits, MBEDTLS_MODE_ECB );
+	if( cipher_info == NULL )
+		return( MBEDTLS_ERR_GCM_BAD_INPUT );
 
-		mbedtls_cipher_free( &ctx->cipher_ctx );
+	if( cipher_info->block_size != 16 )
+		return( MBEDTLS_ERR_GCM_BAD_INPUT );
 
-		if( ( ret = mbedtls_cipher_setup( &ctx->cipher_ctx, cipher_info ) ) != 0 )
-			return( ret );
+	mbedtls_cipher_free( &ctx->cipher_ctx );
 
-		if( ( ret = mbedtls_cipher_setkey( &ctx->cipher_ctx, key, keybits, MBEDTLS_ENCRYPT ) ) != 0 )
-		{
-			return( ret );
-		}
+	if( ( ret = mbedtls_cipher_setup( &ctx->cipher_ctx, cipher_info ) ) != 0 )
+		return( ret );
 
-		if( ( ret = gcm_gen_table( ctx ) ) != 0 )
-			return( ret );
+	if( ( ret = mbedtls_cipher_setkey( &ctx->cipher_ctx, key, keybits, MBEDTLS_ENCRYPT ) ) != 0 )
+	{
+		return( ret );
 	}
-#endif
+
+	if( ( ret = gcm_gen_table( ctx ) ) != 0 )
+		return( ret );
 
 	return( 0 );
 }
@@ -471,7 +466,7 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
 	int ret;
 
 #ifdef RTL_HW_CRYPTO
-	if(rom_ssl_ram_map.use_hw_crypto_func)
+	if(rom_ssl_ram_map.use_hw_crypto_func && length < RTL_CRYPTO_FRAGMENT)
 	{
 
 		if((ret = rom_ssl_ram_map.hw_crypto_aes_gcm_init( ctx->key, ctx->keybytes)) != 0 ){
@@ -489,9 +484,9 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
 			}
 		}
 	}
+	else
 #endif
-#ifdef SUPPORT_HW_SW_CRYPTO
-	else{
+	{
 		if( ( ret = mbedtls_gcm_starts( ctx, mode, iv, iv_len, add, add_len ) ) != 0 )
 			return( ret );
 
@@ -501,7 +496,6 @@ int mbedtls_gcm_crypt_and_tag( mbedtls_gcm_context *ctx,
 		if( ( ret = mbedtls_gcm_finish( ctx, tag, tag_len ) ) != 0 )
 			return( ret );
 	}
-#endif
 	return( 0 );
 }
 

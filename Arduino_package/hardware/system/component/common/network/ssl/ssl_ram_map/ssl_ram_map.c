@@ -86,7 +86,7 @@ int platform_set_malloc_free( void * (*malloc_func)( size_t ),
 #endif
 
 	/* Variables */
-	rom_ssl_ram_map.use_hw_crypto_func = 1;
+	rom_ssl_ram_map.use_hw_crypto_func = 0;
 
 	return 0;
 }

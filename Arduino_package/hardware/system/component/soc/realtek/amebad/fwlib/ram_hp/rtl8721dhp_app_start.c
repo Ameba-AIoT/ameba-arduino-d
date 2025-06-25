@@ -27,6 +27,8 @@ extern u32 GlobalDebugEnable;
 struct _driver_call_os_func_map driver_call_os_func_map;
 void NS_ENTRY BOOT_IMG3(void);
 extern void INT_HardFault_C(uint32_t mstack[], uint32_t pstack[], uint32_t lr_value, uint32_t fault_id);
+extern void cm_backtrace_fault(uint32_t fault_handler_sp, uint32_t fault_handler_lr);
+extern void cm_backtrace_init(const char *firmware_name, const char *hardware_ver, const char *software_ver);
 void app_init_psram(void);
 void app_section_init(void)
 {
@@ -148,6 +150,9 @@ void _init(void) {}
 
 void INT_HardFault_Patch_C(uint32_t mstack[], uint32_t pstack[], uint32_t lr_value, uint32_t fault_id)
 {
+	/* To avoid gcc warnings */
+	( void ) fault_id;
+
 	u8 IsPstack = 0;
 
 	DBG_8195A("\r\nHard Fault Patch (Non-secure)\r\n");
@@ -166,17 +171,8 @@ void INT_HardFault_Patch_C(uint32_t mstack[], uint32_t pstack[], uint32_t lr_val
 		}
 	}
 
-#if defined(CONFIG_EXAMPLE_CM_BACKTRACE) && CONFIG_EXAMPLE_CM_BACKTRACE
-	cm_backtrace_fault(IsPstack ? pstack : mstack, lr_value);
+	cm_backtrace_fault((uint32_t)(IsPstack ? pstack : mstack), lr_value);
 	while(1);
-#else
-
-	if(IsPstack)
-		mstack = pstack;
-
-	INT_HardFault_C(mstack, pstack, lr_value, fault_id);
-#endif	
-	
 }
 
 VOID
@@ -290,7 +286,8 @@ u32 app_psram_resume(u32 expected_idle_time, void *param)
 	( void ) expected_idle_time;
 	( void ) param;
 
-    u32 temp;
+    u32 temp = 0;
+	( void ) temp;
 
 	if((SLEEP_PG == pmu_get_sleep_type()) || (FALSE == psram_dev_config.psram_dev_retention)) {
 		app_init_psram();
@@ -347,9 +344,10 @@ void app_init_psram(void)
 	pmu_register_sleep_callback(PMU_PSRAM_DEVICE, (PSM_HOOK_FUN)app_psram_suspend, NULL, (PSM_HOOK_FUN)app_psram_resume, NULL);
 }
 
-static void* app_psram_load_ns()
+static void* app_psram_load_ns(void)
 {
-	IMAGE_HEADER *Image2Hdr = (IMAGE_HEADER *)((__flash_text_start__) - IMAGE_HEADER_LEN);
+	IMAGE_HEADER *Image2Hdr = NULL;
+	Image2Hdr = (IMAGE_HEADER *)((__flash_text_start__) - IMAGE_HEADER_LEN);
 	IMAGE_HEADER * Image2DataHdr = (IMAGE_HEADER *)(__flash_text_start__ + Image2Hdr->image_size);
 	IMAGE_HEADER *PsramHdr =  (IMAGE_HEADER *)((u32)Image2DataHdr + IMAGE_HEADER_LEN + Image2DataHdr->image_size);
 
@@ -367,7 +365,7 @@ static void* app_psram_load_ns()
     return NULL;
 }
 
-static void* app_psram_load_s()
+static void* app_psram_load_s(void)
 {
 #if defined (configENABLE_TRUSTZONE) && (configENABLE_TRUSTZONE == 1U)
 	load_psram_image_s();
@@ -380,6 +378,23 @@ static void app_driver_call_os_func_init(void)
 {
 	driver_call_os_func_map.driver_enter_critical = vPortEnterCritical;
 	driver_call_os_func_map.driver_exit_critical = vPortExitCritical;
+}
+
+void app_init_debug(void)
+{
+	u32 debug[4];
+
+	debug[LEVEL_ERROR] = BIT(MODULE_BOOT);
+	debug[LEVEL_WARN]  = 0x0;
+	debug[LEVEL_INFO]  = BIT(MODULE_BOOT);
+	debug[LEVEL_TRACE] = 0x0;
+
+	debug[LEVEL_ERROR] = 0xFFFFFFFF;
+
+	LOG_MASK(LEVEL_ERROR, debug[LEVEL_ERROR]);
+	LOG_MASK(LEVEL_WARN, debug[LEVEL_WARN]);
+	LOG_MASK(LEVEL_INFO, debug[LEVEL_INFO]);
+	LOG_MASK(LEVEL_TRACE, debug[LEVEL_TRACE]);
 }
 
 // The Main App entry point
@@ -402,7 +417,7 @@ void app_start(void)
 
 	DBG_PRINTF(MODULE_BOOT, LEVEL_INFO,"KM4 BOOT REASON: %x \n", BOOT_Reason());
 	
-	SystemCoreClockUpdate();
+	SystemSetCpuClk(CPU_CLOCK_SEL_VALUE);
 	
 	SOCPS_InitSYSIRQ_HP();
 	
@@ -450,6 +465,14 @@ extern void __libc_init_array(void);
 	assert_param(sizeof(RRAM_TypeDef) <= 0xB0);
 
 	app_driver_call_os_func_init();
+
+	app_init_debug();
+
+#if defined ( __GNUC__ )
+	cm_backtrace_init("target_img2", "HW v1.0", "SW v1.0");
+#elif defined(__ICCARM__)
+	cm_backtrace_init("km4_application.dbg", "HW v1.0", "SW v1.0");
+#endif
 
 	main(); /* project/xxxx/src/main.c */
 }

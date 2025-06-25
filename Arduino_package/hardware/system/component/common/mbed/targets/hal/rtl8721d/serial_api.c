@@ -146,20 +146,18 @@ uart_dmasend_complete(
 	PGDMA_InitTypeDef GDMA_InitStruct;
 
 	puart_adapter->TxCount = 0;
-	
+
 	GDMA_InitStruct = &puart_adapter->UARTTxGdmaInitStruct;
 
-	// Clean Auto Reload Bit
-	GDMA_ChCleanAutoReload(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, CLEAN_RELOAD_DST);
-
-	// Clear Pending ISR
-	GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+	if (serial_dma_en[puart_adapter->UartIndex] & SERIAL_TX_DMA_EN) {
+		GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+		GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
+		GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+		serial_dma_en[puart_adapter->UartIndex] &= ~SERIAL_TX_DMA_EN;
+	}
 
 	/*disable UART TX DMA*/
 	UART_TXDMACmd(puart_adapter->UARTx, DISABLE);
-
-	GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
-	GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
 
 	UART_SetTxFlag(puart_adapter->UartIndex, 0);
 
@@ -167,7 +165,7 @@ uart_dmasend_complete(
 	if (NULL != puart_adapter->TxCompCallback) {
 		puart_adapter->TxCompCallback(puart_adapter->TxCompCbPara);
 	}
-	
+
 	return 0;
 }
 
@@ -183,22 +181,20 @@ uart_dmarecv_complete(
 	GDMA_InitStruct = &puart_adapter->UARTRxGdmaInitStruct;
 
 #ifdef UART_USE_GTIMER_TO
-	RTIM_Cmd(TIMx[UART_TIMER_ID], DISABLE);  
+	RTIM_Cmd(TIMx[UART_TIMER_ID], DISABLE);
 
 	uart_gtimer_deinit();
 #endif
 
-	// Clean Auto Reload Bit
-	GDMA_ChCleanAutoReload(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, CLEAN_RELOAD_SRC);
-
-	// Clear Pending ISR
-	GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+	if (serial_dma_en[puart_adapter->UartIndex] & SERIAL_RX_DMA_EN) {
+		GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+		GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
+		GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+		serial_dma_en[puart_adapter->UartIndex] &= ~SERIAL_RX_DMA_EN;
+	}
 
 	/*disable UART RX DMA*/
 	UART_RXDMACmd(puart_adapter->UARTx, DISABLE);
-
-	GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
-	GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
 
 	// Check the Line Status
 	//LineStatus = (u8)UART_LineStatusGet(puart_adapter->UARTx);
@@ -210,9 +206,9 @@ uart_dmarecv_complete(
 	
 	// Call User Rx complete callback
 	if (puart_adapter->RxCompCallback != NULL) {
-		puart_adapter->RxCompCallback (puart_adapter->RxCompCbPara);
+		puart_adapter->RxCompCallback(puart_adapter->RxCompCbPara);
 	}
-	
+
 	return 0;
 }
 
@@ -322,7 +318,7 @@ uart_irqhandler(
 	break;
 
 	case RUART_TX_FIFO_EMPTY:
-		if (UART_GetTxFlag(puart_adapter->UartIndex)) {
+		if (UART_GetTxFlag(puart_adapter->UartIndex) == STATETX_INT) {
 			int cnt=16;
 			while(cnt>0&&puart_adapter->TxCount>0){
 				UART_CharPut(puart_adapter->UARTx, *puart_adapter->pTxBuf);
@@ -516,9 +512,10 @@ void serial_init(serial_t *obj, PinName tx, PinName rx)
 	/* Configure the UART pins */
 	pinmap_pinout(tx, PinMap_UART_TX);
 	pinmap_pinout(rx, PinMap_UART_RX);
+
 	pin_mode(tx, PullUp);
 	pin_mode(rx, PullUp);
-	
+
 
 	UART_StructInit(&puart_adapter->UART_InitStruct);
 	UART_Init(puart_adapter->UARTx, &puart_adapter->UART_InitStruct);
@@ -540,7 +537,7 @@ void serial_init(serial_t *obj, PinName tx, PinName rx)
   * @param  obj: uart object define in application software.
   * @retval none  
   */
-void serial_free(serial_t *obj) 
+void serial_free(serial_t *obj)
 {
 	PMBED_UART_ADAPTER puart_adapter = &(uart_adapter[obj->uart_idx]);
 
@@ -548,24 +545,34 @@ void serial_free(serial_t *obj)
 
 	InterruptDis(puart_adapter->IrqNum);
 	InterruptUnRegister(puart_adapter->IrqNum);
-	
+
 #ifdef UART_USE_GTIMER_TO
 	uart_gtimer_deinit();
 #endif
 
 #ifdef CONFIG_GDMA_EN
 	if (serial_dma_en[obj->uart_idx] & SERIAL_RX_DMA_EN) {
-		GDMA_ChnlFree(puart_adapter->UARTRxGdmaInitStruct.GDMA_Index,
-		puart_adapter->UARTRxGdmaInitStruct.GDMA_ChNum);	
+		GDMA_ClearINT(puart_adapter->UARTRxGdmaInitStruct.GDMA_Index, puart_adapter->UARTRxGdmaInitStruct.GDMA_ChNum);
+		/* note: Disabing GDMA chan may fail by calling GDMA_Cmd() while GDMA chan is still working. */
+		GDMA_Abort(puart_adapter->UARTRxGdmaInitStruct.GDMA_Index, puart_adapter->UARTRxGdmaInitStruct.GDMA_ChNum);
+		GDMA_ChnlFree(puart_adapter->UARTRxGdmaInitStruct.GDMA_Index, puart_adapter->UARTRxGdmaInitStruct.GDMA_ChNum);
 		serial_dma_en[obj->uart_idx] &= ~SERIAL_RX_DMA_EN;
+		UART_RXDMACmd(puart_adapter->UARTx, DISABLE);
 	}
 
 	if (serial_dma_en[obj->uart_idx] & SERIAL_TX_DMA_EN) {
-		GDMA_ChnlFree(puart_adapter->UARTTxGdmaInitStruct.GDMA_Index,
-		puart_adapter->UARTTxGdmaInitStruct.GDMA_ChNum);
+		GDMA_ClearINT(puart_adapter->UARTTxGdmaInitStruct.GDMA_Index, puart_adapter->UARTTxGdmaInitStruct.GDMA_ChNum);
+		/* note: Disabing GDMA chan may fail by calling GDMA_Cmd() while GDMA chan is still working. */
+		GDMA_Abort(puart_adapter->UARTTxGdmaInitStruct.GDMA_Index, puart_adapter->UARTTxGdmaInitStruct.GDMA_ChNum);
+		GDMA_ChnlFree(puart_adapter->UARTTxGdmaInitStruct.GDMA_Index, puart_adapter->UARTTxGdmaInitStruct.GDMA_ChNum);
 		serial_dma_en[obj->uart_idx] &= ~SERIAL_TX_DMA_EN;
-	}    
+		UART_TXDMACmd(puart_adapter->UARTx, DISABLE);
+	}
 #endif
+
+	UART_SetRxFlag(obj->uart_idx, 0);
+	UART_SetTxFlag(obj->uart_idx, 0);
+
 	// TODO: recovery Pin Mux
 
 }
@@ -994,8 +1001,6 @@ int32_t serial_recv_stream_dma (serial_t *obj, char *prxbuf, uint32_t len)
 
 	// Disable Rx interrupt
 	UART_INTConfig(puart_adapter->UARTx, (RUART_IER_ERBI | RUART_IER_ELSI | RUART_IER_ETOI), DISABLE);
-	UART_RXDMAConfig(puart_adapter->UARTx, 4);
-	UART_RXDMACmd(puart_adapter->UARTx, ENABLE);
 
 	ret1 = UART_RXGDMA_Init(puart_adapter->UartIndex, &puart_adapter->UARTRxGdmaInitStruct,
 		puart_adapter, uart_dmarecv_irqhandler,
@@ -1011,6 +1016,8 @@ int32_t serial_recv_stream_dma (serial_t *obj, char *prxbuf, uint32_t len)
 		}
 	}
 	
+	UART_RXDMAConfig(puart_adapter->UARTx, 4);
+	UART_RXDMACmd(puart_adapter->UARTx, ENABLE);
 	#ifdef UART_USE_GTIMER_TO
 	uart_gtimer_init(puart_adapter, UART_TIMER_TO);
 	RTIM_Cmd(TIMx[UART_TIMER_ID], ENABLE);
@@ -1047,8 +1054,6 @@ int32_t serial_send_stream_dma (serial_t *obj, char *ptxbuf, uint32_t len)
 
 	UART_SetTxFlag(puart_adapter->UartIndex, STATETX_DMA);
 
-	UART_TXDMAConfig(puart_adapter->UARTx, 8);
-	UART_TXDMACmd(puart_adapter->UARTx, ENABLE);
 
 	ret1 = UART_TXGDMA_Init(puart_adapter->UartIndex, &puart_adapter->UARTTxGdmaInitStruct,
 		puart_adapter, uart_dmasend_complete,
@@ -1064,6 +1069,8 @@ int32_t serial_send_stream_dma (serial_t *obj, char *ptxbuf, uint32_t len)
 		}
 	}
 	
+	UART_TXDMAConfig(puart_adapter->UARTx, 8);
+	UART_TXDMACmd(puart_adapter->UARTx, ENABLE);
 	return (ret);
 }
 
@@ -1091,19 +1098,19 @@ int32_t serial_send_stream_abort (serial_t *obj)
 			PGDMA_InitTypeDef GDMA_InitStruct = &puart_adapter->UARTTxGdmaInitStruct;
 
 			Current_Addr = GDMA_GetSrcAddr(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
-			GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
 
-			puart_adapter->TxCount = puart_adapter->TxCount - (Current_Addr - (u32)puart_adapter->pTxBuf);
-			puart_adapter->pTxBuf = (u8*)Current_Addr;
-			
-			// Clean Auto Reload Bit
-			GDMA_ChCleanAutoReload(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, CLEAN_RELOAD_DST);
-			// Clear Pending ISR
-			GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
-			//GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
-			GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+			if (serial_dma_en[obj->uart_idx] & SERIAL_TX_DMA_EN) {
+				GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+				/* note: Disabing GDMA chan may fail by calling GDMA_Cmd() while GDMA chan is still working. */
+				GDMA_Abort(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+				GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+				serial_dma_en[obj->uart_idx] &= ~SERIAL_TX_DMA_EN;
+			}
 
 			UART_TXDMACmd(puart_adapter->UARTx, DISABLE);
+
+			puart_adapter->TxCount = puart_adapter->TxCount - (Current_Addr - (u32)puart_adapter->pTxBuf);
+			puart_adapter->pTxBuf = (u8 *)Current_Addr;
 		}
 	}
 
@@ -1142,23 +1149,24 @@ int32_t serial_recv_stream_abort (serial_t *obj)
 
 			/*when stream DMA mode used, some data may be in uart rx fifo, get it if transmission aborted*/
 			Current_Addr = GDMA_GetDstAddr(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
-			GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
-			
+
+			if (serial_dma_en[obj->uart_idx] & SERIAL_RX_DMA_EN) {
+				GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+				/* note: Disabing GDMA chan may fail by calling GDMA_Cmd() while GDMA chan is still working. */
+				GDMA_Abort(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+				GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
+				serial_dma_en[obj->uart_idx] &= ~SERIAL_RX_DMA_EN;
+			}
+
+			UART_RXDMACmd(puart_adapter->UARTx, DISABLE);
+
 			puart_adapter->RxCount = puart_adapter->RxCount - (Current_Addr - (u32)puart_adapter->pRxBuf);
-			puart_adapter->pRxBuf = (u8*)Current_Addr;
+			puart_adapter->pRxBuf = (u8 *)Current_Addr;
 
 			TransCnt = UART_ReceiveDataTO(puart_adapter->UARTx, puart_adapter->pRxBuf,
-				puart_adapter->RxCount, 1);
+										  puart_adapter->RxCount, 1);
 			puart_adapter->RxCount -= TransCnt;
 			puart_adapter->pRxBuf += TransCnt;
-					
-			// Clean Auto Reload Bit
-			GDMA_ChCleanAutoReload(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, CLEAN_RELOAD_DST);
-			// Clear Pending ISR
-			GDMA_ClearINT(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
-			//GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, DISABLE);
-			GDMA_ChnlFree(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum);
-			UART_RXDMACmd(puart_adapter->UARTx, DISABLE);		
 		}
 	}
 	
@@ -1433,12 +1441,8 @@ int32_t serial_recv_stream_dma_timeout(serial_t *obj,
 	
 	UART_SetRxFlag(puart_adapter->UartIndex, STATERX_DMA);
 
-
 	// Disable Rx interrupt
 	UART_INTConfig(puart_adapter->UARTx, (RUART_IER_ERBI | RUART_IER_ELSI | RUART_IER_ETOI), DISABLE);
-	UART_RXDMAConfig(puart_adapter->UARTx, 4);
-	UART_RXDMACmd(puart_adapter->UARTx, ENABLE);
-
 
 	ret1 = UART_RXGDMA_Init(puart_adapter->UartIndex, &puart_adapter->UARTRxGdmaInitStruct,
 		puart_adapter, uart_dmarecv_irqhandler,
@@ -1453,6 +1457,8 @@ int32_t serial_recv_stream_dma_timeout(serial_t *obj,
 			return HAL_BUSY;
 		}
 	}	
+	UART_RXDMAConfig(puart_adapter->UARTx, 4);
+	UART_RXDMACmd(puart_adapter->UARTx, ENABLE);
 	return (ret);
 }
 

@@ -142,6 +142,36 @@
   * @}
   */
 
+/** @defgroup CODEC_micbst_mute_action AUDIO Codec Micbst Mute Action
+  * @{
+  */
+#define UNMUTE	        ((u32)0x00000000)
+#define MUTE	     	((u32)0x00000001)
+
+/**
+  * @}
+  */
+
+/** @defgroup CODEC_micbst_mute_control AUDIO Codec Micbst Mute Control
+  * @{
+  */
+#define MICIN	        ((u32)0x00000000)
+#define LINEIN	     	((u32)0x00000001)
+
+/**
+  * @}
+  */
+
+/** @defgroup CODEC_select_amic AUDIO Codec Select Amic
+  * @{
+  */
+#define AMIC1							((u32)0x00000001)
+#define AMIC2							((u32)0x00000002)
+
+/**
+  * @}
+  */
+
 /** @defgroup CODEC_application_mode AUDIO CODEC Application Mode
   * @{
   */
@@ -150,6 +180,7 @@
 #define APP_LINE_IN		((u32)0x00000004)
 #define APP_LINE_OUT	((u32)0x00000008)
 #define APP_DAAD_LPBK	((u32)0x00000010)
+#define APP_HP_OUT	    ((u32)0x00000020)
 
 /**
   * @}
@@ -650,7 +681,7 @@ void CODEC_MutePlay(u32 mute_lch, u32 mute_rch);
 void CODEC_DeInit(u32 application);
 void CODEC_DacEqConfig(u32 sample_rate);
 void CODEC_SetALC(u32 limiter_val);
-void CODEDC_ALC_deinit();
+void CODEDC_ALC_deinit(void);
 /**
   * @}
   */

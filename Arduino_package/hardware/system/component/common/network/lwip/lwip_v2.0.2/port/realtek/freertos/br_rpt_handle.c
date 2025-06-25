@@ -225,7 +225,7 @@ static uint32_t checksum32(uint32_t start_value, uint8_t *data, size_t len)
 {
     uint32_t checksum32 = start_value;
     uint16_t data16 = 0;
-    int i;
+    uint32_t i;
 
     for(i = 0; i < (len / 2 * 2); i += 2) {
             data16 = (data[i] << 8) | data[i + 1];
@@ -1005,7 +1005,7 @@ int nat25_db_handle(struct netif *br, struct pbuf *pd, int method)
     struct br_rpt_ip6_addr ip6_address_src,ip6_address_dest;
     struct br_rpt_ip6_addr *pip6_address_src=&ip6_address_src, *pip6_address_dest= &ip6_address_dest;
     struct br_rpt_ip6_hdr  *ip6h = (struct br_rpt_ip6_hdr *)(data + ETH_HLEN);
-    if (sizeof(struct br_rpt_ip6_hdr) >= (pd->len - ETH_HLEN))
+    if (sizeof(struct br_rpt_ip6_hdr) >= (u32_t)(pd->len - ETH_HLEN))
     {
       printf("\n\rNAT25: malformed IPv6 packet !");
       return -1;

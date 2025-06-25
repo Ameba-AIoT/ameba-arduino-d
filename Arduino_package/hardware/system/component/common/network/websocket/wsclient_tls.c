@@ -2,16 +2,6 @@
 #include <websocket/libwsclient.h>
 #include "FreeRTOS.h"
 
-#if (WSCLIENT_USE_TLS == WSCLIENT_TLS_POLARSSL)
-#include "polarssl/net.h"
-#include "polarssl/ssl.h"
-#include <polarssl/memory.h>
-
-struct wss_tls{
-	ssl_context ctx;
-};
-
-#elif (WSCLIENT_USE_TLS == WSCLIENT_TLS_MBEDTLS)
 #include "mbedtls/ssl.h"
 #include "mbedtls/net_sockets.h"
 
@@ -46,52 +36,10 @@ static char *ws_itoa(int value){
 
 	return val_str;
 }
-#endif /* WSCLIENT_USE_TLS */
 
 int ws_random(void *p_rng, unsigned char *output, size_t output_len);
 extern int mbedtls_platform_set_calloc_free( void * (*calloc_func)( size_t, size_t ), void (*free_func)( void * ) );
 void *wss_tls_connect(int *sock , char *host, int port){
-#if (WSCLIENT_USE_TLS == WSCLIENT_TLS_POLARSSL)
-	int ret;
-	struct wss_tls *tls =NULL;
-
-	memory_set_own(pvPortMalloc, vPortFree);
-	tls = (struct wss_tls *) malloc(sizeof(struct wss_tls));
-
-	if(tls){
-		ssl_context *ssl = &tls->ctx;
-		memset(tls, 0, sizeof(struct wss_tls));
-
-		if((ret = net_connect(sock, host, port)) != 0){
-			printf("\n[WSCLIENT] ERROR: net_connect %d\n", ret);
-			goto exit;
-	}
-
-		if((ret = ssl_init(ssl)) != 0){
-			printf("\n[WSCLIENT] ERROR: ssl_init %d\n", ret);
-			goto exit;
-		}
-
-		ssl_set_endpoint(ssl, 0);
-		ssl_set_authmode(ssl, 0);
-		ssl_set_rng(ssl, ws_random, NULL);
-		ssl_set_bio(ssl, net_recv, sock, net_send, sock);
-	}
-	else{
-		printf("\n[WSCLIENT] ERROR: malloc\n");
-		ret = -1;
-		goto exit;
-	}
-exit:
-	if(ret && tls) {
-		net_close(*sock);
-		ssl_free(&tls->ctx);
-		free(tls);
-		tls = NULL;
-	}
-	return (void *) tls;
-
-#elif (WSCLIENT_USE_TLS == WSCLIENT_TLS_MBEDTLS)
 	int ret;
 	struct wss_tls *tls =NULL;
 
@@ -119,6 +67,9 @@ exit:
 		mbedtls_ssl_config_init(conf); 
 		mbedtls_ssl_set_bio(ssl, server_fd, mbedtls_net_send, mbedtls_net_recv, NULL);
 
+#if defined(MBEDTLS_PSA_CRYPTO_C) && defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03040000)
+	psa_crypto_init();
+#endif
  		if((ret = mbedtls_ssl_config_defaults(conf,
 				MBEDTLS_SSL_IS_CLIENT,
 				MBEDTLS_SSL_TRANSPORT_STREAM,
@@ -130,8 +81,8 @@ exit:
 		mbedtls_ssl_conf_authmode(conf, MBEDTLS_SSL_VERIFY_NONE);
 		mbedtls_ssl_conf_rng(conf, ws_random, NULL);
 
-#if MBEDTLS_SSL_MAX_CONTENT_LEN == 4096
-		if(ret = mbedtls_ssl_conf_max_frag_len(conf, MBEDTLS_SSL_MAX_FRAG_LEN_4096) < 0) {
+#if defined(MBEDTLS_SSL_MAX_CONTENT_LEN) && (MBEDTLS_SSL_MAX_CONTENT_LEN == 4096)
+		if ((ret = mbedtls_ssl_conf_max_frag_len(conf, MBEDTLS_SSL_MAX_FRAG_LEN_4096)) < 0) {
 			printf("\n[WSCLIENT] ERROR: mbedtls_ssl_conf_max_frag_len %d\n", ret);
 			goto exit;
 		}
@@ -156,25 +107,11 @@ exit:
 		tls = NULL;
 	}
 	return (void *) tls;
-#endif /* WSCLIENT_USE_TLS */
 }
 
 int wss_tls_handshake(void *tls_in){
 	struct wss_tls *tls = (struct wss_tls *) tls_in;
 
-#if (WSCLIENT_USE_TLS == WSCLIENT_TLS_POLARSSL)	
-	int ret;
-
-	if((ret = ssl_handshake(&tls->ctx)) != 0) {
-		printf("\n[WSCLIENT] ERROR: ssl_handshake %d\n", ret);
-		ret = -1;
-	}
-	else {
-		printf("\n[WSCLIENT] Use ciphersuite %s\n", ssl_get_ciphersuite(&tls->ctx));
-	}
-
-	return ret;
-#elif (WSCLIENT_USE_TLS == WSCLIENT_TLS_MBEDTLS)
 	int ret;
 
 	if((ret = mbedtls_ssl_handshake(&tls->ctx)) != 0) {
@@ -186,25 +123,12 @@ int wss_tls_handshake(void *tls_in){
 	}
 
 	return ret;
-#endif /* WSCLIENT_USE_TLS */
 }
 
 
 void wss_tls_close(void *tls_in,int *sock){
 	struct wss_tls *tls = (struct wss_tls *) tls_in;
 
-#if (WSCLIENT_USE_TLS == WSCLIENT_TLS_POLARSSL)
-	if(tls)
-		ssl_close_notify(&tls->ctx);
-
-	if(*sock != -1){
-		net_close(*sock);
-		*sock = -1;
-	}
-	ssl_free(&tls->ctx);
-	free(tls);
-	tls = NULL;
-#elif (WSCLIENT_USE_TLS == WSCLIENT_TLS_MBEDTLS)
 	if(tls)
 		mbedtls_ssl_close_notify(&tls->ctx);
 
@@ -217,22 +141,16 @@ void wss_tls_close(void *tls_in,int *sock){
 		mbedtls_ssl_config_free(&tls->conf);
 	free(tls);
 	tls = NULL;
-#endif /* WSCLIENT_USE_TLS */
 }
 
 int wss_tls_write(void *tls_in, char *request, int request_len){
 	int ret;
 	struct wss_tls *tls = (struct wss_tls *) tls_in;
 
-#if (WSCLIENT_USE_TLS == WSCLIENT_TLS_POLARSSL)
-	ret = ssl_write(&tls->ctx, request, request_len);
-	if(ret == POLARSSL_ERR_NET_WANT_READ || ret == POLARSSL_ERR_NET_WANT_WRITE)
-		ret = 0;
-#elif (WSCLIENT_USE_TLS == WSCLIENT_TLS_MBEDTLS)
 	ret = mbedtls_ssl_write(&tls->ctx, (unsigned char const*)request, request_len);
 	if(ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE)
 		ret = 0;
-#endif /* WSCLIENT_USE_TLS */
+
 	return ret;
 }
 
@@ -240,16 +158,10 @@ int wss_tls_read(void *tls_in, char *buffer, int buf_len){
 	int ret;
 	struct wss_tls *tls = (struct wss_tls *) tls_in;
 
-#if (WSCLIENT_USE_TLS == WSCLIENT_TLS_POLARSSL)	
-	ret = ssl_read(&tls->ctx, buffer, buf_len);
-	if(ret == POLARSSL_ERR_NET_WANT_READ || ret == POLARSSL_ERR_NET_WANT_WRITE 
-			|| ret == POLARSSL_ERR_NET_RECV_FAILED)
-		ret =0;
-#elif (WSCLIENT_USE_TLS == WSCLIENT_TLS_MBEDTLS)
 	ret = mbedtls_ssl_read(&tls->ctx, (unsigned char*)buffer, buf_len);
 	if(ret == MBEDTLS_ERR_SSL_WANT_READ || ret == MBEDTLS_ERR_SSL_WANT_WRITE
 			|| ret == MBEDTLS_ERR_NET_RECV_FAILED)
 		ret =0;
-#endif /* WSCLIENT_USE_TLS */
+
 	return ret;
 }

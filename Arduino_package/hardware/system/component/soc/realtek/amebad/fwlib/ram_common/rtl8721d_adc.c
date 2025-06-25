@@ -23,6 +23,10 @@
 
 #include "ameba_soc.h"
 
+ADC_CalParaTypeDef CalParaNorm;
+ADC_CalParaTypeDef CalParaVBat;
+u8 vref_init_done = _FALSE;
+
 /**
   * @brief	 Initializes the parameters in the ADC_InitStruct with default values.
   * @param  ADC_InitStruct: pointer to a ADC_InitTypeDef structure that contains
@@ -60,38 +64,41 @@ void ADC_Init(ADC_InitTypeDef* ADC_InitStruct)
 	u8 len, i;
 	u8 FT_Type;
 	u32 Temp;
-	u32 FT_Type_Address = 0x1F0;
 
 	assert_param(IS_ADC_MODE(ADC_InitStruct->ADC_OpMode));
 	assert_param(IS_ADC_SAMPLE_CLK(ADC_InitStruct->ADC_ClkDiv));
 	assert_param(ADC_InitStruct->ADC_CvlistLen < 16);
 
-	EFUSE_PMAP_READ8(0, FT_Type_Address, &FT_Type, L25EOUTVOLTAGE);
-	FT_Type &= (BIT(1) | BIT(0));
+	/* Calibrate Vref according to EFuse */
+	if (!vref_init_done) {
+		EFUSE_PMAP_READ8(0, VREF_SEL_ADDR, &FT_Type, L25EOUTVOLTAGE);
+		FT_Type &= (BIT(1) | BIT(0));
 
-	if ( FT_Type == 0x2) {
-		/*Set CT_ADC_REG1X_LPAD register with 2'b 00*/
-		Temp = (u32)CapTouch->CT_ADC_REG1X_LPAD;
-		Temp &= ~(BIT(6) | BIT(7));
-		CapTouch->CT_ADC_REG1X_LPAD = Temp;
+		if ( FT_Type == 0x2) {
+			/*Set CT_ADC_REG1X_LPAD register with 2'b 00*/
+			Temp = (u32)CapTouch->CT_ADC_REG1X_LPAD;
+			Temp &= ~(BIT(6) | BIT(7));
+			CapTouch->CT_ADC_REG1X_LPAD = Temp;
 
-		/*Set CT_ADC_REG0X_LPAD register with 3'b 101*/
-		Temp = (u32)CapTouch->CT_ADC_REG0X_LPAD;
-		Temp &= ~(BIT(9));
-		Temp |= (BIT(8) | BIT(10));
-		CapTouch->CT_ADC_REG0X_LPAD = Temp;
+			/*Set CT_ADC_REG0X_LPAD register with 3'b 101*/
+			Temp = (u32)CapTouch->CT_ADC_REG0X_LPAD;
+			Temp &= ~(BIT(9));
+			Temp |= (BIT(8) | BIT(10));
+			CapTouch->CT_ADC_REG0X_LPAD = Temp;
 
-	} else {
-		/*Set CT_ADC_REG1X_LPAD register with 2'b 00*/
-		Temp = (u32)CapTouch->CT_ADC_REG1X_LPAD;
-		Temp &= ~(BIT(6) | BIT(7));
-		CapTouch->CT_ADC_REG1X_LPAD = Temp;
+		} else {
+			/*Set CT_ADC_REG1X_LPAD register with 2'b 00*/
+			Temp = (u32)CapTouch->CT_ADC_REG1X_LPAD;
+			Temp &= ~(BIT(6) | BIT(7));
+			CapTouch->CT_ADC_REG1X_LPAD = Temp;
 
-		/*Set CT_ADC_REG0X_LPAD register with 3'b 100*/
-		Temp = (u32)CapTouch->CT_ADC_REG0X_LPAD;
-		Temp &= ~(BIT(8) | BIT(9));
-		Temp |= BIT(10);
-		CapTouch->CT_ADC_REG0X_LPAD = Temp;
+			/*Set CT_ADC_REG0X_LPAD register with 3'b 100*/
+			Temp = (u32)CapTouch->CT_ADC_REG0X_LPAD;
+			Temp &= ~(BIT(8) | BIT(9));
+			Temp |= BIT(10);
+			CapTouch->CT_ADC_REG0X_LPAD = Temp;
+		}
+		vref_init_done = _TRUE;
 	}
 
 	/* Disable ADC, clear pending interrupt, clear FIFO */
@@ -639,6 +646,195 @@ u32 ADC_RXGDMA_Init(
 	GDMA_Cmd(GDMA_InitStruct->GDMA_Index, GDMA_InitStruct->GDMA_ChNum, ENABLE);
 
 	return _TRUE;
+}
+
+/**
+  * @brief Initialize ADC calibration parameters according to EFuse.
+  * @param CalPara: Pointer to ADC calibration parameter structure.
+  * @param IsVBatChan: Calibration parameter belongs to vbat channel or normal channel.
+  *  This parameter can be one of the following values:
+  *  @arg _TRUE: Calibration parameter belongs to vbat channel.
+  *  @arg _FALSE: Calibration parameter belongs to normal channel.
+  * @retval None.
+  */
+void ADC_InitCalPara(ADC_CalParaTypeDef *CalPara, u8 IsVBatChan)
+{
+	u8 cal_order;
+	u8 index;
+	u8 EfuseBuf[6];
+	u32 AdcCalAddr;
+	u16 K_A, K_B, K_C;
+	s32 ka, kb, kc;
+	u16 OFFSET;
+	u16 GAIN_DIV;
+
+	EFUSE_PMAP_READ8(0, VREF_SEL_ADDR, &cal_order, L25EOUTVOLTAGE);
+	/* [3:2] calibration order */
+	cal_order = (cal_order & 0x0c) >> 2;
+
+	if (cal_order == 2) {
+		/* 2'b10: 2-order calibration */
+		CalPara->order2_cal = _TRUE;
+
+		if (IsVBatChan) {
+			AdcCalAddr = VBAT_2ORDER_ADDR; /* vbat channel 2-order cal */
+		} else {
+			AdcCalAddr = NORM_2ORDER_ADDR; /* normal channel 2-order cal */
+		}
+
+		for (index = 0; index < 6; index++) {
+			EFUSE_PMAP_READ8(0, AdcCalAddr + index, EfuseBuf + index, L25EOUTVOLTAGE);
+		}
+
+		K_A = EfuseBuf[1] << 8 | EfuseBuf[0];
+		K_B = EfuseBuf[3] << 8 | EfuseBuf[2];
+		K_C = EfuseBuf[5] << 8 | EfuseBuf[4];
+
+		if (K_A == 0xFFFF) {
+			if (IsVBatChan) {
+				K_A = 0xFF1C;
+			} else {
+				K_A = 0xFED9;
+			}
+		}
+
+		if (K_B == 0xFFFF) {
+			if (IsVBatChan) {
+				K_B = 0xA4D1;
+			} else {
+				K_B = 0x6D6C;
+			}
+		}
+
+		if (K_C == 0xFFFF) {
+			if (IsVBatChan) {
+				K_C = 0xFD80;
+			} else {
+				K_C = 0xFD1D;
+			}
+		}
+
+		ka = (K_A & BIT15) ? -(0x10000 - K_A) : (K_A & 0x7FFF);
+		kb = (K_B & 0xFFFF);
+		kc = (K_C & BIT15) ? -(0x10000 - K_C) : (K_C & 0x7FFF);
+
+		CalPara->cal_a = ka;
+		CalPara->cal_b = kb;
+		CalPara->cal_c = kc;
+
+	} else if (cal_order == 3) {
+		/* 2'b11: 1-order calibration */
+		CalPara->order2_cal = _FALSE;
+
+		if (IsVBatChan) {
+			AdcCalAddr = VBAT_1ORDER_ADDR; /* vbat channel 1-order cal */
+		} else {
+			AdcCalAddr = NORM_1ORDER_ADDR; /* normal channel 1-order cal */
+		}
+
+		for (index = 0; index < 4; index++) {
+			EFUSE_PMAP_READ8(0, AdcCalAddr + index, EfuseBuf + index, L25EOUTVOLTAGE);
+		}
+
+		OFFSET = EfuseBuf[1] << 8 | EfuseBuf[0];
+		GAIN_DIV = EfuseBuf[3] << 8 | EfuseBuf[2];
+
+		if (OFFSET == 0xFFFF) {
+			OFFSET = 0x9B0;
+		}
+
+		if (GAIN_DIV == 0xFFFF) {
+			GAIN_DIV = 0x2F12;
+		}
+
+		CalPara->cal_offset = OFFSET;
+		CalPara->cal_gain = GAIN_DIV;
+
+	}
+
+	CalPara->init_done = _TRUE;
+}
+
+/**
+  * @brief Get normal channel voltage value in mV.
+  * @param chan_data: ADC conversion data.
+  * @retval ADC voltage value in mV.
+  * @note This function is for all the channels except channel6(VBAT).
+  */
+s32 ADC_GetVoltage(u32 chan_data)
+{
+	s64 ka, kb;
+	s32 kc;
+	u16 offset, gain;
+	s32 ch_vol;
+
+	if (!CalParaNorm.init_done) {
+		ADC_InitCalPara(&CalParaNorm, _FALSE);
+	}
+
+	if (CalParaNorm.order2_cal) {
+		/* 2-order calibration */
+		ka = CalParaNorm.cal_a;
+		kb = CalParaNorm.cal_b;
+		kc = CalParaNorm.cal_c;
+		ch_vol = ((ka * chan_data * chan_data) >> 26) + ((kb * chan_data) >> 15) + (kc >> 6);
+
+	} else {
+		/* 1-order calibration */
+		offset = CalParaNorm.cal_offset;
+		gain = CalParaNorm.cal_gain;
+		ch_vol = (10 * chan_data - offset) * 1000 / gain;
+	}
+
+	return ch_vol;
+}
+
+/**
+  * @brief Get VBAT voltage value in mV.
+  * @param vbat_data: ADC conversion data from channel7(VBAT).
+  * @retval ADC voltage value in mV.
+  * @note This function is only for channel7(VBAT).
+  */
+s32 ADC_GetVBATVoltage(u32 vbat_data)
+{
+	s64 ka, kb;
+	s32 kc;
+	u16 offset, gain;
+	s32 ch_vol;
+
+	if (!CalParaVBat.init_done) {
+		ADC_InitCalPara(&CalParaVBat, _FALSE);
+	}
+
+	if (CalParaVBat.order2_cal) {
+		/* 2-order calibration */
+		ka = CalParaVBat.cal_a;
+		kb = CalParaVBat.cal_b;
+		kc = CalParaVBat.cal_c;
+		ch_vol = ((ka * vbat_data * vbat_data) >> 26) + ((kb * vbat_data) >> 15) + (kc >> 6);
+
+	} else {
+		/* 1-order calibration */
+		offset = CalParaVBat.cal_offset;
+		gain = CalParaVBat.cal_gain;
+		ch_vol = (10 * vbat_data - offset) * 1000 / gain;
+	}
+
+	return ch_vol;
+}
+
+/**
+  * @brief Get internal R resistance of V33 channels(CH0~CH5) in divided mode.
+  * @param none.
+  * @retval Internal R resistance value in Kohm.
+  */
+u32 ADC_GetInterR(void)
+{
+	u8 r_offset;
+
+	EFUSE_PMAP_READ8(0, INTER_R_ADDR, &r_offset, L25EOUTVOLTAGE);
+
+	return ((u32)r_offset + 425);
 }
 
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

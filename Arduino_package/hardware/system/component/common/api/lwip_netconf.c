@@ -464,7 +464,7 @@ uint8_t LwIP_DHCP(uint8_t idx, uint8_t dhcp_state)
 #endif
 				wifi_data_to_flash.offer_ip = (uint32_t)dhcp->offered_ip_addr.addr;
 
-				if(p_write_reconnect_ptr){
+				if (p_write_reconnect_ptr && (idx != NET_IF_NUM - 1)){
 					p_write_reconnect_ptr((u8 *)&wifi_data_to_flash, sizeof(struct wlan_fast_reconnect));
 				}
 #endif
@@ -506,7 +506,7 @@ uint8_t LwIP_DHCP(uint8_t idx, uint8_t dhcp_state)
 #if defined(CONFIG_FAST_DHCP) && CONFIG_FAST_DHCP
 				wifi_data_to_flash.offer_ip = 0;
 
-				if(p_write_reconnect_ptr){
+				if(p_write_reconnect_ptr && (idx != NET_IF_NUM - 1)){
 					p_write_reconnect_ptr((u8 *)&wifi_data_to_flash, sizeof(struct wlan_fast_reconnect));
 				}
 #endif
@@ -697,7 +697,12 @@ void LwIP_AUTOIP(struct netif *pnetif)
 	autoip = pnetif->autoip;
 #endif
 
+//	In lwip2.2.0, PROBING and ANNOUNCING are combined into CHECKING
+#if LWIP_VERSION_MAJOR >= 2 && LWIP_VERSION_MINOR >= 2
+	while((autoip->state == AUTOIP_STATE_CHECKING)) {
+#else
 	while((autoip->state == AUTOIP_STATE_PROBING) || (autoip->state == AUTOIP_STATE_ANNOUNCING)) {
+#endif
 		vTaskDelay(1000);
 	}
 
@@ -727,19 +732,11 @@ void LwIP_AUTOIP(struct netif *pnetif)
 	}
 }
 #endif
+
 #if LWIP_IPV6
-/* Get IPv6 address with lwip 1.5.0 */
-void LwIP_AUTOIP_IPv6(struct netif *pnetif)
+uint8_t* LwIP_GetIPv6_linklocal(struct netif *pnetif)
 {
-#if LWIP_VERSION_MAJOR >= 2
-	uint8_t *ipv6 = (uint8_t *) netif_ip6_addr(pnetif, 0)->addr;
-#else
-	uint8_t *ipv6 = (uint8_t *) &(pnetif->ip6_addr[0].addr[0]);
-#endif
-	netif_create_ip6_linklocal_address(pnetif, 1);
-	printf("\nIPv6 link-local address: %02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
-	       ipv6[0], ipv6[1],  ipv6[2],  ipv6[3],  ipv6[4],  ipv6[5],  ipv6[6], ipv6[7],
-	       ipv6[8], ipv6[9], ipv6[10], ipv6[11], ipv6[12], ipv6[13], ipv6[14], ipv6[15]);
+	return (uint8_t *) netif_ip6_addr(pnetif, 0)->addr;
 }
 #endif
 

@@ -110,6 +110,14 @@
 	#define CONFIG_RTW_DFS_REGION_DOMAIN 0
 #endif
 
+#define CONFIG_RTW_TOKEN_BASED_XMIT 1
+#if CONFIG_RTW_TOKEN_BASED_XMIT
+	#define NR_TBTX_SLOT			4
+	#define NR_MAXSTA_INSLOT		5
+	#define TBTX_TX_DURATION		30
+	#define MAX_TXPAUSE_DURATION	(TBTX_TX_DURATION*NR_TBTX_SLOT)
+#endif
+
 //#include <rtl871x_byteorder.h>
 
 #endif // __DRV_CONF_H__

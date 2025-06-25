@@ -360,10 +360,8 @@ static void wps_config_wifi_setting(rtw_network_info_t *wifi, struct dev_credent
 	//printf("\r\nrelease wps_reconnect_semaphore");			
 }
 
-#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
 extern char wps_profile_ssid[33];
 extern char wps_profile_password[65];
-#endif
 
 static int wps_connect_to_AP_by_certificate(rtw_network_info_t *wifi)
 {
@@ -376,6 +374,11 @@ static int wps_connect_to_AP_by_certificate(rtw_network_info_t *wifi)
 	printf("\r\nssid_len = %d\n", wifi->ssid.len);
 	printf("\r\npassword_len = %d\n", wifi->password_len);
 	while (1) {
+		memset(wps_profile_ssid,0,33);
+		memset(wps_profile_password,0,65);
+		strncpy(wps_profile_ssid, (const char *)wifi->ssid.val, wifi->ssid.len);
+		strncpy(wps_profile_password, (const char *)wifi->password, wifi->password_len);
+
 		ret = wifi_connect((char*)wifi->ssid.val,
 						 wifi->security_type,
 						 (char*)wifi->password,
@@ -389,14 +392,11 @@ static int wps_connect_to_AP_by_certificate(rtw_network_info_t *wifi)
 			if(RTW_SUCCESS == wifi_is_connected_to_ap( )){
 				//printf("\r\n[WPS]Ready to tranceive!!\n");
 				wps_check_and_show_connection_info();
-#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
-				memset(wps_profile_ssid,0,33);
-				memset(wps_profile_password,0,65);
-				strncpy(wps_profile_ssid, wifi->ssid.val, wifi->ssid.len);
-				strncpy(wps_profile_password, wifi->password, wifi->password_len);
-#endif
 				break;
 			}
+		}else{
+			memset(wps_profile_ssid,0,33);
+			memset(wps_profile_password,0,65);
 		}
 		if (retry_count == 0) {
 			printf("\r\n[WPS]Join bss failed\n");
@@ -689,9 +689,9 @@ static rtw_result_t wps_scan_result_handler( rtw_scan_handler_result_t* malloced
 
 #if CONFIG_ENABLE_WPS_DISCOVERY
 		if(((wps_arg->config_method == WPS_CONFIG_DISPLAY) || (wps_arg->config_method == WPS_CONFIG_KEYPAD))
-			&& (record->wps_type == 0x07)) {
+			&& (record->wps_type < 0x06)) {
 
-			update_discovered_ssids(record->SSID.val);
+			update_discovered_ssids((char *)record->SSID.val);
 		}
 #endif
 	}
@@ -748,7 +748,12 @@ exit:
 static u8 wps_scan_cred_ssid(struct dev_credential *dev_cred)
 {
 	u8 ssid_found = 0;
+	int ssid_pos = 14;
 	scan_buf_arg scan_buf;
+
+	if (rltk_wlan_scan_with_ssid_by_extended_security_is_enable()){
+		ssid_pos = 17;
+	}
 
 	scan_buf.buf_len = 1000;
 	scan_buf.buf = malloc(scan_buf.buf_len);
@@ -763,10 +768,10 @@ static u8 wps_scan_cred_ssid(struct dev_credential *dev_cred)
 
 			while(pos <= ((uint8_t *) scan_buf.buf + scan_buf.buf_len)) {
 				uint8_t len = *pos;
-				uint8_t ssid_len = len - 14;
-				uint8_t *ssid = pos + 14;
-				uint8_t ssid_len_p2p = len - 15;
-				uint8_t *ssid_p2p = pos + 15;
+				uint8_t ssid_len = len - ssid_pos;
+				uint8_t *ssid = pos + ssid_pos;
+				uint8_t ssid_len_p2p = len - ssid_pos-1;
+				uint8_t *ssid_p2p = pos + ssid_pos+1;
 
 				if((len <= 0) || ((pos + len) > ((uint8_t *) scan_buf.buf + scan_buf.buf_len)))
 					break;
@@ -824,6 +829,11 @@ static void wps_filter_cred_by_scan(struct dev_credential *dev_cred, int cred_cn
 	}
 }
 
+#if CONFIG_EXAMPLE_WLAN_FAST_CONNECT
+extern int wifi_retry_connect;
+#endif
+extern int rltk_wlan_get_is_survey(void);
+
 int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 {
 	struct dev_credential *dev_cred;
@@ -865,6 +875,23 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 			return -1;
 		}
 	}
+
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+	uint8_t auto_reconnect_status = 0;
+
+	wifi_get_autoreconnect(&auto_reconnect_status);
+	if (auto_reconnect_status != 0) {
+		wifi_set_autoreconnect(0);
+	}
+#endif
+#if CONFIG_EXAMPLE_WLAN_FAST_CONNECT
+	if (wifi_retry_connect != 0) {
+		wifi_retry_connect = 0;
+	}
+#endif
+	while (rltk_wlan_get_is_survey()) {
+		rtw_msleep_os(500);
+	}
 	
 	if(!ssid)	{
 #if CONFIG_ENABLE_WPS_DISCOVERY
@@ -884,12 +911,18 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 				if((wps_config == WPS_CONFIG_DISPLAY) || (wps_config == WPS_CONFIG_KEYPAD)) {
 					if(start_discovery_phase(wps_config) == 0) {
 						clean_discovered_ssids();
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+						wifi_set_autoreconnect(auto_reconnect_status);
+#endif
 						return 0;
 					}
 				}
 #endif
 			} else {
 				printf("\r\nWPS: WPS Walking Time Out\n");
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+				wifi_set_autoreconnect(auto_reconnect_status);
+#endif
 				return -2;
 			}
 		}
@@ -898,6 +931,9 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 #endif
 		if (is_overlap > 0) {
 			printf("\r\nWPS: WPS session overlap. Not triger WPS.\n");
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+			wifi_set_autoreconnect(auto_reconnect_status);
+#endif
 			return -2;
 		}
 	}else{
@@ -905,8 +941,12 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 		if(channel !=0) {
 			channel &= 0xff;
 			ret = wifi_set_pscan_chan((uint8_t *)&channel, &pscan_config, 1);
-			if(ret < 0)
+			if(ret < 0) {	
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+				wifi_set_autoreconnect(auto_reconnect_status);
+#endif
 				return -1;
+			}
 		}
 	}
 	
@@ -915,8 +955,12 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 		queue_for_credential = NULL;
 	}
 	queue_for_credential = os_xqueue_create(wps_max_cred_count, sizeof(struct dev_credential));
-	if(!queue_for_credential)
+	if(!queue_for_credential) {
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+		wifi_set_autoreconnect(auto_reconnect_status);
+#endif
 		return -1;
+	}
 
 	wifi_reg_event_handler(WIFI_EVENT_STA_WPS_START, wpas_wsc_sta_wps_start_hdl, NULL);
 	wifi_reg_event_handler(WIFI_EVENT_WPS_FINISH, wpas_wsc_wps_finish_hdl, NULL);
@@ -1018,6 +1062,7 @@ int wps_start(u16 wps_config, char *pin, u8 channel, char *ssid)
 		printf("\n\rWPS: WPS FAIL!!!\n");
 		printf("\n\rWPS: WPS FAIL!!!\n");
 		printf("\n\rWPS: WPS FAIL!!!\n");
+		wifi_disconnect();
 		ret = -1;
 	}
 	os_free(dev_cred,0);
@@ -1034,6 +1079,9 @@ exit1:
 	wifi_unreg_event_handler(WIFI_EVENT_EAPOL_RECVD, wpas_wsc_eapol_recvd_hdl);
 
 	wpas_wps_deinit();
+#if defined(CONFIG_AUTO_RECONNECT) && CONFIG_AUTO_RECONNECT
+	wifi_set_autoreconnect(auto_reconnect_status);
+#endif
 	return ret;
 }
 

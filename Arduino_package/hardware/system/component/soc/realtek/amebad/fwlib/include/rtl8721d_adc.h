@@ -151,9 +151,23 @@ typedef struct {
 
 } ADC_InitTypeDef;
 /**
+  * @brief ADC Calibration Parameter Structure Definition
+  */
+typedef struct {
+	/* 1-order calibration */
+	u16 cal_gain;
+	u16 cal_offset;
+	/* 2-order calibration */
+	s32 cal_a;
+	s32 cal_b;
+	s32 cal_c;
+
+	u8 order2_cal; // 2-order calibration or 1-order calibration
+	u8 init_done; // calibration parameter init done
+} ADC_CalParaTypeDef;
+/**
   * @}
   */
-
 
 /* Exported constants --------------------------------------------------------*/
 
@@ -274,6 +288,21 @@ typedef struct {
   * @}
   */
 
+/** @defgroup ADC_OTP_Address_Setting
+  * @{
+  */
+#define VBAT_1ORDER_ADDR		0x1D4 // OTP address for vbat channel 1-order voltage calibration
+#define NORM_1ORDER_ADDR		0x1D0 // OTP address for normal channel 1-order voltage calibration
+
+#define VBAT_2ORDER_ADDR		0x1CA // OTP address for vbat channel 2-order voltage calibration
+#define NORM_2ORDER_ADDR		0x1D8 // OTP address for normal channel 2-order voltage calibration
+
+#define INTER_R_ADDR			0x1DE // OTP address for internal resistance
+#define VREF_SEL_ADDR			0x1F0 // OTP address for vref selection
+
+/**
+  * @}
+  */
 
 /**
   * @}
@@ -305,6 +334,10 @@ _LONG_CALL_ void ADC_AutoCSwCmd(u32 NewState);
 _LONG_CALL_ void ADC_TimerTrigCmd(u8 Tim_Idx, u32 PeriodMs, u32 NewState);
 _LONG_CALL_ void ADC_SetDmaEnable(u32 newState);
 _LONG_CALL_ u32 ADC_RXGDMA_Init(GDMA_InitTypeDef *GDMA_InitStruct, void *CallbackData, IRQ_FUN CallbackFunc, u8* pDataBuf, u32 DataLen);
+_LONG_CALL_ void ADC_InitCalPara(ADC_CalParaTypeDef *CalPara, u8 IsVBatChan);
+_LONG_CALL_ s32 ADC_GetVoltage(u32 chan_data);
+_LONG_CALL_ s32 ADC_GetVBATVoltage(u32 vbat_data);
+_LONG_CALL_ u32 ADC_GetInterR(void);
 /**
   * @}
   */

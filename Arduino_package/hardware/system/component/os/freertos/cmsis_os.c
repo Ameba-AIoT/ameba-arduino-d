@@ -3,7 +3,6 @@
 #include "cmsis_os.h"
 #include "diag.h"
 
-// zzw arduino
 #if defined(ARDUINO_SDK)
 #include "cmsis_gcc.h"
 #endif

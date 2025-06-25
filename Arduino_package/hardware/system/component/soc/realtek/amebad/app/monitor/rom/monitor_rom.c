@@ -96,10 +96,11 @@ u32 cmd_flash(u16 argc,  u8  *argv[])
 	if (_strcmp((const char*)argv[0], "erase") == 0) {/* SPI Flash Chip Erase Command */
 		u32 AddrTemp = 0;
 	
-		MONITOR_LOG("Erase Falsh Start\n");
+		MONITOR_LOG("Erase Flash Start\n");
 
 		AddrTemp = _strtoul((const char*)(argv[2]), (char **)NULL, 16);
 
+		FLASH_Write_Lock();
 		if (_strcmp((const char*)argv[1], "chip") == 0) {
 			MONITOR_LOG("Erase Chip start!!\n");
 			
@@ -123,8 +124,9 @@ u32 cmd_flash(u16 argc,  u8  *argv[])
 		/* for calibration use */
 		FLASH_TxData12B(0, 4, (u8*)SPIC_CALIB_PATTERN);
 		Cache_Flush();
+		FLASH_Write_Unlock();
 
-		MONITOR_LOG("Erase Falsh End\n");
+		MONITOR_LOG("Erase Flash End\n");
 	}
 
 	if (_strcmp((const char*)argv[0], "read") == 0) {
@@ -133,7 +135,7 @@ u32 cmd_flash(u16 argc,  u8  *argv[])
 		u32 idx = 0;
 		u32 OTF_Enable = HAL_READ32(SYSTEM_CTRL_BASE_LP, REG_SYS_EFUSE_SYSCFG3) & BIT_SYS_FLASH_ENCRYPT_EN;
 		
-		MONITOR_LOG("Falsh read\n");
+		MONITOR_LOG("Flash read\n");
 
 		/* read encrypt image for FW protection */
 		if (OTF_Enable) {
@@ -143,12 +145,17 @@ u32 cmd_flash(u16 argc,  u8  *argv[])
 		address = _strtoul((const char*)(argv[1]), (char **)NULL, 16);
 		len = _strtoul((const char*)(argv[2]), (char **)NULL, 10)/4;
 
+		FLASH_Write_Lock();
+		u32 addr_temp1, addr_temp2, addr_temp3, addr_temp4 = 0;
 		for (idx = 0; idx < len; idx++) {
-			MONITOR_LOG("%08x: %08x %08x  %08x %08x \n", address, HAL_READ32(SPI_FLASH_BASE, address),
-				HAL_READ32(SPI_FLASH_BASE, address+4), HAL_READ32(SPI_FLASH_BASE, address+8),
-				HAL_READ32(SPI_FLASH_BASE, address+12));
+			addr_temp1 = HAL_READ32(SPI_FLASH_BASE, address);
+			addr_temp2 = HAL_READ32(SPI_FLASH_BASE, address+4);
+			addr_temp3 = HAL_READ32(SPI_FLASH_BASE, address+8);
+			addr_temp4 = HAL_READ32(SPI_FLASH_BASE, address+12);
+			MONITOR_LOG("%08x: %08x %08x  %08x %08x \n", address, addr_temp1, addr_temp2, addr_temp3, addr_temp4);
 			address = address + 16;
 		}
+		FLASH_Write_Unlock();
 
 		if (OTF_Enable) {
 			RSIP_OTF_Cmd(ENABLE);
@@ -165,8 +172,10 @@ u32 cmd_flash(u16 argc,  u8  *argv[])
 	
 		MONITOR_LOG("Falsh write addr:%x data:%x \n", address, data);
 
+		FLASH_Write_Lock();
 		FLASH_TxData12B(address, 4, (u8*)&data); //max is 12
 		Cache_Flush();
+		FLASH_Write_Unlock();
 	}
 
 	if (_strcmp((const char*)argv[0], "status") == 0) {

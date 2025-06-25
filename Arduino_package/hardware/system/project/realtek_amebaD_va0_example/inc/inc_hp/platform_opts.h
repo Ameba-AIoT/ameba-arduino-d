@@ -50,17 +50,19 @@
 /**
 * For common flash usage  
 */
-#if (defined(CONFIG_BAIDU_DUER) && CONFIG_BAIDU_DUER) || (defined(CONFIG_BT_MESH_PROVISIONER) && CONFIG_BT_MESH_PROVISIONER)	\
-	|| (defined(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE) && CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE)	\
-	|| (defined(CONFIG_BT_MESH_DEVICE) && CONFIG_BT_MESH_DEVICE)	\
+#if (defined(CONFIG_BAIDU_DUER) && CONFIG_BAIDU_DUER) \
+	|| (defined(CONFIG_BT_BREEZE) && CONFIG_BT_BREEZE) \
+	|| (defined(CONFIG_BT_MESH_PROVISIONER) && CONFIG_BT_MESH_PROVISIONER) \
+	|| (defined(CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE) && CONFIG_BT_MESH_PROVISIONER_MULTIPLE_PROFILE) \
+	|| (defined(CONFIG_BT_MESH_DEVICE) && CONFIG_BT_MESH_DEVICE) \
 	|| (defined(CONFIG_BT_MESH_DEVICE_MULTIPLE_PROFILE) && CONFIG_BT_MESH_DEVICE_MULTIPLE_PROFILE)
 #define UART_SETTING_SECTOR		0x001FA000
 #define AP_SETTING_SECTOR		0x001FB000
 #define FTL_PHY_PAGE_START_ADDR	0x001FC000
 #define FAST_RECONNECT_DATA 	0x001FF000
 #else
-#define UART_SETTING_SECTOR		0x000FC000
-#define AP_SETTING_SECTOR		0x000FE000
+#define UART_SETTING_SECTOR		0x00100000
+#define AP_SETTING_SECTOR		0x00101000
 #define FTL_PHY_PAGE_START_ADDR	0x00102000
 #define FAST_RECONNECT_DATA 	0x00105000
 #endif
@@ -74,6 +76,7 @@
 #define CONFIG_LWIP_LAYER	1
 #define CONFIG_INIT_NET		1 //init lwip layer when start up
 #define CONFIG_WIFI_IND_USE_THREAD	0	// wifi indicate worker thread
+#define CONFIG_AP_SECURITY  0 //on or off to set AP security to WEP, default is open or WPA2 AES
 
 //on/off relative commands in log service
 #define CONFIG_SSL_CLIENT	0
@@ -241,6 +244,12 @@
 /* For HTTPD example */
 #define CONFIG_EXAMPLE_HTTPD	0
 
+/* For HTTPD littlefs example */
+#define CONFIG_EXAMPLE_HTTPD_LITTLEFS	0
+
+/* For enable captive portal */
+#define CONFIG_ENABLE_CAPTIVE_PORTAL	0
+
 /* For MQTT example */
 #define CONFIG_EXAMPLE_MQTT				0
 
@@ -385,6 +394,11 @@
 #define FATFS_DISK_SD	1
 #endif
 
+#define CONFIG_EXAMPLE_AUDIO_PLAYBACK 0
+#if CONFIG_EXAMPLE_AUDIO_PLAYBACK
+#define FATFS_DISK_SD	1
+#endif
+
 #define CONFIG_EXAMPLE_AUDIO_RECORDER	0
 #if CONFIG_EXAMPLE_AUDIO_RECORDER
 #define FATFS_DISK_SD	1
@@ -499,7 +513,7 @@
 #define CONFIG_ENABLE_TTLS	0
 #define CONFIG_ENABLE_FAST	0
 
-// optional feature: whether to verify the cert of radius server
+// optional feature: whether to verify the cert of radius server, eap process when end when server cert verify failed
 #define ENABLE_EAP_SSL_VERIFY_SERVER	0
 
 #if CONFIG_ENABLE_PEAP || CONFIG_ENABLE_TLS || CONFIG_ENABLE_TTLS || CONFIG_ENABLE_FAST
@@ -529,6 +543,15 @@
 #endif
 #endif
 
+/* For KV example*/
+#define CONFIG_EXAMPLE_KV			0
+
+/* For LITTLEFS example*/
+#define CONFIG_EXAMPLE_LITTLEFS			0
+
+/* For SPI NAND LITTLEFS example*/
+#define CONFIG_EXAMPLE_SPI_NAND_LITTLEFS	0
+
 /* For iNIC host example*/
 #ifdef CONFIG_INIC_GSPI_HOST //this flag is defined in IAR project
 #define	CONFIG_EXAMPLE_INIC_GSPI_HOST	1
@@ -539,7 +562,7 @@
 #undef CONFIG_WLAN
 #define CONFIG_WLAN		0
 #undef	CONFIG_INCLUDE_SIMPLE_CONFIG
-#define CONFIG_INCLUDE_SIMPLE_CONFIG	0
+#define CONFIG_INCLUDE_SIMPLE_CONFIG    0
 #undef	CONFIG_EXAMPLE_WLAN_FAST_CONNECT
 #define CONFIG_EXAMPLE_WLAN_FAST_CONNECT	0
 #undef CONFIG_LWIP_LAYER
@@ -598,6 +621,9 @@ in lwip_opt.h for support uart adapter*/
 /* For rtp client example */
 #define CONFIG_EXAMPLE_RTP_CLIENT				0
 
+/* For rtsp client example */
+#define CONFIG_EXAMPLE_RTSP_CLIENT				0
+
 /* For ssl server example */
 #define CONFIG_EXAMPLE_SSL_SERVER		0
 
@@ -624,81 +650,124 @@ in lwip_opt.h for support uart adapter*/
 #define CONFIG_OTA_UPDATE				0
 #endif
 
-#if defined(CONFIG_USBD_AUDIO)
-#define CONFIG_EXAMPLE_USBD_AUDIO	1
-//#define CONFIG_EXAMPLE_COMPETITIVE_HEADPHONES_DONGLE	1
-#endif
+// USB device examples for new USB stack
+#if defined(CONFIG_USB_DEVICE_EN) && CONFIG_USB_DEVICE_EN
 
-#if defined(CONFIG_USBD_HID)
-#define CONFIG_EXAMPLE_USBD_HID         1
-#endif
-
-#if defined(CONFIG_USBD_MSC)
-#define CONFIG_EXAMPLE_USBD_MSC         1
-#endif
-
-#if defined(CONFIG_USBD_CDC_ACM)
-#if defined(CONFIG_USBD_CDC_ACM_TP)
-#define CONFIG_EXAMPLE_USBD_CDC_ACM_TP     1
-#elif defined(CONFIG_USBD_CDC_ACM_RP)
-#define CONFIG_EXAMPLE_USBD_CDC_ACM_RP     1
-#elif defined(CONFIG_USBD_CDC_ACM_TP_NEW)
-#define CONFIG_EXAMPLE_USBD_CDC_ACM_TP_NEW     1
-#elif defined(CONFIG_USBD_CDC_ACM_RP_NEW)
-#define CONFIG_EXAMPLE_USBD_CDC_ACM_RP_NEW     1
+#if defined(CONFIG_USBD_CDC_ACM) && CONFIG_USBD_CDC_ACM
+#if defined(CONFIG_USBD_CDC_ACM_TP_NEW) && CONFIG_USBD_CDC_ACM_TP_NEW
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_TP_NEW      1
+#elif defined(CONFIG_USBD_CDC_ACM_RP_NEW) && CONFIG_USBD_CDC_ACM_RP_NEW
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_RP_NEW      1
 #else
-#define CONFIG_EXAMPLE_USBD_CDC_ACM     1
+#define CONFIG_EXAMPLE_USBD_CDC_ACM             1
 #endif
 #endif
 
-#if defined(CONFIG_USBD_VENDOR)
-#define CONFIG_EXAMPLE_USBD_VENDOR      1
+#if defined(CONFIG_USBD_COMPOSITE) && CONFIG_USBD_COMPOSITE
+#define CONFIG_EXAMPLE_USBD_COMPOSITE           1
+#endif
+
+#if defined(CONFIG_USBD_HID) && CONFIG_USBD_HID
+#define CONFIG_EXAMPLE_USBD_HID                 1
+#endif
+
+#if defined(CONFIG_USBD_MSC) && CONFIG_USBD_MSC
+#define CONFIG_EXAMPLE_USBD_MSC                 1
+#endif
+
+#if defined(CONFIG_USBD_VENDOR) && CONFIG_USBD_VENDOR
+#define CONFIG_EXAMPLE_USBD_VENDOR              1
+#endif
+
+#endif
+
+// USB device examples for old USB stack
+#if defined(CONFIG_USB_DEVICE_OLD_EN) && CONFIG_USB_DEVICE_OLD_EN
+
+#if defined(CONFIG_USBD_AUDIO) && CONFIG_USBD_AUDIO
+#define CONFIG_EXAMPLE_USBD_AUDIO_OLD	        1
+#endif
+
+#if defined(CONFIG_USBD_CDC_ACM) && CONFIG_USBD_CDC_ACM
+#if defined(CONFIG_USBD_CDC_ACM_TP) && CONFIG_USBD_CDC_ACM_TP
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_TP          1
+#elif defined(CONFIG_USBD_CDC_ACM_RP) && CONFIG_USBD_CDC_ACM_RP
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_RP          1
+#else
+#define CONFIG_EXAMPLE_USBD_CDC_ACM_OLD         1
+#endif
+#endif
+
+#if defined(CONFIG_USBD_HID) && CONFIG_USBD_HID
+#define CONFIG_EXAMPLE_USBD_HID_OLD             1
+#endif
+
+#if defined(CONFIG_USBD_MSC) && CONFIG_USBD_MSC
+#define CONFIG_EXAMPLE_USBD_MSC_OLD             1
+#endif
+
+#if defined(CONFIG_USBD_VENDOR) && CONFIG_USBD_VENDOR
+#define CONFIG_EXAMPLE_USBD_VENDOR_OLD          1
+#endif
+
+#endif
+
+// USB host examples for new USB stack
+#if defined(CONFIG_USB_HOST_EN) && CONFIG_USB_HOST_EN
+
+#if defined(CONFIG_USBH_CDC_ACM)
+#define CONFIG_EXAMPLE_USBH_CDC_ACM             1
+#endif
+
+#if defined(CONFIG_USBH_CDC_ECM)
+#define CONFIG_EXAMPLE_USBH_CDC_ECM             1
+#endif
+
+#endif
+
+// USB host examples for old USB stack
+#if defined(CONFIG_USB_HOST_OLD_EN) && CONFIG_USB_HOST_OLD_EN
+
+#if defined(CONFIG_USBH_CDC_ACM)
+#if defined(CONFIG_USBH_CDC_ACM_VERIFY)
+#define CONFIG_EXAMPLE_USBH_CDC_ACM_VERIFY      1
+#else
+#define CONFIG_EXAMPLE_USBH_CDC_ACM_OLD	        1
+#endif
 #endif
 
 #if defined(CONFIG_USBH_MSC)
-#define CONFIG_EXAMPLE_USBH_MSC         1
-#if CONFIG_EXAMPLE_USBH_MSC
-#define CONFIG_FATFS_EN	                1
+#define CONFIG_EXAMPLE_USBH_MSC_OLD	        1
+#define CONFIG_FATFS_EN	                        1
 #if CONFIG_FATFS_EN
 // fatfs version
 #define FATFS_R_10C
 // fatfs disk interface
-#define FATFS_DISK_USB	                1
-#define FATFS_DISK_SD 	                0
-#define FATFS_DISK_FLASH 	            0
-#endif
+#define FATFS_DISK_USB	                        1
+#define FATFS_DISK_SD 	                        0
+#define FATFS_DISK_FLASH 	                0
 #endif
 #endif
 
 #if defined(CONFIG_USBH_UVC)
-#define CONFIG_VIDEO_APPLICATION        1
-#define CONFIG_EXAMPLE_USBH_UVC         1
-#if CONFIG_EXAMPLE_USBH_UVC
-#define CONFIG_FATFS_EN                 0
+#define CONFIG_EXAMPLE_USBH_UVC_OLD	        1
+#define CONFIG_VIDEO_APPLICATION                1
+#define CONFIG_FATFS_EN                         0
 #if CONFIG_FATFS_EN
 // fatfs version
 #define FATFS_R_10C
 // fatfs disk interface
-#define FATFS_DISK_USB                  0
-#define FATFS_DISK_SD                   1
-#define FATFS_DISK_FLASH 	            0
-#endif
+#define FATFS_DISK_USB                          0
+#define FATFS_DISK_SD                           1
+#define FATFS_DISK_FLASH 	                0
 #endif
 #endif
 
 #if defined(CONFIG_USBH_VENDOR)
-#define CONFIG_EXAMPLE_USBH_VENDOR      1
+#define CONFIG_EXAMPLE_USBH_VENDOR_OLD	        1
 #endif
 
-#if defined(CONFIG_USBH_CDC_ACM)
-#if defined(CONFIG_USBH_CDC_ACM_VERIFY)
-#define CONFIG_EXAMPLE_USBH_CDC_ACM_VERIFY 1
-#else
-#define CONFIG_EXAMPLE_USBH_CDC_ACM      1
 #endif
-#endif
-
-//#define CONFIG_EXAMPLE_COMPETITIVE_HEADPHONES		1
 
 /* For fast DHCP */
 #if CONFIG_EXAMPLE_WLAN_FAST_CONNECT
@@ -716,6 +785,21 @@ in lwip_opt.h for support uart adapter*/
 #else
 #define CONFIG_BRIDGE                   0
 #endif
+
+/*For game headset*/
+#ifdef CONFIG_GHH_EN
+#undef CONFIG_EXAMPLE_WLAN_FAST_CONNECT
+#define CONFIG_EXAMPLE_WLAN_FAST_CONNECT 0
+#undef CONFIG_FAST_DHCP
+#define CONFIG_FAST_DHCP 0
+#define CONFIG_ANTENNA_DIVERSITY_FORCE_ON
+#endif
+
+#define CONFIG_EXAMPLE_CAPTIVE_PORTAL	0
+
+#if defined(CONFIG_MATTER) && CONFIG_MATTER
+#include "platform_opts_matter.h"
+#endif /* CONFIG_MATTER */
 
 // zzw arduino
 /******************  For Arduino SDK customize config   *******************/

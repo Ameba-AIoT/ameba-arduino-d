@@ -108,7 +108,11 @@ static int wsa_init_done = 0;
 
 #include <stdio.h>
 
+#if (defined(CONFIG_SYSTEM_TIME64) && CONFIG_SYSTEM_TIME64)
+#include "time64.h"
+#else
 #include <time.h>
+#endif
 
 #include <stdint.h>
 

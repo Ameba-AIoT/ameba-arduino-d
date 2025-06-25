@@ -3,7 +3,7 @@
 
 #include "platform_stdlib.h"
 #include "platform_opts.h"
-
+#include "osdep_service.h"
 
 /********************Define the secure level***************************/
 #define WS_SERVER_SECURE_NONE        0   /*!< Running with WS server */
@@ -95,6 +95,7 @@ typedef struct _ws_conn {
 	uint8_t *rxbuf;					/*!< Pointer to receiving buffer which received from client */
 	uint8_t *receivedData;			/*!< Pointer to decoded receiving data which received from client */
 	ws_conn_state state;		/*!< Connection state */
+	struct task_struct task;        /*!< Connection task context */
 }ws_conn;
 
 /**
@@ -115,7 +116,7 @@ enum opcode_type {
 /**
  * @brief     This function is used to start an WS or WSS server.
  * @param[in] port: service port
- * @param[in] max_conn: max client connections allowed
+ * @param[in] max_conn: max client connections allowed, maximum value will be limited by MEMP_NUM_NETCONN in lwipopts.h
  * @param[in] stack_bytes: thread stack size in bytes
  * @param[in] secure: security mode for WS or WSS. Must be WS_SERVER_SECURE_NONE, WS_SERVER_SECURE_TLS, WS_SERVER_SECURE_TLS_VERIFY.
  * @return		0 : if successful

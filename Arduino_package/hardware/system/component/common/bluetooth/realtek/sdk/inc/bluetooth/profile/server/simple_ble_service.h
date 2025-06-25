@@ -96,6 +96,17 @@ typedef enum
   * @{
   */
 
+/** @defgroup TSIMP_READ_MSG TSIMP_READ_MSG
+  * @brief Simple BLE service read msg to application.
+  * @{
+  */
+typedef struct
+{
+    uint8_t read_value_index; //!< ref: @ref SIMP_Service_Read_Info
+    uint16_t read_offset;
+} TSIMP_READ_MSG;
+/** @} End of TSIMP_READ_MSG */
+
 /** @defgroup TSIMP_WRITE_MSG TSIMP_WRITE_MSG
   * @brief Simple BLE service written msg to application.
   * @{
@@ -109,7 +120,6 @@ typedef struct
 } TSIMP_WRITE_MSG;
 /** @} End of TSIMP_WRITE_MSG */
 
-
 /** @defgroup TSIMP_UPSTREAM_MSG_DATA TSIMP_UPSTREAM_MSG_DATA
   * @brief Simple BLE service callback message content.
   * @{
@@ -117,7 +127,7 @@ typedef struct
 typedef union
 {
     uint8_t notification_indification_index; //!< ref: @ref SIMP_Service_Notify_Indicate_Info
-    uint8_t read_value_index; //!< ref: @ref SIMP_Service_Read_Info
+    TSIMP_READ_MSG read;
     TSIMP_WRITE_MSG write;
 } TSIMP_UPSTREAM_MSG_DATA;
 /** @} End of TSIMP_UPSTREAM_MSG_DATA */

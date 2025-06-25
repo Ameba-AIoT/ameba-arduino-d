@@ -110,7 +110,7 @@ void FLASH_Write_Unlock(void)
 
 	if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED) {
 		u32 duration = SYSTIMER_GetPassTime(lock_ticker);
-		for (int i = 0; i < duration; i++) {
+		for (u32 i = 0; i < duration; i++) {
 			xTaskIncrementTick();
 		}
 	}
@@ -264,8 +264,10 @@ void FLASH_EreaseDwordsXIP(u32 address, u32 dword_num)
 	/* backup this sector */
 	for (idx = 0; idx < 0x1000; idx += 4) {
 		u32 read_addr = opt_sector + idx;
-		
+
+		FLASH_Write_Lock();
 		_memcpy(data, (const void *)(SPI_FLASH_BASE + read_addr), 4);
+		FLASH_Write_Unlock();
 
 		if (erase_num > 0) {
 			if (erase_addr == read_addr) {
@@ -283,7 +285,10 @@ void FLASH_EreaseDwordsXIP(u32 address, u32 dword_num)
 
 	/* write this sector with target data erased */
 	for (idx = 0; idx < 0x1000; idx += 8) {
+		FLASH_Write_Lock();
 		_memcpy(data, (const void *)(SPI_FLASH_BASE + FLASH_RESERVED_DATA_BASE + idx), 8);
+		FLASH_Write_Unlock();
+
 		FLASH_TxData12BXIP((opt_sector + idx), 8, (u8*)data);
 	}
 }
@@ -331,6 +336,8 @@ int  FLASH_ReadStream(u32 address, u32 len, u8 * data)
 
 	offset_to_align = address & 0x03;
 	pbuf = data;
+
+	FLASH_Write_Lock();
 	if (offset_to_align != 0) {
 		/* the start address is not 4-bytes aligned */
 		read_word = HAL_READ32(SPI_FLASH_BASE, (address - offset_to_align));
@@ -376,6 +383,7 @@ int  FLASH_ReadStream(u32 address, u32 len, u8 * data)
 			pbuf++;
 		}        
 	}
+	FLASH_Write_Unlock();
 
 	return 1;
 }

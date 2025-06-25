@@ -1074,7 +1074,9 @@ int rtw_get_random_bytes(void* dst, u32 size)
 
 int rtw_get_random_bytes_f_rng( void *p_rng, unsigned char *output, size_t output_size )
 {
-	(void*)p_rng;
+	/* To avoid gcc warnings */
+	( void ) p_rng;
+
 	return rtw_get_random_bytes(output, output_size);
 }
 

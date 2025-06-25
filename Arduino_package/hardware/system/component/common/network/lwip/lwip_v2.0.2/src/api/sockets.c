@@ -1962,7 +1962,6 @@ lwip_getsockopt_impl(int s, int level, int optname, void *optval, socklen_t *opt
         sock_set_errno(sock, err_to_errno(sock->conn->last_err));
       }
 /* Added by Realtek start */	  
-// zzw arduino
 #ifndef ARDUINO_SDK
       //SO_ERROR returns only "pending errors", and EWOULDBLOCK is not one of them
       //Check https://savannah.nongnu.org/bugs/?func=detailitem&item_id=49848#options

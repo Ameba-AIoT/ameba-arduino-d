@@ -113,12 +113,17 @@ lwip_gethostbyname(const char *name)
 
   /* fill hostent */
 #if LWIP_DNS_SUPPORT_RECV_MULTIPLE_IP  /* Added by Realtek */
-  int i=0, j=0;
+  int i=0, j=0, dns_entry=0;
   for (i = 0; i < DNS_TABLE_SIZE; ++i) {
     if ((dns_table[i].state == DNS_STATES_DONE) &&
         (lwip_strnicmp(name, dns_table[i].name, sizeof(dns_table[i].name)) == 0)) {
-      for (j = 0; j < dns_table[i].dns_ip_entries; j++)
+      if (dns_table[i].dns_ip_entries < DNS_MAX_IP_ENTRIES)
+        dns_entry = dns_table[i].dns_ip_entries;
+      else
+        dns_entry = DNS_MAX_IP_ENTRIES;
+      for (j = 0; j < dns_entry; j++)
         s_phostent_addr[j] = &dns_table[i].ipaddr[j];
+      break;
     }
   }
   s_phostent_addr[j] = NULL;
@@ -147,8 +152,8 @@ lwip_gethostbyname(const char *name)
   if (s_hostent.h_addr_list != NULL) {
     u8_t idx;
     for (idx=0; s_hostent.h_addr_list[idx]; idx++) {
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]   == %p\n", idx, s_hostent.h_addr_list[idx]));
-      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%i]-> == %s\n", idx, ipaddr_ntoa((ip_addr_t*)s_hostent.h_addr_list[idx])));
+      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%d]   == %p\n", idx, s_hostent.h_addr_list[idx]));
+      LWIP_DEBUGF(DNS_DEBUG, ("hostent.h_addr_list[%d]-> == %s\n", idx, ipaddr_ntoa((ip_addr_t*)s_hostent.h_addr_list[idx])));
     }
   }
 #endif /* DNS_DEBUG */

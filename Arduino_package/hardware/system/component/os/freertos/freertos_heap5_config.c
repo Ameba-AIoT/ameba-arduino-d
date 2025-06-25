@@ -95,7 +95,7 @@ PSRAM_HEAP_SECTION
 static unsigned char psRAMHeap[configTOTAL_PSRAM_HEAP_SIZE];
 #endif
 
-#if CONFIG_DYNAMIC_HEAP_SIZE
+#if defined (CONFIG_DYNAMIC_HEAP_SIZE) && (CONFIG_DYNAMIC_HEAP_SIZE == 1)
 
 #if defined(__ICCARM__)
 #undef configTOTAL_HEAP_SIZE 
@@ -230,7 +230,7 @@ void os_heap_init(void)
 		secure_heap_init();
 #endif
 #elif defined(CONFIG_PLATFORM_8721D)
-#if CONFIG_DYNAMIC_HEAP_SIZE
+#if defined (CONFIG_DYNAMIC_HEAP_SIZE) && (CONFIG_DYNAMIC_HEAP_SIZE == 1)
 
 #if (defined(configUSE_PSRAM_FOR_HEAP_REGION) && ( configUSE_PSRAM_FOR_HEAP_REGION == 1 ))
 		xHeapRegions[ 1 ].xSizeInBytes = configTOTAL_HEAP0_SIZE;
@@ -253,5 +253,14 @@ void os_heap_init(void)
 		};
 		RtSRAMHeapInit(xAudioHeapRegions);
 	}
+#endif
+}
+
+size_t xPortGetTotalHeapSize( void )
+{
+#if CONFIG_DYNAMIC_HEAP_SIZE
+	return configTOTAL_HEAP0_SIZE;
+#else
+	return configTOTAL_HEAP_SIZE;
 #endif
 }

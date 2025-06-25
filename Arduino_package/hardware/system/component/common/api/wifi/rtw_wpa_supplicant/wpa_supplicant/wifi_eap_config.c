@@ -26,6 +26,7 @@ u8 eap_method = 0;
 char *eap_target_ssid = NULL;
 char *eap_identity = NULL;
 char *eap_password = NULL;
+char *eap_anonymous_identity = NULL;
 // if set eap_ca_cert and defined(EAP_SSL_VERIFY_SERVER), client will verify server's cert
 const unsigned char *eap_ca_cert = NULL;
 int eap_ca_cert_len = 0;
@@ -39,6 +40,7 @@ int eap_fast_max_pac_list_len = 10;
 int eap_fast_provisioning_mode = 2;
 int eap_fast_use_binary_pac = 0;
 char * eap_fast_machine_pac = "";
+char *ttls_phase2_method = NULL;
 const configSTACK_DEPTH_TYPE *eap_eapol_recvd_stack = NULL;
 
 void eap_eapol_recvd_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
@@ -62,6 +64,7 @@ void reset_config(void){
 	eap_target_ssid = NULL;
 	eap_identity = NULL;
 	eap_password = NULL;
+	eap_anonymous_identity = NULL;
 	eap_ca_cert = NULL;
 	eap_client_cert = NULL;
 	eap_client_key = NULL;
@@ -70,6 +73,7 @@ void reset_config(void){
 	eap_fast_provisioning_mode = 2;
 	eap_fast_use_binary_pac = 0;
 	eap_fast_machine_pac = "";
+	ttls_phase2_method = NULL;
 }
 
 void judge_station_disconnect(void)
@@ -241,7 +245,7 @@ int eap_start(char *method)
 	set_eap_phase(ENABLE);
 	wifi_reg_event_handler(WIFI_EVENT_EAPOL_START, eap_eapol_start_hdl, NULL);
 	if (eap_eapol_recvd_stack!=NULL)
-		wifi_reg_event_handler(WIFI_EVENT_EAPOL_RECVD, eap_eapol_recvd_hdl, eap_eapol_recvd_stack);	
+		wifi_reg_event_handler(WIFI_EVENT_EAPOL_RECVD, eap_eapol_recvd_hdl, (void *)eap_eapol_recvd_stack);	
 	else
 		wifi_reg_event_handler(WIFI_EVENT_EAPOL_RECVD, eap_eapol_recvd_hdl, NULL);
 
@@ -500,7 +504,7 @@ int eap_cert_setup(ssl_context *ssl)
 
 #elif CONFIG_USE_MBEDTLS
 
-#if CONFIG_MBEDTLS_VERSION3 == 1
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
 #include "mbedtls/build_info.h"
 #include "ssl_misc.h"
 #define MBEDTLS_SSL_COMPRESSION_ADD 0
@@ -644,14 +648,14 @@ int eap_cert_setup(struct eap_tls *tls_context)
 		if(mbedtls_x509_crt_parse(_cli_crt, eap_client_cert, eap_client_cert_len) != 0)
 			return -1;
 		if(eap_client_key_pwd){
-#if CONFIG_MBEDTLS_VERSION3 == 1
-			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd)+1, rtw_get_random_bytes_f_rng, (void*)1) != 0)
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd), rtw_get_random_bytes_f_rng, (void*)1) != 0)
 #else
-			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd)+1) != 0)
+			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, strlen(eap_client_key_pwd)) != 0)
 #endif
 				return -1;
 		}else{
-#if CONFIG_MBEDTLS_VERSION3 == 1
+#if defined(MBEDTLS_VERSION_NUMBER) && (MBEDTLS_VERSION_NUMBER>=0x03010000)
 			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, 0, rtw_get_random_bytes_f_rng, (void*)1) != 0)
 #else
 			if(mbedtls_pk_parse_key(_clikey_rsa, eap_client_key, eap_client_key_len, eap_client_key_pwd, 0) != 0)

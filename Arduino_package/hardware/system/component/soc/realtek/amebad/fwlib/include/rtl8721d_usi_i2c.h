@@ -146,7 +146,7 @@ typedef struct {
 				is selected or 0-1023 range if the USI_I2C_ADDR_10BIT is selected. */
 				
 	u32	USI_I2CSlvSetup;       /*!< Specifies the USI_I2C SDA Setup Time. It controls the amount of time delay
-				introduced in the rising edge of SCL¡ªrelative to SDA changing¡ªby holding SCL low
+				introduced in the rising edge of SCLï¿½ï¿½relative to SDA changingï¿½ï¿½by holding SCL low
 				when USI_I2C Device operating as a slave transmitter, in units of ic_clk period.
 				This parameter must be set to a value in the 0-255 range, it must be set larger than USI_I2CSdaHd*/
 				
@@ -292,8 +292,9 @@ _LONG_CALL_ void USI_I2C_SetSlaveAddress(USI_TypeDef *USIx, u16 Address);
   * @{
   */
 _LONG_CALL_ void USI_I2C_SlaveWrite(USI_TypeDef *USIx, u8* pBuf, u8 len);
-_LONG_CALL_ void USI_I2C_SlaveRead(USI_TypeDef *USIx, u8* pBuf, u8 len);
+_LONG_CALL_ u8 USI_I2C_SlaveRead(USI_TypeDef *USIx, u8* pBuf, u8 len);
 _LONG_CALL_ void USI_I2C_SlaveSend(USI_TypeDef *USIx, u8 Data);
+_LONG_CALL_ u8 USI_I2C_SlaveReadTimeOut(USI_TypeDef *USIx, u8 *pBuf, u8 len, u32 ms);
 /**
   * @}
   */

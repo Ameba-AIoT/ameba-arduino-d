@@ -198,6 +198,8 @@ _LONG_CALL_ extern u32 EFUSE_LogicalMap_Write(u32 addr, u32 cnts, u8 *data);
 #define EFUSE_SEC_CONFIG_ADDR0			0x1C0	/* 0x1c0 & 0x1c1, security config, please ref REG_LP_EFUSE_PROTECTION for bit define */
 #define EFUSE_SEC_CONFIG_ADDR1			0x1C1	/* 0x1c0 & 0x1c1, security config, please ref REG_LP_EFUSE_PROTECTION for bit define */
 
+#define EFUSE_PSRAM_VOLTAGE_SEL_ADDR 0x1C4
+
 extern u8 EFUSE_MAP[1024];
 
 __STATIC_INLINE u32 EFUSE_PMAP_READ8(u32 CtrlSetting, u32 Addr, u8 *Data, u8 L25OutVoltage)
