@@ -35,6 +35,31 @@ OTA::~OTA(){};
  *
  ***********************************************************************************/
 
+uint32_t OTA::getOTACurAddr(void) {
+    uint32_t AddrStart, Offset, IsMinus, PhyAddr;;
+
+	RSIP_REG_TypeDef* RSIP = ((RSIP_REG_TypeDef *) RSIP_REG_BASE);
+	uint32_t CtrlTemp = RSIP->FLASH_MMU[0].MMU_ENTRYx_CTRL;
+
+	if (CtrlTemp & MMU_BIT_ENTRY_VALID) {
+		AddrStart = RSIP->FLASH_MMU[0].MMU_ENTRYx_STRADDR;
+		Offset = RSIP->FLASH_MMU[0].MMU_ENTRYx_OFFSET;
+		IsMinus = CtrlTemp & MMU_BIT_ENTRY_OFFSET_MINUS;
+
+		if(IsMinus)
+			PhyAddr = AddrStart - Offset;
+		else
+			PhyAddr = AddrStart + Offset;
+
+		if(PhyAddr == LS_IMG2_OTA1_ADDR)
+			return OTA_INDEX_1;
+		else if(PhyAddr == LS_IMG2_OTA2_ADDR)
+			return OTA_INDEX_2;
+	}
+
+	return OTA_INDEX_1;
+}
+
 void OTA::beginOTA(int port)
 {
     int server_socket = -1, client_socket = -1;
@@ -63,7 +88,7 @@ void OTA::beginOTA(int port)
     }
     syncOTAAddr(ota_target_index);
 
-    if (ota_get_cur_index() == OTA_INDEX_1) {
+    if (getOTACurAddr() == OTA_INDEX_1) {
         ota_target_index = OTA_INDEX_2;
         printf("Current index = 1, Target index = 2\n");
     } else {
@@ -152,7 +177,7 @@ update_ota_exit:
 void OTA::syncOTAAddr(u32 ota_target_index)
 {
     /* check OTA index we should update */
-    if (ota_get_cur_index() == OTA_INDEX_1) {
+    if (getOTACurAddr() == OTA_INDEX_1) {
         ota_target_index = OTA_INDEX_2;
     } else {
         ota_target_index = OTA_INDEX_1;

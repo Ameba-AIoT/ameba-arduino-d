@@ -470,7 +470,15 @@ void WiFiDrv::getIpAddress(IPAddress& ip, uint8_t interface) {
 }
 
 void WiFiDrv::getIpv6Address() {
-    LwIP_GetIPv6_linklocal(&xnetif[0]);
+    uint8_t *ipv6Address =LwIP_GetIPv6_linklocal(&xnetif[0]);
+    printf("\nIPv6 link-local address: "
+           "%02x%02x:%02x%02x:%02x%02x:%02x%02x:"
+           "%02x%02x:%02x%02x:%02x%02x:%02x%02x\n",
+           ipv6Address[0], ipv6Address[1], ipv6Address[2], ipv6Address[3],
+           ipv6Address[4], ipv6Address[5], ipv6Address[6], ipv6Address[7],
+           ipv6Address[8], ipv6Address[9], ipv6Address[10], ipv6Address[11],
+           ipv6Address[12], ipv6Address[13], ipv6Address[14], ipv6Address[15]);
+    
     while (!ip6_addr_isvalid(netif_ip6_addr_state(&xnetif[0],0))) {
         vTaskDelay(10);
     }

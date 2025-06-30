@@ -16,6 +16,7 @@ public:
     OTA(void);
     ~OTA(void);
 
+    uint32_t getOTACurAddr(void);
     // Starts to connect to OTA server and receive the new firmware
     // To begin OTA firmware update process via MDNS
     void beginOTA(int port);
