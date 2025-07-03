@@ -49,7 +49,11 @@ jobs:
           #- Arduino_package/hardware/libraries/Preferences
           - Arduino_package/hardware/libraries/RTC
           - Arduino_package/hardware/libraries/SoftwareSerial
-          - Arduino_package/hardware/libraries/SPI
+          #- Arduino_package/hardware/libraries/SPI
+          #- Arduino_package/hardware/libraries/SPI/examples/BW16_SD_Card_SPI
+          - Arduino_package/hardware/libraries/SPI/examples/ILI9341_TFT_LCD_PM2.5
+          - Arduino_package/hardware/libraries/SPI/examples/ILI9341_TFT_LCD_basic
+          - Arduino_package/hardware/libraries/SPI/examples/SparkFun_ADXL313_SPI
           - Arduino_package/hardware/libraries/Sys
           - Arduino_package/hardware/libraries/USB
           - Arduino_package/hardware/libraries/Watchdog
