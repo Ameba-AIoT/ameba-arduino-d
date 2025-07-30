@@ -93,15 +93,18 @@ void TwoWire::begin(uint8_t address = 0) {
             this->pI2C = (void *)&i2cwire0;
         } else {
             printf("Invalid I2C pin, SDA and SCL not in same group. \r\n");
+            return;
         }
     } else if (SDA_pin_temp == PA_24) {
         if (SCL_pin_temp == PA_23) {
             this->pI2C = (void *)&i2cwire1;
         } else {
             printf("Invalid I2C pin, SDA and SCL not in same group. \r\n");
+            return;
         }
     } else {
         printf("Invalid I2C pin\r\n");
+        return;
     }
 
     // Attach user callbacks 
