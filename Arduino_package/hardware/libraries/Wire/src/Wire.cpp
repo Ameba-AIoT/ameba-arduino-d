@@ -55,26 +55,29 @@ void TwoWire::begin() {
     amb_ard_pin_check_fun(SDA_pin, PIO_I2C);
     amb_ard_pin_check_fun(SCL_pin, PIO_I2C);
 
-    SDA_pin = (PinName)g_APinDescription[SDA_pin].pinname;
-    SCL_pin = (PinName)g_APinDescription[SCL_pin].pinname;
+    uint32_t SDA_pin_temp = (PinName)g_APinDescription[SDA_pin].pinname;
+    uint32_t SCL_pin_temp = (PinName)g_APinDescription[SCL_pin].pinname;
 
-    if ((SDA_pin == PA_26) || (SDA_pin == PB_0) || (SDA_pin == PB_6)) {
-        if ((SCL_pin == PA_25) || (SCL_pin == PA_31) || (SCL_pin == PB_5)) {
+    if ((SDA_pin_temp == PA_26) || (SDA_pin_temp == PB_0) || (SDA_pin_temp == PB_6)) {
+        if ((SCL_pin_temp == PA_25) || (SCL_pin_temp == PA_31) || (SCL_pin_temp == PB_5)) {
             this->pI2C = (void *)&i2cwire0;
         } else {
             printf("Invalid I2C pin, SDA and SCL not in same group. \r\n");
+            return;
         }
-    } else if (SDA_pin == PA_24) {
-        if (SCL_pin == PA_23) {
+    } else if (SDA_pin_temp == PA_24) {
+        if (SCL_pin_temp == PA_23) {
             this->pI2C = (void *)&i2cwire1;
         } else {
             printf("Invalid I2C pin, SDA and SCL not in same group. \r\n");
+            return;
         }
     } else {
         printf("Invalid I2C pin\r\n");
+        return;
     }
 
-    i2c_init(((i2c_t *)this->pI2C), ((PinName)this->SDA_pin), ((PinName)this->SCL_pin));
+    i2c_init(((i2c_t *)this->pI2C), ((PinName)SDA_pin_temp), ((PinName)SCL_pin_temp));
     i2c_frequency(((i2c_t *)this->pI2C), this->twiClock);
 }
 
@@ -82,17 +85,17 @@ void TwoWire::begin(uint8_t address = 0) {
     amb_ard_pin_check_fun(SDA_pin, PIO_I2C);
     amb_ard_pin_check_fun(SCL_pin, PIO_I2C);
 
-    SDA_pin = (PinName)g_APinDescription[SDA_pin].pinname;
-    SCL_pin = (PinName)g_APinDescription[SCL_pin].pinname;
+    uint32_t SDA_pin_temp = (PinName)g_APinDescription[SDA_pin].pinname;
+    uint32_t SCL_pin_temp = (PinName)g_APinDescription[SCL_pin].pinname;
 
-    if ((SDA_pin == PA_26) || (SDA_pin == PB_0) || (SDA_pin == PB_6)) {
-        if ((SCL_pin == PA_25) || (SCL_pin == PA_31) || (SCL_pin == PB_5)) {
+    if ((SDA_pin_temp == PA_26) || (SDA_pin_temp == PB_0) || (SDA_pin_temp == PB_6)) {
+        if ((SCL_pin_temp == PA_25) || (SCL_pin_temp == PA_31) || (SCL_pin_temp == PB_5)) {
             this->pI2C = (void *)&i2cwire0;
         } else {
             printf("Invalid I2C pin, SDA and SCL not in same group. \r\n");
         }
-    } else if (SDA_pin == PA_24) {
-        if (SCL_pin == PA_23) {
+    } else if (SDA_pin_temp == PA_24) {
+        if (SCL_pin_temp == PA_23) {
             this->pI2C = (void *)&i2cwire1;
         } else {
             printf("Invalid I2C pin, SDA and SCL not in same group. \r\n");
@@ -105,7 +108,7 @@ void TwoWire::begin(uint8_t address = 0) {
     i2c_slave_attach_callbacks(onRequestService, onReceiveService, this);
 
     // Init I2C as slave and enable I2C interrupt
-    i2c_slave_init((i2c_t *)this->pI2C, (PinName)this->SDA_pin, (PinName)this->SCL_pin, address, BUFFER_LENGTH);
+    i2c_slave_init((i2c_t *)this->pI2C, (PinName)SDA_pin_temp, (PinName)SCL_pin_temp, address, BUFFER_LENGTH);
 
     //status = SLAVE_IDLE;
     is_slave = true;
@@ -294,33 +297,33 @@ void TwoWire::onRequest(void(*function)(void)) {
 #if defined(BOARD_AMB21_AMB22)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25 / PB_6, PB_5
+TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA26, PA25 / PB6, PB5
 
 // HW: I2C1
-TwoWire Wire1 = TwoWire(I2C1_SDA, I2C1_SCL); // PA_24, PA_23
+TwoWire Wire1 = TwoWire(I2C1_SDA, I2C1_SCL); // PA24, PA23
 
 #elif defined(BOARD_AMB23)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PB_0, PA_31 / PB_6, PB_5
+TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PB0, PA31 / PB6, PB5
 
 // HW: I2C1
-TwoWire Wire1 = TwoWire(I2C1_SDA, I2C1_SCL); // PA_24, PA_23
+TwoWire Wire1 = TwoWire(I2C1_SDA, I2C1_SCL); // PA24, PA23
 
 #elif defined(BOARD_AITHINKER_BW16)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25
+TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA26, PA25
 
 #elif defined(BOARD_SPARKFUN_AWCU488)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25 / PB_6, PB_5
+TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA26, PA25 / PB6, PB5
 
 #elif defined(BOARD_AMB25) || defined(BOARD_AMB26) || defined(BOARD_UBLOX_NORAW30) || defined(BOARD_SPARKFUN_NORAW306) || defined(BOARD_DATALOGGER_AMB26)
 // SDA SCL
 // HW: I2C0
-TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA_26, PA_25
+TwoWire Wire = TwoWire(I2C_SDA, I2C_SCL); // PA26, PA25
 
 #else
 #error check the board supported
