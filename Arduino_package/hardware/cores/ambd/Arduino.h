@@ -50,10 +50,10 @@ extern uint32_t SystemCoreClock;
 #define clockCyclesToMicroseconds(a)    (((a) * 1000L) / (SystemCoreClock / 1000L))
 #define microsecondsToClockCycles(a)    ((a) * (SystemCoreClock / 1000000L))
 
-void yield(void);
-#ifndef yield
-#define yield(x) {}
-#endif
+__attribute__((weak)) void yield(void);
+// #ifndef yield
+// #define yield(x) {}
+// #endif
 
 extern uint32_t                         DiagPrintf(const char *fmt, ...);
 extern int                              _rtl_printf(const char *fmt, ...);
