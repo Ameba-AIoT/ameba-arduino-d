@@ -184,16 +184,13 @@ void UARTClassTwo::begin(const uint32_t dwBaudRate, uint8_t serial_config_value)
 
     uint32_t UART_BaudRate = dwBaudRate;
 
-#if SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE
+#ifndef SERIAL_TWO_UART_MODIFIABLE_BAUD_RATE
     /* log uart initialize in 115200 baud rate.
-     * If we change baud rate here, Serail Monitor would not detect this change and show nothing on screen.
+     * If we change baud rate here, Serial Monitor would not detect this change and show nothing on screen.
      */
-    //serial_baud(&uart_obj, dwBaudRate);
-    serial_baud(&uart_obj, UART_BaudRate);
-#else
     UART_BaudRate = 115200;
-    serial_baud(&uart_obj, UART_BaudRate);
 #endif
+    serial_baud(&uart_obj, UART_BaudRate);
 
     serial_irq_set(&uart_obj, RxIrq, 1);
     serial_irq_handler(&uart_obj, arduino_uart_irq_handler, (uint32_t)_rx_buffer);
