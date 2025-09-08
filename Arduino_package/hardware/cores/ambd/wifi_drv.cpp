@@ -442,11 +442,7 @@ uint8_t* WiFiDrv::getMacAddress() {
 }
 
 void WiFiDrv::getIpAddress(IPAddress& ip, uint8_t interface) {
-    if (interface == 0) {
-        ip = LwIP_GetIP(&xnetif[0]);
-    } else {
-        ip = LwIP_GetIP(&xnetif[1]);
-    }
+    ip = LwIP_GetIP(&xnetif[interface & 0x1]);
 }
 
 void WiFiDrv::getIpv6Address() {
@@ -465,19 +461,11 @@ void WiFiDrv::getIpv6Address() {
 }
 
 void WiFiDrv::getSubnetMask(IPAddress& mask, uint8_t interface) {
-    if (interface == 0) {
-        mask = LwIP_GetMASK(&xnetif[0]);
-    } else {
-        mask = LwIP_GetMASK(&xnetif[1]);
-    }
+    mask = LwIP_GetMASK(&xnetif[interface & 0x1]);
 }
 
 void WiFiDrv::getGatewayIP(IPAddress& ip, uint8_t interface) {
-    if (interface == 0) {
-        ip = LwIP_GetGW(&xnetif[0]);
-    } else {
-        ip = LwIP_GetGW(&xnetif[1]);
-    }
+    ip = LwIP_GetGW(&xnetif[interface & 0x1]);
 }
 
 char* WiFiDrv::getCurrentSSID() {
