@@ -37,7 +37,7 @@ static int wifi_mode = 0;
 
 static rtw_network_info_t wifi;
 static rtw_ap_info_t ap;
-static unsigned char password[65] = {0};
+static unsigned char password[WL_WPA_KEY_MAX_LENGTH] = {0};
 
 rtw_wifi_setting_t WiFiDrv::wifi_setting;
 
