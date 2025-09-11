@@ -516,29 +516,29 @@ int get_receive_v6(int sock, void *recv_data, int len, int flags, uint32_t *peer
     return ret;
 }
 
-void ipv6_udp_server(void) {
+void ipv6_udp_server(char *data_recv, const char *data_send)
+{
     int server_fd;
     struct sockaddr_in6 client_addr;
 
     unsigned int addrlen = sizeof(struct sockaddr_in6);
 
-    char send_data[MAX_SEND_SIZE] = "Hi client!";
-    char recv_data[MAX_RECV_SIZE];
+    // char send_data[MAX_SEND_SIZE] = "Hi client!";
+    // char recv_data[MAX_RECV_SIZE];
 
-    //create socket
-
+    // create socket
     server_fd = start_server_v6(UDP_SERVER_PORT, 1);
 
     while (1) {
-        memset(recv_data, 0, MAX_RECV_SIZE);
+        memset(data_recv, 0, MAX_RECV_SIZE);
         // if (get_receive_v6(server_fd, recv_data, MAX_SEND_SIZE, 0, UDP_SERVER_IP, UDP_SERVER_PORT) <= 0) {
-        if (lwip_recvfrom(server_fd, recv_data, MAX_RECV_SIZE, 0, (struct sockaddr *)&client_addr, &addrlen) > 0) {
-            printf("\r\n [INFO] Receive data : %s\n", recv_data);
-            //Send Response
-            if (lwip_sendto(server_fd, send_data, MAX_SEND_SIZE, 0, (struct sockaddr *)&client_addr, addrlen) == -1) {
-                printf("\r\n [ERROR] Send data failed\n");
+        if (lwip_recvfrom(server_fd, data_recv, MAX_RECV_SIZE, 0, (struct sockaddr *)&client_addr, &addrlen) > 0) {
+            printf("\r\n[INFO] Receive data : %s\n", data_recv);
+            // Send Response
+            if (lwip_sendto(server_fd, data_send, MAX_SEND_SIZE, 0, (struct sockaddr *)&client_addr, addrlen) == -1) {
+                printf("\r\n[ERROR] %s Send data failed\n", __FUNCTION__);
             } else {
-                printf("\r\n [INFO] Send data successfully\n");
+                printf("\r\n[INFO] Send data successfully\n");
             }
         }
     }

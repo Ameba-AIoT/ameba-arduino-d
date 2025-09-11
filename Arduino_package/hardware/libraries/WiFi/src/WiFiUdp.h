@@ -102,7 +102,7 @@ class WiFiUDP : public UDP {
         // IPv6 related
         virtual int enableIPv6();
         virtual int getIPv6Status();
-        virtual void UDPServerv6(void);
+        virtual void UDPServerv6(char* data_recv, char* data_send);
 
         friend class WiFiDrv;
         using Print::write;

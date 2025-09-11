@@ -48,7 +48,7 @@ void setup() {
     printWifiStatus();
 
     // if you get a connection, report back via serial:
-    UDPserver.UDPServerv6();
+    UDPserver.UDPServerv6(data_recv, data_send);
 }
 
 void loop() {}

@@ -27,7 +27,7 @@ int get_receive(int sock, uint8_t *data, int length, int flag, uint32_t *peer_ad
 int get_receive_v6(int server_fd, void *recv_data, int len, int flags, uint32_t *peer_addr, uint16_t *peer_port);
 int sendto_data(int sock, const uint8_t *data, uint16_t len, uint32_t peer_ip, uint16_t peer_port);
 int sendto_data_v6(int sock, const void *send_data, size_t len, uint32_t peer_ip, uint16_t peer_port);
-void ipv6_udp_server(void);
+void ipv6_udp_server(char *data_recv, const char *data_send);
 
 // OTA
 int ota_bind_socket(int server_socket, int OTAport);

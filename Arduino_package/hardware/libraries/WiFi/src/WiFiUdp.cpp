@@ -244,6 +244,7 @@ int WiFiUDP::getIPv6Status() {
     return serverDrv.getIPv6Status();
 }
 
-void WiFiUDP::UDPServerv6(void) {
-    serverDrv.setIPv6UDPServer();
+void WiFiUDP::UDPServerv6(char *data_recv, char *data_send)
+{
+    serverDrv.setIPv6UDPServer(data_recv, data_send);
 }
