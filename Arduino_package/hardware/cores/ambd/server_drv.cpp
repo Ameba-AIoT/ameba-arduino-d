@@ -231,7 +231,7 @@ int ServerDrv::getIPv6Status()
     return get_ipv6_status();
 }
 
-void ServerDrv::setIPv6UDPServer(void)
+void ServerDrv::setIPv6UDPServer(char *data_recv, char *data_send)
 {
     ipv6_udp_server(data_recv, data_send);
 }
