@@ -178,6 +178,17 @@ typedef struct
     signed char rssi_list[AP_STA_NUM];    /**< RSSI array */
 } rtw_ap_client_info_t;
 
+#if defined(CONFIG_IEEE80211W) || defined(CONFIG_SAE_SUPPORT)
+/**
+  * @brief  The structure is used to describe the stored deauth info
+  */
+struct deauth_info {
+	unsigned char bssid[6];
+	unsigned int  frame_len;
+	unsigned char  frame_buf[50];
+};
+#endif /* CONFIG_IEEE80211W */
+
 /**
   * @brief  The structure is used to describe the bss info of the network.\n
   *			It include the version, BSSID, beacon_period, capability, SSID,

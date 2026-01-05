@@ -106,6 +106,14 @@ char wps_profile_ssid[33]={'\0'};
 char wps_profile_password[65]={'\0'};
 #endif
 
+#if defined(PMF_DEAUTH_SUPPORT)
+extern u8 rtw_pmf_deauth_support;
+pmf_deauth_erase_flash_cb_ptr p_pmf_deauth_erase_flash_cb;
+#if PMF_DEAUTH_SUPPORT && (defined PMF_DEAUTH_DATA)
+static uint32_t pmf_deauth_sector;
+#endif
+#endif
+
 /******************************************************
  *               Variables Definitions
  ******************************************************/
@@ -602,6 +610,11 @@ static void wifi_disconn_hdl( char* buf, int buf_len, int flags, void* userdata)
 	}
 
 	wifi_link_err_parse(disconn_reason);
+#if PMF_DEAUTH_SUPPORT && (defined PMF_DEAUTH_DATA)
+	if ((rtw_pmf_deauth_support == ENABLE) && p_pmf_deauth_erase_flash_cb) {
+		p_pmf_deauth_erase_flash_cb();
+	}
+#endif
 
 	if (join_user_data != NULL) {
 		if (join_user_data->network_info.security_type == RTW_SECURITY_OPEN) {
@@ -2991,6 +3004,9 @@ int wifi_scan_networks_with_ssid_by_extended_security(int (results_handler)(char
 					case RTW_SECURITY_WPA3_ENTERPRISE:
 						RTW_API_INFO("sec = RTW_SECURITY_WPA3_ENTERPRISE,\t");
 						break;
+					case RTW_SECURITY_WPA3_OWE:
+						RTW_API_INFO("sec = RTW_SECURITY_WPA3_OWE,\t");
+						break;
 				}
 				// password id
 				wps_password_id = (int)*(scan_buf.buf + plen + BUFLEN_LEN + MAC_LEN + RSSI_LEN + SECURITY_LEN_EXTENDED);
@@ -3055,6 +3071,8 @@ int wifi_scan_networks_with_ssid_by_extended_security(int (results_handler)(char
 		
 	if(scan_buf.buf)
 		rtw_free(scan_buf.buf);
+
+	rltk_wlan_enable_scan_with_ssid_by_extended_security(0);
 
 	return ret;
 }
@@ -4666,5 +4684,114 @@ int wifi_get_sta_security_type(void)
 		return -1;
 	}
 }
+
+int wifi_get_ch_from_channel_set(uint8_t chnlnum)
+{
+	int ret = 0;
+	char buf[20];
+	int chn_idx = -1;
+
+	rtw_memset(buf, 0, sizeof(buf));
+	snprintf(buf, 20, "get_ch_from_set %x", chnlnum);
+	ret = wext_private_command_with_retval(WLAN0_NAME, buf, buf, 20);
+	if (ret == 0) {
+		sscanf(buf, "%d", &chn_idx);
+		printf("channel supported, idx: %d\n", chn_idx);
+	} else {
+		printf("channel not supported\n");
+	}
+
+	return ret;
+}
+
+#ifdef PMF_DEAUTH_SUPPORT
+#if PMF_DEAUTH_SUPPORT && (defined PMF_DEAUTH_DATA)
+int pmf_deauth_write_flash_cb(unsigned char *data, unsigned int len)
+{
+	if (rtw_pmf_deauth_support == ENABLE) {
+		flash_t flash;
+		device_mutex_lock(RT_DEV_LOCK_FLASH);
+		flash_erase_sector(&flash, pmf_deauth_sector);
+		flash_stream_write(&flash, pmf_deauth_sector, len, (uint8_t *) data);
+		device_mutex_unlock(RT_DEV_LOCK_FLASH);
+	}
+	return 0;
+}
+
+int pmf_deauth_read_flash_cb(unsigned char *my_bssid)
+{
+	if (rtw_pmf_deauth_support == ENABLE) {
+		flash_t	flash;
+		struct deauth_info *deauth_data;
+		deauth_data = (struct deauth_info *)rtw_zmalloc(sizeof(struct deauth_info));
+		if(deauth_data) {
+			device_mutex_lock(RT_DEV_LOCK_FLASH);
+			flash_stream_read(&flash, pmf_deauth_sector, sizeof(struct deauth_info), (u8 *)deauth_data);
+			device_mutex_unlock(RT_DEV_LOCK_FLASH);
+			/* Check whether stored deauth frame is empty */
+			struct deauth_info *empty_data;
+			empty_data = (struct deauth_info *)malloc(sizeof(struct deauth_info));
+			if (empty_data) {
+				memset(empty_data, 0xff, sizeof(struct deauth_info));
+				if(memcmp(empty_data, deauth_data, sizeof(struct deauth_info)) == 0){
+					rtw_mfree((u8 *)deauth_data, sizeof(struct deauth_info));
+					rtw_mfree((u8 *)empty_data, sizeof(struct deauth_info));
+					return 0;
+				}
+				rtw_mfree((u8 *)empty_data, sizeof(struct deauth_info));
+			}
+			if (rtw_memcmp(deauth_data->bssid, my_bssid, ETH_ALEN)) {
+				wext_send_mgnt("wlan0", deauth_data->frame_buf, deauth_data->frame_len, 0);
+			}
+			rtw_mfree((u8 *)deauth_data, sizeof(struct deauth_info));
+		}
+	}
+	return 0;
+}
+
+int pmf_deauth_erase_flash_cb(void)
+{
+	if (rtw_pmf_deauth_support == ENABLE) {
+		flash_t flash;
+		struct deauth_info  *deauth_data, *deauth_data_pre;
+		u8 zero_mac[6] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+		deauth_data_pre = (struct deauth_info *)rtw_zmalloc(sizeof(struct deauth_info));
+		device_mutex_lock(RT_DEV_LOCK_FLASH);
+		flash_stream_read(&flash, pmf_deauth_sector, sizeof(struct deauth_info), (u8 *)deauth_data_pre);
+		device_mutex_unlock(RT_DEV_LOCK_FLASH);
+		if (!rtw_memcmp(deauth_data_pre->bssid, zero_mac, 6)) {
+			deauth_data = (struct deauth_info *)rtw_zmalloc(sizeof(struct deauth_info));
+			device_mutex_lock(RT_DEV_LOCK_FLASH);
+			flash_erase_sector(&flash, pmf_deauth_sector);
+			flash_stream_write(&flash, pmf_deauth_sector, sizeof(struct deauth_info),(u8 *)deauth_data);
+			device_mutex_unlock(RT_DEV_LOCK_FLASH);
+			rtw_mfree((u8 *)deauth_data, sizeof(struct deauth_info));
+		}
+		rtw_mfree((u8 *)deauth_data_pre, sizeof(struct deauth_info));
+	}
+	return 0;
+}
+#endif
+int wifi_set_pmf_deauth_support(__u8 enable)
+{
+	extern u8 rtw_pmf_deauth_support;
+	rtw_pmf_deauth_support = enable;
+	if (enable == 1) {
+#if PMF_DEAUTH_SUPPORT && (defined PMF_DEAUTH_DATA)
+		pmf_deauth_sector = PMF_DEAUTH_DATA;
+		if ((pmf_deauth_sector >= 0x00100000) && (pmf_deauth_sector <= 0x00101000)) {	//8k reserved for user data
+			p_pmf_deauth_write_flash_cb = pmf_deauth_write_flash_cb;
+			p_pmf_deauth_read_flash_cb = pmf_deauth_read_flash_cb;
+			p_pmf_deauth_erase_flash_cb = pmf_deauth_erase_flash_cb;
+		}
+#endif
+	} else {
+		p_pmf_deauth_write_flash_cb = NULL;
+		p_pmf_deauth_read_flash_cb = NULL;
+		p_pmf_deauth_erase_flash_cb = NULL;
+	}
+	return 0;
+}
+#endif
 
 #endif	//#if CONFIG_WLAN

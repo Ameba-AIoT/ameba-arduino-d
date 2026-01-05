@@ -1,17 +1,8 @@
-/**
-  ******************************************************************************
-  * @file    usbh_core.h
-  * @author  Realsil WLAN5 Team
-  * @brief   This file is the header file for usbh_core.c
-  ******************************************************************************
-  * @attention
-  *
-  * This module is a confidential and proprietary property of RealTek and
-  * possession or use of this module requires written permission of RealTek.
-  *
-  * Copyright(c) 2020, Realtek Semiconductor Corporation. All rights reserved.
-  ******************************************************************************
-  */
+/*
+ * Copyright (c) 2024 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 #ifndef __USBH_CORE_H
 #define __USBH_CORE_H
@@ -99,56 +90,55 @@ typedef enum {
 
 /* USB control request */
 typedef struct {
+	usbh_setup_req_t  *setup;							/* Setup request */
+	u8                *buf;								/* Request buffer */
+	u16               length;							/* Request length */
+	usbh_ctrl_transfer_state_t state;					/* Control transfer state */
 	u8                pipe_in;							/* In pipe */
 	u8                pipe_out;							/* Out pipe */
 	u8                pipe_size;						/* Pipe size */
-	u8                *buf;								/* Request buffer */
-	u16               length;							/* Request length */
-	u16               timestamp;						/* Request timestamp */
-	usbh_setup_req_t  setup;							/* Setup request */
-	usbh_ctrl_transfer_state_t state;					/* Control transfer state */
 	u8                error_cnt;						/* Error count, USBH_MSG_ERROR will be issued if USBH_MAX_ERROR_COUNT achieved */
 } usbh_ctrl_req_t;
 
 /* USB config descriptor struct*/
 typedef struct {
 	usbh_cfg_desc_t     cfg_desc;							/* Parsed configuration descriptor */
-	u16                 cfg_buf_length;
 	u8                  *cfg_buf;							/* Raw data for configuration descriptor */
+	u16                 cfg_buf_length;
 } usbh_cfg_desc_array;
 
 /* USB device */
 typedef struct {
-	u8              speed;								/* Device speed */
-	u8              address;							/* Device address */
-	__IO u8         is_connected;						/* Flag indicates whether device is connected */
-	u8              port_enabled;						/* Flag indicates whether port is enabled */
-	u8              active_if;							/* Active device interface */
 	usbh_dev_desc_t dev_desc;							/* Parsed device descriptor */
-	u8              desc_buf[USBH_MAX_DATA_BUFFER];		/* Raw buffer for device descriptor */
-
+	u8              *desc_buf;							/* Raw buffer for device descriptor */
+	usbh_cfg_desc_array *config_desc_array;				/* configuration descriptors */
+	u8              active_if;							/* Active device interface */
 	u8              cfg_index;							/* index for config_desc_array, which config is used */
 	u8              cfg_count_max;						/* max count for config_desc */
-	usbh_cfg_desc_array *config_desc_array;					/* configuration descriptors */
+	u8              address;							/* Device address */
+	u8              speed : 2;							/* Device speed 0~3*/
+	__IO u8         is_connected : 1;					/* Flag indicates whether device is connected 0~1 */
+	u8              port_enabled : 1;					/* Flag indicates whether port is enabled 0~1 */
+
 } usbh_dev_t;
 
 /* USB host */
 typedef struct {
-	/* State parameters */
-	usbh_enum_state_t     enum_state;    				/* Enumeration state */
-	usbh_ctrl_req_state_t ctrl_req_state;				/* Control request state */
-	usbh_ctrl_req_t       ctrl_req;						/* Current control request */
-
 	/* Host parameters */
-	u32                   pipes[USB_MAX_PIPES];	/* Pipes */
+	u32                   pipes[USB_MAX_PIPES];			/* Pipes */
 	usbh_dev_t            device;						/* Attached device */
-	usb_host_t            *host;						/* Host handler */
-	void                  *hcd;							/* HCD handler */
 
 	/* Host process routine parameters */
 	_xqueue               msg_queue;					/* Host message queue */
 	struct task_struct    main_task;					/* Host main task dealing with host message queue */
 	struct task_struct    isr_task;						/* Host ISR task dealing with host interrupts */
+	usbh_ctrl_req_t       ctrl_req;						/* Current control request */
+	usb_host_t            *host;						/* Host handler */
+	void                  *hcd;							/* HCD handler */
+
+	/* State parameters */
+	usbh_enum_state_t     enum_state;    				/* Enumeration state */
+	usbh_ctrl_req_state_t ctrl_req_state;				/* Control request state */
 } usbh_core_t;
 
 /* Exported macros -----------------------------------------------------------*/
@@ -157,51 +147,53 @@ typedef struct {
 
 /* Exported functions --------------------------------------------------------*/
 
-u8 usbh_core_init(usb_host_t *host);
-u8 usbh_core_deinit(usb_host_t *host);
-u8 usbh_core_reenumerate(usb_host_t *host);
+int usbh_core_init(usb_host_t *host);
+int usbh_core_deinit(usb_host_t *host);
+int usbh_core_reenumerate(usb_host_t *host);
 
-u8 usbh_core_alloc_pipe(usbh_core_t *core, u8 ep_addr);
-u8 usbh_core_free_pipe(usbh_core_t *core, u8 pipe_num);
-u8 usbh_core_open_pipe(usbh_core_t *core, u8 pipe_num, u8 ep_num, u8 ep_type, u16 mps);
-u8 usbh_core_close_pipe(usbh_core_t *core, u8 pipe_num);
+int usbh_core_alloc_pipe(usbh_core_t *core, u8 ep_addr);
+int usbh_core_free_pipe(usbh_core_t *core, u8 pipe_num);
+int usbh_core_open_pipe(usbh_core_t *core, u8 pipe_num, u8 ep_num, u8 ep_type, u16 mps);
+int usbh_core_close_pipe(usbh_core_t *core, u8 pipe_num);
 u8 usbh_core_get_eptype(usbh_core_t *core, u8 pipe_num);
-u8 usbh_core_reactivate_pipe(usbh_core_t *core, u8 pipe_num);
+int usbh_core_reactivate_pipe(usbh_core_t *core, u8 pipe_num);
 
-u8 usbh_core_set_toggle(usbh_core_t *core, u8 pipe_num, u8 toggle);
+int usbh_core_set_toggle(usbh_core_t *core, u8 pipe_num, u8 toggle);
 u8 usbh_core_get_toggle(usbh_core_t *core, u8 pipe_num);
 
-u8 usbh_core_ctrl_set_interface(usbh_core_t *core, u8 if_num, u8 if_alt);
-u8 usbh_core_ctrl_set_feature(usbh_core_t *core, u8 value);
-u8 usbh_core_ctrl_clear_feature(usbh_core_t *core, u8 ep_num);
-u8 usbh_core_ctrl_request(usbh_core_t *core, usbh_setup_req_t *req, u8 *buf);
+int usbh_core_ctrl_set_interface(usbh_core_t *core, u8 if_num, u8 if_alt);
+int usbh_core_ctrl_set_feature(usbh_core_t *core, u8 value);
+int usbh_core_ctrl_clear_feature(usbh_core_t *core, u8 ep_num);
+int usbh_core_ctrl_request(usbh_core_t *core, usbh_setup_req_t *req, u8 *buf);
 
-u8 usbh_core_bulk_send_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
-u8 usbh_core_bulk_receive_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
-u8 usbh_core_intr_receive_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
-u8 usbh_core_intr_send_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
-u8 usbh_core_isoc_receive_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
-u8 usbh_core_isoc_send_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
+int usbh_core_bulk_send_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
+int usbh_core_bulk_receive_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
+int usbh_core_intr_receive_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
+int usbh_core_intr_send_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
+int usbh_core_isoc_receive_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
+int usbh_core_isoc_send_data(usbh_core_t *core, u8 *buf, u16 len, u8 pipe_num);
 
 void usbh_core_notify_host_state_change(usbh_core_t *core);
 void usbh_core_notify_port_state_change(usbh_core_t *core);
-void usbh_core_notify_class_state_change(usbh_core_t *core);
-void usbh_core_notify_urb_state_change(usbh_core_t *core);
+void usbh_core_notify_class_state_change(usbh_core_t *core, u32 param);
+void usbh_core_notify_urb_state_change(usbh_core_t *core, u32 param);
 
 usbh_urb_state_t usbh_core_get_urb_state(usbh_core_t *core, u8 pipe_num);
 u8 usbh_core_get_active_class(usbh_core_t *core);
 u8 usbh_core_get_cfgid_from_subclass(usbh_core_t *core, u8 subclass);
-u8 usbh_core_set_configuration(usbh_core_t *core, u8 cfg_id);
+int usbh_core_set_configuration(usbh_core_t *core, u8 cfg_id);
 u8 usbh_core_get_interface(usbh_core_t *core, u8 class_code, u8 sub_class_code, u8 protocol);
-u8 usbh_core_set_interface(usbh_core_t *core, u8 if_num);
+int usbh_core_set_interface(usbh_core_t *core, u8 if_num);
 usbh_if_desc_t *usbh_core_get_interface_descriptor(usbh_core_t *core, u8 if_num, u8 alt_num);
 
 void usbh_core_disable_port(usbh_core_t *core);
 void usbh_core_enable_port(usbh_core_t *core);
-u8 usbh_core_is_port_enabled(usbh_core_t *core);
+int usbh_core_is_port_enabled(usbh_core_t *core);
 
-u8 usbh_core_connect(usbh_core_t *core);
-u8 usbh_core_disconnect(usbh_core_t *core);
+int usbh_core_connect(usbh_core_t *core);
+int usbh_core_disconnect(usbh_core_t *core);
+
+u32 usbh_core_get_time_tick(void);
 
 #endif /* __USBD_CORE_H */
 

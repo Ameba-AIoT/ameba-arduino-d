@@ -1,6 +1,10 @@
 #ifndef PLATFORM_STDLIB_8721D_H
 #define PLATFORM_STDLIB_8721D_H
 
+#ifdef AMEBA_Tensorflow_Lite
+//zzw arduino
+#define STD_PRINTF
+#endif
 #define CONFIG_PLATFORM_AMEBA_X 1
 
 #if defined (__IARSTDLIB__)
@@ -51,7 +55,11 @@
 	#undef strpbrk
 	#undef strtoul
 	#undef strtol
+#ifdef AMEBA_Tensorflow_Lite
+	//#undef rand //Comment out for compatibility with TFLite
+#else
 	#undef rand
+#endif
 #ifndef STD_PRINTF
 	#define printf						_rtl_printf
 	#define sprintf						_rtl_sprintf
@@ -60,8 +68,14 @@
 	#define sscanf						_rtl_sscanf	//if use sscanf in std libc.a, please delete _strtol_r symbol in rlx8721d_rom_symbol_acut.ld
 #endif
 	#define memchr					_memchr
+#ifdef AMEBA_Tensorflow_Lite
+	//Comment out for compatibility with TFLite
+	//#define memcmp					_memcmp
+	//#define memcpy					_memcpy //memcpy_gdma(dst, src, sz)
+#else
 	#define memcmp					_memcmp
 	#define memcpy					_memcpy //memcpy_gdma(dst, src, sz)
+#endif
 	#define memmove				_memmove
 	#define memset					_memset
 	
@@ -84,8 +98,14 @@
 	#define atol(str)					_strtol(str,NULL,10)
 	#define atoi(str)					_stratoi(str)	
 	#define strpbrk(cs, ct)			_strpbrk(cs, ct)		// for B-cut ROM
+#ifdef AMEBA_Tensorflow_Lite
+	//Comment out for compatibility with TFLite
+	//#define rand						Rand
+	//#define srand				
+#else
 	#define rand						Rand
 	#define srand				
+#endif
 	
 	//extern int _sscanf_patch(const char *buf, const char *fmt, ...);
 	//#define sscanf					_sscanf_patch
@@ -100,7 +120,9 @@
 extern void *pvPortMalloc( size_t xWantedSize );
 extern void vPortFree( void *pv );
 extern void *pvPortReAlloc( void *pv,  size_t xWantedSize );
+#ifndef AMEBA_Tensorflow_Lite
 extern u8*	rtw_calloc(u32 nelements, u32 elmentSize);
+#endif
 #define malloc                  pvPortMalloc
 #define free                    vPortFree
 #define realloc			pvPortReAlloc

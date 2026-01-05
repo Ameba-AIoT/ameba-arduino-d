@@ -103,6 +103,7 @@ uint32_t pmu_get_km4sleeptime(void);
 /* Other definations --------------------------------------------------------*/
 extern u8 km4_sleep_type;
 extern u32 km4_sleep_timeout;
+extern u32 km4_sleep_last_tick;
 extern void flash_operation_config(void);
 #endif /* _RTL8721D_LP_KM4_H_ */
 /******************* (C) COPYRIGHT 2016 Realtek Semiconductor *****END OF FILE****/

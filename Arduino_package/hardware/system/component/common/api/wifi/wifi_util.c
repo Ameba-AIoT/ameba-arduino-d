@@ -1924,6 +1924,12 @@ void wext_change_mgnt_datarate(__u8 mode)
 	change_mgnt_datatrate = mode;
 }
 
+extern u8 set_max_txpwr_limit;
+void wext_set_max_txpwr_limit(__u8 val)
+{
+	set_max_txpwr_limit = (__s8)val;
+}
+
 #ifdef CONFIG_SOFTAP_KEEP_SILENT_TABLE
 void wext_enable_softap_slient_table(__u8 mode)
 {

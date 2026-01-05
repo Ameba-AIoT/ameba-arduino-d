@@ -1374,6 +1374,36 @@ void wifi_return_country_code(CountryCodeCount *country_code_counts, int *num_co
  */
 int wifi_get_sta_security_type(void);
 
+/**
+* @brief  Check whether the given channel number is supported or not for the configured country code.
+		  Basically checks the channel set and returns channel idx if supported.
+ * @param[in]  chnlnum: The channel number that user wants to check if supported.
+ * @return 0: success.
+*/
+int wifi_get_ch_from_channel_set(uint8_t chnlnum);
+
+#ifdef PMF_DEAUTH_SUPPORT
+/**
+* @brief  Set protected management frame(pmf) deauth support for AP compatibility issue which requires protected frame to disassociate client.
+*		  This feature will generate pmf deauth frame after successful connection and store it in flash.
+*         After reboot during first client join, read from flash and send it to AP.
+*         Set "PMF_DEAUTH_SUPPORT" to 1 and define proper flash memory to "PMF_DEAUTH_DATA" in platform_opts.h to use this feature.
+*		  There is a condition inside this API to limit user to use first 8k user data flash, which requires modification for any external flash address.
+*		  The first 8k user data flash(UART_SETTING_SECTOR/AP_SETTING_SECTOR) can be used only if it is free to use.
+ * @param[in]  enable: 1, enable pmf deauth support and it's associated callback functions.
+ * @return 0: success.
+*/
+int wifi_set_pmf_deauth_support(__u8 enable);
+
+typedef int (*pmf_deauth_write_flash_cb_ptr)(unsigned char *data, unsigned int len);
+typedef int (*pmf_deauth_read_flash_cb_ptr)(unsigned char *my_bssid);
+typedef int (*pmf_deauth_erase_flash_cb_ptr)(void);
+
+extern pmf_deauth_write_flash_cb_ptr p_pmf_deauth_write_flash_cb;
+extern pmf_deauth_read_flash_cb_ptr p_pmf_deauth_read_flash_cb;
+extern pmf_deauth_erase_flash_cb_ptr p_pmf_deauth_erase_flash_cb;
+#endif
+
 #ifdef __cplusplus
 }
 #endif

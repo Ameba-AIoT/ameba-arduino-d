@@ -23,6 +23,9 @@
 
 #define CDC_ECM_MAC_FILTER_MAX_LEN                      (20)
 
+/* ecm ethernet connect status check */
+#define USBH_ECM_ETH_STATUS_CHECK                       500U  //ms
+
 /* CDC Class Codes */
 #define CDC_CLASS_CODE                                  0x02U
 #define CDC_IF_CDC_CTRL_CODE                            0x02U
@@ -62,6 +65,28 @@
 #pragma pack(1)
 
 /* USB Host Status */
+
+typedef int (*usb_timer_func)(void);
+typedef enum {
+	USBH_CDC_ECM_TYPE_INTR = 0U,
+	USBH_CDC_ECM_TYPE_BULK_IN,
+	USBH_CDC_ECM_TYPE_BULK_OUT,
+
+	USBH_CDC_ACM_TYPE_BULK_IN,
+	USBH_CDC_ACM_TYPE_BULK_OUT,
+
+	USBH_CDC_ECM_TYPE_MAX,
+} usbh_ecm_xter_type_t;
+
+typedef struct{
+	u8 pipe_id;
+	usbh_ecm_xter_type_t type;
+	u32 check_interval;   //const
+	u32 last_check_time;  //last update time
+	usb_timer_func func;
+} usbh_cdc_ecm_time_t;
+
+
 typedef enum {
     USBH_CDC_ECM_IDLE = 0U,
     USBH_CDC_ECM_DETACHED,
@@ -189,7 +214,11 @@ typedef struct {
     u8             *xfer_buf;
     u16             xfer_len;
 
+	u32             idle_tick;
+	u32             busy_tick;
+
     volatile usbh_cdc_ecm_transfer_state_t    state;
+	u8 xfer_zlp : 1;
 } usbh_cdc_ecm_ep_t;
 
 
@@ -208,8 +237,7 @@ typedef struct {
 /* CDC ECM host */
 typedef struct {
     /* CDC ECM communication interface */
-    struct task_struct intr_task;
-    struct task_struct bulk_task;
+    struct task_struct ecm_monitor_task;
 
     usbh_cdc_ecm_ep_t                   report_ep;
     usbh_cdc_ecm_ep_t                   tx_ep;
@@ -261,10 +289,11 @@ u8  usbh_cdc_ecm_choose_config(usb_host_t *host);
 u8  usbh_cdc_ecm_check_enum_status(void);
 u8  usbh_cdc_ecm_get_ctrl_transfer_owner(void);
 u8  usbh_cdc_ecm_change_ctrl_transfer_owner(void);
-u8  usbh_cdc_ecm_task(void);
 u8  usbh_cdc_ecm_bulk_send(u8 *buf, u32 len);
 u8  usbh_cdc_ecm_set_alt_setting(void);
 u8  usbh_cdc_ecm_trigger_transfer(usbh_cdc_ecm_ep_t  *ep);
 u16 usbh_cdc_ecm_get_usbin_mps(void);
+int usbh_cdc_ecm_monitor_task(void);
+int usbh_cdc_ecm_timer_reg(u8 pipe, u32 time_value, usb_timer_func fn, usbh_ecm_xter_type_t type);
 
 #endif  /* USBD_CDC_ECM_H */

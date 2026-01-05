@@ -186,6 +186,7 @@ CPU_PWR_SEQ HSPWR_WAKE_SEQ[] = {
 u8 km4_sleep_type;
 u32 km4_sleep_timeout = 0xffffffff;
 u32 km4_wake_event;
+u32 km4_sleep_last_tick;
 
 _OPTIMIZE_O3_
 u32 km4_status_on(void)
@@ -313,7 +314,12 @@ u32 km4_suspend(u32 type)
 
 	if (duration > 0) {
 		/* used for resume delay */
-		km4_sleep_timeout = xTaskGetTickCount() + duration;
+		km4_sleep_last_tick = xTaskGetTickCount();
+		km4_sleep_timeout = km4_sleep_last_tick + duration;
+		if(0xffffffff == km4_sleep_timeout) {
+			// km4_sleep_timeout should not reach  0xffffffff
+			km4_sleep_timeout = 0xffffffff - 1;
+		}
 	}
 
 	if (type == SLEEP_CG) {
@@ -330,10 +336,11 @@ void km4_wake_event_update(void)
 {
 	/*the timer is used to control KM4 max sleep time*/
 	u32 current_tick = xTaskGetTickCount();
-	if (current_tick >= km4_sleep_timeout) {
+	if (((current_tick - km4_sleep_last_tick) >= (km4_sleep_timeout - km4_sleep_last_tick)) && (km4_sleep_timeout != 0xffffffff)) {
 		km4_wake_event |=BIT_HP_WEVT_TIMER_STS;
 		km4_sleep_timeout = 0xffffffff;
-	}
+		km4_sleep_last_tick = 0;
+	}	
 
 	/*when keyScan is used as a wake up source,*/
 	if ((ps_config.km0_enable_key_touch  | BIT_KEY_ENABLE)
@@ -345,10 +352,12 @@ void km4_wake_event_update(void)
 		&& CapTouch_GetISR(CAPTOUCH_DEV))
 		km4_wake_event |=BIT_HP_WEVT_CAPTOUCH_STS;
 
-	/*when GPIO is used as a wake up source,*/
-	//if ((ps_config.km0_enable_key_touch  | BIT_GPIO_ENABLE)
-	//	&& GPIO trigger wake KM4)
-	//	km4_wake_event |=BIT_HP_WEVT_GPIO_STS;
+    GPIO_TypeDef* gpioA = GPIOA_BASE; 
+    GPIO_TypeDef* gpioB = GPIOB_BASE;
+    if ((ps_config.km0_enable_key_touch & BIT_GPIO_ENABLE)
+        && (gpioA->INT_STATUS | gpioB->INT_STATUS)) {
+			km4_wake_event |= BIT_HP_WEVT_GPIO_STS;
+	}
 
 }
 

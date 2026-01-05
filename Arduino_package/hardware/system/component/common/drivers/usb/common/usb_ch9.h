@@ -1,17 +1,8 @@
-/**
-  ******************************************************************************
-  * @file    usb_ch9.h
-  * @author  Realsil WLAN5 Team
-  * @brief   This file provides general defines for USB SPEC CH9
-  ******************************************************************************
-  * @attention
-  *
-  * This module is a confidential and proprietary property of RealTek and
-  * possession or use of this module requires written permission of RealTek.
-  *
-  * Copyright(c) 2021, Realtek Semiconductor Corporation. All rights reserved.
-  ******************************************************************************
-  */
+/*
+ * Copyright (c) 2024 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 #ifndef USB_CH9_H
 #define USB_CH9_H
@@ -21,12 +12,6 @@
 #include "basic_types.h"
 
 /* Exported defines ----------------------------------------------------------*/
-
-/* USB speed */
-#define USB_SPEED_HIGH                                 0
-#define USB_SPEED_HIGH_IN_FULL                         1
-#define USB_SPEED_LOW                                  2
-#define USB_SPEED_FULL                                 3
 
 /* USB descriptor length */
 #define USB_LEN_DEV_QUALIFIER_DESC                     0x0AU
@@ -114,6 +99,15 @@
 #define USB_HS_MAX_PACKET_SIZE                         512U
 #define USB_FS_MAX_PACKET_SIZE                         64U
 #define USB_MAX_EP0_SIZE                               64U
+
+#define USB_CTRL_MAX_MPS                               64U
+#define USB_XFER_MAX_MPS                               1024U
+#define USB_BULK_FS_MAX_MPS                            64U
+#define USB_BULK_HS_MAX_MPS                            512U
+#define USB_INTR_FS_MAX_MPS                            64U
+#define USB_INTR_HS_MAX_MPS                            USB_XFER_MAX_MPS
+#define USB_ISOC_FS_MAX_MPS                            1023U
+#define USB_ISOC_HS_MAX_MPS                            USB_XFER_MAX_MPS
 
 /* bmAttributes D1..0 Transfer type */
 #define USB_EP_XFER_TYPE_MASK                          0x03U

@@ -17,7 +17,7 @@
 #define USBD_HAL_H
 
 /* Includes ------------------------------------------------------------------*/
-
+#include "usb_regs.h"
 #include "usb_hal.h"
 #include "usbd.h"
 

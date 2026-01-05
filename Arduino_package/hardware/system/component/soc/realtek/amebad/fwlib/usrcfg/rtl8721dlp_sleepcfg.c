@@ -137,7 +137,7 @@ WAKEPIN_TypeDef sleep_wakepin_config[]=
 
 PSCFG_TypeDef ps_config = {
 	.km0_config_wifi_enable = TRUE,
-	.km0_enable_key_touch = FALSE,//BIT_KEY_ENABLE | BIT_CAPTOUCH_ENABLE,
+	.km0_enable_key_touch = FALSE,//BIT_GPIO_ENABLE, BIT_KEY_ENABLE | BIT_CAPTOUCH_ENABLE,
 	.km0_tickles_debug = FALSE,/* if open WIFI FW, should close it, or beacon will lost in WOWLAN */
 	.km0_osc2m_close = TRUE,
 	.km0_pg_enable = FALSE,

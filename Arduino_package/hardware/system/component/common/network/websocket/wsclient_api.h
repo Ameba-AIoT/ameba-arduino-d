@@ -105,7 +105,7 @@ void ws_poll(int timeout, wsclient_context **wsclient);
 ** Input          : function that resolve the message received and the message length
 ** Return         : None
 **************************************************************************************************/
-void ws_dispatch(void (*callback)(wsclient_context **, int)) ;
+void ws_dispatch(void (*callback)(wsclient_context **, int, enum opcode_type)) ;
 
 /*************************************************************************************************
 ** Function Name  : ws_pong

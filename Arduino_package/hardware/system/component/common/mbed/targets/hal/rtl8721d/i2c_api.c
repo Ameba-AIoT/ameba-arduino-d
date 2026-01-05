@@ -135,7 +135,7 @@ u32 I2C_MasterWrite_Patch(I2C_TypeDef *I2Cx, u8* pBuf, u32 len)
   */
 int I2C_MasterRead_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u32 timeout_ms)
 {
-	int cnt = 0;
+	u32 cnt = 0;
 	u32 InTimeoutCount = 0;
 	
 	/* Check the parameters */
@@ -185,7 +185,7 @@ int I2C_MasterRead_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u32 timeout_ms)
   */
 int I2C_MasterWrite_TimeOut(I2C_TypeDef *I2Cx, u8* pBuf, u32 len, u32 timeout_ms)
 {
-	int cnt = 0;
+	u32 cnt = 0;
 	u32 InTimeoutCount = 0;
 
 	/* Check the parameters */

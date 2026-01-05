@@ -30,13 +30,12 @@
 #define EF_DONGLE_PID_EG915      0x0901
 #define EF_DONGLE_PID_EG91       0x0191
 
-#define USB_DEFAULT_VID       0x0BDA
-
+#define USB_DEFAULT_VID          0x0BDA
 typedef enum {
-    USBH_ECM_RX_THREAD_PRIORITY           = 5,
-    USBH_ECM_INIT_THREAD_PRIORITY         = 6,
-    USBH_ECM_MAIN_THREAD_PRIORITY         = 6,  //usb process
-    USBH_ECM_ISR_THREAD_PRIORITY          = 7,  //usb core isr
+    USBH_ECM_MONITOR_THREAD_PRIORITY      = 3,
+    USBH_ECM_INIT_THREAD_PRIORITY         = 4,
+    USBH_ECM_MAIN_THREAD_PRIORITY         = 4,  //usb process
+    USBH_ECM_ISR_THREAD_PRIORITY          = 5,  //usb core isr
     USBH_ECM_HOTPLUG_THREAD_PRIORITY      = 8,  //hotplug
 } usbh_cdc_ecm_task_priority_t;
 

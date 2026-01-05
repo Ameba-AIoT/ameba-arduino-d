@@ -42,6 +42,10 @@ int eap_fast_use_binary_pac = 0;
 char * eap_fast_machine_pac = "";
 char *ttls_phase2_method = NULL;
 const configSTACK_DEPTH_TYPE *eap_eapol_recvd_stack = NULL;
+char *eap_server_hostname = NULL;
+
+// To fix compatibility issue with specific servers.
+int eap_conf_compatibility = 1; /* 1: eap compatibility enabled, 0: eap compatibility disabled */
 
 void eap_eapol_recvd_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
 void eap_eapol_start_hdl(char *buf, int buf_len, int flags, void* handler_user_data);
@@ -155,7 +159,8 @@ void eap_config(void){
 "Yi9ae6ibKhtUjyBQ87HFAkA2Bb3z7NUx+AA2g2HZocFZFShBxylACyQkl8FAFZtf\r\n" \
 "osudmKdFQHyAWuBMex4tpz/OLTqJ1ecL1JQeC7OvlpEX\r\n" \
 "-----END RSA PRIVATE KEY-----\r\n";
-	
+
+#if (defined(ENABLE_EAP_SSL_VERIFY_SERVER) && ENABLE_EAP_SSL_VERIFY_SERVER)
 	eap_ca_cert = \
 "-----BEGIN CERTIFICATE-----\r\n" \
 "MIIEpzCCA4+gAwIBAgIJAPvZaozpdfjkMA0GCSqGSIb3DQEBCwUAMIGTMQswCQYD\r\n" \
@@ -184,6 +189,7 @@ void eap_config(void){
 "cGN0FC+migfilFjJgkDJ0r78nwes55L8zjoofiZuO03rrHww6ARc3v1jYzAufddk\r\n" \
 "QTiZHgjlMQb2XXMmXLn8kBgoDnqkXFNe8j0h8uxIJSrjOoIyn1h1wvX5/w==\r\n" \
 "-----END CERTIFICATE-----\r\n";
+#endif
 }
 */
 
@@ -670,6 +676,7 @@ int eap_cert_setup(struct eap_tls *tls_context)
 	if(eap_ca_cert != NULL){
 		if(mbedtls_x509_crt_parse(_ca_crt, eap_ca_cert, eap_ca_cert_len) != 0)
 			return -1;
+		mbedtls_ssl_set_hostname(tls_context->ssl, eap_server_hostname);
 		mbedtls_ssl_conf_ca_chain(tls_context->conf, _ca_crt, NULL);
 		mbedtls_ssl_conf_authmode(tls_context->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
 		mbedtls_ssl_conf_verify(tls_context->conf, eap_verify, NULL);

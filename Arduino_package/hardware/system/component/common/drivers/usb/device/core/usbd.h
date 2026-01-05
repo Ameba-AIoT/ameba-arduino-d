@@ -20,6 +20,7 @@
 
 #include "usb_os.h"
 #include "usb_ch9.h"
+#include "usb_hal.h"
 
 /* Exported defines ----------------------------------------------------------*/
 

@@ -3,6 +3,7 @@ menu.AutoUploadMode=* Auto Flash Mode
 menu.EraseFlash=* Erase All Flash Memory (4MB)
 menu.StdLibInit=* Standard Lib
 menu.UploadBaudrate=* Upload Speed
+menu.TFLite=* TensorFlow Lite
 
 ##############################################################
 # PLEASE DO NOT PUT BOARDS ABOVE THE OFFICIAL AMEBA BOARDS! ##
@@ -52,6 +53,11 @@ Ameba_AMB21_AMB22.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB21_AMB22.menu.UploadBaudrate.1500000.upload.speed=1500000
 Ameba_AMB21_AMB22.menu.UploadBaudrate.921600=921600
 Ameba_AMB21_AMB22.menu.UploadBaudrate.921600.upload.speed=921600
+
+Ameba_AMB21_AMB22.menu.TFLite.Disable=Disable
+Ameba_AMB21_AMB22.menu.TFLite.Disable.build.tf_lite_flag=
+Ameba_AMB21_AMB22.menu.TFLite.Enable=Enable
+Ameba_AMB21_AMB22.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 Ameba_AMB23.name=AMB23 (RTL8722DM)
@@ -98,6 +104,11 @@ Ameba_AMB23.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB23.menu.UploadBaudrate.1500000.upload.speed=1500000
 Ameba_AMB23.menu.UploadBaudrate.921600=921600
 Ameba_AMB23.menu.UploadBaudrate.921600.upload.speed=921600
+
+Ameba_AMB23.menu.TFLite.Disable=Disable
+Ameba_AMB23.menu.TFLite.Disable.build.tf_lite_flag=
+Ameba_AMB23.menu.TFLite.Enable=Enable
+Ameba_AMB23.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 Ai-Thinker_BW16.name=Ai-Thinker BW16 (RTL8720DN)
@@ -144,6 +155,11 @@ Ai-Thinker_BW16.menu.UploadBaudrate.1500000=1500000
 Ai-Thinker_BW16.menu.UploadBaudrate.1500000.upload.speed=1500000
 Ai-Thinker_BW16.menu.UploadBaudrate.921600=921600
 Ai-Thinker_BW16.menu.UploadBaudrate.921600.upload.speed=921600
+
+Ai-Thinker_BW16.menu.TFLite.Disable=Disable
+Ai-Thinker_BW16.menu.TFLite.Disable.build.tf_lite_flag=
+Ai-Thinker_BW16.menu.TFLite.Enable=Enable
+Ai-Thinker_BW16.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 SparkFun_ThingPlus-AWCU488.name=SparkFun AzureWave Thing Plus - AW-CU488 (RTL8721DM)
@@ -190,6 +206,11 @@ SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.1500000=1500000
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.1500000.upload.speed=1500000
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600=921600
 SparkFun_ThingPlus-AWCU488.menu.UploadBaudrate.921600.upload.speed=921600
+
+SparkFun_ThingPlus-AWCU488.menu.TFLite.Disable=Disable
+SparkFun_ThingPlus-AWCU488.menu.TFLite.Disable.build.tf_lite_flag=
+SparkFun_ThingPlus-AWCU488.menu.TFLite.Enable=Enable
+SparkFun_ThingPlus-AWCU488.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 Ameba_AMB25.name=AMB25 (RTL8720DF)
@@ -236,6 +257,11 @@ Ameba_AMB25.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB25.menu.UploadBaudrate.1500000.upload.speed=1500000
 Ameba_AMB25.menu.UploadBaudrate.921600=921600
 Ameba_AMB25.menu.UploadBaudrate.921600.upload.speed=921600
+
+Ameba_AMB25.menu.TFLite.Disable=Disable
+Ameba_AMB25.menu.TFLite.Disable.build.tf_lite_flag=
+Ameba_AMB25.menu.TFLite.Enable=Enable
+Ameba_AMB25.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 Ameba_AMB26.name=AMB26 (RTL8720DF)
@@ -282,6 +308,11 @@ Ameba_AMB26.menu.UploadBaudrate.1500000=1500000
 Ameba_AMB26.menu.UploadBaudrate.1500000.upload.speed=1500000
 Ameba_AMB26.menu.UploadBaudrate.921600=921600
 Ameba_AMB26.menu.UploadBaudrate.921600.upload.speed=921600
+
+Ameba_AMB26.menu.TFLite.Disable=Disable
+Ameba_AMB26.menu.TFLite.Disable.build.tf_lite_flag=
+Ameba_AMB26.menu.TFLite.Enable=Enable
+Ameba_AMB26.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 u-blox_NORA-W30.name=u-blox NORA-W30 series (RTL8720DF)
@@ -326,6 +357,11 @@ u-blox_NORA-W30.menu.UploadBaudrate.921600=921600
 u-blox_NORA-W30.menu.UploadBaudrate.921600.upload.speed=921600
 u-blox_NORA-W30.menu.UploadBaudrate.1500000=1500000
 u-blox_NORA-W30.menu.UploadBaudrate.1500000.upload.speed=1500000
+
+u-blox_NORA-W30.menu.TFLite.Disable=Disable
+u-blox_NORA-W30.menu.TFLite.Disable.build.tf_lite_flag=
+u-blox_NORA-W30.menu.TFLite.Enable=Enable
+u-blox_NORA-W30.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 Sparkfun_ThingPlus-NORA-W306.name=SparkFun Thing Plus NORA-W306 (RTL8720DF)
@@ -370,6 +406,11 @@ Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.921600=921600
 Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.921600.upload.speed=921600
 Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.1500000=1500000
 Sparkfun_ThingPlus-NORA-W306.menu.UploadBaudrate.1500000.upload.speed=1500000
+
+Sparkfun_ThingPlus-NORA-W306.menu.TFLite.Disable=Disable
+Sparkfun_ThingPlus-NORA-W306.menu.TFLite.Disable.build.tf_lite_flag=
+Sparkfun_ThingPlus-NORA-W306.menu.TFLite.Enable=Enable
+Sparkfun_ThingPlus-NORA-W306.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################
 
 DataloggerIot.name=Datalogger series (RTL8720DF)
@@ -414,4 +455,9 @@ DataloggerIot.menu.UploadBaudrate.921600=921600
 DataloggerIot.menu.UploadBaudrate.921600.upload.speed=921600
 DataloggerIot.menu.UploadBaudrate.1500000=1500000
 DataloggerIot.menu.UploadBaudrate.1500000.upload.speed=1500000
+
+DataloggerIot.menu.TFLite.Disable=Disable
+DataloggerIot.menu.TFLite.Disable.build.tf_lite_flag=
+DataloggerIot.menu.TFLite.Enable=Enable
+DataloggerIot.menu.TFLite.Enable.build.tf_lite_flag=-DAMEBA_Tensorflow_Lite
 ##############################################################

@@ -15,6 +15,22 @@
 #include "platform_autoconf.h"
 #include "basic_types.h"
 
+#ifdef AMEBA_Tensorflow_Lite
+/* //Comment out for compatibility with TFLite
+#ifndef isprint
+#define in_range(c, lo, up)  ((u8)c >= lo && (u8)c <= up)
+#define isprint(c)           in_range(c, 0x20, 0x7f)
+#define isdigit(c)           in_range(c, '0', '9')
+#define isxdigit(c)          (isdigit(c) || in_range(c, 'a', 'f') || in_range(c, 'A', 'F'))
+//#define islower(c)           in_range(c, 'a', 'z')
+#define isspace(c)           (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t' || c == '\v' || c == ',')
+
+#define isupper(c)	(((c)>='A')&&((c)<='Z'))
+#define islower(c)	(((c)>='a')&&((c)<='z'))
+#define isalpha(c)	(isupper(c) || islower(c))	
+#endif
+*/
+#else
 #ifndef isprint
 #define in_range(c, lo, up)  ((u8)c >= lo && (u8)c <= up)
 #define isprint(c)           in_range(c, 0x20, 0x7f)
@@ -27,7 +43,7 @@
 #define islower(c)	(((c)>='a')&&((c)<='z'))
 #define isalpha(c)	(isupper(c) || islower(c))	
 #endif  
-
+#endif
 
 extern _LONG_CALL_ int _vsscanf(const char *buf, const char *fmt, va_list args);
 
@@ -41,7 +57,9 @@ extern _LONG_CALL_ size_t _strnlen(const char *s, size_t count);
 extern _LONG_CALL_ int _strncmp(const char *cs, const char *ct, size_t count);
 extern _LONG_CALL_ int _sscanf(const char *buf, const char *fmt, ...);
 extern _LONG_CALL_ char *_strsep(char **s, const char *ct);
+#ifndef AMEBA_Tensorflow_Lite
 extern _LONG_CALL_ char *_strncat(char *__restrict s1 , const char *__restrict s2 , size_t n);
+#endif
 extern _LONG_CALL_ char * _strcat(char *__restrict s1 , const char *__restrict s2);
 
 extern _LONG_CALL_ char *_strpbrk(const char *cs, const char *ct);

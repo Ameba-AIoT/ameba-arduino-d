@@ -99,7 +99,7 @@ extern u8_t get_bridge_portnum(void);
 #define PROTO_TYPE_LEN		(2)  // protocol type
 #define IP_LEN_OFFSET		(2)  // offset of total length field in IP packet
 static _mutex mii_tx_mutex;
-static u8 TX_BUFFER[MAX_BUFFER_SIZE];
+static u8 TX_BUFFER[MAX_BUFFER_SIZE] __attribute__((aligned(CACHE_LINE_SIZE)));
 static u8 RX_BUFFER[MAX_BUFFER_SIZE];
 static u32 pkt_total_len = 0;
 static u32 rx_buffer_saved_data = 0;
@@ -324,46 +324,20 @@ void rltk_mii_recv(struct eth_drv_sg *sg_list, int sg_len)
 #endif
 }
 
-u8 rltk_mii_recv_data(u8 *buf, u32 total_len, u32 *frame_length)
+static u8 rltk_mii_recv_data(u8 *buf, u32 total_len, u32 *frame_length)
 {
-	(void) buf;
-	(void) total_len;
-	(void) frame_length;
 #if defined(CONFIG_ETHERNET) && CONFIG_ETHERNET
-	u8 *pbuf;
-	u32 pkt_len_index = DST_MAC_LEN + SRC_MAC_LEN + PROTO_TYPE_LEN;
-	u16 usb_receive_mps = usbh_cdc_ecm_get_receive_mps();	//only 512 bytes is supported now.
-
-	if (0 == pkt_total_len) { //first packet
-		pbuf = RX_BUFFER;
-		rtw_memcpy((void *)pbuf, buf, total_len);
-		if (total_len != usb_receive_mps) { //should finish
-			*frame_length = total_len;
-			return 1;
-		} else { //get the total length
-			rx_buffer_saved_data = total_len;
-			//should check the vlan header
-			eth_type = buf[DST_MAC_LEN + SRC_MAC_LEN] * 256 + buf[DST_MAC_LEN + SRC_MAC_LEN + 1];
-
-			if (eth_type == ETH_P_IP) {
-				pkt_total_len =  buf[pkt_len_index + IP_LEN_OFFSET] * 256 + buf[pkt_len_index + IP_LEN_OFFSET + 1];
-			}
-		}
-	} else {
-		pbuf = RX_BUFFER + rx_buffer_saved_data;
-		if (total_len > 0) {
-			rtw_memcpy((void *)pbuf, buf, total_len);
-		}
-		rx_buffer_saved_data += total_len;
-		if (total_len != usb_receive_mps) {
-			//should finish
-			*frame_length = rx_buffer_saved_data;
-			pkt_total_len = 0;
-			return 1;
-		}
+	if(0 == total_len) {
+		printf("recv data len is 0\n");
+		return 0;
 	}
-#endif
+	*frame_length = total_len;
+	memcpy((u8*)RX_BUFFER, buf, total_len);
+
+	return total_len;
+#else
 	return 0;
+#endif
 }
 
 u8 rltk_mii_recv_data_check(u8 *mac, u32 frame_length)
@@ -383,7 +357,6 @@ u8 rltk_mii_recv_data_check(u8 *mac, u32 frame_length)
 #endif
 	return (checklen == 6) ? (0) : (1);
 }
-
 void ethernetif_mii_recv(u8 *buf, u32 total_len)
 {
 	(void) buf;

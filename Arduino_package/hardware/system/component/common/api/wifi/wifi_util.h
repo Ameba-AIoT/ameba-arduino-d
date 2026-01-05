@@ -128,6 +128,8 @@ int wext_enable_forwarding(const char *ifname);
 int wext_disable_forwarding(const char *ifname);
 int wext_set_ch_deauth(const char *ifname, __u8 enable);
 int wext_ap_switch_chl_and_inform(unsigned char new_channel);
+void wext_set_max_txpwr_limit(__u8 val);
+
 #ifdef CONFIG_WOWLAN
 int wext_wowlan_ctrl(const char *ifname, int enable);
 int wext_wowlan_set_pattern(const char *ifname, wowlan_pattern_t pattern);

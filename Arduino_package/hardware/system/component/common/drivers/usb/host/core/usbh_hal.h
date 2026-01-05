@@ -1,28 +1,19 @@
-/**
-  ******************************************************************************
-  * @file    usbd_hal.h
-  * @author  Realsil WLAN5 Team
-  * @brief   This file is the header file for usbd_hal.c
-  ******************************************************************************
-  * @attention
-  *
-  * This module is a confidential and proprietary property of RealTek and
-  * possession or use of this module requires written permission of RealTek.
-  *
-  * Copyright(c) 2020, Realtek Semiconductor Corporation. All rights reserved.
-  ******************************************************************************
-  */
+/*
+ * Copyright (c) 2024 Realtek Semiconductor Corp.
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 #ifndef USBH_HAL_H
 #define USBH_HAL_H
 
 /* Includes ------------------------------------------------------------------*/
 
+#include "usb_regs.h"
 #include "usb_hal.h"
 #include "usbh.h"
 
 /* Exported defines ----------------------------------------------------------*/
-
 #define USBH_HCFG_30_60_MHZ                         0U
 #define USBH_HCFG_48_MHZ                            1U
 #define USBH_HCFG_6_MHZ                             2U
@@ -56,26 +47,24 @@ typedef enum {
 } usbh_hc_state_t;
 
 typedef struct {
-	u8  dev_addr ;          /*!< USB device address, 1~255 */
-	u8  ch_num;             /*!< Host channel number, 1~15 */
-	u8  ep_num;             /*!< Endpoint number, 1~15 */
-	u8  ep_is_in;           /*!< Endpoint direction, 0~1 */
-	u8  speed;              /*!< Host speed */
-	u8  do_ping;            /*!< Enable or disable the use of the PING protocol for HS mode */
-	u8  process_ping;       /*!< Execute the PING protocol for HS mode */
-	u8  ep_type;            /*!< Endpoint Type */
-	u16 max_packet;         /*!< Endpoint Max packet size, 0~65536 */
-	u8  data_pid;           /*!< Initial data PID, 0~1 */
 	u8  *xfer_buff;         /*!< Pointer to transfer buffer */
-	u32 xfer_len;           /*!< Current transfer length */
-	u32 xfer_count;         /*!< Partial transfer length in case of multi packet transfer */
-	u8  toggle_in;          /*!< IN transfer current toggle flag, 0~1 */
-	u8  toggle_out;         /*!< OUT transfer current toggle flag, 0~1 */
 	u32 dma_addr;           /*!< 32 bits aligned transfer buffer address */
 	u32 error_cnt;          /*!< Host channel error count.*/
-
-	__IO usbh_urb_state_t  urb_state;  /*!< URB state. */
-	__IO usbh_hc_state_t   hc_state;      /*!< Host Channel state. */
+	u32 xfer_len;           /*!< Current transfer total length */
+	u32 xfer_count;         /*!< Partial transfer length in case of multi packet transfer */
+	u16 max_packet;         /*!< Endpoint Max packet size, 0~65536 */
+	u8  dev_addr;           /*!< USB device address, 1~255 */
+	u8  ch_num : 4;             /*!< Host channel number, 1~15 */
+	u8  ep_num : 4;             /*!< Endpoint number, 1~15 */
+	__IO u8 hc_state : 4;       /*!< Host Channel state, defined in struct usbh_hc_state_t 0~8 */
+	__IO u8 urb_state : 3;      /*!< URB state, defined in struct usbh_urb_state_t 0~4 */
+	u8  speed : 2;              /*!< Host speed, 0~3 */
+	u8  ep_type : 2;            /*!< Endpoint Type, defined in struct usb_ch_ep_type_t 0~3 */
+	u8  data_pid : 2;           /*!< Initial data PID, defined in struct usbh_pid_t 0~3 */
+	u8  toggle_in : 1;          /*!< IN transfer current toggle flag, 0~1 */
+	u8  toggle_out : 1;         /*!< OUT transfer current toggle flag, 0~1 */
+	u8  do_ping : 1;            /*!< Enable or disable the use of the PING protocol for HS mode 0~1*/
+	u8  ep_is_in : 1;           /*!< Endpoint direction, 0~1 */
 } usbh_hc_t;
 
 /* Exported macros -----------------------------------------------------------*/
@@ -84,18 +73,19 @@ typedef struct {
 
 /* Exported functions --------------------------------------------------------*/
 
-u8 usbh_hal_host_init(usbh_config_t *cfg);
-u8 usbh_hal_init_clock(u8 freq);
-u8 usbh_hal_reset_port(void);
-u8 usbh_hal_drive_vbus(u8 state);
-u32 usbh_hal_get_host_speed(void);
+int usbh_hal_host_init(usbh_config_t *cfg, u8 ch_max);
+int usbh_hal_init_clock(void);
+int usbh_hal_set_frame_interval(u8 speed);
+int usbh_hal_reset_port(void);
+int usbh_hal_drive_vbus(u8 state);
+u8 usbh_hal_get_host_speed(void);
 u32 usbh_hal_get_current_frame(void);
-u8 usbh_hal_hc_init(u8 ch_num, u8 ep_num, u8 dev_addr, u8 speed, u8 ep_type, u16 mps);
-u8 usbh_hal_hc_start_transfer(usbh_hc_t *hc, u8 dma);
+int usbh_hal_hc_init(u8 ch_num, u8 ep_num, u8 dev_addr, u8 speed, u8 ep_type, u16 mps, u8 dma);
+int usbh_hal_hc_start_transfer(usbh_hc_t *hc, u8 dma);
 u32 usbh_hal_hc_read_interrupt(void);
-u8 usbh_hal_hc_halt(u8 hc_num);
-u8 usbh_hal_do_ping(u8 ch_num);
-u8 usbh_hal_stop(void);
+int usbh_hal_hc_halt(u8 hc_num);
+int usbh_hal_do_ping(u8 ch_num);
+int usbh_hal_stop(void);
 
 #endif /* USBD_HAL_H */
 

@@ -46,6 +46,7 @@ extern "C" {
 #define WSEC_SWFLAG        0x0008
 #define AES_CMAC_ENABLED        0x0010
 #define ENTERPRISE_ENABLED			0x0020
+#define OWE_ENABLED			0x0040
 
 #define SHARED_ENABLED  0x00008000
 #define WPA_SECURITY    0x00200000
@@ -172,6 +173,7 @@ enum {
     RTW_SECURITY_WPA3_AES_PSK 	           = ( WPA3_SECURITY | AES_ENABLED ),                                                    /**< WPA3-SAE with AES security                                  */
     RTW_SECURITY_WPA2_WPA3_MIXED           = ( WPA2_SECURITY | WPA3_SECURITY | AES_ENABLED ),                                    /**< WPA3-SAE/WPA2 with AES security                             */
     RTW_SECURITY_WPA3_ENTERPRISE           = ( WPA3_SECURITY | ENTERPRISE_ENABLED ),                                             /**< WPA3 Security via 802.1X authentication                     */
+    RTW_SECURITY_WPA3_OWE           = ( WPA3_SECURITY | OWE_ENABLED | AES_ENABLED ),                                             /**< WPA3-OWE with AES security                            */
 
     RTW_SECURITY_UNKNOWN        = -1,                                               /**< May be returned by scan function if security is unknown. Do not pass this to the join function! */
 

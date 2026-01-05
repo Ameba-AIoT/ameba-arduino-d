@@ -65,6 +65,11 @@
 #define AP_SETTING_SECTOR		0x00101000
 #define FTL_PHY_PAGE_START_ADDR	0x00102000
 #define FAST_RECONNECT_DATA 	0x00105000
+#define PMF_DEAUTH_SUPPORT 0
+//#define PMF_DEAUTH_DATA 0x00100000//if UART_SETTING_SECTOR/AP_SETTING_SECTOR(user data space) not used, or any from external flash
+#if (defined(PMF_DEAUTH_SUPPORT) && PMF_DEAUTH_SUPPORT) && (!defined(PMF_DEAUTH_DATA))
+#error uncomment #define PMF_DEAUTH_DATA with proper user data flash sector to store pmf deauth frame
+#endif
 #endif
 #define CONFIG_ENABLE_RDP		0
 
@@ -721,6 +726,9 @@ in lwip_opt.h for support uart adapter*/
 
 #if defined(CONFIG_USBH_CDC_ECM)
 #define CONFIG_EXAMPLE_USBH_CDC_ECM             1
+#if defined(CONFIG_8021X_LAN_EN)
+#define CONFIG_EXAMPLE_8021X_LAN                1
+#endif
 #endif
 
 #endif

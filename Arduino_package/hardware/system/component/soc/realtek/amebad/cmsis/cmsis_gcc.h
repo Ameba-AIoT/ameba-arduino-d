@@ -65,6 +65,17 @@
   #define __PACKED                  __attribute__((packed, aligned(1)))
 #endif
 
+#ifdef AMEBA_Tensorflow_Lite
+// Add in defines for compatibility with TFLite
+#ifndef   __STATIC_FORCEINLINE
+  #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+#endif
+#ifndef   __RESTRICT
+  #define __RESTRICT                             __restrict
+#endif
+// Add in define to remove excessive -Wundef warnings in TFLite
+#define __ARM_FEATURE_MVE 0
+#endif
 
 /* ###########################  Core Function Access  ########################### */
 /** \ingroup  CMSIS_Core_FunctionInterface

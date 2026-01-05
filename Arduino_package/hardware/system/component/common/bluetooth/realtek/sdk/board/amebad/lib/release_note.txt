@@ -2,6 +2,10 @@
 /*
  * Release Note
  */
+	v1.0.1.253
+	2025/10/24
+	1. Add OS mutex for SW AES.
+
 	v1.0.1.251
 	2025/03/20
 	1. Add API to read remote version.

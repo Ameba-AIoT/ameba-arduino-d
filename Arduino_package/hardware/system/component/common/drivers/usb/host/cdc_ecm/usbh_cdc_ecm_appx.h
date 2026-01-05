@@ -22,9 +22,6 @@
 #define CDC_ECM_LINE_CODING_DATA_LEN                            0x07U
 
 /* Exported defines ----------------------------------------------------------*/
-typedef enum {
-    USBH_ECM_APP_RX_THREAD_PRIORITY = USBH_ECM_RX_THREAD_PRIORITY-1 ,   
-} usbh_cdc_ecm_appx_task_priority_t;
 
 typedef enum {
 	CDC_ECM_MAC_UNINIT = 0U,
@@ -80,14 +77,11 @@ typedef enum {
 
 
 typedef struct {
-    struct task_struct appx_task;
     usbh_cdc_ecm_at_set_state_t   sub_status;
     usbh_cdc_ecm_ep_t             report_ep;
     usbh_cdc_ecm_ep_t             tx_ep;
     usbh_cdc_ecm_ep_t             rx_ep;
     volatile u8                   data_tx_done;
-    u8                            task_flag;
-    u8                            task_alive;
 
     usbh_cdc_ecm_appx_param_t     *param_item;
     usbh_cdc_ecm_appx_param_t     *param_array;    //at port interface idx
@@ -108,7 +102,6 @@ typedef struct {
 /**/
 u8 usbh_cdc_ecm_parse_at_cfgdesc(usb_host_t *host,u16 vid,u16 pid);
 u8 usbh_cdc_ecm_appx_doinit(usbh_cdc_ecm_priv_data_t *priv);
-u8 usbh_cdc_ecm_appx_task(void);
 u8 usbh_cdc_ecm_appx_transfer(usbh_cdc_ecm_host_t *cdc,u8* next);
 u8 usbh_cdc_ecm_appx_deinit_pipe(usb_host_t *host);
 u8 usbh_cdc_ecm_appx_deinit(usb_host_t *host);
