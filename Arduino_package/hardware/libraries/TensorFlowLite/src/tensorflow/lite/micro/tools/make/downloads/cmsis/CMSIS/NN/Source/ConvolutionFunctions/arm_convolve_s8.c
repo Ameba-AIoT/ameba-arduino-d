@@ -45,7 +45,7 @@
    * Basic s8 convolution function.
    *
    * Refer header file for details. Optimal use case for the DSP/MVE implementation is when input and output channels
-   * are multiples of 4 or atleast greater than 4.
+   * are multiples of 4 or at least greater than 4.
    *
    */
 

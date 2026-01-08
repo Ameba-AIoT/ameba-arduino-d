@@ -43,7 +43,7 @@
   /**
    * @brief Fast Q7 convolution function
    * @param[in]       Im_in       pointer to input tensor
-   * @param[in]       dim_im_in   input tensor dimention
+   * @param[in]       dim_im_in   input tensor dimension
    * @param[in]       ch_im_in    number of input tensor channels
    * @param[in]       wt          pointer to kernel weights
    * @param[in]       ch_im_out   number of filters, i.e., output tensor channels
@@ -72,10 +72,10 @@
    *
    * ch_im_in is multiple of 4    ( because of the SIMD32 read and swap )
    *
-   * ch_im_out is multipe of 2    ( bacause 2x2 mat_mult kernel )
+   * ch_im_out is multiple of 2    ( because 2x2 mat_mult kernel )
    *
    * The im2col converts the Q7 tensor input into Q15 column, which is stored in
-   * bufferA. There is reordering happenning during this im2col process with
+   * bufferA. There is reordering happening during this im2col process with
    * arm_q7_to_q15_reordered_no_shift. For every four elements, the second and
    * third elements are swapped.
    *

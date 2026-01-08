@@ -86,7 +86,7 @@ bool ReadAccelerometer(tflite::ErrorReporter* error_reporter, float* input,
         // facing down the shaft towards the user's hand, with the reset button
         // pointing at the user's face:
         //
-        // Expected axis alignement for Adafruit LSM9DS1 accelerometer
+        // Expected axis alignment for Adafruit LSM9DS1 accelerometer
         // Positive X axis towards right, positive Y axis towards user, positive Z axis towards up
         // X:> Y:o Z:^
         const float norm_x = -y;

@@ -43,8 +43,8 @@
 /**
  * @brief Fast Q7 version of 1x1 convolution (non-sqaure shape)
  * @param[in]       Im_in        pointer to input tensor
- * @param[in]       dim_im_in_x  input tensor dimention x
- * @param[in]       dim_im_in_y  input tensor dimention y
+ * @param[in]       dim_im_in_x  input tensor dimension x
+ * @param[in]       dim_im_in_y  input tensor dimension y
  * @param[in]       ch_im_in     number of input tensor channels
  * @param[in]       wt           pointer to kernel weights
  * @param[in]       ch_im_out    number of filters, i.e., output tensor channels
@@ -70,7 +70,7 @@
  * separable convolution.
  *
  * This function is the version with full list of optimization tricks, but with
- * some contraints:
+ * some constraints:
  *   ch_im_in is multiple of 4
  *   ch_im_out is multiple of 2
  *

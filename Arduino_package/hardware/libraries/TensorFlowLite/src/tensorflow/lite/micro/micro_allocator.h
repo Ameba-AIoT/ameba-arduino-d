@@ -96,7 +96,7 @@ class MicroAllocator {
                                 ErrorReporter* error_reporter);
 
   // Creates a MicroAllocator instance using the provided SimpleMemoryAllocator
-  // intance. This allocator instance will use the SimpleMemoryAllocator
+  // instance. This allocator instance will use the SimpleMemoryAllocator
   // instance to manage allocations internally.
   static MicroAllocator* Create(SimpleMemoryAllocator* memory_allocator,
                                 ErrorReporter* error_reporter);

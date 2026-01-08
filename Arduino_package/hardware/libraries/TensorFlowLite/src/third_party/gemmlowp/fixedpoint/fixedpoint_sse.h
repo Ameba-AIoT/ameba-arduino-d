@@ -279,7 +279,7 @@ inline __m128i RoundingHalfSum(__m128i a, __m128i b) {
   /* __m128i round_bit_mask, a_over_2, b_over_2, round_bit, sum; */
   /* We divide the inputs before the add to avoid the overflow and costly test
    */
-  /* of checking if an overflow occured on signed add */
+  /* of checking if an overflow occurred on signed add */
   /* round_bit_mask = _mm_set1_epi32(1); */
   /* a_over_2 = _mm_srai_epi32(a, 1); */
   /* b_over_2 = _mm_srai_epi32(b, 1); */

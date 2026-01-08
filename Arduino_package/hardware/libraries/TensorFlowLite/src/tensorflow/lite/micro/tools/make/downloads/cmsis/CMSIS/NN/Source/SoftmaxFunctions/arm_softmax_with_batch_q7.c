@@ -44,7 +44,7 @@
    * @brief Q7 softmax function with batch parameter
    * @param[in]       vec_in      pointer to input vector
    * @param[in]       nb_batches  number of batches
-   * @param[in]       dim_vec     input vector dimention
+   * @param[in]       dim_vec     input vector dimension
    * @param[out]      p_out       pointer to output vector
    *
    * @details

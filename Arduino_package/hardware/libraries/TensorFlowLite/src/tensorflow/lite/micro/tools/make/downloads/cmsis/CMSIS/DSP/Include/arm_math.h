@@ -363,7 +363,7 @@ extern "C"
 #endif
 
 
-/* Included for instrinsics definitions */
+/* Included for intrinsics definitions */
 #if defined (_MSC_VER ) 
 #include <stdint.h>
 #define __STATIC_FORCEINLINE static __forceinline
@@ -494,12 +494,12 @@ extern "C"
   typedef int32x4_t q31x4_t;
 
   /**
-   * @brief 16-bit fractional 128-bit vector data type with 16-bit alignement in 1.15 format.
+   * @brief 16-bit fractional 128-bit vector data type with 16-bit alignment in 1.15 format.
    */
   typedef __ALIGNED(2) int16x8_t q15x8_t;
 
  /**
-   * @brief 8-bit fractional 128-bit vector data type with 8-bit alignement in 1.7 format.
+   * @brief 8-bit fractional 128-bit vector data type with 8-bit alignment in 1.7 format.
    */
   typedef __ALIGNED(1) int8x16_t q7x16_t;
 
@@ -2317,7 +2317,7 @@ __STATIC_INLINE q31_t arm_div_q63_to_q31(q63_t num, q31_t den)
   /**
    * @brief Processing function for the floating-point cubic spline interpolation.
    * @param[in]  S          points to an instance of the floating-point spline structure.
-   * @param[in]  xq         points to the x values ot the interpolated data points.
+   * @param[in]  xq         points to the x values of the interpolated data points.
    * @param[out] pDst       points to the block of output data.
    * @param[in]  blockSize  number of samples of output data.
    */
@@ -7885,7 +7885,7 @@ typedef struct
   const float32_t *dualCoefficients;      /**< Dual coefficients */
   const float32_t *supportVectors;        /**< Support vectors */
   const int32_t   *classes;               /**< The two SVM classes */
-  float32_t       coef0;                  /**< Independant constant */
+  float32_t       coef0;                  /**< Independent constant */
   float32_t       gamma;                  /**< Gamma factor */
 } arm_svm_sigmoid_instance_f32;
 
@@ -8176,7 +8176,7 @@ float64_t arm_kullback_leibler_f64(const float64_t * pSrcA,
  *
  *
  * @param[in]    *in           Array of input values.
- * @param[in]    *weigths      Weights
+ * @param[in]    *weights      Weights
  * @param[in]    blockSize     Number of samples in the input array.
  * @return Weighted sum
  *
@@ -8298,7 +8298,7 @@ float32_t arm_cosine_distance_f32(const float32_t *pA,const float32_t *pB, uint3
  *
  * When the function is computing x log (x / y) with x 0 and y 0,
  * it will compute the right value (0) but a division per zero will occur
- * and shoudl be ignored in client code.
+ * and should be ignored in client code.
  *
  * @param[in]    pA         First vector
  * @param[in]    pB         Second vector

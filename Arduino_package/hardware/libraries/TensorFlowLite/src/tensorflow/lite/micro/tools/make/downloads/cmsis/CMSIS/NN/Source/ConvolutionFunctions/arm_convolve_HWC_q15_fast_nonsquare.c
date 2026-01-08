@@ -43,8 +43,8 @@
   /**
    * @brief Fast Q15 convolution function (non-sqaure shape)
    * @param[in]       Im_in        pointer to input tensor
-   * @param[in]       dim_im_in_x  input tensor dimention x
-   * @param[in]       dim_im_in_y  input tensor dimention y
+   * @param[in]       dim_im_in_x  input tensor dimension x
+   * @param[in]       dim_im_in_y  input tensor dimension y
    * @param[in]       ch_im_in     number of input tensor channels
    * @param[in]       wt           pointer to kernel weights
    * @param[in]       ch_im_out    number of filters, i.e., output tensor channels
@@ -77,7 +77,7 @@
    *
    * ch_im_in is multiple of 2
    *
-   * ch_im_out is multipe of 2
+   * ch_im_out is multiple of 2
    *
    */
 
@@ -157,7 +157,7 @@ arm_convolve_HWC_q15_fast_nonsquare(const q15_t * Im_in,
                     const q15_t *pB = im_buffer;
                     const q15_t *pB2 = pB + ch_im_in * dim_kernel_y * dim_kernel_x;
 
-                    /* aling the second pointer for A */
+                    /* align the second pointer for A */
                     const q15_t *pA2 = pA + ch_im_in * dim_kernel_y * dim_kernel_x;
 
                     /* init the sum with bias */

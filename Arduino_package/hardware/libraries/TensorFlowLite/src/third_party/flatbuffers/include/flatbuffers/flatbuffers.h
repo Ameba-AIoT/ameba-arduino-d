@@ -595,7 +595,7 @@ class Allocator {
 
   // Reallocate `new_size` bytes of memory, replacing the old region of size
   // `old_size` at `p`. In contrast to a normal realloc, this grows downwards,
-  // and is intended specifcally for `vector_downward` use.
+  // and is intended specifically for `vector_downward` use.
   // `in_use_back` and `in_use_front` indicate how much of `old_size` is
   // actually in use at each end, and needs to be copied.
   virtual uint8_t *reallocate_downward(uint8_t *old_p, size_t old_size,
@@ -2065,7 +2065,7 @@ class FlatBufferBuilder {
     return reinterpret_cast<T *>(buf_.make_space(vector_size * sizeof(T)));
   }
 
-  // End the vector of structues in the flatbuffers.
+  // End the vector of structures in the flatbuffers.
   // Vector should have previously be started with StartVectorOfStructs().
   template<typename T>
   Offset<Vector<const T *>> EndVectorOfStructs(size_t vector_size) {
@@ -2657,7 +2657,7 @@ inline int LookupEnum(const char **names, const char *name) {
 
 // Minimal reflection via code generation.
 // Besides full-fat reflection (see reflection.h) and parsing/printing by
-// loading schemas (see idl.h), we can also have code generation for mimimal
+// loading schemas (see idl.h), we can also have code generation for minimal
 // reflection data which allows pretty-printing and other uses without needing
 // a schema or a parser.
 // Generate code with --reflect-types (types only) or --reflect-names (names

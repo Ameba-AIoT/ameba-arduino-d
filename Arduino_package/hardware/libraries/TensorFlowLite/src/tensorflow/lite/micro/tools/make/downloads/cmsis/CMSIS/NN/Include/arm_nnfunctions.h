@@ -46,7 +46,7 @@
    * - Basic math Functions
    *
    * The library has separate functions for operating on different weight and activation data
-   * types including 8-bit integers (q7_t) and 16-bit integers (q15_t). The descrition of the
+   * types including 8-bit integers (q7_t) and 16-bit integers (q15_t). The description of the
    * kernels are included in the function description. The implementation details are also
    * described in this paper [1].
    *
@@ -89,7 +89,7 @@
    *  It does not affect functions that use C or intrinsics.
    * - ARM_MATH_BIG_ENDIAN:
    *
-   * Define macro ARM_MATH_BIG_ENDIAN to build the library for big endian targets. This is supported only for the legacy functions i.e, functions targetted at
+   * Define macro ARM_MATH_BIG_ENDIAN to build the library for big endian targets. This is supported only for the legacy functions i.e, functions targeted at
    * TensorFlow Lite do not support big endianness. By default library builds for little endian targets.
    *
    * - ARM_NN_TRUNCATE:
@@ -266,7 +266,7 @@ extern    "C"
    *
    * @details
    *    1. Supported framework: TensorFlow Lite micro
-   *    2. q7 is used as data type eventhough it is s8 data. It is done so to be consistent with existing APIs.
+   *    2. q7 is used as data type even though it is s8 data. It is done so to be consistent with existing APIs.
    *    3. Additional memory is required for optimization. Refer to argument 'ctx' for details.
    *
    */
@@ -431,7 +431,7 @@ extern    "C"
    * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of size checking.
    *
    * This function is the version with full list of optimization tricks, but with
-   * some contraints:
+   * some constraints:
    *   ch_im_in is multiple of 4
    *   ch_im_out is multiple of 2
    */
@@ -477,7 +477,7 @@ extern    "C"
    * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of size checking.
    *
    * This function is the version with full list of optimization tricks, but with
-   * some contraints:
+   * some constraints:
    *   ch_im_in is multiple of 4
    *   ch_im_out is multiple of 2
    */
@@ -534,7 +534,7 @@ extern    "C"
    * second half of MobileNets after depthwise separable convolution.
    *
    * This function is the version with full list of optimization tricks, but with
-   * some contraints:
+   * some constraints:
    *   ch_im_in is multiple of 4
    *   ch_im_out is multiple of 2
    */
@@ -731,7 +731,7 @@ extern    "C"
    * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of size checking.
    *
    * This function is the version with full list of optimization tricks, but with
-   * some contraints:
+   * some constraints:
    *   ch_im_in is multiple of 2
    *   ch_im_out is multiple of 2
    */
@@ -789,7 +789,7 @@ extern    "C"
    *
    * ch_im_in is multiple of 2
    *
-   * ch_im_out is multipe of 2
+   * ch_im_out is multiple of 2
    *
    */
 
@@ -836,7 +836,7 @@ extern    "C"
    * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of size checking.
    *
    * This function is the version with full list of optimization tricks, but with
-   * some contraints:
+   * some constraints:
    *   ch_im_in is multiple of 2
    *   ch_im_out is multiple of 2
    */
@@ -883,7 +883,7 @@ extern    "C"
    * <code>ARM_MATH_SIZE_MISMATCH</code> or <code>ARM_MATH_SUCCESS</code> based on the outcome of size checking.
    *
    * This function is the version with full list of optimization tricks, but with
-   * some contraints:
+   * some constraints:
    *   ch_im_in is multiple of 2
    *   ch_im_out is multiple of 2
    */
@@ -941,7 +941,7 @@ extern    "C"
    *
    * @details
    *    1. Supported framework: TensorFlow Lite
-   *    2. q7 is used as data type eventhough it is s8 data. It is done so to be consistent with existing APIs.
+   *    2. q7 is used as data type even though it is s8 data. It is done so to be consistent with existing APIs.
    *    3. Optimization using DSP extension is not available for the generic case where channel multiplier is > 1.
    *
    */
@@ -1076,7 +1076,7 @@ extern    "C"
    *
    * @details
    *    1. Supported framework: TensorFlow Lite
-   *    2. q7 is used as data type eventhough it is s8 data. It is done so to be consistent with existing APIs.
+   *    2. q7 is used as data type even though it is s8 data. It is done so to be consistent with existing APIs.
    *    3. Reccomended when number of channels is 4 or greater.
    *
    */
@@ -1930,7 +1930,7 @@ void arm_softmax_u8(const uint8_t *input,
    * @param[in]     dilation_x Dilation along width. Not used and intended for future enhancement.
    * @param[in]     dilation_y Dilation along height. Not used and intended for future enhancement.
    * @param[in]     bias       Pointer to optional bias values. If no bias is
-   *                           availble, NULL is expected
+   *                           available, NULL is expected
    * @param[in]     input_offset  Input tensor zero offset
    * @param[in]     filter_offset Kernel tensor zero offset
    * @param[in]     output_offset Output tensor zero offset

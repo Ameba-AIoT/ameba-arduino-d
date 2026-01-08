@@ -53,7 +53,7 @@ namespace {
 // The name of this function is important for Arduino compatibility.
 void setup()
 {
-    // Set up logging. Google style is to avoid globals or statics because of
+    // Set up logging. Google style is to avoid globals or statistics because of
     // lifetime uncertainty, but since this has a trivial destructor it's okay.
     // NOLINTNEXTLINE(runtime-global-variables)
     static tflite::MicroErrorReporter micro_error_reporter;

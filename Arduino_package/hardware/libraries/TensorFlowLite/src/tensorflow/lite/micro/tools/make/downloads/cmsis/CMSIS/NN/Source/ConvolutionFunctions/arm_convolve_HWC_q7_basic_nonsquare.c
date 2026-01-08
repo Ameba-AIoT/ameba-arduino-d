@@ -42,8 +42,8 @@
   /**
    * @brief Basic Q7 convolution function (non-sqaure shape)
    * @param[in]       Im_in        pointer to input tensor
-   * @param[in]       dim_im_in_x  input tensor dimention x
-   * @param[in]       dim_im_in_y  input tensor dimention y
+   * @param[in]       dim_im_in_x  input tensor dimension x
+   * @param[in]       dim_im_in_y  input tensor dimension y
    * @param[in]       ch_im_in     number of input tensor channels
    * @param[in]       wt           pointer to kernel weights
    * @param[in]       ch_im_out    number of filters, i.e., output tensor channels

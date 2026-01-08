@@ -23,7 +23,7 @@ extern "C" {
 // Functionally equivalent to vsnprintf, trimmed down for TFLite Micro.
 // MicroSnprintf() is implemented using MicroVsnprintf().
 int MicroVsnprintf(char* output, int len, const char* format, va_list args);
-// Functionally equavalent to snprintf, trimmed down for TFLite Micro.
+// Functionally equivalent to snprintf, trimmed down for TFLite Micro.
 // For example, MicroSnprintf(buffer, 10, "int %d", 10) will put the string
 // "int 10" in the buffer.
 // Floating point values are logged in exponent notation (1.XXX*2^N).

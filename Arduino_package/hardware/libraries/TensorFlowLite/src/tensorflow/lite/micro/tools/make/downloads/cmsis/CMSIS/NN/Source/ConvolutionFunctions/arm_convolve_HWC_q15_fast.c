@@ -43,7 +43,7 @@
   /**
    * @brief Fast Q15 convolution function
    * @param[in]       Im_in       pointer to input tensor
-   * @param[in]       dim_im_in   input tensor dimention
+   * @param[in]       dim_im_in   input tensor dimension
    * @param[in]       ch_im_in    number of input tensor channels
    * @param[in]       wt          pointer to kernel weights
    * @param[in]       ch_im_out   number of filters, i.e., output tensor channels
@@ -147,7 +147,7 @@ arm_convolve_HWC_q15_fast(const q15_t * Im_in,
                     const q15_t  *pB = im_buffer;
                     const q15_t *pB2 = pB + ch_im_in * dim_kernel * dim_kernel;
 
-                    /* aling the second pointer for A */
+                    /* align the second pointer for A */
                     const q15_t *pA2 = pA + ch_im_in * dim_kernel * dim_kernel;
 
                     /* init the sum with bias */

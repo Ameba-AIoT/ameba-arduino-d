@@ -67,7 +67,7 @@
  * This looks strange but is natural considering how sign-extension is done at
  * assembly level.
  *
- * The expansion of other other oprand will follow the same rule so that the end
+ * The expansion of other other operand will follow the same rule so that the end
  * results are the same.
  *
  * The tail (i.e., last (N % 4) elements) will still be in original order.
@@ -99,7 +99,7 @@ void arm_q7_to_q15_reordered_no_shift(const q7_t * pSrc, q15_t * pDst, uint32_t 
         /* rotatate in by 8 and extend two q7_t values to q15_t values */
         in1 = __SXTB16(__ROR(in, 8));
 
-        /* extend remainig two q7_t values to q15_t values */
+        /* extend remaining two q7_t values to q15_t values */
         in2 = __SXTB16(in);
 
 #ifndef ARM_MATH_BIG_ENDIAN

@@ -148,7 +148,7 @@ static void accumulate_q7_to_q15(q15_t * base, q7_t * target, const uint16_t len
   /**
    * @brief Q7 max pooling function
    * @param[in, out]  Im_in       pointer to input tensor
-   * @param[in]       dim_im_in   input tensor dimention
+   * @param[in]       dim_im_in   input tensor dimension
    * @param[in]       ch_im_in    number of input tensor channels
    * @param[in]       dim_kernel  filter kernel size
    * @param[in]       padding     padding sizes
@@ -295,7 +295,7 @@ arm_maxpool_q7_HWC(q7_t * Im_in,
   /**
    * @brief Q7 average pooling function
    * @param[in,out]   Im_in       pointer to input tensor
-   * @param[in]       dim_im_in   input tensor dimention
+   * @param[in]       dim_im_in   input tensor dimension
    * @param[in]       ch_im_in    number of input tensor channels
    * @param[in]       dim_kernel  filter kernel size
    * @param[in]       padding     padding sizes

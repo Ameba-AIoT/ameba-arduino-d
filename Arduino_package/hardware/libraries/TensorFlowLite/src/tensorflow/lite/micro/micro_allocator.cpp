@@ -169,7 +169,7 @@ class AllocationInfoBuilder {
   TfLiteStatus GetOfflinePlannedOffsets(const Model* model,
                                         int32_t** offline_planner_offsets);
 
-  // Add allocaiton information for the tensors.
+  // Add allocation information for the tensors.
   TfLiteStatus AddTensors(const SubGraph* subgraph, int32_t* offline_offsets,
                           TfLiteTensor* runtime_tensors);
 
@@ -441,7 +441,7 @@ TfLiteStatus InitializeTfLiteTensorFromFlatbuffer(
         // data structure to point to it.
         result->data.data =
             const_cast<void*>(static_cast<const void*>(array->data()));
-        // We set the data from a serialized buffer, so record tha.
+        // We set the data from a serialized buffer.
         result->allocation_type = kTfLiteMmapRo;
       }
     }
