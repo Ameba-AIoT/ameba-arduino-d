@@ -1077,7 +1077,7 @@ extern    "C"
    * @details
    *    1. Supported framework: TensorFlow Lite
    *    2. q7 is used as data type even though it is s8 data. It is done so to be consistent with existing APIs.
-   *    3. Reccomended when number of channels is 4 or greater.
+   *    3. Recommended when number of channels is 4 or greater.
    *
    */
   arm_status arm_depthwise_conv_s8_opt(const q7_t *input,
@@ -1193,7 +1193,7 @@ int32_t arm_depthwise_conv_s8_opt_get_buffer_size(const uint16_t input_ch,
    *  matrix without interleaving.
    *
    *    1. Supported framework: TensorFlow Lite
-   *    2. q7 is used as data type eventhough it is s8 data. It is done so to be consistent with existing APIs.
+   *    2. q7 is used as data type even though it is s8 data. It is done so to be consistent with existing APIs.
    *
    */
 
