@@ -21,7 +21,7 @@ jobs:
 #      uses: codespell-project/actions-codespell@master
       uses: codespell-project/actions-codespell@v2
       with:
-        skip: Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.h,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.h
+        skip: Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/Adafruit_GPS.h,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.cpp,Arduino_package/hardware/libraries/SoftwareSerial/src/SoftwareSerial.h,Arduino_package/hardware/libraries/TensorFlowLite/src/tensorflow/lite/micro/tools/make/downloads/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_core_1x_s8.c,Arduino_package/hardware/libraries/TensorFlowLite/src/tensorflow/lite/micro/tools/make/downloads/cmsis/CMSIS/NN/Source/NNSupportFunctions/arm_nn_mat_mul_core_4x_s8.c,Arduino_package/hardware/libraries/TensorFlowLite/src/tensorflow/lite/micro/tools/make/downloads/cmsis/CMSIS/DSP/Include/arm_math.h,Arduino_package/hardware/libraries/TensorFlowLite/src/tensorflow/lite/kernels/internal/quantization_util.h,Arduino_package/hardware/libraries/TensorFlowLite/src/tensorflow/lite/kernels/internal/tensor.h
         ignore_words_list: ameba,shiftIn
 #        ignore_words_file: Ameba_misc/Spell_Check_Ignore/.codespellignore
         path: ${{ matrix.path }}
