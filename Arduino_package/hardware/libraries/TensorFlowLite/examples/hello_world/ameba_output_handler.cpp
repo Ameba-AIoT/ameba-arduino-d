@@ -18,7 +18,7 @@ limitations under the License.
 #include "Arduino.h"
 #include "constants.h"
 
-// The pin of the LED
+// The pin of the LED, PWM
 
 #if defined(BOARD_AMB21_AMB22)
 #define led 10

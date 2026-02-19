@@ -12,9 +12,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-#if defined(ARDUINO) && !defined(CORE_RTL8722DM)
+#if defined(ARDUINO) && !defined(ARDUINO_AMBD)
 #define ARDUINO_EXCLUDE_CODE
-#endif    // defined(ARDUINO) && !defined(RTL8722DM)
+#endif
 
 #ifndef ARDUINO_EXCLUDE_CODE
 
